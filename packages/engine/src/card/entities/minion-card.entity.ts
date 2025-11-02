@@ -1,0 +1,219 @@
+import type { MinionBlueprint } from '../card-blueprint';
+import {
+  Card,
+  makeCardInterceptors,
+  type CardInterceptors,
+  type CardOptions,
+  type SerializedCard
+} from './card.entity';
+import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy';
+import { PointAOEShape } from '../../aoe/point.aoe-shape';
+import { Interceptable } from '../../utils/interceptable';
+import type { Game } from '../../game/game';
+import type { Player } from '../../player/player.entity';
+import { MinionSummonTargetingtrategy } from '../../targeting/minion-summon-targeting.strategy';
+import { CARD_EVENTS } from '../card.enums';
+import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
+import type { BoardCell } from '../../board/board-cell.entity';
+import {
+  TARGETING_TYPE,
+  type TargetingStrategy
+} from '../../targeting/targeting-strategy';
+import type { MaybePromise, Point, Values } from '@game/shared';
+import { TypedSerializableEvent } from '../../utils/typed-emitter';
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type SerializedMinionCard = SerializedCard & {};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type MinionCardInterceptors = CardInterceptors & {
+  atk: Interceptable<number>;
+  maxHp: Interceptable<number>;
+  summonTargetingStrategy: Interceptable<TargetingStrategy>;
+  canPlay: Interceptable<boolean, MinionCard>;
+};
+
+export const MINION_EVENTS = {
+  MINION_BEFORE_SUMMON: 'minion:before-summon',
+  MINION_AFTER_SUMMON: 'minion:after-summon'
+} as const;
+export type MinionEvent = Values<typeof MINION_EVENTS>;
+
+export class MinionSummonedEvent extends TypedSerializableEvent<
+  { card: MinionCard; cell: BoardCell },
+  { card: SerializedMinionCard; position: Point }
+> {
+  serialize() {
+    return {
+      card: this.data.card.serialize(),
+      position: this.data.cell.position.serialize()
+    };
+  }
+}
+
+export type MinionEventMap = {
+  [MINION_EVENTS.MINION_BEFORE_SUMMON]: MinionSummonedEvent;
+  [MINION_EVENTS.MINION_AFTER_SUMMON]: MinionSummonedEvent;
+};
+
+export class MinionCard extends Card<
+  SerializedMinionCard,
+  MinionCardInterceptors,
+  MinionBlueprint
+> {
+  constructor(game: Game, player: Player, options: CardOptions<MinionBlueprint>) {
+    super(
+      game,
+      player,
+      {
+        ...makeCardInterceptors(),
+        maxHp: new Interceptable(),
+        atk: new Interceptable(),
+        summonTargetingStrategy: new Interceptable(),
+        canPlay: new Interceptable()
+      },
+      options
+    );
+  }
+
+  get hasAvailablePosition() {
+    return this.game.boardSystem.cells.some(cell =>
+      this.summoningTargetingStrategy.canTargetAt(cell)
+    );
+  }
+
+  get canAfford() {
+    return this.player.manaManager.canSpend(this.manaCost);
+  }
+
+  canPlay(): boolean {
+    return this.interceptors.canPlay.getValue(
+      this.hasAvailablePosition &&
+        this.canAfford &&
+        this.blueprint.canPlay(this.game, this),
+      this
+    );
+  }
+
+  async removeFromBoard() {
+    await this.unit.removeFromBoard();
+  }
+
+  get summoningTargetingStrategy() {
+    return this.interceptors.summonTargetingStrategy.getValue(
+      new MinionSummonTargetingtrategy(this.game, this),
+      {}
+    );
+  }
+
+  private async selectPositionAndTargets() {
+    return new Promise<
+      | { position: BoardCell; targets: BoardCell[]; cancelled: false }
+      | { cancelled: true; position?: never; targets?: never }
+    >(
+      // eslint-disable-next-line no-async-promise-executor
+      async resolve => {
+        this.cancelPlay = async () => {
+          resolve({ cancelled: true });
+          await this.game.interaction.getContext().ctx.cancel(this.player);
+        };
+
+        await this.removeFromCurrentLocation();
+
+        const [position] = await this.game.interaction.selectSpacesOnBoard({
+          player: this.player,
+          isElligible: cell => {
+            return this.summoningTargetingStrategy.canTargetAt(cell);
+          },
+          canCommit(selectedSlots) {
+            return selectedSlots.length === 1;
+          },
+          isDone(selectedSlots) {
+            return selectedSlots.length === 1;
+          },
+          getAoe: () => new PointAOEShape(this.game, this.player, TARGETING_TYPE.ANYWHERE)
+        });
+
+        const targets = await this.blueprint.getTargets(this.game, this);
+
+        resolve({ position, targets, cancelled: false });
+      }
+    );
+  }
+
+  async play(onCancel?: () => MaybePromise<void>) {
+    const { position, targets, cancelled } = await this.selectPositionAndTargets();
+
+    if (cancelled) return await onCancel?.();
+
+    await this.game.emit(
+      CARD_EVENTS.CARD_BEFORE_PLAY,
+      new CardBeforePlayEvent({ card: this })
+    );
+
+    await this.game.emit(
+      MINION_EVENTS.MINION_BEFORE_SUMMON,
+      new MinionSummonedEvent({ card: this, cell: position })
+    );
+    this.game.unitSystem.addUnit(this, position);
+    await this.game.emit(
+      MINION_EVENTS.MINION_AFTER_SUMMON,
+      new MinionSummonedEvent({ card: this, cell: position })
+    );
+
+    await this.blueprint.onPlay(this.game, this, {
+      aoe: this.blueprint.getAoe(this.game, this, position, targets),
+      position,
+      targets
+    });
+
+    await this.game.emit(
+      CARD_EVENTS.CARD_AFTER_PLAY,
+      new CardAfterPlayEvent({ card: this })
+    );
+  }
+
+  serialize() {
+    return {
+      ...this.serializeBase()
+    };
+  }
+
+  get maxHp() {
+    return this.interceptors.maxHp.getValue(this.blueprint.maxHp, {});
+  }
+
+  get atk() {
+    return this.interceptors.atk.getValue(this.blueprint.atk, {});
+  }
+
+  get unit() {
+    return this.game.unitSystem.units.find(unit => unit.card.equals(this))!;
+  }
+
+  get attackPattern() {
+    return new MeleeTargetingStrategy(
+      this.game,
+      this.unit,
+      this.unit.attackTargetType,
+      false
+    );
+  }
+
+  get attackAOEShape() {
+    return new PointAOEShape(this.game, this.player);
+  }
+
+  get counterattackPattern() {
+    return new MeleeTargetingStrategy(
+      this.game,
+      this.unit,
+      this.unit.counterattackTargetType,
+      false
+    );
+  }
+
+  get counterattackAOEShape() {
+    return new PointAOEShape(this.game, this.player);
+  }
+}

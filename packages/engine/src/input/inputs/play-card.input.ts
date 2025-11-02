@@ -1,0 +1,23 @@
+import { z } from 'zod';
+import { defaultInputSchema, Input } from '../input';
+import { GAME_PHASES } from '../../game/game.enums';
+import { assert } from '@game/shared';
+import { IllegalCardPlayedError } from '../input-errors';
+
+const schema = defaultInputSchema.extend({
+  index: z.number()
+});
+
+export class PlayCardInput extends Input<typeof schema> {
+  readonly name = 'playCard';
+
+  readonly allowedPhases = [GAME_PHASES.MAIN];
+
+  protected payloadSchema = schema;
+
+  async impl() {
+    const card = this.player.cardManager.getCardInHandAt(this.payload.index);
+    assert(card.canPlay(), new IllegalCardPlayedError());
+    await this.game.interaction.declarePlayCardIntent(this.payload.index, this.player);
+  }
+}
