@@ -14,7 +14,7 @@ export class TileSystem extends System<TileSystemOptions> {
   initialize(options: TileSystemOptions) {
     options.cells.forEach((cell, index) => {
       if (cell.tile) {
-        const position = indexToPoint(this.game.boardSystem.cols, index);
+        const position = indexToPoint(this.game.boardSystem.dimensions.width, index);
         this.addTile(cell.tile, position);
       }
     });

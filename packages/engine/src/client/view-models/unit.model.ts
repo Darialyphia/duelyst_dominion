@@ -1,4 +1,3 @@
-import type { BoardCell } from '../../board/board-cell.entity';
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import type { GameClient, GameStateEntities } from '../client';
@@ -25,6 +24,12 @@ export class UnitViewModel {
 
   update(data: Partial<SerializedModifier>) {
     Object.assign(this.data, data);
+
+    return this;
+  }
+
+  clone() {
+    return new UnitViewModel(this.data, this.getEntities(), this.getClient());
   }
 
   get id() {

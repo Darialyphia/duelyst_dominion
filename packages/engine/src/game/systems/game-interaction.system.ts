@@ -15,7 +15,7 @@ import { ChoosingCardsContext } from '../interactions/choosing-cards.interaction
 import { IdleContext } from '../interactions/idle.interaction';
 import { PlayCardContext } from '../interactions/play-card.interaction';
 import { IllegalCardPlayedError } from '../../input/input-errors';
-import type { BoardCell } from '../../board/board-cell.entity';
+import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { AOEShape } from '../../aoe/aoe-shapes';
 
 export const INTERACTION_STATES = {

@@ -1,0 +1,120 @@
+import type { Serializable, Values } from '@game/shared';
+import { Entity, type EmptyInterceptables } from '../../entity';
+import type { Game } from '../../game/game';
+import { TypedSerializableEvent } from '../../utils/typed-emitter';
+import type { Player } from '../../player/player.entity';
+import type { Position } from '../../utils/position';
+import { GAME_EVENTS } from '../../game/game.events';
+import type { PlayerTurnEvent } from '../../player/player.events';
+import type { Unit } from '../../unit/unit.entity';
+
+export const SHRINE_EVENTS = {
+  SHRINE_BEFORE_CAPTURE: 'shrine:before-capture',
+  SHRINE_AFTER_CAPTURE: 'shrine:after-capture',
+  SHRINE_BEFORE_HOLD: 'shrine:before-hold',
+  SHRINE_AFTER_HOLD: 'shrine:after-hold'
+} as const;
+export type ShrineEvent = Values<typeof SHRINE_EVENTS>;
+
+export type SerializedShrine = {
+  id: string;
+  entityType: 'shrine';
+  position: { x: number; y: number };
+  player: string | null;
+};
+
+export class Shrine
+  extends Entity<EmptyInterceptables>
+  implements Serializable<SerializedShrine>
+{
+  player: Player | null = null;
+
+  readonly position: Position;
+
+  constructor(
+    private game: Game,
+    id: string,
+    position: Position
+  ) {
+    super(id, {});
+    this.position = position;
+    game.on(GAME_EVENTS.PLAYER_START_TURN, this.onTurnStart.bind(this));
+  }
+
+  serialize(): SerializedShrine {
+    return {
+      id: this.id,
+      entityType: 'shrine',
+      position: { x: this.position.x, y: this.position.y },
+      player: this.player?.id ?? null
+    };
+  }
+
+  async capture(unit: Unit) {
+    await this.game.emit(
+      SHRINE_EVENTS.SHRINE_BEFORE_CAPTURE,
+      new ShrineCaptureEvent({ shrine: this, unit })
+    );
+
+    this.player = unit.player;
+
+    await unit.player.earnVictoryPoints(
+      this.game.config.SHRINE_CAPTURE_VICTORY_POINT_REWARD
+    );
+
+    await this.game.emit(
+      SHRINE_EVENTS.SHRINE_AFTER_CAPTURE,
+      new ShrineCaptureEvent({ shrine: this, unit })
+    );
+  }
+
+  private async onTurnStart(event: PlayerTurnEvent) {
+    if (!this.player) return;
+    if (!event.data.player.equals(this.player)) return;
+
+    await this.game.emit(
+      SHRINE_EVENTS.SHRINE_BEFORE_HOLD,
+      new ShrineHoldEvent({ shrine: this, player: this.player })
+    );
+
+    await this.player.earnVictoryPoints(
+      this.game.config.SHRINE_HOLDING_VICTORY_POINT_REWARD_PER_TURN
+    );
+
+    await this.game.emit(
+      SHRINE_EVENTS.SHRINE_AFTER_HOLD,
+      new ShrineHoldEvent({ shrine: this, player: this.player })
+    );
+  }
+}
+
+export class ShrineCaptureEvent extends TypedSerializableEvent<
+  { shrine: Shrine; unit: Unit },
+  { shrine: string; unit: string }
+> {
+  serialize() {
+    return {
+      shrine: this.data.shrine.id,
+      unit: this.data.unit.id
+    };
+  }
+}
+
+export class ShrineHoldEvent extends TypedSerializableEvent<
+  { shrine: Shrine; player: Player },
+  { shrine: string; player: string }
+> {
+  serialize() {
+    return {
+      shrine: this.data.shrine.id,
+      player: this.data.player.id
+    };
+  }
+}
+
+export type ShrineEventMap = {
+  [SHRINE_EVENTS.SHRINE_BEFORE_CAPTURE]: ShrineCaptureEvent;
+  [SHRINE_EVENTS.SHRINE_AFTER_CAPTURE]: ShrineCaptureEvent;
+  [SHRINE_EVENTS.SHRINE_BEFORE_HOLD]: ShrineHoldEvent;
+  [SHRINE_EVENTS.SHRINE_AFTER_HOLD]: ShrineHoldEvent;
+};

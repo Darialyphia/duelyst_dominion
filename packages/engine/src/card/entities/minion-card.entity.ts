@@ -14,7 +14,7 @@ import type { Player } from '../../player/player.entity';
 import { MinionSummonTargetingtrategy } from '../../targeting/minion-summon-targeting.strategy';
 import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
-import type { BoardCell } from '../../board/board-cell.entity';
+import type { BoardCell } from '../../board/entities/board-cell.entity';
 import {
   TARGETING_TYPE,
   type TargetingStrategy
@@ -23,12 +23,17 @@ import type { MaybePromise, Point, Values } from '@game/shared';
 import { TypedSerializableEvent } from '../../utils/typed-emitter';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type SerializedMinionCard = SerializedCard & {};
+export type SerializedMinionCard = SerializedCard & {
+  atk: number;
+  maxHp: number;
+  cmd: number;
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type MinionCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
+  cmd: Interceptable<number>;
   summonTargetingStrategy: Interceptable<TargetingStrategy>;
   canPlay: Interceptable<boolean, MinionCard>;
 };
@@ -69,6 +74,7 @@ export class MinionCard extends Card<
         ...makeCardInterceptors(),
         maxHp: new Interceptable(),
         atk: new Interceptable(),
+        cmd: new Interceptable(),
         summonTargetingStrategy: new Interceptable(),
         canPlay: new Interceptable()
       },
@@ -175,7 +181,10 @@ export class MinionCard extends Card<
 
   serialize() {
     return {
-      ...this.serializeBase()
+      ...this.serializeBase(),
+      atk: this.atk,
+      maxHp: this.maxHp,
+      cmd: this.cmd
     };
   }
 
@@ -185,6 +194,10 @@ export class MinionCard extends Card<
 
   get atk() {
     return this.interceptors.atk.getValue(this.blueprint.atk, {});
+  }
+
+  get cmd() {
+    return this.interceptors.cmd.getValue(this.blueprint.cmd, {});
   }
 
   get unit() {

@@ -1,8 +1,9 @@
 import type { EmptyObject, Point, Serializable } from '@game/shared';
-import { Entity } from '../entity';
-import type { Game } from '../game/game';
-import { Position } from '../utils/position';
-import { pointToCellId } from './board-utils';
+import { Entity } from '../../entity';
+import type { Game } from '../../game/game';
+import { Position } from '../../utils/position';
+import { pointToCellId } from '../board-utils';
+import type { BoardHex } from '../board.system';
 
 export type BoardCellInterceptors = EmptyObject;
 
@@ -19,6 +20,7 @@ export type SerializedCell = {
 export type BoardCellOptions = {
   position: Point;
   player: 'p1' | 'p2' | null;
+  hex: InstanceType<typeof BoardHex>;
 };
 
 export class BoardCell

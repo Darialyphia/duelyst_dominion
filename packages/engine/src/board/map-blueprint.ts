@@ -1,20 +1,17 @@
-import { Vec2, type Point } from '@game/shared';
+import { Vec2, type Nullable, type Point } from '@game/shared';
 
 export type MapBlueprint = {
   id: string;
   rows: number;
   cols: number;
-  cells: Array<{
-    tile?: string;
-    player: 'p1' | 'p2' | null;
-  }>;
+  cells: Array<
+    Nullable<{
+      tile?: string;
+      player: 'p1' | 'p2' | null;
+    }>
+  >;
   generalPositions: Point[];
-  boundaries: {
-    topLeft: Point;
-    topRight: Point;
-    bottomLeft: Point;
-    bottomRight: Point;
-  };
+  shrinePositions: Point[];
 };
 
 type CellBlueprint = MapBlueprint['cells'][number];
@@ -33,21 +30,20 @@ const neutral = (tile?: string): CellBlueprint => ({
 
 export const defaultMap: MapBlueprint = {
   id: 'default-map',
-  cols: 9,
-  rows: 5,
-  boundaries: {
-    topLeft: { x: 0, y: 0 },
-    topRight: { x: 8, y: 0 },
-    bottomLeft: { x: 0, y: 4 },
-    bottomRight: { x: 8, y: 4 }
-  },
+  cols: 13,
+  rows: 7,
   // prettier-ignore
   cells: [
-    p1(), p1(), p1(), p1(), neutral(), p2(), p2(), p2(), p2(),
-    p1(), p1(), p1(), p1(), neutral(), p2(), p2(), p2(), p2(),
-    p1(), p1(), p1(), p1(), neutral(), p2(), p2(), p2(), p2(),
-    p1(), p1(), p1(), p1(), neutral(), p2(), p2(), p2(), p2(),
-    p1(), p1(), p1(), p1(), neutral(), p2(), p2(), p2(), p2(),
+    null, null, null, null, null, p2(), p2(), p2(), p2(), null, null, null, null,
+    null, null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null, null, null,
+    null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null,
+    neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(),
+    null, null, p1(), p1(), p1(), p1(), null, p1(), p1(), p1(), p1(), null, null,
+    null, null, null, null, p1(), p1(), p1(), p1(), p1(), null, p1(), null, null,
+    null, null, null, null, p1(), null, p1(), null, null, null, null, null, null
+
+
   ],
-  generalPositions: [new Vec2(0, 2), new Vec2(8, 2)]
+  generalPositions: [new Vec2(6, 0), new Vec2(6, 6)],
+  shrinePositions: [new Vec2(2, 3), new Vec2(6, 3), new Vec2(10, 3)]
 };

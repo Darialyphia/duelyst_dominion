@@ -23,6 +23,12 @@ export class PlayerViewModel {
 
   update(data: Partial<SerializedPlayer>) {
     Object.assign(this.data, data);
+
+    return this;
+  }
+
+  clone() {
+    return new PlayerViewModel(this.data, this.getEntities(), this.getClient());
   }
 
   get id() {

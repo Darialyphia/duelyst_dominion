@@ -11,7 +11,9 @@ import { CardTrackerComponent } from './components/cards-tracker.component';
 import { Interceptable } from '../utils/interceptable';
 import { GAME_EVENTS } from '../game/game.events';
 import {
+  PlayerAfterEarnVictoryPointsEvent,
   PlayerAfterReplaceCardEvent,
+  PlayerBeforeEarnVictoryPointsEvent,
   PlayerBeforeReplaceCardEvent,
   PlayerManaChangeEvent,
   PlayerPlayCardEvent,
@@ -51,6 +53,7 @@ export type SerializedPlayer = {
   isActive: boolean;
   equipedArtifacts: string[];
   currentlyPlayedCard: string | null;
+  victoryPoints: number;
 };
 
 type PlayerInterceptors = {
@@ -86,6 +89,8 @@ export class Player
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
 
   private replacesDoneThisTurn = 0;
+
+  private _victoryPoints = 0;
 
   constructor(
     game: Game,
@@ -145,8 +150,29 @@ export class Player
       canReplace: this.canReplaceCard(),
       isActive: this.isActive,
       equipedArtifacts: this.artifactManager.artifacts.map(artifact => artifact.id),
-      currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null
+      currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
+      victoryPoints: this._victoryPoints
     };
+  }
+
+  get victoryPoints() {
+    return this._victoryPoints;
+  }
+
+  async earnVictoryPoints(amount: number) {
+    if (amount <= 0) return;
+
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_BEFORE_EARN_VICTORY_POINTS,
+      new PlayerBeforeEarnVictoryPointsEvent({ player: this, amount })
+    );
+
+    this._victoryPoints += amount;
+
+    return this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_EARN_VICTORY_POINTS,
+      new PlayerAfterEarnVictoryPointsEvent({ player: this, amount })
+    );
   }
 
   get isCurrentPlayer() {

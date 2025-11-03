@@ -4,7 +4,7 @@ import type { MinionCard } from './entities/minion-card.entity';
 import type { SpellCard } from './entities/spell-card.entity';
 import type { ArtifactCard } from './entities/artifact-card.entity';
 import type { GeneralCard } from './entities/general-card.entity';
-import type { BoardCell } from '../board/board-cell.entity';
+import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { AOEShape } from '../aoe/aoe-shapes';
 import type { PlayerArtifact } from '../player/player-artifact.entity';
 import type { AnyCard } from './entities/card.entity';
@@ -38,6 +38,7 @@ export type MinionBlueprint = CardBlueprintBase & {
   ) => Promise<void>;
   atk: number;
   maxHp: number;
+  cmd: number;
   getTargets: (game: Game, card: MinionCard) => Promise<BoardCell[]>;
   getAoe: (
     game: Game,

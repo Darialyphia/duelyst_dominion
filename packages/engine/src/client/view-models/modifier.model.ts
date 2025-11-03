@@ -22,8 +22,13 @@ export class ModifierViewModel {
 
   update(data: Partial<SerializedModifier>) {
     Object.assign(this.data, data);
+
+    return this;
   }
 
+  clone() {
+    return new ModifierViewModel(this.data, this.getEntities(), this.getClient());
+  }
   get id() {
     return this.data.id;
   }

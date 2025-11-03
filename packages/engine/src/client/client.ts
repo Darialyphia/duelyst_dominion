@@ -1,9 +1,10 @@
 import type { EmptyObject, MaybePromise, Values } from '@game/shared';
-import type { InputDispatcher } from '../input/input-system';
+import type { InputDispatcher, SerializedInput } from '../input/input-system';
 import type {
   GameStateSnapshot,
   SerializedOmniscientState,
-  SerializedPlayerState
+  SerializedPlayerState,
+  SnapshotDiff
 } from '../game/systems/game-snapshot.system';
 import { ModifierViewModel } from './view-models/modifier.model';
 import { CardViewModel } from './view-models/card.model';
@@ -35,17 +36,13 @@ export type GameStateEntities = Record<
 >;
 
 export type OnSnapshotUpdateCallback = (
-  snapshot: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
+  snapshot: GameStateSnapshot<SnapshotDiff>
 ) => MaybePromise<void>;
 
 export type NetworkAdapter = {
   dispatch: InputDispatcher;
   subscribe(cb: OnSnapshotUpdateCallback): void;
-  sync: (
-    lastSnapshotId: number
-  ) => Promise<
-    Array<GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>>
-  >;
+  sync: (lastSnapshotId: number) => Promise<Array<GameStateSnapshot<SnapshotDiff>>>;
 };
 
 export type FxAdapter = {
@@ -58,6 +55,7 @@ export type GameClientOptions = {
   fxAdapter: FxAdapter;
   gameType: GameType;
   playerId: string;
+  isSpectator: boolean;
 };
 
 export class GameClient {
@@ -71,7 +69,7 @@ export class GameClient {
 
   readonly fxAdapter: FxAdapter;
 
-  private gameType: GameType;
+  readonly gameType: GameType;
 
   private initialState!: SerializedOmniscientState | SerializedPlayerState;
 
@@ -79,10 +77,7 @@ export class GameClient {
 
   private lastSnapshotId = -1;
 
-  private snapshots = new Map<
-    number,
-    GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
-  >();
+  private snapshots = new Map<number, GameStateSnapshot<SnapshotDiff>>();
 
   private _isPlayingFx = false;
 
@@ -90,16 +85,16 @@ export class GameClient {
 
   private _processingUpdate = false;
 
-  private queue: Array<
-    GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
-  > = [];
+  private queue: Array<GameStateSnapshot<SnapshotDiff>> = [];
+
+  history: SerializedInput[] = [];
 
   private emitter = new TypedEventEmitter<{
-    ready: EmptyObject;
     update: EmptyObject;
-    updateCompleted: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>;
+    updateCompleted: GameStateSnapshot<SnapshotDiff>;
   }>('sequential');
 
+  readonly isSpectator: boolean = false;
   constructor(options: GameClientOptions) {
     this.networkAdapter = options.networkAdapter;
     this.fxAdapter = options.fxAdapter;
@@ -107,10 +102,13 @@ export class GameClient {
     this.ui = new UiController(this);
     this.gameType = options.gameType;
     this.playerId = options.playerId;
+    this.isSpectator = options.isSpectator;
 
     this.networkAdapter.subscribe(async snapshot => {
       console.groupCollapsed(`Snapshot Update: ${snapshot.id}`);
-      console.log('state', snapshot.state);
+      if (snapshot.kind === 'state') {
+        console.log('state', snapshot.state);
+      }
       console.log('events', snapshot.events);
       console.groupEnd();
       this.queue.push(snapshot);
@@ -131,6 +129,10 @@ export class GameClient {
 
   get player() {
     return this.stateManager.state.entities[this.playerId] as PlayerViewModel;
+  }
+
+  get nextSnapshotId() {
+    return this.lastSnapshotId + 1;
   }
 
   private async processQueue() {
@@ -159,52 +161,79 @@ export class GameClient {
     return this.stateManager.state.interaction.ctx.player;
   }
 
-  initialize(
-    snapshot: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
+  async initialize(
+    snapshot: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>,
+    history: SerializedInput[] = []
   ) {
+    this.isReady = false;
+    this.history = history;
+    this.lastSnapshotId = -1;
+    this.snapshots.clear();
+    this.queue = [];
+    if (snapshot.kind === 'error') {
+      throw new Error('Cannot initialize client with error snapshot');
+    }
+
     this.lastSnapshotId = snapshot.id;
     this.initialState = snapshot.state;
 
     this.stateManager.initialize(snapshot.state);
 
-    if (this.gameType === GAME_TYPES.LOCAL) {
-      this.playerId = this.getActivePlayerId();
-    }
-
     this.isReady = true;
-    void this.emitter.emit('ready', {});
+    if (this.queue.length > 0) {
+      await this.processQueue();
+    }
   }
 
-  async update(
-    snapshot: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
-  ) {
+  async onInvalidSnapshot() {
+    this.queue = [];
+    await this.sync();
+  }
+
+  async update(snapshot: GameStateSnapshot<SnapshotDiff>) {
     if (snapshot.id <= this.lastSnapshotId) {
       console.log(
-        `Stale snapshot, latest is ${this.lastSnapshotId}, received is ${snapshot.id}`
+        `Stale snapshot, latest is ${this.lastSnapshotId}, received is ${snapshot.id}. skipping`
       );
-      this.queue = [];
-      await this.sync();
       return;
+    }
+
+    if (snapshot.id > this.nextSnapshotId) {
+      console.warn(
+        `Missing snapshots, latest is ${this.lastSnapshotId}, received is ${snapshot.id}`
+      );
+      return await this.onInvalidSnapshot();
     }
 
     this.lastSnapshotId = snapshot.id;
 
     try {
       this._isPlayingFx = true;
-      this.stateManager.preupdate(snapshot.state);
+      const isStateSnapshot = snapshot.kind === 'state';
+      if (isStateSnapshot) {
+        this.stateManager.preupdate(snapshot.state);
+      }
+
+      // console.group(`Processing events for snapshot ${snapshot.id}`);
+      // if (snapshot.events.length === 0) {
+      //   console.log('No events in this snapshot');
+      // }
+      // snapshot.events.forEach(event => {
+      //   console.log(event.eventName);
+      // });
+      // console.groupEnd();
       for (const event of snapshot.events) {
-        if (this.gameType === GAME_TYPES.LOCAL) {
-          this.playerId = this.getActivePlayerIdFromSnapshotState(snapshot.state);
+        await this.stateManager.onEvent(event, async postUpdateCallback => {
           await this.emitter.emit('update', {});
-        }
+          await postUpdateCallback?.();
+        });
+
         await this.fx.emit(event.eventName, event.event);
       }
       this._isPlayingFx = false;
 
-      this.stateManager.update(snapshot.state);
-
-      if (this.gameType === GAME_TYPES.LOCAL) {
-        this.playerId = this.getActivePlayerId();
+      if (isStateSnapshot) {
+        this.stateManager.update(snapshot.state);
       }
 
       this.ui.update();
@@ -220,16 +249,9 @@ export class GameClient {
     this.emitter.on('update', cb);
   }
 
-  onReady(cb: () => void) {
-    this.emitter.once('ready', cb);
-  }
-
-  onUpdateCompleted(
-    cb: (
-      snapshot: GameStateSnapshot<SerializedOmniscientState | SerializedPlayerState>
-    ) => void
-  ) {
+  onUpdateCompleted(cb: (snapshot: GameStateSnapshot<SnapshotDiff>) => void) {
     this.emitter.on('updateCompleted', cb);
+    return () => this.emitter.off('updateCompleted', cb);
   }
 
   private async sync() {

@@ -10,7 +10,9 @@ export const PLAYER_EVENTS = {
   PLAYER_BEFORE_PLAY_CARD: 'player:before_play_card',
   PLAYER_AFTER_PLAY_CARD: 'player:after_play_card',
   PLAYER_BEFORE_MANA_CHANGE: 'player:before_mana_change',
-  PLAYER_AFTER_MANA_CHANGE: 'player:after_mana_change'
+  PLAYER_AFTER_MANA_CHANGE: 'player:after_mana_change',
+  PLAYER_BEFORE_EARN_VICTORY_POINTS: 'player:before_earn_victory_points',
+  PLAYER_AFTER_EARN_VICTORY_POINTS: 'player:after_earn_victory_points'
 } as const;
 export type PlayerEvent = Values<typeof PLAYER_EVENTS>;
 

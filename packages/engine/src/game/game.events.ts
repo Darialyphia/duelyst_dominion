@@ -25,6 +25,7 @@ import {
   GENERAL_EVENTS,
   type GeneralEventMap
 } from '../card/entities/general-card.entity';
+import { SHRINE_EVENTS, type ShrineEventMap } from '../board/entities/shrine.entity';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },
@@ -73,11 +74,13 @@ export class GameReadyEvent extends TypedSerializableEvent<EmptyObject, EmptyObj
 }
 
 export class GameNewSnapshotEvent extends TypedSerializableEvent<
-  EmptyObject,
-  EmptyObject
+  { id: number },
+  { id: number }
 > {
   serialize() {
-    return {};
+    return {
+      id: this.data.id
+    };
   }
 }
 
@@ -126,7 +129,8 @@ export type GameEventMap = Prettify<
     ArtifactEventMap &
     MinionEventMap &
     GeneralEventMap &
-    FxEventMap
+    FxEventMap &
+    ShrineEventMap
 >;
 export type GameEventName = keyof GameEventMap;
 
@@ -147,5 +151,6 @@ export const GAME_EVENTS = {
   ...ARTIFACT_EVENTS,
   ...MINION_EVENTS,
   ...GENERAL_EVENTS,
-  ...FX_EVENTS
+  ...FX_EVENTS,
+  ...SHRINE_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;

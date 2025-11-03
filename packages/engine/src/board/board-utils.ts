@@ -1,5 +1,5 @@
 import { assert, isDefined, type Point, type Values } from '@game/shared';
-import type { SerializedCoords } from './board-cell.entity';
+import type { SerializedCoords } from './entities/board-cell.entity';
 
 export const DIRECTION = {
   NORTH: 'north',

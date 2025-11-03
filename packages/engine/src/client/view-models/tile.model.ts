@@ -21,6 +21,12 @@ export class TileViewModel {
 
   update(data: Partial<SerializedTile>) {
     Object.assign(this.data, data);
+
+    return this;
+  }
+
+  clone() {
+    return new TileViewModel(this.data, this.getEntities(), this.getClient());
   }
 
   get id() {

@@ -76,6 +76,30 @@ export class PlayerAfterReplaceCardEvent extends TypedSerializableEvent<
   }
 }
 
+export class PlayerBeforeEarnVictoryPointsEvent extends TypedSerializableEvent<
+  { player: Player; amount: number },
+  { player: string; amount: number }
+> {
+  serialize() {
+    return {
+      player: this.data.player.id,
+      amount: this.data.amount
+    };
+  }
+}
+
+export class PlayerAfterEarnVictoryPointsEvent extends TypedSerializableEvent<
+  { player: Player; amount: number },
+  { player: string; amount: number }
+> {
+  serialize() {
+    return {
+      player: this.data.player.id,
+      amount: this.data.amount
+    };
+  }
+}
+
 export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_START_TURN]: PlayerTurnEvent;
   [PLAYER_EVENTS.PLAYER_END_TURN]: PlayerTurnEvent;
@@ -87,4 +111,6 @@ export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE]: PlayerManaChangeEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_REPLACE_CARD]: PlayerBeforeReplaceCardEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_REPLACE_CARD]: PlayerAfterReplaceCardEvent;
+  [PLAYER_EVENTS.PLAYER_BEFORE_EARN_VICTORY_POINTS]: PlayerBeforeEarnVictoryPointsEvent;
+  [PLAYER_EVENTS.PLAYER_AFTER_EARN_VICTORY_POINTS]: PlayerAfterEarnVictoryPointsEvent;
 };

@@ -5,7 +5,7 @@ import { RngSystem } from '../rng/rng.system';
 import { TypedSerializableEventEmitter } from '../utils/typed-emitter';
 import { type BetterOmit, type IndexedRecord, type Serializable } from '@game/shared';
 import {
-  GameSnaphotSystem,
+  GameSnapshotSystem,
   type GameStateSnapshot,
   type SerializedOmniscientState,
   type SerializedPlayerState
@@ -19,7 +19,7 @@ import type { CardBlueprint } from '../card/card-blueprint';
 import { GameInteractionSystem } from './systems/game-interaction.system';
 import { UnitSystem } from '../unit/unit-system';
 import { defaultMap, type MapBlueprint } from '../board/map-blueprint';
-import { BoardSystem } from '../board/board-system';
+import { BoardSystem } from '../board/board.system';
 import { FxSystem } from './systems/fx.system';
 import type { TileBlueprint } from '../tile/tile-blueprint';
 import { TileSystem } from '../tile/tile.system';
@@ -37,6 +37,7 @@ export type GameOptions = {
   }>;
   isSimulation?: boolean;
   players: [PlayerOptions, PlayerOptions];
+  enableSnapshots: boolean;
 };
 
 export type SerializedGame = {
@@ -55,7 +56,7 @@ export class Game implements Serializable<SerializedGame> {
 
   readonly inputSystem = new InputSystem(this);
 
-  readonly snapshotSystem = new GameSnaphotSystem(this);
+  readonly snapshotSystem = new GameSnapshotSystem(this);
 
   readonly playerSystem = new PlayerSystem(this);
 
@@ -80,6 +81,10 @@ export class Game implements Serializable<SerializedGame> {
   readonly cardPool: IndexedRecord<CardBlueprint, 'id'>;
 
   readonly tilesPool: IndexedRecord<TileBlueprint, 'id'>;
+
+  isInitialized = false;
+
+  isInitializing = false;
 
   constructor(readonly options: GameOptions) {
     this.id = options.id;
@@ -123,7 +128,7 @@ export class Game implements Serializable<SerializedGame> {
     console.log(`Tile system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 
-    this.snapshotSystem.initialize();
+    this.snapshotSystem.initialize({ enabled: this.options.enableSnapshots });
     console.log(
       `Snapshot system initialized in ${(performance.now() - now).toFixed(0)}ms`
     );
@@ -141,7 +146,7 @@ export class Game implements Serializable<SerializedGame> {
     );
     now = performance.now();
 
-    await this.inputSystem.initialize(this.options.history ?? []);
+    await this.inputSystem.initialize();
     console.log(`Input system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 
@@ -151,11 +156,16 @@ export class Game implements Serializable<SerializedGame> {
 
     await this.emit(GAME_EVENTS.READY, new GameReadyEvent({}));
     await this.gamePhaseSystem.startGame();
-    this.snapshotSystem.takeSnapshot();
+
+    if (this.options.history) {
+      await this.inputSystem.applyHistory(this.options.history);
+    }
+    await this.snapshotSystem.takeSnapshot();
     console.log(
       `%cGame ${this.id} initialized in ${(performance.now() - start).toFixed(0)}ms`,
       'color: blue; font-weight: bold;'
     );
+    this.isInitialized = true;
   }
 
   serialize() {

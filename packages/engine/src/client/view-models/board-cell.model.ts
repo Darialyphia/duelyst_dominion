@@ -1,4 +1,4 @@
-import type { SerializedCell } from '../../board/board-cell.entity';
+import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import { MoveUnitAction } from '../actions/move-unit';
 import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
@@ -32,6 +32,12 @@ export class BoardCellViewModel {
 
   update(data: Partial<SerializedModifier>) {
     Object.assign(this.data, data);
+
+    return this;
+  }
+
+  clone() {
+    return new BoardCellViewModel(this.data, this.getEntities(), this.getClient());
   }
 
   get id() {

@@ -74,7 +74,8 @@ export type UnitInterceptors = {
 
   maxHp: Interceptable<number>;
   atk: Interceptable<number>;
-  speed: Interceptable<number>;
+  movementReach: Interceptable<number>;
+  sprintReach: Interceptable<number>;
 
   attackTargetingPattern: Interceptable<TargetingStrategy>;
   attackTargetType: Interceptable<TargetingType>;
@@ -131,7 +132,8 @@ export class Unit
 
       maxHp: new Interceptable<number>(),
       atk: new Interceptable<number>(),
-      speed: new Interceptable<number>(),
+      movementReach: new Interceptable<number>(),
+      sprintReach: new Interceptable<number>(),
 
       attackTargetingPattern: new Interceptable<TargetingStrategy>(),
       attackTargetType: new Interceptable<TargetingType>(),
@@ -165,6 +167,12 @@ export class Unit
     this.combat = new CombatComponent(game, this);
   }
 
+  protected async onInterceptorAdded(key: string) {
+    if (key === 'maxHp') {
+      await this.checkHp({ source: this.card });
+    }
+  }
+
   get player() {
     return this.card.player!;
   }
@@ -189,10 +197,6 @@ export class Unit
     return this.position.y;
   }
 
-  get speed() {
-    return this.interceptors.speed.getValue(this.game.config.DEFAULT_UNIT_SPEED, {});
-  }
-
   get isAt() {
     return this.movement.isAt.bind(this.movement);
   }
@@ -206,6 +210,17 @@ export class Unit
 
   isAlly(entity: Unit | Player) {
     return !this.isEnemy(entity);
+  }
+
+  get movementReach() {
+    return this.interceptors.movementReach.getValue(
+      this.game.config.UNIT_MOVEMENT_REACH,
+      {}
+    );
+  }
+
+  get sprintReach() {
+    return this.interceptors.sprintReach.getValue(this.game.config.UNIT_SPRINT_REACH, {});
   }
 
   get maxMovementsPerTurn() {
@@ -259,16 +274,15 @@ export class Unit
 
   canMoveTo(point: Point) {
     if (!this.canMove) return false;
-    return this.movement.canMoveTo(point, this.speed);
+    return this.movement.canMoveTo(point, this.sprintReach);
   }
 
   async move(to: Point) {
+    const distance = this.game.boardSystem.getDistance(this.position, to);
+
     await this.movement.move(to);
-    // also check attacks made and increase to always be at least 1 less than moves
-    // this enforces celerity rules of not allowing more than one move per attack
-    const minAttacks = this.movementsMadeThisTurn - 1;
-    if (this.attacksPerformedThisTurn < minAttacks) {
-      this.combat.setAttackCount(minAttacks);
+    if (distance > this.movementReach) {
+      this._isExhausted = true;
     }
   }
 
@@ -301,7 +315,7 @@ export class Unit
 
   getPossibleMoves(max?: number, force = false) {
     if (!this.canMove && !force) return [];
-    return this.movement.getAllPossibleMoves(max ?? this.speed).filter(point => {
+    return this.movement.getAllPossibleMoves(max ?? this.sprintReach).filter(point => {
       const cell = this.game.boardSystem.getCellAt(point)!;
       return cell.isWalkable && !cell.unit;
     });
@@ -333,14 +347,7 @@ export class Unit
   }
 
   get isExhausted() {
-    if (this.player.isActive) {
-      return (
-        this.attacksPerformedThisTurn === this.maxAttacksPerTurn &&
-        this.movementsMadeThisTurn === this.maxMovementsPerTurn
-      );
-    } else {
-      return this.counterAttacksPerformedThisTurn === this.maxCounterattacksPerTurn;
-    }
+    return this._isExhausted;
   }
 
   canBeAttackedBy(unit: Unit): boolean {
@@ -446,7 +453,10 @@ export class Unit
   }
 
   async attack(point: Point) {
-    return this.combat.attack(point);
+    await this.combat.attack(point);
+    if (this.attacksPerformedThisTurn > this.maxAttacksPerTurn) {
+      this._isExhausted = true;
+    }
   }
 
   async counterAttack(unit: Unit) {
@@ -465,8 +475,10 @@ export class Unit
     this.damageTaken = Math.max(this.damageTaken - amount, 0);
   }
 
-  removeHp(amount: number) {
+  async removeHp(amount: number) {
     this.damageTaken = Math.min(this.damageTaken + amount, this.maxHp);
+
+    await this.checkHp({ source: this.card });
   }
 
   private async checkHp({ source }: { source: AnyCard }) {
@@ -501,23 +513,24 @@ export class Unit
     this.movement.resetMovementsCount();
   }
 
-  canGetInAttackAtFromPosition(point: Point, position: Point) {
-    const copy = this.position.clone();
+  // Check if the unit can attack a point if it were in a given position
+  isWithinDangerZone(point: Point, position: Point) {
+    const original = this.position.clone();
     this.movement.position.x = position.x;
     this.movement.position.y = position.y;
     const canAttack = this.attackTargettingPattern.isWithinRange(point);
-    this.movement.position = copy;
+    this.movement.position = original;
     return canAttack;
   }
 
   serialize() {
     // calculate this upfront as this can be an expensive operation if we call it many times
     // moves the unit could make provided it was able to move
-    const potentialMoves = this.getPossibleMoves(this.speed, true).map(
+    const potentialMoves = this.getPossibleMoves(this.sprintReach, true).map(
       point => this.game.boardSystem.getCellAt(point)!
     );
     // moves the unit can actually make
-    const possibleMoves = this.getPossibleMoves(this.speed).map(
+    const possibleMoves = this.getPossibleMoves(this.sprintReach).map(
       point => this.game.boardSystem.getCellAt(point)!
     );
 
@@ -542,7 +555,7 @@ export class Unit
         .filter(cell =>
           potentialMoves
             .filter(move => cell.isNeighbor(move))
-            .some(point => this.canGetInAttackAtFromPosition(cell.position, point))
+            .some(point => this.isWithinDangerZone(cell.position, point))
         )
         .map(cell => cell.id),
       attackableCells: this.game.boardSystem.cells

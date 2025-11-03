@@ -125,7 +125,8 @@ export class CombatComponent {
       })
     );
 
-    this.unit.removeHp(damage.getFinalAmount(this.unit));
+    await this.unit.removeHp(damage.getFinalAmount(this.unit));
+
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
       new UnitReceiveDamageEvent({

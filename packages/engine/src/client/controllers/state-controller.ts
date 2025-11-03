@@ -2,7 +2,8 @@ import type { Override } from '@game/shared';
 import type {
   EntityDictionary,
   SerializedOmniscientState,
-  SerializedPlayerState
+  SerializedPlayerState,
+  SnapshotDiff
 } from '../../game/systems/game-snapshot.system';
 import { CardViewModel } from '../view-models/card.model';
 import { ModifierViewModel } from '../view-models/modifier.model';
@@ -15,12 +16,13 @@ import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedPlayer } from '../../player/player.entity';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
-import type { SerializedCell } from '../../board/board-cell.entity';
+import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import { BoardCellViewModel } from '../view-models/board-cell.model';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import { UnitViewModel } from '../view-models/unit.model';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { TileViewModel } from '../view-models/tile.model';
+import type { SerializedStarEvent } from '../../game/game.events';
 
 export type GameClientState = Override<
   SerializedOmniscientState | SerializedPlayerState,
@@ -29,6 +31,16 @@ export type GameClientState = Override<
   }
 >;
 
+export type SerializedEntity =
+  | SerializedMinionCard
+  | SerializedGeneralCard
+  | SerializedSpellCard
+  | SerializedArtifactCard
+  | SerializedPlayer
+  | SerializedModifier
+  | SerializedCell
+  | SerializedUnit
+  | SerializedTile;
 export class ClientStateController {
   state!: GameClientState;
 
@@ -93,20 +105,52 @@ export class ClientStateController {
   };
 
   // prepopulate the state with new entities because they could be used by the fx events
-  preupdate(newState: SerializedPlayerState | SerializedOmniscientState) {
+  preupdate(newState: SnapshotDiff) {
     if (!this.state) return;
 
-    for (const [id, entity] of Object.entries(newState.entities)) {
-      const existingEntity = this.state.entities[id];
-      if (existingEntity) continue;
-      this.state.entities[entity.id] = this.buildViewModel(entity);
+    for (const id of newState.addedEntities) {
+      const entity = newState.entities[id];
+
+      this.state.entities[id] = this.buildViewModel(entity as SerializedEntity);
     }
   }
 
-  update(newState: SerializedPlayerState | SerializedOmniscientState): void {
+  update(newState: SnapshotDiff): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { entities, config, board, addedEntities, removedEntities, ...rest } = newState;
+    for (const [id, entity] of Object.entries(entities)) {
+      if (this.state.entities[id]) {
+        this.state.entities[id] = this.state.entities[id].update(entity as any).clone();
+      } else {
+        this.state.entities[id] = this.buildViewModel(entity as any);
+      }
+    }
+
+    removedEntities.forEach(id => {
+      delete this.state.entities[id];
+    });
+
     this.state = {
-      ...newState,
-      entities: this.buildentities(newState.entities)
+      ...this.state,
+      ...rest,
+      board: { ...this.state.board, ...board },
+      config: { ...this.state.config, ...config }
     };
+  }
+
+  async onEvent(
+    event: SerializedStarEvent,
+    flush: (postUpdateCallback?: () => Promise<void>) => Promise<void>
+  ) {
+    return await flush();
+    // if (event.eventName === GAME_EVENTS.MINION_SUMMONED) {
+    //   return this.onMinionSummoned(event, flush);
+    // }
+    // if (event.eventName === GAME_EVENTS.ARTIFACT_EQUIPED) {
+    //   return this.onArtifactEquiped(event, flush);
+    // }
+    // if (event.eventName === GAME_EVENTS.EFFECT_CHAIN_EFFECT_ADDED) {
+    //   return this.onChainEffectAdded(event, flush);
+    // }
   }
 }

@@ -1,6 +1,7 @@
 import {
   assert,
   isDefined,
+  waitFor,
   type AnyFunction,
   type Constructor,
   type Nullable,
@@ -15,8 +16,7 @@ import {
   GAME_EVENTS,
   GameErrorEvent,
   GameInputQueueFlushedEvent,
-  GameInputEvent,
-  GameInputRequiredEvent
+  GameInputEvent
 } from '../game/game.events';
 import { GameNotPausedError, InputError } from './input-errors';
 import { CommitSpaceSelectionInput } from './inputs/commit-space-selection.input';
@@ -75,7 +75,7 @@ export type InputDispatcher = (input: SerializedInput) => void;
 
 export type InputSystemOptions = { game: Game };
 
-export class InputSystem extends System<SerializedInput[]> {
+export class InputSystem extends System<never> {
   private history: Input<any>[] = [];
 
   private isRunning = false;
@@ -86,6 +86,8 @@ export class InputSystem extends System<SerializedInput[]> {
 
   private onUnpause: UnpauseCallback<any> | null = null;
 
+  private nextInputId = 0;
+
   get currentAction() {
     return this._currentAction;
   }
@@ -94,9 +96,16 @@ export class InputSystem extends System<SerializedInput[]> {
     return isDefined(this.onUnpause);
   }
 
-  async initialize(rawHistory: SerializedInput[]) {
-    for (const input of rawHistory) {
-      await this.schedule(() => this.handleInput(input));
+  initialize() {}
+
+  async applyHistory(rawHistory: SerializedInput[]) {
+    this.isRunning = false;
+    this._currentAction = null;
+    for (const rawInput of rawHistory) {
+      void this.dispatch(rawInput);
+      // dispatch is async but it doesnt actually return when the input is fully processed
+      // so we need to wait a bit before dispatching the next input
+      await waitFor(20);
     }
   }
 
@@ -160,6 +169,10 @@ export class InputSystem extends System<SerializedInput[]> {
   private async handleError(err: unknown) {
     console.groupCollapsed('%c[INPUT SYSTEM]: ERROR', 'color: #ff0000');
     console.error(err);
+    console.log({
+      initialState: this.game.options,
+      history: this.game.inputSystem.serialize()
+    });
     console.groupEnd();
 
     const serialized = this.game.serialize();
@@ -177,8 +190,10 @@ export class InputSystem extends System<SerializedInput[]> {
       this.queue = [];
       this._currentAction = null;
       await this.game.snapshotSystem.takeSnapshot();
-      await this.game.emit(GAME_EVENTS.FLUSHED, new GameInputQueueFlushedEvent({}));
+    } else {
+      await this.game.snapshotSystem.takeErrorSnapshot();
     }
+    await this.game.emit(GAME_EVENTS.FLUSHED, new GameInputQueueFlushedEvent({}));
   }
 
   async dispatch(input: SerializedInput) {
@@ -188,16 +203,22 @@ export class InputSystem extends System<SerializedInput[]> {
     if (!this.isActionType(input.type)) return;
     if (this.isPaused) {
       // if the game is paused, run the input immediately
-      await this.handleInput(input);
+      try {
+        await this.handleInput(input);
+      } catch (err) {
+        await this.handleError(err);
+      }
     } else if (this.isRunning) {
       // let the current input fully resolve, then schedule
-      // the currentinput could schedule new actions, so we need to wait for the flush
-      this.game.once(GAME_EVENTS.FLUSHED, () =>
-        this.schedule(() => this.handleInput(input))
-      );
+      // the current input could schedule new actions, so we need to wait for the flush to preserve the correct action order
+      this.game.once(GAME_EVENTS.FLUSHED, () => {
+        return this.schedule(() => this.handleInput(input));
+      });
     } else {
-      // if the game is not paused and not running, run the input immediately
-      await this.schedule(() => this.handleInput(input));
+      // if the game is not paused and not running, schedule the input
+      await this.schedule(() => {
+        return this.handleInput(input);
+      });
     }
   }
 
@@ -205,14 +226,14 @@ export class InputSystem extends System<SerializedInput[]> {
     const { type, payload } = arg;
     if (!this.isActionType(type)) return;
     const ctor = inputMap[type];
-    const input = new ctor(this.game, payload);
+    const input = new ctor(this.game, this.nextInputId++, payload);
     const prevAction = this._currentAction;
     this._currentAction = input;
     await this.game.emit(GAME_EVENTS.INPUT_START, new GameInputEvent({ input }));
 
+    this.addToHistory(input);
     await input.execute();
     await this.game.emit(GAME_EVENTS.INPUT_END, new GameInputEvent({ input }));
-    this.addToHistory(input);
     this._currentAction = prevAction;
   }
 
@@ -222,7 +243,7 @@ export class InputSystem extends System<SerializedInput[]> {
 
   async askForPlayerInput() {
     await this.game.snapshotSystem.takeSnapshot();
-    await this.game.emit(GAME_EVENTS.INPUT_REQUIRED, new GameInputRequiredEvent({}));
+    // await this.game.emit(GAME_EVENTS.INPUT_REQUIRED, new GameInputRequiredEvent({}));
   }
 
   serialize() {
