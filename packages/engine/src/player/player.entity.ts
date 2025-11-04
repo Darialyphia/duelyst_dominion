@@ -93,7 +93,7 @@ export class Player
 
   private _mana = 0;
 
-  private _maxMana = 0;
+  private _baseMaxMana = 0;
 
   constructor(
     game: Game,
@@ -112,7 +112,7 @@ export class Player
     this._mana = this.isPlayer1
       ? this.game.config.PLAYER_1_INITIAL_MANA
       : this.game.config.PLAYER_2_INITIAL_MANA;
-    this._maxMana = this._mana;
+    this._baseMaxMana = this.game.config.MAX_MANA;
   }
 
   async init() {
@@ -146,7 +146,7 @@ export class Player
       maxHp: this._general.maxHp,
       currentHp: this._general.remainingHp,
       currentMana: this._mana,
-      maxMana: this._maxMana,
+      maxMana: this.maxMana,
       deckSize: this.cardManager.deck.cards.length,
       canReplace: this.canReplaceCard(),
       isActive: this.isActive,
@@ -252,10 +252,6 @@ export class Player
 
     this.replacesDoneThisTurn = 0;
 
-    if (this.game.gamePhaseSystem.elapsedTurns > 0) {
-      this._maxMana += this.game.config.MAX_MANA_INCREASE_PER_TURN;
-    }
-
     if (this.game.config.DRAW_STEP === 'turn-start') {
       await this.drawForTurn();
     }
@@ -280,8 +276,12 @@ export class Player
     return this._mana;
   }
 
+  get overspentMana() {
+    return Math.max(0, -this._mana);
+  }
+
   get maxMana() {
-    return this._maxMana;
+    return this._baseMaxMana + this.opponent.overspentMana;
   }
 
   async spendMana(amount: number) {
@@ -303,7 +303,7 @@ export class Player
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this._mana = Math.min(this._mana + amount, this._maxMana);
+    this._mana = Math.min(this._mana + amount, this.maxMana);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })

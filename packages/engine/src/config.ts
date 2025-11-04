@@ -13,7 +13,6 @@ export type Config = {
   PLAYER_2_INITIAL_MANA: number;
   MAX_MANA: number;
   MAX_OVERSPENT_MANA: number;
-  MAX_MANA_INCREASE_PER_TURN: number;
 
   MAX_MULLIGANED_CARDS: number;
   MAX_MOVEMENT_PER_TURN: number;
@@ -45,7 +44,6 @@ export const defaultConfig: Config = {
   PLAYER_2_INITIAL_MANA: 5,
   MAX_MANA: 5,
   MAX_OVERSPENT_MANA: 5,
-  MAX_MANA_INCREASE_PER_TURN: 0,
   MAX_MULLIGANED_CARDS: 3,
   MAX_MOVEMENT_PER_TURN: 1,
   MAX_ATTACKS_PER_TURN: 1,
