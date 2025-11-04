@@ -12,7 +12,7 @@ import {
 } from './card.entity';
 import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
-import type { BoardCell } from '../../board/board-cell.entity';
+import type { BoardCell } from '../../board/entities/board-cell.entity';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedArtifactCard = SerializedCard & {

@@ -1,6 +1,6 @@
 import type { Point } from '@game/shared';
 import type { Edge } from '../dijkstra';
-import type { SerializedCoords } from '../../board/board-cell.entity';
+import type { SerializedCoords } from '../../board/entities/board-cell.entity';
 
 export type PathfindingStrategy = {
   getEdges(node: SerializedCoords): Array<Edge<SerializedCoords>>;

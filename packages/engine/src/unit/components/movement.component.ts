@@ -1,13 +1,8 @@
-import { Vec2, type Point, type Values } from '@game/shared';
-import {
-  TypedSerializableEvent,
-  TypedSerializableEventEmitter
-} from '../../utils/typed-emitter';
-
+import { Vec2, type Point } from '@game/shared';
 import type { PathfinderComponent } from '../../pathfinding/pathfinder.component';
 import { Position } from '../../utils/position';
 import { cellIdToPoint } from '../../board/board-utils';
-import type { SerializedCoords } from '../../board/board-cell.entity';
+import type { SerializedCoords } from '../../board/entities/board-cell.entity';
 import { Unit } from '../unit.entity';
 import { UNIT_EVENTS } from '../unit.enums';
 import { UnitAfterMoveEvent, UnitBeforeMoveEvent } from '../unit-events';

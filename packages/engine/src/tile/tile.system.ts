@@ -2,23 +2,12 @@ import { assert, indexToPoint, type Point } from '@game/shared';
 import { System } from '../system';
 import { Tile } from './tile.entity';
 
-export type TileSystemOptions = {
-  cells: Array<{ tile?: string }>;
-};
-
-export class TileSystem extends System<TileSystemOptions> {
+export class TileSystem extends System<never> {
   private tileMap = new Map<string, Tile>();
 
   private nextTileId = 0;
 
-  initialize(options: TileSystemOptions) {
-    options.cells.forEach((cell, index) => {
-      if (cell.tile) {
-        const position = indexToPoint(this.game.boardSystem.dimensions.width, index);
-        this.addTile(cell.tile, position);
-      }
-    });
-  }
+  initialize() {}
 
   shutdown() {}
 

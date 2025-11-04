@@ -1,4 +1,4 @@
-import { Vec2, type Point } from '@game/shared';
+import { isDefined, Vec2, type Point } from '@game/shared';
 import type { Game } from '../../game/game';
 import { CombatDamage, Damage } from '../../utils/damage';
 import {
@@ -47,7 +47,10 @@ export class CombatComponent {
         target: attacker.position
       })
     );
-    const targets = this.unit.counterattackAOEShape.getUnits([attacker]);
+    const targets = this.unit.counterattackAOEShape
+      .getArea([attacker])
+      .map(point => this.game.unitSystem.getUnitAt(point))
+      .filter(isDefined);
 
     const damage = new CombatDamage(this.unit);
 
@@ -69,7 +72,10 @@ export class CombatComponent {
         target: Vec2.fromPoint(target)
       })
     );
-    const targets = this.unit.attackAOEShape.getUnits([target]);
+    const targets = this.unit.attackAOEShape
+      .getArea([target])
+      .map(point => this.game.unitSystem.getUnitAt(point))
+      .filter(isDefined);
     const damage = new CombatDamage(this.unit);
 
     await this.dealDamage(targets, damage);

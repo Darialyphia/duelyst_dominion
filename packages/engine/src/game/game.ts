@@ -122,9 +122,7 @@ export class Game implements Serializable<SerializedGame> {
     console.log(`Player system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 
-    this.tileSystem.initialize({
-      cells: this.options.overrides.map?.cells ?? defaultMap.cells
-    });
+    this.tileSystem.initialize();
     console.log(`Tile system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 

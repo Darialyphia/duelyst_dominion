@@ -1,6 +1,6 @@
-import type { AOEShape } from '../aoe/aoe-shapes';
+import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { PointAOEShape } from '../aoe/point.aoe-shape';
-import type { BoardCell } from '../board/board-cell.entity';
+import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { Game } from '../game/game';
 import { TARGETING_TYPE } from '../targeting/targeting-strategy';
 import type { Unit } from '../unit/unit.entity';
@@ -44,10 +44,10 @@ export const singleEnemyTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(game, card.player, TARGETING_TYPE.ENEMY_UNIT)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT)
     }: {
       predicate?: (unit: Unit) => boolean;
-      getAoe?: (selectedSpaces: BoardCell[]) => AOEShape | null;
+      getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
     }
   ) {
     return await game.interaction.selectSpacesOnBoard({
@@ -86,10 +86,10 @@ export const singleEnemyMinionTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(game, card.player, TARGETING_TYPE.ENEMY_MINION)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION)
     }: {
       predicate?: (unit: Unit) => boolean;
-      getAoe?: (selectedSpaces: BoardCell[]) => AOEShape | null;
+      getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
     }
   ) {
     return await game.interaction.selectSpacesOnBoard({
@@ -130,10 +130,10 @@ export const singleMinionTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(game, card.player, TARGETING_TYPE.ALLY_MINION)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION)
     }: {
       predicate?: (unit: Unit) => boolean;
-      getAoe?: (selectedSpaces: BoardCell[]) => AOEShape | null;
+      getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
     }
   ) {
     return await game.interaction.selectSpacesOnBoard({
@@ -180,7 +180,7 @@ export const multipleEnemyTargetRules = {
         getAoe
       }: {
         predicate?: (unit: Unit) => boolean;
-        getAoe: (selectedSpaces: BoardCell[]) => AOEShape | null;
+        getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
       }
     ) => {
       return await game.interaction.selectSpacesOnBoard({

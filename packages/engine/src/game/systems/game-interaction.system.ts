@@ -16,7 +16,7 @@ import { IdleContext } from '../interactions/idle.interaction';
 import { PlayCardContext } from '../interactions/play-card.interaction';
 import { IllegalCardPlayedError } from '../../input/input-errors';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
-import type { AOEShape } from '../../aoe/aoe-shapes';
+import type { GenericAOEShape } from '../../aoe/aoe-shape';
 
 export const INTERACTION_STATES = {
   IDLE: 'idle',
@@ -168,7 +168,7 @@ export class GameInteractionSystem
     isElligible: (candidate: BoardCell, selectedSpaces: BoardCell[]) => boolean;
     canCommit: (selectedCards: BoardCell[]) => boolean;
     isDone(selectedCards: BoardCell[]): boolean;
-    getAoe: (selectedSpaces: BoardCell[]) => AOEShape | null;
+    getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
     player: Player;
   }) {
     this.dispatch(INTERACTION_STATE_TRANSITIONS.START_SELECTING_SPACE_ON_BOARD);

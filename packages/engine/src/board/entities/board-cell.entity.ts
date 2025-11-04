@@ -52,8 +52,14 @@ export class BoardCell
     return this.game.unitSystem.getUnitAt(this);
   }
 
+  get shrine() {
+    return this.game.boardSystem.shrines.find(shrine =>
+      shrine.position.equals(this.position)
+    );
+  }
+
   get isWalkable() {
-    return true;
+    return !this.unit && !this.shrine;
   }
 
   isNeighbor(point: Point) {

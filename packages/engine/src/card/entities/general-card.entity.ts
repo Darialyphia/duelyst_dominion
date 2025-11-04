@@ -1,5 +1,4 @@
 import type { Values } from '@game/shared';
-import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
 import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy';
@@ -14,6 +13,8 @@ import {
   type SerializedCard
 } from './card.entity';
 import { Ability, type SerializedAbility } from './ability.entity';
+import { PointAOEShape } from '../../aoe/point.aoe-shape';
+import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
@@ -150,7 +151,7 @@ export class GeneralCard extends Card<
   }
 
   get attackAOEShape() {
-    return new PointAOEShape(this.game, this.player);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
   }
 
   get counterattackPattern() {
@@ -163,6 +164,6 @@ export class GeneralCard extends Card<
   }
 
   get counterattackAOEShape() {
-    return new PointAOEShape(this.game, this.player);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
   }
 }

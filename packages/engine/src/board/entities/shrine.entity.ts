@@ -1,4 +1,4 @@
-import type { Serializable, Values } from '@game/shared';
+import { isDefined, type Serializable, type Values } from '@game/shared';
 import { Entity, type EmptyInterceptables } from '../../entity';
 import type { Game } from '../../game/game';
 import { TypedSerializableEvent } from '../../utils/typed-emitter';
@@ -33,10 +33,9 @@ export class Shrine
 
   constructor(
     private game: Game,
-    id: string,
     position: Position
   ) {
-    super(id, {});
+    super(`shrine_${position.x}_${position.y}`, {});
     this.position = position;
     game.on(GAME_EVENTS.PLAYER_START_TURN, this.onTurnStart.bind(this));
   }
@@ -66,6 +65,31 @@ export class Shrine
       SHRINE_EVENTS.SHRINE_AFTER_CAPTURE,
       new ShrineCaptureEvent({ shrine: this, unit })
     );
+  }
+
+  get neighborUnits(): Unit[] {
+    return this.game.boardSystem
+      .getNeighbors(this.position)
+      .map(cell => cell.unit)
+      .filter(isDefined);
+  }
+
+  canBeCapturedBy(unit: Unit) {
+    const isNearby = this.neighborUnits.some(neighborUnit => neighborUnit.equals(unit));
+    if (!isNearby) return false;
+
+    const cmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
+      if (!neighborUnit.isAlly(unit)) return total;
+      if (neighborUnit.isExhausted) return total;
+      return total + neighborUnit.cmd;
+    }, 0);
+
+    const enemyCmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
+      if (!neighborUnit.isEnemy(unit)) return total;
+      return total + neighborUnit.cmd;
+    }, 0);
+
+    return cmdTotal > enemyCmdTotal;
   }
 
   private async onTurnStart(event: PlayerTurnEvent) {

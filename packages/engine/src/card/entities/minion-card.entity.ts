@@ -11,7 +11,7 @@ import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { Interceptable } from '../../utils/interceptable';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
-import { MinionSummonTargetingtrategy } from '../../targeting/minion-summon-targeting.strategy';
+import { MinionSummonTargetingStrategy } from '../../targeting/minion-summon-targeting.strategy';
 import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
@@ -107,7 +107,7 @@ export class MinionCard extends Card<
 
   get summoningTargetingStrategy() {
     return this.interceptors.summonTargetingStrategy.getValue(
-      new MinionSummonTargetingtrategy(this.game, this),
+      new MinionSummonTargetingStrategy(this.game, this),
       {}
     );
   }
@@ -137,7 +137,7 @@ export class MinionCard extends Card<
           isDone(selectedSlots) {
             return selectedSlots.length === 1;
           },
-          getAoe: () => new PointAOEShape(this.game, this.player, TARGETING_TYPE.ANYWHERE)
+          getAoe: () => new PointAOEShape(TARGETING_TYPE.ANYWHERE)
         });
 
         const targets = await this.blueprint.getTargets(this.game, this);
@@ -214,7 +214,7 @@ export class MinionCard extends Card<
   }
 
   get attackAOEShape() {
-    return new PointAOEShape(this.game, this.player);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
   }
 
   get counterattackPattern() {
@@ -227,6 +227,6 @@ export class MinionCard extends Card<
   }
 
   get counterattackAOEShape() {
-    return new PointAOEShape(this.game, this.player);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
   }
 }

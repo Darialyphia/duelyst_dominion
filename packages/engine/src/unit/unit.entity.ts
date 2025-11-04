@@ -1,4 +1,4 @@
-import { Vec2, type Point, type Serializable } from '@game/shared';
+import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
@@ -15,7 +15,7 @@ import {
   type TargetingStrategy,
   type TargetingType
 } from '../targeting/targeting-strategy';
-import type { AOEShape } from '../aoe/aoe-shapes';
+import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { Player } from '../player/player.entity';
 import type { Damage } from '../utils/damage';
 import {
@@ -30,6 +30,7 @@ import {
   UnitBeforeDestroyEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
+import type { Shrine } from '../board/entities/shrine.entity';
 
 export type UnitOptions = {
   id: string;
@@ -56,6 +57,7 @@ export type SerializedUnit = {
   dangerZone: string[];
   attackableCells: string[];
   modifiers: string[];
+  capturableShrines: string[];
 };
 
 export type UnitInterceptors = {
@@ -69,22 +71,24 @@ export type UnitInterceptors = {
   canBeCardTarget: Interceptable<boolean, { card: AnyCard }>;
   canBeDestroyed: Interceptable<boolean>;
   canReceiveModifier: Interceptable<boolean, { modifier: Modifier<Unit> }>;
+  canCapture: Interceptable<boolean, { shrine: Shrine }>;
 
   shouldDeactivateWhenSummoned: Interceptable<boolean>;
 
   maxHp: Interceptable<number>;
   atk: Interceptable<number>;
+  cmd: Interceptable<number>;
   movementReach: Interceptable<number>;
   sprintReach: Interceptable<number>;
 
   attackTargetingPattern: Interceptable<TargetingStrategy>;
   attackTargetType: Interceptable<TargetingType>;
-  attackAOEShape: Interceptable<AOEShape>;
+  attackAOEShape: Interceptable<GenericAOEShape>;
   attackCounterattackParticipants: Interceptable<CounterAttackParticipantStrategy>;
 
   counterattackTargetingPattern: Interceptable<TargetingStrategy>;
   counterattackTargetType: Interceptable<TargetingType>;
-  counterattackAOEShape: Interceptable<AOEShape>;
+  counterattackAOEShape: Interceptable<GenericAOEShape>;
 
   maxAttacksPerTurn: Interceptable<number>;
   maxMovementsPerTurn: Interceptable<number>;
@@ -126,18 +130,20 @@ export class Unit
       canBeCounterattackTarget: new Interceptable(),
       canBeCardTarget: new Interceptable(),
       canBeDestroyed: new Interceptable(),
-      canReceiveModifier: new Interceptable<boolean, { modifier: Modifier<Unit> }>(),
+      canReceiveModifier: new Interceptable(),
+      canCapture: new Interceptable(),
 
-      shouldDeactivateWhenSummoned: new Interceptable<boolean>(),
+      shouldDeactivateWhenSummoned: new Interceptable(),
 
-      maxHp: new Interceptable<number>(),
-      atk: new Interceptable<number>(),
-      movementReach: new Interceptable<number>(),
-      sprintReach: new Interceptable<number>(),
+      maxHp: new Interceptable(),
+      atk: new Interceptable(),
+      cmd: new Interceptable(),
+      movementReach: new Interceptable(),
+      sprintReach: new Interceptable(),
 
-      attackTargetingPattern: new Interceptable<TargetingStrategy>(),
-      attackTargetType: new Interceptable<TargetingType>(),
-      attackAOEShape: new Interceptable<AOEShape>(),
+      attackTargetingPattern: new Interceptable(),
+      attackTargetType: new Interceptable(),
+      attackAOEShape: new Interceptable(),
       attackCounterattackParticipants: new Interceptable(),
 
       counterattackTargetingPattern: new Interceptable(),
@@ -148,9 +154,9 @@ export class Unit
       maxMovementsPerTurn: new Interceptable(),
       maxCounterattacksPerTurn: new Interceptable(),
 
-      player: new Interceptable<Player>(),
+      player: new Interceptable(),
 
-      damageDealt: new Interceptable<number, { source: AnyCard; target: Unit }>(),
+      damageDealt: new Interceptable(),
       damageReceived: new Interceptable<
         number,
         { amount: number; source: AnyCard; damage: Damage }
@@ -212,6 +218,18 @@ export class Unit
     return !this.isEnemy(entity);
   }
 
+  get cmd() {
+    if (this.isGeneral) return 0;
+
+    return this.interceptors.cmd.getValue((this.card as MinionCard).cmd, {});
+  }
+
+  canCapture(shrine: Shrine) {
+    return this.interceptors.canCapture.getValue(shrine.canBeCapturedBy(this), {
+      shrine
+    });
+  }
+
   get movementReach() {
     return this.interceptors.movementReach.getValue(
       this.game.config.UNIT_MOVEMENT_REACH,
@@ -263,7 +281,8 @@ export class Unit
   get canMove(): boolean {
     return this.interceptors.canMove.getValue(
       this.movementsMadeThisTurn < this.maxMovementsPerTurn &&
-        (this.attacksPerformedThisTurn > 0 ? this.canMoveAfterAttacking : true),
+        !this.isExhausted &&
+        !this.isGeneral,
       {}
     );
   }
@@ -327,7 +346,9 @@ export class Unit
 
   canAttack(unit: Unit): boolean {
     return this.interceptors.canAttack.getValue(
-      this.attacksPerformedThisTurn < this.maxAttacksPerTurn,
+      !this.isGeneral &&
+        this.attacksPerformedThisTurn < this.maxAttacksPerTurn &&
+        !this.isExhausted,
       { unit }
     );
   }
@@ -372,7 +393,7 @@ export class Unit
     return this.interceptors.attackTargetType.getValue(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 
-  get attackAOEShape(): AOEShape {
+  get attackAOEShape(): GenericAOEShape {
     return this.interceptors.attackAOEShape.getValue(this.card.attackAOEShape, {});
   }
 
@@ -390,7 +411,7 @@ export class Unit
     );
   }
 
-  get counterattackAOEShape(): AOEShape {
+  get counterattackAOEShape(): GenericAOEShape {
     return this.interceptors.counterattackAOEShape.getValue(
       this.card.counterattackAOEShape,
       {}
@@ -403,7 +424,10 @@ export class Unit
       .getCounterattackParticipants({
         attacker: this,
         initialTarget,
-        affectedUnits: this.attackAOEShape.getUnits([initialTarget])
+        affectedUnits: this.attackAOEShape
+          .getArea([initialTarget])
+          .map(point => this.game.unitSystem.getUnitAt(point))
+          .filter(isDefined)
       });
   }
 
@@ -501,7 +525,16 @@ export class Unit
       new UnitBeforeDestroyEvent({ source })
     );
     const position = this.position;
-    await this.removeFromBoard();
+    if (this.isGeneral) {
+      await this.player.earnVictoryPoints(
+        this.game.config.GENERAL_DESTROYED_VICTORY_POINTS_REWARD
+      );
+      await this.addInterceptor('canBeAttackTarget', () => false, 999);
+      await this.addInterceptor('canBeCardTarget', () => false, 999);
+      await this.addInterceptor('damageReceived', () => 0, 999);
+    } else {
+      await this.removeFromBoard();
+    }
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_DESTROY,
       new UnitAfterDestroyEvent({ source, destroyedAt: position })

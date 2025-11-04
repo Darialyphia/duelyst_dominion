@@ -4,7 +4,7 @@ import type { Edge } from '../dijkstra';
 import type { PathfindingStrategy } from './pathinding-strategy';
 import { pointToCellId } from '../../board/board-utils';
 import type { Unit } from '../../unit/unit.entity';
-import type { BoardCell, SerializedCoords } from '../../board/board-cell.entity';
+import type { BoardCell, SerializedCoords } from '../../board/entities/board-cell.entity';
 
 export type SolidPathfindingStrategyOptions = {
   origin: Point3D;
@@ -51,7 +51,7 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
   isEdgeValid(cell: BoardCell) {
     if (this.origin.equals(cell)) return false;
     if (!cell.isWalkable) return true;
-    return cell.isWalkable && !cell.unit;
+    return cell.isWalkable;
   }
 
   getEdges(node: SerializedCoords): Array<Edge<SerializedCoords>> {

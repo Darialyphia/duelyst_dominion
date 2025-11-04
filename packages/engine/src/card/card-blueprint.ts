@@ -5,7 +5,7 @@ import type { SpellCard } from './entities/spell-card.entity';
 import type { ArtifactCard } from './entities/artifact-card.entity';
 import type { GeneralCard } from './entities/general-card.entity';
 import type { BoardCell } from '../board/entities/board-cell.entity';
-import type { AOEShape } from '../aoe/aoe-shapes';
+import type { GenericAOEShape } from '../aoe/aoe-shape';
 import type { PlayerArtifact } from '../player/player-artifact.entity';
 import type { AnyCard } from './entities/card.entity';
 
@@ -33,7 +33,7 @@ export type MinionBlueprint = CardBlueprintBase & {
     options: {
       position: BoardCell;
       targets: BoardCell[];
-      aoe: AOEShape;
+      aoe: GenericAOEShape;
     }
   ) => Promise<void>;
   atk: number;
@@ -45,7 +45,7 @@ export type MinionBlueprint = CardBlueprintBase & {
     card: MinionCard,
     position: BoardCell,
     targets: BoardCell[]
-  ) => AOEShape;
+  ) => GenericAOEShape;
 };
 
 export type SpellBlueprint = CardBlueprintBase & {
@@ -58,11 +58,11 @@ export type SpellBlueprint = CardBlueprintBase & {
     card: SpellCard,
     options: {
       targets: BoardCell[];
-      aoe: AOEShape;
+      aoe: GenericAOEShape;
     }
   ) => Promise<void>;
   getTargets: (game: Game, card: SpellCard) => Promise<BoardCell[]>;
-  getAoe: (game: Game, card: SpellCard, targets: BoardCell[]) => AOEShape;
+  getAoe: (game: Game, card: SpellCard, targets: BoardCell[]) => GenericAOEShape;
 };
 
 export type AbilityBlueprint<T extends AnyCard> = {
@@ -70,7 +70,7 @@ export type AbilityBlueprint<T extends AnyCard> = {
   description: string;
   manaCost: number;
   getTargets: (game: Game, card: T) => Promise<BoardCell[]>;
-  getAoe: (game: Game, card: T, targets: BoardCell[]) => AOEShape;
+  getAoe: (game: Game, card: T, targets: BoardCell[]) => GenericAOEShape;
   getCooldown: (game: Game, card: T) => number;
   getMaxUses: (game: Game, card: T) => number;
   canUse(game: Game, card: T): boolean;
@@ -79,7 +79,7 @@ export type AbilityBlueprint<T extends AnyCard> = {
     card: T,
     options: {
       targets: BoardCell[];
-      aoe: AOEShape;
+      aoe: GenericAOEShape;
     }
   ): void;
 };
@@ -104,12 +104,12 @@ export type ArtifactBlueprint = CardBlueprintBase & {
     card: ArtifactCard,
     options: {
       targets: BoardCell[];
-      aoe: AOEShape;
+      aoe: GenericAOEShape;
       artifact: PlayerArtifact;
     }
   ) => Promise<void>;
   getTargets: (game: Game, card: ArtifactCard) => Promise<BoardCell[]>;
-  getAoe: (game: Game, card: ArtifactCard, targets: BoardCell[]) => AOEShape;
+  getAoe: (game: Game, card: ArtifactCard, targets: BoardCell[]) => GenericAOEShape;
 };
 export type CardBlueprint =
   | SpellBlueprint

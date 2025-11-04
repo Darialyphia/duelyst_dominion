@@ -1,4 +1,4 @@
-import { assert, type Point } from '@game/shared';
+import { assert, isDefined, type Point } from '@game/shared';
 import { IllegalTargetError } from '../../input/input-errors';
 import type { Player } from '../../player/player.entity';
 import type { Game } from '../game';
@@ -7,14 +7,14 @@ import {
   UnableToCommitError,
   INTERACTION_STATE_TRANSITIONS
 } from '../systems/game-interaction.system';
-import type { BoardCell } from '../../board/board-cell.entity';
-import type { AOEShape } from '../../aoe/aoe-shapes';
+import type { BoardCell } from '../../board/entities/board-cell.entity';
+import type { GenericAOEShape } from '../../aoe/aoe-shape';
 
 type SelectingSpaceOnBoardContextOptions = {
   player: Player;
   isElligible: (space: BoardCell, selectedSpaces: BoardCell[]) => boolean;
   canCommit: (selectedSpaces: BoardCell[]) => boolean;
-  getAoe: (selectedSpaces: BoardCell[]) => AOEShape | null;
+  getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
   isDone(selectedSpaces: BoardCell[]): boolean;
 };
 
@@ -32,7 +32,7 @@ export class SelectingSpaceOnBoardContext {
 
   private isDone: (selectedSpaces: BoardCell[]) => boolean;
 
-  private getAoe: (selectedSpaces: BoardCell[]) => AOEShape | null;
+  private getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
 
   readonly player: Player;
 
@@ -80,8 +80,14 @@ export class SelectingSpaceOnBoardContext {
     }
 
     return {
-      cells: aoe.getCells(spaces).map(cell => cell.id),
-      units: aoe.getUnits(spaces).map(unit => unit.id)
+      cells: aoe
+        .getArea(spaces)
+        .map(point => this.game.boardSystem.getCellAt(point)?.id)
+        .filter(isDefined),
+      units: aoe
+        .getArea(spaces)
+        .map(point => this.game.unitSystem.getUnitAt(point)?.id)
+        .filter(isDefined)
     };
   }
 

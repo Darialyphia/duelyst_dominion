@@ -1,33 +1,31 @@
-import { isDefined } from '@game/shared';
-import type { Point } from 'honeycomb-grid';
-import type { Game } from '../game/game';
-import type { Player } from '../player/player.entity';
-import {
-  type TargetingType,
-  TARGETING_TYPE,
-  isValidTargetingType
-} from '../targeting/targeting-strategy';
-import type { AOEShape } from './aoe-shapes';
-import type { Unit } from '../unit/unit.entity';
+import type { EmptyObject, Point3D } from '@game/shared';
+import type { AOEShape } from './aoe-shape';
+import type { TargetingType } from './aoe.enums';
 
-export class PointAOEShape implements AOEShape {
-  constructor(
-    private game: Game,
-    private player: Player,
-    private type: TargetingType = TARGETING_TYPE.ANYWHERE
-  ) {}
+type SerializedPoint = {
+  type: 'point';
+  targetingType: TargetingType;
+  params: EmptyObject;
+};
 
-  getCells(points: Point[]) {
-    return points.map(point => this.game.boardSystem.getCellAt(point)).filter(isDefined);
+export class PointAOEShape implements AOEShape<SerializedPoint> {
+  static fromJSON(json: EmptyObject): PointAOEShape {
+    return new PointAOEShape(json.targetingType);
   }
 
-  getUnits(points: Point[]): Unit[] {
-    return this.getCells(points)
-      .filter(cell => {
-        if (!isDefined(cell.unit)) return false;
-        return isValidTargetingType(this.game, cell, this.player, this.type);
-      })
-      .map(cell => cell.unit)
-      .filter(isDefined);
+  readonly type = 'point' as const;
+
+  constructor(readonly targetingType: TargetingType) {}
+
+  serialize() {
+    return {
+      type: this.type,
+      targetingType: this.targetingType,
+      params: {}
+    };
+  }
+
+  getArea([point]: [Point3D]): Point3D[] {
+    return [point];
   }
 }

@@ -3,7 +3,7 @@ import { dijkstra, findShortestPath } from './dijkstra';
 import type { Game } from '../game/game';
 import { cellIdToPoint, pointToCellId } from '../board/board-utils';
 import type { PathfindingStrategy } from './strategies/pathinding-strategy';
-import type { SerializedCoords } from '../board/board-cell.entity';
+import type { SerializedCoords } from '../board/entities/board-cell.entity';
 
 export type DistanceMap = {
   costs: ReturnType<typeof dijkstra>['costs'];

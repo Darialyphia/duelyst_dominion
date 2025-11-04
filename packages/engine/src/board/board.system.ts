@@ -10,6 +10,9 @@ import { pointToCellId } from './board-utils';
 import { System } from '../system';
 import type { MapBlueprint } from './map-blueprint';
 import { defineHex, Grid, Orientation, rectangle, spiral } from 'honeycomb-grid';
+import { Shrine } from './entities/shrine.entity';
+import { Position } from '../utils/position';
+import { Teleporter } from './entities/two-way-teleporter';
 
 export type BoardSystemOptions = {
   map: MapBlueprint;
@@ -43,6 +46,10 @@ export class BoardSystem
 
   dimensions!: { width: number; height: number };
 
+  shrines!: Shrine[];
+
+  teleporters!: Teleporter[];
+
   initialize(options: BoardSystemOptions) {
     this.map = options.map;
 
@@ -66,6 +73,20 @@ export class BoardSystem
       width: options.map.cols,
       height: options.map.rows
     };
+
+    this.map.shrinePositions.forEach(pos => {
+      const shrine = new Shrine(this.game, Position.fromPoint(pos));
+      this.shrines = [...(this.shrines || []), shrine];
+    });
+
+    this.map.teleporters.forEach(teleporterData => {
+      const teleporter = new Teleporter(
+        this.game,
+        teleporterData.id,
+        teleporterData.gates
+      );
+      this.teleporters = [...(this.teleporters || []), teleporter];
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
