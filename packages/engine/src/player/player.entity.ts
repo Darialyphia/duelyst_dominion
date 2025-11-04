@@ -21,7 +21,6 @@ import {
 } from './player.events';
 import { ModifierManager } from '../modifier/modifier-manager.component';
 import type { GeneralCard } from '../card/entities/general-card.entity';
-import { ManaManagerComponent } from './components/mana-manager.component';
 import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
@@ -59,11 +58,13 @@ export type SerializedPlayer = {
 type PlayerInterceptors = {
   cardsDrawnForTurn: Interceptable<number>;
   maxReplacesPerTurn: Interceptable<number>;
+  maxOverspendsPerTurn: Interceptable<number>;
 };
 const makeInterceptors = (): PlayerInterceptors => {
   return {
     cardsDrawnForTurn: new Interceptable<number>(),
-    maxReplacesPerTurn: new Interceptable<number>()
+    maxReplacesPerTurn: new Interceptable<number>(),
+    maxOverspendsPerTurn: new Interceptable<number>()
   };
 };
 
@@ -81,8 +82,6 @@ export class Player
 
   readonly cardTracker: CardTrackerComponent;
 
-  readonly manaManager: ManaManagerComponent;
-
   private _general!: Unit;
 
   currentlyPlayedCard: Nullable<DeckCard> = null;
@@ -91,6 +90,10 @@ export class Player
   private replacesDoneThisTurn = 0;
 
   private _victoryPoints = 0;
+
+  private _mana = 0;
+
+  private _maxMana = 0;
 
   constructor(
     game: Game,
@@ -106,12 +109,10 @@ export class Player
     });
     this.modifiers = new ModifierManager<Player>(this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
-    this.manaManager = new ManaManagerComponent(
-      this.isPlayer1
-        ? this.game.config.PLAYER_1_INITIAL_MANA
-        : this.game.config.PLAYER_2_INITIAL_MANA,
-      this.game.config.MAX_MANA
-    );
+    this._mana = this.isPlayer1
+      ? this.game.config.PLAYER_1_INITIAL_MANA
+      : this.game.config.PLAYER_2_INITIAL_MANA;
+    this._maxMana = this._mana;
   }
 
   async init() {
@@ -144,8 +145,8 @@ export class Player
       isPlayer1: this.isPlayer1,
       maxHp: this._general.maxHp,
       currentHp: this._general.remainingHp,
-      currentMana: this.manaManager.amount,
-      maxMana: this.manaManager.maxAmount,
+      currentMana: this._mana,
+      maxMana: this._maxMana,
       deckSize: this.cardManager.deck.cards.length,
       canReplace: this.canReplaceCard(),
       isActive: this.isActive,
@@ -252,9 +253,8 @@ export class Player
     this.replacesDoneThisTurn = 0;
 
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
-      this.manaManager.maxAmount += this.game.config.MANA_INCREASE_PER_TURN;
+      this._maxMana += this.game.config.MAX_MANA_INCREASE_PER_TURN;
     }
-    this.manaManager.setTo(this.manaManager.maxAmount);
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
       await this.drawForTurn();
@@ -276,13 +276,21 @@ export class Player
     );
   }
 
+  get mana() {
+    return this._mana;
+  }
+
+  get maxMana() {
+    return this._maxMana;
+  }
+
   async spendMana(amount: number) {
     if (amount === 0) return;
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this.manaManager.spend(amount);
+    this._mana = Math.max(this._mana - amount, this.game.config.MAX_OVERSPENT_MANA * -1);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
@@ -295,7 +303,7 @@ export class Player
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this.manaManager.gain(amount);
+    this._mana = Math.min(this._mana + amount, this._maxMana);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
@@ -303,7 +311,8 @@ export class Player
   }
 
   canSpendMana(amount: number) {
-    return this.manaManager.amount >= amount;
+    if (this.mana < 0) return false;
+    return this.mana >= amount - this.game.config.MAX_OVERSPENT_MANA;
   }
 
   get maxReplacesPerTurn() {

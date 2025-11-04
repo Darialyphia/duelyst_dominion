@@ -89,7 +89,7 @@ export class MinionCard extends Card<
   }
 
   get canAfford() {
-    return this.player.manaManager.canSpend(this.manaCost);
+    return this.player.canSpendMana(this.manaCost);
   }
 
   canPlay(): boolean {

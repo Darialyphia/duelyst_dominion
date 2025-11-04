@@ -44,7 +44,7 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
   get canUse() {
     return (
       this.blueprint.canUse(this.game, this.card) &&
-      this.card.player.manaManager.canSpend(this.blueprint.manaCost) &&
+      this.card.player.canSpendMana(this.blueprint.manaCost) &&
       !this.isOnCooldown &&
       !this.hasReachedMaxUses
     );
@@ -52,8 +52,7 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
 
   async use() {
     this.lastUsedAt = this.game.gamePhaseSystem.elapsedTurns;
-
-    this.card.player.manaManager.spend(this.blueprint.manaCost);
+    await this.card.player.spendMana(this.blueprint.manaCost);
     const targets = await this.blueprint.getTargets(this.game, this.card);
     const aoe = this.blueprint.getAoe(this.game, this.card, targets);
 
