@@ -1,4 +1,3 @@
-import type { AnyCard } from '../../card/entities/card.entity';
 import type { Game } from '../../game/game';
 import { ModifierMixin } from '../modifier-mixin';
 import type { Modifier, ModifierTarget } from '../modifier.entity';

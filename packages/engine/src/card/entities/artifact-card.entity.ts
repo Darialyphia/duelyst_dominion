@@ -2,7 +2,7 @@ import type { MaybePromise } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
 import { Interceptable } from '../../utils/interceptable';
-import type { ArtifactBlueprint } from '../card-blueprint';
+import type { ArtifactBlueprint, RuneCost } from '../card-blueprint';
 import {
   Card,
   makeCardInterceptors,
@@ -10,13 +10,15 @@ import {
   type CardOptions,
   type SerializedCard
 } from './card.entity';
-import { CARD_EVENTS } from '../card.enums';
+import { CARD_EVENTS, type Rune } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedArtifactCard = SerializedCard & {
   durability: number;
+  manaCost: number;
+  runeCost: RuneCost;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -47,9 +49,15 @@ export class ArtifactCard extends Card<
     return this.player.canSpendMana(this.manaCost);
   }
 
+  get hasRunes() {
+    return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
+      return this.player.runes[rune as Rune] >= cost;
+    });
+  }
+
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
-      this.canAfford && this.blueprint.canPlay(this.game, this),
+      this.canAfford && this.hasRunes && this.blueprint.canPlay(this.game, this),
       this
     );
   }
@@ -113,7 +121,9 @@ export class ArtifactCard extends Card<
   serialize() {
     return {
       ...this.serializeBase(),
-      durability: this.durability
+      durability: this.durability,
+      manaCost: this.manaCost,
+      runeCost: this.blueprint.runeCost
     };
   }
 }

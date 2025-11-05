@@ -1,4 +1,5 @@
 import type { Values } from '@game/shared';
+import { Y } from 'vitest/dist/chunks/reporters.nr4dxCkA.js';
 
 export const CARD_EVENTS = {
   CARD_BEFORE_PLAY: 'card.before_play',
@@ -54,3 +55,10 @@ export const FACTIONS = {
   NEUTRAL: 'Neutral'
 } as const;
 export type Faction = Values<typeof FACTIONS>;
+
+export const RUNES = {
+  RED: 'red',
+  BLUE: 'blue',
+  YELLOW: 'yellow'
+} as const;
+export type Rune = Values<typeof RUNES>;

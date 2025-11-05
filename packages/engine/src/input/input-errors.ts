@@ -37,6 +37,12 @@ export class NotCurrentPlayerError extends InputError {
   }
 }
 
+export class CannotUseResourceActionError extends InputError {
+  constructor() {
+    super('You cannot use anymore resource action this turn.');
+  }
+}
+
 export class TooManyReplacesError extends InputError {
   constructor() {
     super('You cannot replace any more cards this turn.');
@@ -73,6 +79,12 @@ export class UnknownUnitError extends InputError {
   }
 }
 
+export class UnknownShrineError extends InputError {
+  constructor(shrineId: string) {
+    super(`Unknown shrine id: ${shrineId}`);
+  }
+}
+
 export class UnknownCardError extends Error {
   constructor(cardId: string) {
     super(`Unknown card id: ${cardId}`);
@@ -100,6 +112,12 @@ export class IllegalTalentUnlockError extends InputError {
 export class IllegalAttackTargetError extends InputError {
   constructor() {
     super(`Cannot attack at position this target`);
+  }
+}
+
+export class IllegalCaptureError extends InputError {
+  constructor() {
+    super(`Cannot capture this shrine`);
   }
 }
 

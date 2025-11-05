@@ -108,13 +108,6 @@ export abstract class Card<
     return 0;
   }
 
-  get canPayManaCost() {
-    return (
-      this.player.cardManager.hand.filter(card => !card.equals(this)).length >=
-      this.manaCost
-    );
-  }
-
   abstract removeFromBoard(): Promise<void>;
 
   async removeFromCurrentLocation() {

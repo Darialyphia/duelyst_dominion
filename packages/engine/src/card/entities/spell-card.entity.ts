@@ -1,7 +1,7 @@
 import type { MaybePromise } from '@game/shared';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
-import type { SpellBlueprint } from '../card-blueprint';
-import { CARD_EVENTS } from '../card.enums';
+import type { RuneCost, SpellBlueprint } from '../card-blueprint';
+import { CARD_EVENTS, type Rune } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import {
   Card,
@@ -15,7 +15,10 @@ import type { Player } from '../../player/player.entity';
 import { Interceptable } from '../../utils/interceptable';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type SerializedSpellCard = SerializedCard & {};
+export type SerializedSpellCard = SerializedCard & {
+  manaCost: number;
+  runeCost: RuneCost;
+};
 
 export type SpellCardInterceptors = CardInterceptors & {
   canPlay: Interceptable<boolean, SpellCard>;
@@ -42,9 +45,15 @@ export class SpellCard extends Card<
     return this.player.canSpendMana(this.manaCost);
   }
 
+  get hasRunes() {
+    return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
+      return this.player.runes[rune as Rune] >= cost;
+    });
+  }
+
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
-      this.canAfford && this.blueprint.canPlay(this.game, this),
+      this.canAfford && this.canAfford && this.blueprint.canPlay(this.game, this),
       this
     );
   }
@@ -99,7 +108,9 @@ export class SpellCard extends Card<
 
   serialize() {
     return {
-      ...this.serializeBase()
+      ...this.serializeBase(),
+      manaCost: this.blueprint.manaCost,
+      runeCost: this.blueprint.runeCost
     };
   }
 }

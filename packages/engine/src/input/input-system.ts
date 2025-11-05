@@ -11,7 +11,7 @@ import {
 import { type Game } from '../game/game';
 import type { DefaultSchema, Input } from './input';
 import { System } from '../system';
-import { z } from 'zod';
+import { z, ZodType } from 'zod';
 import {
   GAME_EVENTS,
   GameErrorEvent,
@@ -30,11 +30,13 @@ import { EndTurnInput } from './inputs/end-turn.input';
 import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
 import { UseGeneralAbilityInput } from './inputs/use-general-ability';
+import { UseResourceActionInput } from './inputs/use-resource-action';
+import { CaptureShrineInput } from './inputs/capture-shrine';
 
-type GenericInputMap = Record<string, Constructor<Input<DefaultSchema>>>;
+type GenericInputMap = Record<string, Constructor<Input<ZodType>>>;
 
 type ValidatedInputMap<T extends GenericInputMap> = {
-  [Name in keyof T & string]: T[Name] extends Constructor<Input<DefaultSchema>>
+  [Name in keyof T & string]: T[Name] extends Constructor<Input<ZodType>>
     ? Name extends InstanceType<T[Name]>['name']
       ? T[Name]
       : `input map mismatch: expected ${Name}, but Input name is ${InstanceType<T[Name]>['name']}`
@@ -54,7 +56,9 @@ const inputMap = validateinputMap({
   endTurn: EndTurnInput,
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,
-  useGeneralAbility: UseGeneralAbilityInput
+  useGeneralAbility: UseGeneralAbilityInput,
+  useResourceAction: UseResourceActionInput,
+  captureShrine: CaptureShrineInput
 });
 
 type InputMap = typeof inputMap;

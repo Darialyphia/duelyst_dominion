@@ -230,6 +230,11 @@ export class Unit
     });
   }
 
+  async captureShrine(shrine: Shrine) {
+    await shrine.capture(this);
+    this._isExhausted = true;
+  }
+
   get movementReach() {
     return this.interceptors.movementReach.getValue(
       this.game.config.UNIT_MOVEMENT_REACH,
@@ -534,6 +539,9 @@ export class Unit
       await this.addInterceptor('damageReceived', () => 0, 999);
     } else {
       await this.removeFromBoard();
+      this.modifiers.list.forEach(async modifier => {
+        await this.modifiers.remove(modifier.id);
+      });
     }
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_DESTROY,

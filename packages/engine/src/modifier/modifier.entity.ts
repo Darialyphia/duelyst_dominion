@@ -1,5 +1,5 @@
 import {
-  isDefined,
+  isString,
   type Constructor,
   type EmptyObject,
   type Serializable,
@@ -11,18 +11,21 @@ import type { Game } from '../game/game';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { ModifierManager } from './modifier-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
+import { Interceptable } from '../utils/interceptable';
 
 export type ModifierInfos<TCustomEvents extends Record<string, any>> =
   TCustomEvents extends EmptyObject
     ? {
         name?: string;
-        description?: string;
+        description?: string | (() => string);
         icon?: string;
+        isUnique?: boolean;
         customEventNames?: never;
       }
     : {
         name?: string;
         description?: string;
+        isUnique?: boolean;
         icon?: string;
         customEventNames: TCustomEvents;
       };
@@ -32,8 +35,7 @@ export type ModifierOptions<
   TCustomEvents extends Record<string, any>
 > = ModifierInfos<TCustomEvents> & {
   mixins: ModifierMixin<T>[];
-  canBeRemoved?: boolean;
-  isInherent?: boolean;
+  stacks?: number;
 };
 
 class ModifierLifecycleEvent extends TypedSerializableEvent<
@@ -46,21 +48,21 @@ class ModifierLifecycleEvent extends TypedSerializableEvent<
 }
 
 export const MODIFIER_EVENTS = {
-  BEFORE_APPLIED: 'modifier.before_applied',
-  AFTER_APPLIED: 'modifier.after_applied',
-  BEFORE_REMOVED: 'modifier.before_removed',
-  AFTER_REMOVED: 'modifier.after_removed',
-  BEFORE_REAPPLIED: 'before_reapplied',
-  AFTER_REAPPLIED: 'after_reapplied'
+  MODIFIER_BEFORE_APPLIED: 'modifier.before_applied',
+  MODIFIER_AFTER_APPLIED: 'modifier.after_applied',
+  MODIFIER_BEFORE_REMOVED: 'modifier.before_removed',
+  MODIFIER_AFTER_REMOVED: 'modifier.after_removed',
+  MODIFIER_BEFORE_REAPPLIED: 'before_reapplied',
+  MODIFIER_AFTER_REAPPLIED: 'after_reapplied'
 } as const;
 
 export type ModifierEventMap = {
-  [MODIFIER_EVENTS.BEFORE_APPLIED]: ModifierLifecycleEvent;
-  [MODIFIER_EVENTS.AFTER_APPLIED]: ModifierLifecycleEvent;
-  [MODIFIER_EVENTS.BEFORE_REMOVED]: ModifierLifecycleEvent;
-  [MODIFIER_EVENTS.AFTER_REMOVED]: ModifierLifecycleEvent;
-  [MODIFIER_EVENTS.BEFORE_REAPPLIED]: ModifierLifecycleEvent;
-  [MODIFIER_EVENTS.AFTER_REAPPLIED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_BEFORE_APPLIED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_AFTER_APPLIED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_BEFORE_REMOVED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_AFTER_REMOVED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_BEFORE_REAPPLIED]: ModifierLifecycleEvent;
+  [MODIFIER_EVENTS.MODIFIER_AFTER_REAPPLIED]: ModifierLifecycleEvent;
 };
 
 export type ModifierEvent = Values<typeof MODIFIER_EVENTS>;
@@ -80,13 +82,15 @@ export type SerializedModifier = {
   target: string;
   source: string;
   stacks: number;
+  isEnabled: boolean;
 };
 
+export type ModifierInterceptors = EmptyObject;
 export class Modifier<
     T extends ModifierTarget,
     TEventsMap extends ModifierEventMap = ModifierEventMap
   >
-  extends Entity<EmptyObject>
+  extends Entity<ModifierInterceptors>
   implements Serializable<SerializedModifier>
 {
   private mixins: ModifierMixin<T>[];
@@ -97,19 +101,19 @@ export class Modifier<
 
   protected _target!: T;
 
-  private isApplied = false;
+  private _isApplied = false;
 
-  readonly infos: { name?: string; description?: string; icon?: string };
+  readonly infos: { name?: string; description?: string | (() => string); icon?: string };
 
   readonly modifierType: string;
 
-  protected stacks = 1;
+  protected _stacks = 1;
+
+  private _isUnique: boolean;
+
+  private _prevEnabled = true;
 
   private _isEnabled = true;
-
-  private _canBeRemoved = true;
-
-  private _isInherent = false;
 
   constructor(
     modifierType: string,
@@ -130,49 +134,44 @@ export class Modifier<
       name: options.name,
       icon: options.icon
     };
-    if (isDefined(options.canBeRemoved)) {
-      this._canBeRemoved = options.canBeRemoved;
+    this._isUnique = options.isUnique ?? false;
+    if (options.stacks) {
+      this._stacks = options.stacks;
     }
-    if (isDefined(options.isInherent)) {
-      this._isInherent = options.isInherent;
-    }
+    this.game.on('*', this.checkEnabled.bind(this));
+  }
+
+  get isUnique() {
+    return this._isUnique;
+  }
+
+  get isApplied() {
+    return this._isApplied;
   }
 
   get isEnabled() {
     return this._isEnabled;
   }
 
-  get isInherent() {
-    return this._isInherent;
+  get stacks() {
+    return this._stacks;
   }
 
-  get canBeRemoved() {
-    return this._canBeRemoved || this.isInherent;
-  }
-
-  getMixin<T extends ModifierMixin<any>>(cls: Constructor<T>): T[] {
-    return this.mixins.filter(mixin => mixin instanceof cls) as T[];
-  }
-
-  enable() {
-    if (this._isEnabled) return;
-    this._isEnabled = true;
-    if (this.isApplied) {
-      this.mixins.forEach(mixin => mixin.onApplied(this._target, this));
+  checkEnabled() {
+    if (!this._isApplied) return;
+    if (this.isEnabled !== this._prevEnabled) {
+      if (this.isEnabled) {
+        this.mixins.forEach(mixin => mixin.onApplied(this._target, this));
+      } else {
+        this.mixins.forEach(mixin => mixin.onRemoved(this._target, this));
+      }
     }
-  }
-
-  disable() {
-    if (!this._isEnabled) return;
-    this._isEnabled = false;
-    if (this.isApplied) {
-      this.mixins.forEach(mixin => mixin.onRemoved(this._target, this));
-    }
+    this._prevEnabled = this.isEnabled;
   }
 
   addMixin(mixin: ModifierMixin<T>) {
     this.mixins.push(mixin);
-    if (this.isApplied) {
+    if (this._isApplied) {
       mixin.onApplied(this._target, this);
     }
   }
@@ -181,7 +180,7 @@ export class Modifier<
     const index = this.mixins.indexOf(mixin);
     if (index !== -1) {
       this.mixins.splice(index, 1);
-      if (this.isApplied) {
+      if (this._isApplied) {
         mixin.onRemoved(this._target, this);
       }
     }
@@ -193,7 +192,7 @@ export class Modifier<
 
   async applyTo(target: T) {
     await this.game.emit(
-      MODIFIER_EVENTS.BEFORE_APPLIED,
+      MODIFIER_EVENTS.MODIFIER_BEFORE_APPLIED,
       new ModifierLifecycleEvent(this)
     );
     this._target = target;
@@ -202,16 +201,19 @@ export class Modifier<
         mixin.onApplied(target, this);
       });
     }
-    this.isApplied = true;
-    await this.game.emit(MODIFIER_EVENTS.AFTER_APPLIED, new ModifierLifecycleEvent(this));
-  }
-
-  async reapplyTo(target: T) {
+    this._isApplied = true;
     await this.game.emit(
-      MODIFIER_EVENTS.BEFORE_REAPPLIED,
+      MODIFIER_EVENTS.MODIFIER_AFTER_APPLIED,
       new ModifierLifecycleEvent(this)
     );
-    this.stacks += 1;
+  }
+
+  async reapplyTo(target: T, stacks = 1) {
+    await this.game.emit(
+      MODIFIER_EVENTS.MODIFIER_BEFORE_REAPPLIED,
+      new ModifierLifecycleEvent(this)
+    );
+    this._stacks += stacks;
     if (this.isEnabled) {
       this.mixins.forEach(mixin => {
         mixin.onReapplied(target, this);
@@ -219,26 +221,56 @@ export class Modifier<
     }
 
     await this.game.emit(
-      MODIFIER_EVENTS.AFTER_REAPPLIED,
+      MODIFIER_EVENTS.MODIFIER_AFTER_REAPPLIED,
       new ModifierLifecycleEvent(this)
     );
   }
 
   async remove() {
-    if (!this.canBeRemoved) {
-      this.disable();
-      return;
-    }
-
     await this.game.emit(
-      MODIFIER_EVENTS.BEFORE_REMOVED,
+      MODIFIER_EVENTS.MODIFIER_BEFORE_REMOVED,
       new ModifierLifecycleEvent(this)
     );
+    this._isApplied = false;
     this.mixins.forEach(mixin => {
       mixin.onRemoved(this._target, this);
     });
-    this.isApplied = false;
-    await this.game.emit(MODIFIER_EVENTS.AFTER_REMOVED, new ModifierLifecycleEvent(this));
+    await this.game.emit(
+      MODIFIER_EVENTS.MODIFIER_AFTER_REMOVED,
+      new ModifierLifecycleEvent(this)
+    );
+  }
+
+  addStacks(count: number) {
+    this._stacks += count;
+  }
+
+  async removeStacks(count: number) {
+    this._stacks = Math.max(0, this._stacks - count);
+    if (this._stacks <= 0) {
+      await this.remove();
+    }
+  }
+
+  async setStacks(count: number) {
+    this._stacks = count;
+    if (this._stacks <= 0) {
+      await this.remove();
+    }
+  }
+
+  getMixin<T extends ModifierMixin<any>>(cls: Constructor<T>): T[] {
+    return this.mixins.filter(mixin => mixin instanceof cls) as T[];
+  }
+
+  enable() {
+    if (this._isEnabled) return;
+    this._isEnabled = true;
+  }
+
+  disable() {
+    if (!this._isEnabled) return;
+    this._isEnabled = false;
   }
 
   serialize(): SerializedModifier {
@@ -247,11 +279,14 @@ export class Modifier<
       modifierType: this.modifierType,
       entityType: 'modifier' as const,
       name: this.infos.name,
-      description: this.infos.description,
+      description: isString(this.infos.description)
+        ? this.infos.description
+        : this.infos.description?.(),
       icon: this.infos.icon,
       target: this._target.id,
       source: this.source.id,
-      stacks: this.stacks
+      stacks: this._stacks,
+      isEnabled: this.isEnabled
     };
   }
 }

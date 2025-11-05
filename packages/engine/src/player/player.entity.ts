@@ -24,7 +24,8 @@ import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
-import { CARD_EVENTS, CARD_KINDS } from '../card/card.enums';
+import { CARD_EVENTS, CARD_KINDS, RUNES, type Rune } from '../card/card.enums';
+import { match } from 'ts-pattern';
 
 export type PlayerOptions = {
   id: string;
@@ -67,7 +68,14 @@ const makeInterceptors = (): PlayerInterceptors => {
     maxOverspendsPerTurn: new Interceptable<number>()
   };
 };
-
+export type PlayerResourceAction =
+  | {
+      type: 'gain-rune';
+      rune: Rune;
+    }
+  | {
+      type: 'draw-card';
+    };
 export class Player
   extends Entity<PlayerInterceptors>
   implements Serializable<SerializedPlayer>
@@ -85,6 +93,7 @@ export class Player
   private _general!: Unit;
 
   currentlyPlayedCard: Nullable<DeckCard> = null;
+
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
 
   private replacesDoneThisTurn = 0;
@@ -94,6 +103,14 @@ export class Player
   private _mana = 0;
 
   private _baseMaxMana = 0;
+
+  private _runes: Record<Rune, number> = {
+    [RUNES.RED]: 0,
+    [RUNES.BLUE]: 0,
+    [RUNES.YELLOW]: 0
+  };
+
+  private _resourceActionsDoneThisTurn = 0;
 
   constructor(
     game: Game,
@@ -244,6 +261,37 @@ export class Player
     return this.cardManager.hand.length + this.cardManager.destinyZone.size;
   }
 
+  get runes(): Record<Rune, number> {
+    return { ...this.runes };
+  }
+
+  gainRune(rune: Rune, amount: number) {
+    this._runes[rune] += amount;
+  }
+
+  loseRune(rune: Rune, amount: number) {
+    this._runes[rune] = Math.max(0, this._runes[rune] - amount);
+  }
+
+  get canPerformResourceAction() {
+    return (
+      this._resourceActionsDoneThisTurn < this.game.config.MAX_RESOURCE_ACTIONS_PER_TURN
+    );
+  }
+
+  async performResourceAction(action: PlayerResourceAction) {
+    await match(action)
+      .with({ type: 'draw-card' }, async () => {
+        await this.cardManager.draw(1);
+      })
+      .with({ type: 'gain-rune' }, async ({ rune }) => {
+        this.gainRune(rune, 1);
+      })
+      .exhaustive();
+
+    this._resourceActionsDoneThisTurn++;
+  }
+
   async startTurn() {
     await this.game.emit(
       GAME_EVENTS.PLAYER_START_TURN,
@@ -251,6 +299,7 @@ export class Player
     );
 
     this.replacesDoneThisTurn = 0;
+    this._resourceActionsDoneThisTurn = 0;
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
       await this.drawForTurn();

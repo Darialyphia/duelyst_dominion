@@ -9,7 +9,8 @@ export class ModifierManager<T extends ModifierTarget> {
   has(modifierOrId: string | Modifier<T, any> | Constructor<Modifier<T>>) {
     if (modifierOrId instanceof Modifier) {
       return this._modifiers.some(
-        modifier => modifier.modifierType === modifierOrId.modifierType
+        modifier =>
+          modifier.modifierType === modifierOrId.modifierType && modifier.isUnique
       );
     } else if (isString(modifierOrId)) {
       return this._modifiers.some(modifier => modifier.modifierType === modifierOrId);
@@ -37,19 +38,9 @@ export class ModifierManager<T extends ModifierTarget> {
   }
 
   async add(modifier: Modifier<T>) {
-    if (modifier.isInherent) {
-      const found = this._modifiers.find(
-        mod => mod.modifierType === modifier.modifierType
-      );
-      if (found) {
-        found.enable();
-        return found;
-      }
-    }
-
     if (this.has(modifier)) {
       const mod = this.get(modifier.modifierType)!;
-      await mod!.reapplyTo(this.target);
+      await mod!.reapplyTo(this.target, modifier.stacks);
       return mod;
     } else {
       this._modifiers.push(modifier);

@@ -1,5 +1,13 @@
 import type { Game } from '../game/game';
-import type { CARD_KINDS, CardKind, CardSetId, Rarity, Tag, Faction } from './card.enums';
+import type {
+  CARD_KINDS,
+  CardKind,
+  CardSetId,
+  Rarity,
+  Tag,
+  Faction,
+  Rune
+} from './card.enums';
 import type { MinionCard } from './entities/minion-card.entity';
 import type { SpellCard } from './entities/spell-card.entity';
 import type { ArtifactCard } from './entities/artifact-card.entity';
@@ -22,9 +30,12 @@ export type CardBlueprintBase = {
   tags: (Tag | (string & {}))[];
 };
 
+export type RuneCost = Partial<Record<Rune, number>>;
+
 export type MinionBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.MINION>;
   manaCost: number;
+  runeCost: RuneCost;
   onInit: (game: Game, card: MinionCard) => Promise<void>;
   canPlay: (game: Game, card: MinionCard) => boolean;
   onPlay: (
@@ -51,6 +62,7 @@ export type MinionBlueprint = CardBlueprintBase & {
 export type SpellBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.SPELL>;
   manaCost: number;
+  runeCost: RuneCost;
   onInit: (game: Game, card: SpellCard) => Promise<void>;
   canPlay: (game: Game, card: SpellCard) => boolean;
   onPlay: (
@@ -97,6 +109,7 @@ export type ArtifactBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.ARTIFACT>;
   durability: number;
   manaCost: number;
+  runeCost: RuneCost;
   onInit: (game: Game, card: ArtifactCard) => Promise<void>;
   canPlay: (game: Game, card: ArtifactCard) => boolean;
   onPlay: (
