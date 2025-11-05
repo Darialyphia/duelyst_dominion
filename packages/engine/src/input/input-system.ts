@@ -9,7 +9,7 @@ import {
   type Values
 } from '@game/shared';
 import { type Game } from '../game/game';
-import type { DefaultSchema, Input } from './input';
+import type { Input } from './input';
 import { System } from '../system';
 import { z, ZodType } from 'zod';
 import {
