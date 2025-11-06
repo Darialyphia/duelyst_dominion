@@ -104,8 +104,8 @@ useIntersectionObserver(
   &.compact {
     --pixel-scale: 1;
     li {
-      width: calc(var(--card-small-width) * var(--pixel-scale));
-      aspect-ratio: var(--card-small-ratio);
+      width: calc(var(--card-width) * var(--pixel-scale));
+      aspect-ratio: var(--card-ratio);
     }
   }
 }

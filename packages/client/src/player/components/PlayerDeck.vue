@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { HeroBlueprint } from '@game/engine/src/card/card-blueprint';
-import { CARD_KINDS, type SpellSchool } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import {
   HoverCardContent,
@@ -11,44 +10,25 @@ import {
 
 export type DisplayedDeck = {
   name: string;
-  spellSchools: SpellSchool[];
-  mainDeck: { blueprintId: string; copies: number }[];
-  destinyDeck: { blueprintId: string; copies: number }[];
+  cards: { blueprintId: string; copies: number }[];
 };
 const { deck } = defineProps<{
   deck: DisplayedDeck;
 }>();
 
-const hero = computed(() => {
-  const heroes = deck.destinyDeck
-    .map(card => CARDS_DICTIONARY[card.blueprintId])
-    .filter(c => c.kind === CARD_KINDS.HERO);
-  return heroes.sort((a, b) => b.level - a.level)[0];
+const general = computed(() => {
+  const { blueprintId } = deck.cards.find(
+    card => CARDS_DICTIONARY[card.blueprintId].kind === CARD_KINDS.GENERAL
+  )!;
+
+  return CARDS_DICTIONARY[blueprintId];
 });
 
 const mainDeck = computed(() =>
-  deck.mainDeck.map(card => ({
+  deck.cards.map(card => ({
     ...card,
     blueprint: CARDS_DICTIONARY[card.blueprintId]
   }))
-);
-const destinyDeck = computed(() =>
-  deck.destinyDeck.map(card => ({
-    ...card,
-    blueprint: CARDS_DICTIONARY[card.blueprintId]
-  }))
-);
-const heroes = computed(() =>
-  destinyDeck.value
-    .filter(item => item.blueprint.kind === CARD_KINDS.HERO)
-    .sort(
-      (a, b) =>
-        (a.blueprint as HeroBlueprint).level -
-        (b.blueprint as HeroBlueprint).level
-    )
-);
-const otherDestinyCards = computed(() =>
-  destinyDeck.value.filter(item => item.blueprint.kind !== CARD_KINDS.HERO)
 );
 
 const minions = computed(() =>
@@ -62,10 +42,6 @@ const spells = computed(() =>
 const artifacts = computed(() =>
   mainDeck.value.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
 );
-
-const sigils = computed(() =>
-  mainDeck.value.filter(item => item.blueprint.kind === CARD_KINDS.SIGIL)
-);
 </script>
 
 <template>
@@ -75,19 +51,11 @@ const sigils = computed(() =>
         <button
           class="player-deck"
           :style="{
-            '--bg': `url(/assets/cards/${hero?.cardIconId}.png)`
+            '--bg': `url(/assets/cards/${general?.cardIconId}.png)`
           }"
         >
           <div class="deck-name">
             {{ deck.name }}
-            <div class="flex gap-1" v-if="hero">
-              <img
-                v-for="spellSchool in deck.spellSchools"
-                :key="spellSchool"
-                :src="`/assets/ui/spell-school-${spellSchool.toLowerCase()}.png`"
-                class="spell-school"
-              />
-            </div>
           </div>
         </button>
       </HoverCardTrigger>
@@ -113,29 +81,6 @@ const sigils = computed(() =>
                 <span :class="item.blueprint.rarity.toLocaleLowerCase()">
                   {{ item.blueprint.name }}
                 </span>
-              </li>
-              <li v-for="item in sigils" :key="item.blueprint.id">
-                {{ item.copies }}x
-                <span :class="item.blueprint.rarity.toLocaleLowerCase()">
-                  {{ item.blueprint.name }}
-                </span>
-              </li>
-            </ul>
-            <ul>
-              <li
-                v-for="item in heroes"
-                :key="item.blueprint.id"
-                :class="item.blueprint.rarity.toLocaleLowerCase()"
-              >
-                {{ item.copies }}x {{ item.blueprint.name }}
-              </li>
-
-              <li
-                v-for="item in otherDestinyCards"
-                :key="item.blueprint.id"
-                :class="item.blueprint.rarity.toLocaleLowerCase()"
-              >
-                {{ item.copies }}x {{ item.blueprint.name }}
               </li>
             </ul>
           </div>
@@ -187,8 +132,6 @@ const sigils = computed(() =>
   border-radius: var(--radius-2);
   box-shadow: var(--shadow-3);
   color: white;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .rare {

@@ -16,13 +16,7 @@ export type CardManagerComponentOptions = {
 };
 
 export type DeckCard = MinionCard | SpellCard | ArtifactCard;
-export const isDeckCard = (card: AnyCard): card is DeckCard => {
-  return (
-    card instanceof MinionCard ||
-    card instanceof SpellCard ||
-    card instanceof ArtifactCard
-  );
-};
+
 export type CardLocation = 'hand' | 'mainDeck' | 'discardPile' | 'board';
 
 export class CardManagerComponent {

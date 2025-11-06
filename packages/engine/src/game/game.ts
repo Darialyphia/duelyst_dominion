@@ -8,7 +8,8 @@ import {
   GameSnapshotSystem,
   type GameStateSnapshot,
   type SerializedOmniscientState,
-  type SerializedPlayerState
+  type SerializedPlayerState,
+  type SnapshotDiff
 } from './systems/game-snapshot.system';
 import { PlayerSystem } from '../player/player.system';
 import { GAME_EVENTS, GameReadyEvent, type GameEventMap } from './game.events';
@@ -187,20 +188,18 @@ export class Game implements Serializable<SerializedGame> {
     return this.emitter.off.bind(this.emitter);
   }
 
-  subscribeOmniscient(
-    cb: (snapshot: GameStateSnapshot<SerializedOmniscientState>) => void
-  ) {
-    this.on(GAME_EVENTS.NEW_SNAPSHOT, () =>
-      cb(this.snapshotSystem.getLatestOmniscientSnapshot())
+  subscribeOmniscient(cb: (snapshot: GameStateSnapshot<SnapshotDiff>) => void) {
+    this.on(GAME_EVENTS.NEW_SNAPSHOT, e =>
+      cb(this.snapshotSystem.getOmniscientDiffSnapshotAt(e.data.id))
     );
   }
 
   subscribeForPlayer(
     id: string,
-    cb: (snapshot: GameStateSnapshot<SerializedPlayerState>) => void
+    cb: (snapshot: GameStateSnapshot<SnapshotDiff>) => void
   ) {
-    this.on(GAME_EVENTS.NEW_SNAPSHOT, () =>
-      cb(this.snapshotSystem.getLatestSnapshotForPlayer(id))
+    this.on(GAME_EVENTS.NEW_SNAPSHOT, e =>
+      cb(this.snapshotSystem.getDiffSnapshotForPlayerAt(id, e.data.id))
     );
   }
 

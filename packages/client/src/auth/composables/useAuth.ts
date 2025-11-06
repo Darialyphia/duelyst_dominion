@@ -21,7 +21,7 @@ export const AUTH_INJECTION_KEY = Symbol(
 
 export const provideAuth = () => {
   const sessionId = useLocalStorage(
-    'clashing-destiny-session-id',
+    'duelyst_dominion-session-id',
     null as SessionId | null
   );
 

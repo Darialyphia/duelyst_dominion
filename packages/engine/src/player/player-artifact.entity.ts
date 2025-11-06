@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { Serializable } from '@game/shared';
-import { EntityWithModifiers } from '../entity';
+import { EntityWithModifiers } from '../utils/entity-with-modifiers';
 import type { Game } from '../game/game';
 import type { ArtifactCard } from '../card/entities/artifact-card.entity';
 import { Interceptable } from '../utils/interceptable';

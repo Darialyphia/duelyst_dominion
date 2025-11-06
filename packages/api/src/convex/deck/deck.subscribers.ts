@@ -37,7 +37,7 @@ export class DeckSubscribers {
         {
           kind: GIFT_KINDS.CARDS,
           cards: Object.values(collectableCards).map(card => ({
-            blueprintId: card,
+            blueprintId: card as string,
             isFoil: false,
             amount: 4
           }))

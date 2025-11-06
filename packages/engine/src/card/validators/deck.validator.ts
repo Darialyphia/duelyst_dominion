@@ -1,21 +1,21 @@
-import { type Nullable } from '@game/shared';
 import { defaultConfig } from '../../config';
 import type { CardBlueprint } from '../card-blueprint';
-import { CARD_DECK_SOURCES } from '../card.enums';
 
 export type DeckViolation = {
   type: string;
   reason: string;
 };
 
-export type ValidatableDeck = {
+export type ValidatableCard<TMeta> = {
+  blueprintId: string;
+  copies: number;
+  meta: TMeta;
+};
+export type ValidatableDeck<TMeta> = {
   id: string;
   name: string;
-  cards: Array<{
-    blueprintId: string;
-    copies: number;
-  }>;
-  general: Nullable<string>;
+  isEqual(first: ValidatableCard<TMeta>, second: ValidatableCard<TMeta>): boolean;
+  cards: Array<ValidatableCard<TMeta>>;
 };
 
 export type DeckValidationResult =
@@ -24,21 +24,21 @@ export type DeckValidationResult =
     }
   | { result: 'failure'; violations: Array<DeckViolation> };
 
-export type DeckValidator = {
-  maxCopiesForMainDeckCard: number;
-  mainDeckSize: number;
-  validate(deck: ValidatableDeck): DeckValidationResult;
-  canAdd(card: CardBlueprint, deck: ValidatableDeck): boolean;
+export type DeckValidator<TMeta> = {
+  maxCardCopies: number;
+  size: number;
+  validate(deck: ValidatableDeck<TMeta>): DeckValidationResult;
+  canAdd(card: ValidatableCard<TMeta>, deck: ValidatableDeck<TMeta>): boolean;
 };
 
-export class StandardDeckValidator implements DeckValidator {
+export class StandardDeckValidator<TMeta> implements DeckValidator<TMeta> {
   constructor(private cardPool: Record<string, CardBlueprint>) {}
 
-  get mainDeckSize(): number {
+  get size(): number {
     return defaultConfig.MAX_MAIN_DECK_SIZE;
   }
 
-  get maxCopiesForMainDeckCard(): number {
+  get maxCardCopies(): number {
     return defaultConfig.MAX_MAIN_DECK_CARD_COPIES;
   }
 
@@ -62,13 +62,13 @@ export class StandardDeckValidator implements DeckValidator {
     return cards.reduce((acc, card) => acc + card.copies, 0);
   }
 
-  validate(deck: ValidatableDeck): DeckValidationResult {
+  validate(deck: ValidatableDeck<TMeta>): DeckValidationResult {
     const violations: DeckViolation[] = [];
 
     if (this.getSize(deck.cards) !== defaultConfig.MAX_MAIN_DECK_SIZE) {
       violations.push({
         type: 'invalid_deck_size',
-        reason: `Main deck must have exactly ${defaultConfig.MAX_MAIN_DECK_SIZE} cards.`
+        reason: `Deck must have exactly ${defaultConfig.MAX_MAIN_DECK_SIZE} cards.`
       });
     }
 
@@ -92,24 +92,21 @@ export class StandardDeckValidator implements DeckValidator {
     return { result: 'success' };
   }
 
-  canAdd(card: CardBlueprint, deck: ValidatableDeck): boolean {
-    const withBlueprint = {
-      main: deck.cards.map(card => ({
-        ...card,
-        blueprint: this.cardPool[card.blueprintId] as CardBlueprint & {
-          decksource: typeof CARD_DECK_SOURCES.MAIN_DECK;
-        }
-      }))
-    };
+  canAdd(card: ValidatableCard<TMeta>, deck: ValidatableDeck<TMeta>): boolean {
+    const withBlueprint = deck.cards.map(card => ({
+      ...card,
+      blueprint: this.cardPool[card.blueprintId] as CardBlueprint
+    }));
 
-    if (withBlueprint.main.length >= this.mainDeckSize) {
+    const cardBlueprint = this.cardPool[card.blueprintId];
+    if (!cardBlueprint) return false;
+
+    if (withBlueprint.length >= this.size) {
       return false;
     }
-    const existing = withBlueprint.main.find(c => c.blueprint.id === card.id);
-    if (existing) {
-      if (existing.copies >= this.maxCopiesForMainDeckCard) {
-        return false;
-      }
+    const existing = withBlueprint.find(c => deck.isEqual(c, card));
+    if (existing && existing.copies >= this.maxCardCopies) {
+      return false;
     }
 
     return true;

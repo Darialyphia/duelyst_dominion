@@ -1,9 +1,10 @@
 import { defaultInputSchema, Input } from '../input';
-import { GAME_PHASES } from '../../game/game.enums';
 import {
+  GAME_PHASES,
   INTERACTION_STATES,
   type InteractionStateDict
-} from '../../game/systems/game-interaction.system';
+} from '../../game/game.enums';
+
 import { InvalidInteractionStateError } from '../input-errors';
 import { assert } from '@game/shared';
 

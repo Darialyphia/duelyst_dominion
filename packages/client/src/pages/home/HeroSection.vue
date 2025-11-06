@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import BlueprintCard from '@/card/components/BlueprintCard.vue';
+// import BlueprintCard from '@/card/components/BlueprintCard.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
-import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
+// import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
         </div>
       </div>
       <div class="hero-visual">
-        <div class="floating-cards">
+        <!-- <div class="floating-cards">
           <div class="card-phantom card-4">
             <BlueprintCard :blueprint="CARDS_DICTIONARY['fireball']" is-foil />
           </div>
@@ -44,7 +44,7 @@ import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
           <div class="card-phantom card-3">
             <BlueprintCard :blueprint="CARDS_DICTIONARY['aiden-lv2']" is-foil />
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>

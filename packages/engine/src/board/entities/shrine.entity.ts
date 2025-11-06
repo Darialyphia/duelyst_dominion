@@ -7,6 +7,7 @@ import type { Position } from '../../utils/position';
 import { GAME_EVENTS } from '../../game/game.events';
 import type { PlayerTurnEvent } from '../../player/player.events';
 import type { Unit } from '../../unit/unit.entity';
+import { PLAYER_EVENTS } from '../../player/player.enums';
 
 export const SHRINE_EVENTS = {
   SHRINE_BEFORE_CAPTURE: 'shrine:before-capture',
@@ -37,7 +38,7 @@ export class Shrine
   ) {
     super(`shrine_${position.x}_${position.y}`, {});
     this.position = position;
-    game.on(GAME_EVENTS.PLAYER_START_TURN, this.onTurnStart.bind(this));
+    game.on(PLAYER_EVENTS.PLAYER_START_TURN, this.onTurnStart.bind(this));
   }
 
   serialize(): SerializedShrine {

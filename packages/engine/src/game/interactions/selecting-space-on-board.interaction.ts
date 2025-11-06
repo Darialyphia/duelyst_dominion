@@ -2,13 +2,10 @@ import { assert, isDefined, type Point } from '@game/shared';
 import { IllegalTargetError } from '../../input/input-errors';
 import type { Player } from '../../player/player.entity';
 import type { Game } from '../game';
-import {
-  InvalidPlayerError,
-  UnableToCommitError,
-  INTERACTION_STATE_TRANSITIONS
-} from '../systems/game-interaction.system';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { GenericAOEShape } from '../../aoe/aoe-shape';
+import { INTERACTION_STATE_TRANSITIONS } from '../game.enums';
+import { InvalidPlayerError, UnableToCommitError } from '../game-error';
 
 type SelectingSpaceOnBoardContextOptions = {
   player: Player;

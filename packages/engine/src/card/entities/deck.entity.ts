@@ -3,7 +3,7 @@ import { TypedSerializableEvent } from '../../utils/typed-emitter';
 import { shuffleArray } from '@game/shared';
 import type { Game } from '../../game/game';
 import { nanoid } from 'nanoid';
-import { EntityWithModifiers } from '../../entity';
+import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
 import type { AnyCard, SerializedCard } from './card.entity';
 import type { Player } from '../../player/player.entity';
 

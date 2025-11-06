@@ -1,11 +1,12 @@
 import { assert } from '@game/shared';
 import { defaultInputSchema, Input } from '../input';
 import { z } from 'zod';
+
 import {
+  GAME_PHASES,
   INTERACTION_STATES,
   type InteractionStateDict
-} from '../../game/systems/game-interaction.system';
-import { GAME_PHASES } from '../../game/game.enums';
+} from '../../game/game.enums';
 import { InvalidInteractionStateError } from '../input-errors';
 
 const schema = defaultInputSchema.extend({

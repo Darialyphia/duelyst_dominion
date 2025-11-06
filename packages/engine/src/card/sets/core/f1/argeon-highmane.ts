@@ -4,8 +4,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
-  description: '',
-  cardIconId: 'f1_argeon-highmane',
+  description: 'Allies nearby captured Shrines have +1 Atk and +1 Hp.',
+  cardIconId: 'generals/f1_argeon-highmane',
   kind: CARD_KINDS.GENERAL,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -13,7 +13,7 @@ export const argeonHighmane: GeneralBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   atk: 2,
-  maxHp: 25,
+  maxHp: 15,
   abilities: [],
   async onInit() {},
   async onPlay() {}

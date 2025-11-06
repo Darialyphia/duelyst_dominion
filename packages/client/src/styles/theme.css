@@ -115,8 +115,8 @@
     hsl(250 30% 0% / 0.6);
   --fancy-border: solid var(--border-size-2) hsl(var(--color-primary-hsl) / 0.5);
 
-  --card-width-unitless: 128;
-  --card-height-unitless: 179;
+  --card-width-unitless: 189;
+  --card-height-unitless: 264;
   --card-width: calc(var(--card-width-unitless) * 1px);
   --card-height: calc(var(--card-height-unitless) * 1px);
   --card-ratio: var(--card-width-unitless) / var(--card-height-unitless);

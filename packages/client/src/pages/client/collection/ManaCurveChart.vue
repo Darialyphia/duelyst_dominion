@@ -14,17 +14,23 @@ const getCount = (cards: Array<{ copies: number }>) => {
 
 const getCountForCost = (cost: number) =>
   getCount(
-    deckBuilder.value.mainDeckCards.filter(c => c.blueprint.manaCost === cost)
+    deckBuilder.value.cards.filter(c => {
+      if (!('manaCost' in c.blueprint)) return false;
+      return c.blueprint.manaCost === cost;
+    })
   );
 
 const getCountForCostAndUp = (minCost: number) =>
   getCount(
-    deckBuilder.value.mainDeckCards.filter(c => c.blueprint.manaCost >= minCost)
+    deckBuilder.value.cards.filter(c => {
+      if (!('manaCost' in c.blueprint)) return false;
+      return c.blueprint.manaCost >= minCost;
+    })
   );
 </script>
 
 <template>
-  <div class="bars" :style="{ '--total': deckBuilder.mainDeckSize }">
+  <div class="bars" :style="{ '--total': deckBuilder.deckSize }">
     <div
       v-for="i in 7"
       :key="i"

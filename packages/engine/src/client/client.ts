@@ -13,10 +13,10 @@ import { FxController } from './controllers/fx-controller';
 import { ClientStateController } from './controllers/state-controller';
 import { UiController } from './controllers/ui-controller';
 import { TypedEventEmitter } from '../utils/typed-emitter';
-import { INTERACTION_STATES } from '../game/systems/game-interaction.system';
 import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
+import { INTERACTION_STATES } from '../game/game.enums';
 
 export const GAME_TYPES = {
   LOCAL: 'local',

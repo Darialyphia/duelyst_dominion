@@ -1,4 +1,3 @@
-import { INTERACTION_STATES } from '../../game/systems/game-interaction.system';
 import type { GameClient } from '../client';
 import type { CardViewModel } from '../view-models/card.model';
 import type { GameClientState } from './state-controller';
@@ -6,7 +5,7 @@ import { CancelPlayCardGlobalAction } from '../actions/cancel-play-card';
 import { CommitSpaceSelectionGlobalAction } from '../actions/commit-space-selection';
 import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import type { UnitViewModel } from '../view-models/unit.model';
-import { debounce } from 'lodash-es';
+import { INTERACTION_STATES } from '../../game/game.enums';
 
 export type GlobalActionRule = {
   id: string;

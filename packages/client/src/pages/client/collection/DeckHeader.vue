@@ -3,7 +3,6 @@ import UiTextInput from '@/ui/components/UiTextInput.vue';
 import { useCollectionPage } from './useCollectionPage';
 import { Icon } from '@iconify/vue';
 import UiModal from '@/ui/components/UiModal.vue';
-import DeckPoster from '@/card/components/DeckPoster.vue';
 
 const { deckBuilder } = useCollectionPage();
 const isPosterOpened = ref(false);
@@ -22,12 +21,13 @@ const isPosterOpened = ref(false);
         '--ui-modal-size': 'var(--size-xl)'
       }"
     >
-      <DeckPoster
+      TODO deck poster
+      <!-- <DeckPoster
         :spell-schools="deckBuilder.deck.spellSchools"
         :main-deck="deckBuilder.mainDeckCards"
         :destiny-deck="deckBuilder.destinyDeckCards"
         :name="deckBuilder.deck.name"
-      />
+      /> -->
     </UiModal>
     <img class="edit-icon" src="/assets/ui/pen.png" />
     <UiTextInput

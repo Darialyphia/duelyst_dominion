@@ -11,7 +11,6 @@ import type { Game } from '../game/game';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { ModifierManager } from './modifier-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
-import { Interceptable } from '../utils/interceptable';
 
 export type ModifierInfos<TCustomEvents extends Record<string, any>> =
   TCustomEvents extends EmptyObject

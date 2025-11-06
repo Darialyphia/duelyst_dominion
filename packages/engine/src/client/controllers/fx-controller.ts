@@ -15,21 +15,21 @@ const makePreFxEvents = () =>
     objectEntries(GAME_EVENTS).map(([key, value]) => [`PRE_${key}`, `pre_${value}`])
   ) as PreFxEventRecord;
 
-export const CLIENT_FX_EVENTS = {
+export const FX_EVENTS = {
   ...GAME_EVENTS,
   ...makePreFxEvents()
 } as const;
 
-export type ClientFXEvent = Values<typeof CLIENT_FX_EVENTS>;
+export type FXEvent = Values<typeof FX_EVENTS>;
 
-export type ClientFXEventName = keyof GameEventMap | PreFXEvent<keyof GameEventMap>;
+export type FXEventName = keyof GameEventMap | PreFXEvent<keyof GameEventMap>;
 
 type SerializedEvent<T extends keyof GameEventMap> = ReturnType<
   GameEventMap[T]['serialize']
 >;
 
-export type ClientFXEventMap = {
-  [Key in ClientFXEventName]: Key extends PreFXEvent<infer U>
+export type FXEventMap = {
+  [Key in FXEventName]: Key extends PreFXEvent<infer U>
     ? SerializedEvent<U>
     : Key extends keyof GameEventMap
       ? SerializedEvent<Key>
@@ -37,7 +37,7 @@ export type ClientFXEventMap = {
 };
 
 export class FxController {
-  private emitter = new TypedEventEmitter<ClientFXEventMap>('parallel');
+  private emitter = new TypedEventEmitter<FXEventMap>('parallel');
 
   private _isPlaying = false;
 
@@ -57,9 +57,10 @@ export class FxController {
     return this.emitter.off.bind(this.emitter);
   }
 
-  async emit(eventName: keyof GameEventMap, event: ClientFXEventMap[ClientFXEventName]) {
+  async emit(eventName: keyof GameEventMap, event: FXEventMap[FXEventName]) {
     this._isPlaying = true;
     await this.emitter.emit(`pre_${eventName}`, event as any);
+    // console.log('[FX] emitting fx event', eventName);
     await this.emitter.emit(eventName, event as any);
     this._isPlaying = false;
   }

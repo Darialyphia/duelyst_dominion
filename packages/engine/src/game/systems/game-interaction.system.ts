@@ -1,14 +1,12 @@
 import {
   type BetterExtract,
   type Serializable,
-  type Values,
   assert,
   StateMachine,
   stateTransition
 } from '@game/shared';
 import type { Game } from '../game';
 import type { AnyCard } from '../../card/entities/card.entity';
-import { GameError } from '../game-error';
 import type { Player } from '../../player/player.entity';
 import { SelectingSpaceOnBoardContext } from '../interactions/selecting-space-on-board.interaction';
 import { ChoosingCardsContext } from '../interactions/choosing-cards.interaction';
@@ -17,28 +15,13 @@ import { PlayCardContext } from '../interactions/play-card.interaction';
 import { IllegalCardPlayedError } from '../../input/input-errors';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { GenericAOEShape } from '../../aoe/aoe-shape';
-
-export const INTERACTION_STATES = {
-  IDLE: 'idle',
-  SELECTING_SPACE_ON_BOARD: 'selecting_space_on_board',
-  CHOOSING_CARDS: 'choosing_cards',
-  PLAYING_CARD: 'playing_card'
-} as const;
-export type InteractionStateDict = typeof INTERACTION_STATES;
-export type InteractionState = Values<typeof INTERACTION_STATES>;
-
-export const INTERACTION_STATE_TRANSITIONS = {
-  START_SELECTING_SPACE_ON_BOARD: 'start_selecting_space_on_board',
-  COMMIT_SELECTING_SPACE_ON_BOARD: 'commit_selecting_space_on_board',
-  CANCEL_SELECTING_SPACE_ON_BOARD: 'cancel_selecting_space_on_board',
-  START_CHOOSING_CARDS: 'start_choosing_cards',
-  COMMIT_CHOOSING_CARDS: 'commit_choosing_cards',
-  CANCEL_CHOOSING_CARDS: 'cancel_choosing_cards',
-  START_PLAYING_CARD: 'start_playing_card',
-  COMMIT_PLAYING_CARD: 'commit_playing_card',
-  CANCEL_PLAYING_CARD: 'cancel_playing_card'
-};
-export type InteractionStateTransition = Values<typeof INTERACTION_STATE_TRANSITIONS>;
+import {
+  INTERACTION_STATE_TRANSITIONS,
+  type InteractionState,
+  type InteractionStateTransition,
+  INTERACTION_STATES
+} from '../game.enums';
+import { CorruptedInteractionContextError } from '../game-error';
 
 export type InteractionContext =
   | {
@@ -222,35 +205,5 @@ export class GameInteractionSystem
 
   onInteractionEnd() {
     this._ctx = new IdleContext(this.game);
-  }
-}
-
-export class CorruptedInteractionContextError extends GameError {
-  constructor() {
-    super('Corrupted interaction context');
-  }
-}
-
-export class InvalidPlayerError extends GameError {
-  constructor() {
-    super('Invalid player trying to interact');
-  }
-}
-
-export class UnableToCommitError extends GameError {
-  constructor() {
-    super('Unable to commit');
-  }
-}
-
-export class NotEnoughCardsError extends GameError {
-  constructor(expected: number, received: number) {
-    super(`Not enough cards selected, expected ${expected}, received ${received}`);
-  }
-}
-
-export class TooManyCardsError extends GameError {
-  constructor(expected: number, received: number) {
-    super(`Too many cards selected, expected ${expected}, received ${received}`);
   }
 }

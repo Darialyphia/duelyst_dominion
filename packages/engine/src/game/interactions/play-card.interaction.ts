@@ -1,11 +1,9 @@
 import { assert } from '@game/shared';
 import type { Player } from '../../player/player.entity';
 import type { Game } from '../game';
-import {
-  InvalidPlayerError,
-  INTERACTION_STATE_TRANSITIONS
-} from '../systems/game-interaction.system';
 import type { DeckCard } from '../../card/components/card-manager.component';
+import { INTERACTION_STATE_TRANSITIONS } from '../game.enums';
+import { InvalidPlayerError } from '../game-error';
 type PlayCardContextOptions = {
   card: DeckCard;
   player: Player;

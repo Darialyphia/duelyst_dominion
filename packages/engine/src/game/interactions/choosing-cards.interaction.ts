@@ -1,13 +1,13 @@
 import { assert } from '@game/shared';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { Game } from '../game';
-import {
-  NotEnoughCardsError,
-  TooManyCardsError,
-  INTERACTION_STATE_TRANSITIONS,
-  InvalidPlayerError
-} from '../systems/game-interaction.system';
 import type { Player } from '../../player/player.entity';
+import { INTERACTION_STATE_TRANSITIONS } from '../game.enums';
+import {
+  InvalidPlayerError,
+  NotEnoughCardsError,
+  TooManyCardsError
+} from '../game-error';
 
 type ChoosingCardsContextOptions = {
   player: Player;

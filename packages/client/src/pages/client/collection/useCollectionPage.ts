@@ -40,19 +40,10 @@ export const provideCollectionPage = () => {
     isLoading,
     cards,
     cardPool,
-    hasSpellSchoolFilter,
-    toggleSpellSchoolFilter,
     hasKindFilter,
     toggleKindFilter,
-    clearSpellSchoolFilter,
     clearKindFilter,
-    textFilter,
-    hasSpeedFilter,
-    toggleSpeedFilter,
-    clearSpeedFilter,
-    hasJobFilter,
-    toggleJobFilter,
-    clearJobFilter
+    textFilter
   } = provideCardList();
 
   const { data: decks, isLoading: isLoadingDecks } = useDecks();
@@ -79,16 +70,7 @@ export const provideCollectionPage = () => {
       isEqual(first, second) {
         return first.meta.cardId === second.meta.cardId;
       },
-      spellSchools: newDeck.spellSchools,
-      mainDeck: newDeck.mainDeck.map(card => ({
-        blueprintId: card.blueprintId,
-        copies: card.copies,
-        meta: {
-          isFoil: card.isFoil,
-          cardId: card.cardId
-        }
-      })),
-      destinyDeck: newDeck.destinyDeck.map(card => ({
+      cards: newDeck.cards.map(card => ({
         blueprintId: card.blueprintId,
         copies: card.copies,
         meta: {
@@ -122,18 +104,9 @@ export const provideCollectionPage = () => {
     isLoading: computed(() => isLoading.value || isLoadingDecks.value),
     cards,
     cardPool,
-    hasSpellSchoolFilter,
-    toggleSpellSchoolFilter,
-    clearSpellSchoolFilter,
     hasKindFilter,
     toggleKindFilter,
     clearKindFilter,
-    hasSpeedFilter,
-    toggleSpeedFilter,
-    clearSpeedFilter,
-    hasJobFilter,
-    toggleJobFilter,
-    clearJobFilter,
     textFilter,
     viewMode,
     isEditingDeck,
@@ -154,12 +127,7 @@ export const provideCollectionPage = () => {
       saveDeck({
         deckId: selectedDeck.value.id,
         name: deckBuilder.value.deck.name,
-        spellSchools: deckBuilder.value.deck.spellSchools,
-        mainDeck: deckBuilder.value.deck.mainDeck.map(card => ({
-          cardId: card.meta.cardId,
-          copies: card.copies
-        })),
-        destinyDeck: deckBuilder.value.deck.destinyDeck.map(card => ({
+        cards: deckBuilder.value.deck.cards.map(card => ({
           cardId: card.meta.cardId,
           copies: card.copies
         }))

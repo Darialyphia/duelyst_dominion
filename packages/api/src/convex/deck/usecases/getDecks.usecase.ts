@@ -1,4 +1,3 @@
-import type { SpellSchool } from '@game/engine/src/card/card.enums';
 import { ensureAuthenticated } from '../../auth/auth.utils';
 import type { AuthSession } from '../../auth/entities/session.entity';
 import type { CardId } from '../../card/entities/card.entity';
@@ -10,14 +9,7 @@ import type { DeckReadRepository } from '../repositories/deck.repository';
 export type GetDecksOutput = Array<{
   name: string;
   id: DeckId;
-  spellSchools: SpellSchool[];
-  mainDeck: Array<{
-    cardId: CardId;
-    isFoil: boolean;
-    blueprintId: string;
-    copies: number;
-  }>;
-  destinyDeck: Array<{
+  cards: Array<{
     cardId: CardId;
     isFoil: boolean;
     blueprintId: string;
@@ -36,7 +28,7 @@ export class GetDecksUseCase implements UseCase<never, GetDecksOutput> {
     }
   ) {}
 
-  private async populateDeckList(deckList: DeckDoc['mainDeck']) {
+  private async populateDeckList(deckList: DeckDoc['cards']) {
     return Promise.all(
       deckList.map(async item => {
         const card = await this.ctx.cardReadRepo.getById(item.cardId);
@@ -54,15 +46,12 @@ export class GetDecksUseCase implements UseCase<never, GetDecksOutput> {
   }
 
   private async populateDeck(deck: DeckDoc) {
-    const mainDeck = await this.populateDeckList(deck.mainDeck);
-    const destinyDeck = await this.populateDeckList(deck.destinyDeck);
+    const cards = await this.populateDeckList(deck.cards);
 
     return {
       id: deck._id,
       name: deck.name,
-      spellSchools: deck.spellSchools,
-      mainDeck,
-      destinyDeck
+      cards
     };
   }
 

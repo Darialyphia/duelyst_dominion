@@ -2,7 +2,7 @@ import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
-import { EntityWithModifiers } from '../entity';
+import { EntityWithModifiers } from '../utils/entity-with-modifiers';
 import { MovementComponent } from './components/movement.component';
 import { PathfinderComponent } from '../pathfinding/pathfinder.component';
 import { SolidBodyPathfindingStrategy } from '../pathfinding/strategies/solid-pathfinding.strategy';

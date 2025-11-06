@@ -1,5 +1,4 @@
 import type { DatabaseReader, DatabaseWriter } from '../../_generated/server';
-import type { CardId } from '../../card/entities/card.entity';
 import type { CardRepository } from '../../card/repositories/card.repository';
 import type { UserId } from '../../users/entities/user.entity';
 import { AppError } from '../../utils/error';
@@ -54,8 +53,8 @@ export class DeckRepository {
       throw new Error(`Premade deck with ID ${deckId} not found`);
     }
 
-    const mainDeckCards = [];
-    for (const deckCard of premadeDeck.mainDeck) {
+    const cards = [];
+    for (const deckCard of premadeDeck.cards) {
       const identicalCard = await this.ctx.cardRepo.findIdentical(
         userId,
         deckCard.blueprintId,
@@ -65,7 +64,7 @@ export class DeckRepository {
       if (identicalCard) {
         identicalCard.addCopies(deckCard.copies);
         await this.ctx.cardRepo.save(identicalCard);
-        mainDeckCards.push({
+        cards.push({
           cardId: identicalCard.id,
           copies: deckCard.copies
         });
@@ -79,22 +78,7 @@ export class DeckRepository {
         copiesOwned: deckCard.copies
       });
 
-      mainDeckCards.push({
-        cardId,
-        copies: deckCard.copies
-      });
-    }
-
-    const destinyDeckCards = [];
-    for (const deckCard of premadeDeck.destinyDeck) {
-      const cardId = await this.ctx.cardRepo.create({
-        ownerId: userId,
-        blueprintId: deckCard.blueprintId,
-        isFoil: deckCard.isFoil,
-        copiesOwned: deckCard.copies
-      });
-
-      destinyDeckCards.push({
+      cards.push({
         cardId,
         copies: deckCard.copies
       });
@@ -103,9 +87,7 @@ export class DeckRepository {
     const deckDocId = await this.ctx.db.insert('decks', {
       name: premadeDeck.name,
       ownerId: userId,
-      mainDeck: mainDeckCards,
-      destinyDeck: destinyDeckCards,
-      spellSchools: premadeDeck.spellSchools
+      cards
     });
 
     const deckDoc = await this.ctx.db.get(deckDocId);
@@ -120,9 +102,7 @@ export class DeckRepository {
     const deckDocId = await this.ctx.db.insert('decks', {
       name: DEFAULT_DECK_NAME,
       ownerId: ownerId,
-      mainDeck: [],
-      destinyDeck: [],
-      spellSchools: []
+      cards: []
     });
 
     const deckDoc = await this.ctx.db.get(deckDocId);

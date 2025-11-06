@@ -168,9 +168,9 @@ export const KEYWORDS = {
     description: 'Triggers when this unit has no nearby allies.',
     aliases: []
   },
-  OPENING_GAMBIT: {
-    id: 'opening_gambit',
-    name: 'Opening Gambit',
+  ON_ENTER: {
+    id: 'on_enter',
+    name: 'On Enter',
     description: 'Triggers when the unit enters the battlefield.',
     aliases: []
   },

@@ -29,11 +29,15 @@ export class GrantMissingCardsUseCase
     const cardsToGift: Array<{ blueprintId: string; copies: number }> = [];
 
     for (const cardName of Object.values(collectableCards)) {
-      const card = await this.ctx.cardRepo.findIdentical(input.userId, cardName, false);
+      const card = await this.ctx.cardRepo.findIdentical(
+        input.userId,
+        cardName as string,
+        false
+      );
       const copiesOwned = card?.copiesOwned.value ?? 0;
       if (copiesOwned < MAX_COPIES) {
         const copiesNeeded = MAX_COPIES - copiesOwned;
-        cardsToGift.push({ blueprintId: cardName, copies: copiesNeeded });
+        cardsToGift.push({ blueprintId: cardName as string, copies: copiesNeeded });
       }
     }
 

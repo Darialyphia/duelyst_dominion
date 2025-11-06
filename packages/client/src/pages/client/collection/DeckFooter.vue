@@ -15,12 +15,8 @@ const isDeleteModalOpened = ref(false);
   <footer>
     <div class="deck-count">
       <div>
-        Main deck ({{ deckBuilder.mainDeckSize }} /
-        {{ deckBuilder.validator.mainDeckSize }})
-      </div>
-      <div>
-        Destiny Deck ({{ deckBuilder.destinyDeckSize }} /
-        {{ deckBuilder.validator.destinyDeckSize }})
+        Deck size : ({{ deckBuilder.deckSize }} /
+        {{ deckBuilder.validator.size }})
       </div>
     </div>
     <div class="actions">

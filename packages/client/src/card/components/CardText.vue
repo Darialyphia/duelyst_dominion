@@ -11,7 +11,6 @@ import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import BlueprintCard from './BlueprintCard.vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
-import { CARD_SPEED, type CardSpeed } from '@game/engine/src/card/card.enums';
 
 const { text, highlighted = true } = defineProps<{
   text: string;
@@ -34,8 +33,7 @@ type Token =
   | { type: 'level-bonus'; text: string }
   | { type: 'lineage-bonus'; text: string }
   | { type: 'missing-affinity'; text: string }
-  | { type: 'durability' }
-  | { type: CardSpeed };
+  | { type: 'durability' };
 const tokens = computed<Token[]>(() => {
   if (!text.includes(KEYWORD_DELIMITER)) return [{ type: 'text', text }];
 
@@ -101,11 +99,7 @@ const tokens = computed<Token[]>(() => {
         text: part.replace('[missing-affinity] ', '')
       };
     }
-    for (const speed of Object.values(CARD_SPEED)) {
-      if (part.startsWith(`[${speed}]`)) {
-        return { type: speed };
-      }
-    }
+
     return { type: 'text', text: part };
   });
 });
@@ -158,30 +152,6 @@ const tokens = computed<Token[]>(() => {
         : when it reaches zero, the artifact is destroyed.
       </UiSimpleTooltip>
 
-      <UiSimpleTooltip v-else-if="token.type === CARD_SPEED.SLOW">
-        <template #trigger>
-          <img src="/assets/ui/speed-slow.png" class="inline" />
-        </template>
-
-        This can only be activated at Slow speed.
-      </UiSimpleTooltip>
-
-      <UiSimpleTooltip v-else-if="token.type === CARD_SPEED.FAST">
-        <template #trigger>
-          <img src="/assets/ui/speed-fast.png" class="inline" />
-        </template>
-
-        This can be activated at Fast speed.
-      </UiSimpleTooltip>
-
-      <UiSimpleTooltip v-else-if="token.type === CARD_SPEED.FLASH">
-        <template #trigger>
-          <img src="/assets/ui/speed-flash.png" class="inline" />
-        </template>
-
-        This can is activated at Flash speed and resolves instantly.
-      </UiSimpleTooltip>
-
       <HoverCardRoot v-else :open-delay="250" :close-delay="0">
         <HoverCardTrigger>
           <span tabindex="0" v-if="'text' in token">
@@ -210,15 +180,13 @@ const tokens = computed<Token[]>(() => {
 <style scoped lang="postcss">
 .card-text {
   white-space: pre-wrap;
-  color: #d7ad42;
-  color: #efef9f;
+  color: #bea991;
   line-height: 1.3;
 }
 
 :is(.token-keyword, .token-card) {
   font-weight: var(--font-weight-7);
   color: #efef9f;
-  color: #d7ad42;
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
 }
@@ -294,16 +262,7 @@ const tokens = computed<Token[]>(() => {
     margin-inline: var(--size-1);
   }
 }
-.token-SLOW,
-.token-FAST,
-.token-FLASH {
-  img {
-    width: 22px;
-    height: 20px;
-    aspect-ratio: 1;
-    transform: translateY(6px);
-  }
-}
+
 .token-health {
   color: var(--pink-6);
   font-weight: var(--font-weight-5);
