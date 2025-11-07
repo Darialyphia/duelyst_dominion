@@ -139,7 +139,7 @@ const tag = computed(() => {
       background-clip: text;
     }
     .primary &::after {
-      background-image: linear-gradient(#efef9f, #efef9f 50%, #d7ad42 50%);
+      background-image: linear-gradient(#dec7a6, #dec7a6 50%, #dec7a6 50%);
     }
 
     .error &::after {

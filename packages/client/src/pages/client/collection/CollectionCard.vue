@@ -89,9 +89,11 @@ const canAddCard = computed(() => {
       </div>
     </HoverCardTrigger>
     <HoverCardPortal>
-      <HoverCardContent v-if="viewMode === 'compact'">
-        <BlueprintCard :blueprint="card.card" />
-      </HoverCardContent>
+      <Transition>
+        <HoverCardContent v-if="viewMode === 'compact'">
+          <BlueprintCard :blueprint="card.card" style="--pixel-scale: 1.5" />
+        </HoverCardContent>
+      </Transition>
     </HoverCardPortal>
   </HoverCardRoot>
 </template>
@@ -111,10 +113,24 @@ const canAddCard = computed(() => {
 }
 
 .collection-card.disabled {
-  filter: grayscale(50%) brightness(80%);
+  filter: grayscale(70%) brightness(80%);
 }
 
 .collection-card:not(.disabled):hover {
   cursor: url('/assets/ui/cursor-hover.png'), auto;
+}
+
+.v-enter-active {
+  transition: opacity 0.5s var(--ease-3);
+  > * {
+    transition: transform 0.5s var(--ease-3);
+  }
+}
+
+.v-enter-from {
+  opacity: 0.5;
+  > * {
+    transform: translateY(15px);
+  }
 }
 </style>

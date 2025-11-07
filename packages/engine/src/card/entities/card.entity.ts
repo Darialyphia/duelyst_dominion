@@ -5,13 +5,12 @@ import { ModifierManager } from '../../modifier/modifier-manager.component';
 import type { Player } from '../../player/player.entity';
 import { Interceptable } from '../../utils/interceptable';
 import type { CardBlueprint } from '../card-blueprint';
-import { CARD_EVENTS, type CardKind, type Rarity } from '../card.enums';
+import { CARD_EVENTS, CARD_KINDS, type CardKind, type Rarity } from '../card.enums';
 import { CardAddToHandevent, CardDiscardEvent, type CardEventMap } from '../card.events';
 import { match } from 'ts-pattern';
-import { type CardLocation } from '../components/card-manager.component';
+import { type CardLocation, type DeckCard } from '../components/card-manager.component';
 import { KeywordManagerComponent } from '../components/keyword-manager.component';
 import { IllegalGameStateError } from '../../game/game-error';
-import { isDeckCard } from '../card-utils';
 
 export type CardOptions<T extends CardBlueprint = CardBlueprint> = {
   id: string;
@@ -42,6 +41,14 @@ export type SerializedCard = {
   location: CardLocation | null;
   keywords: Array<{ id: string; name: string; description: string }>;
   modifiers: string[];
+};
+
+export const isDeckCard = (card: AnyCard): card is DeckCard => {
+  return (
+    card.blueprint.kind === CARD_KINDS.MINION ||
+    card.blueprint.kind === CARD_KINDS.SPELL ||
+    card.blueprint.kind === CARD_KINDS.ARTIFACT
+  );
 };
 
 export abstract class Card<

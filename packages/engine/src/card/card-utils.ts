@@ -5,13 +5,11 @@ import type { Game } from '../game/game';
 import { TARGETING_TYPE } from '../targeting/targeting-strategy';
 import type { Unit } from '../unit/unit.entity';
 import { CARD_KINDS } from './card.enums';
-import type { DeckCard } from './components/card-manager.component';
 import type { ArtifactCard } from './entities/artifact-card.entity';
 import type { AnyCard } from './entities/card.entity';
 import type { GeneralCard } from './entities/general-card.entity';
-import { MinionCard } from './entities/minion-card.entity';
-
-import { SpellCard } from './entities/spell-card.entity';
+import type { MinionCard } from './entities/minion-card.entity';
+import type { SpellCard } from './entities/spell-card.entity';
 
 export const isGeneral = (card: AnyCard): card is GeneralCard => {
   return card.kind === CARD_KINDS.GENERAL;
@@ -31,14 +29,6 @@ export const isArtifact = (card: AnyCard): card is ArtifactCard => {
 
 export const isMinionOrGeneral = (card: AnyCard): card is MinionCard | GeneralCard => {
   return isMinion(card) || isGeneral(card);
-};
-
-export const isDeckCard = (card: AnyCard): card is DeckCard => {
-  return (
-    card.blueprint.kind === CARD_KINDS.MINION ||
-    card.blueprint.kind === CARD_KINDS.SPELL ||
-    card.blueprint.kind === CARD_KINDS.ARTIFACT
-  );
 };
 
 export const singleEnemyTargetRules = {
@@ -138,12 +128,14 @@ export const singleMinionTargetRules = {
     game: Game,
     card: AnyCard,
     {
+      required = true,
       predicate = () => true,
       getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION)
     }: {
+      required?: boolean;
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
-    }
+    } = {}
   ) {
     return await game.interaction.selectSpacesOnBoard({
       player: card.player,
@@ -160,7 +152,7 @@ export const singleMinionTargetRules = {
         );
       },
       canCommit(selectedCards) {
-        return selectedCards.length === 1;
+        return required ? selectedCards.length === 1 : true;
       },
       isDone(selectedCards) {
         return selectedCards.length === 1;

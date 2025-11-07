@@ -51,13 +51,14 @@
   --foil-brightness: 0.6;
   position: absolute;
   inset: 0;
-  opacity: 0.3;
+  opacity: 0.2;
   pointer-events: none;
   mask-image: var(--foil-mask);
   mask-size: cover;
   mix-blend-mode: color-dodge;
   background-image:
-    url('/assets/ui/foil-texture.webp'),
+    /* url('/assets/ui/foil-texture.webp'), */
+    linear-gradient(white, white),
     repeating-linear-gradient(
       0deg,
       rgb(255, 119, 115) calc(var(--space) * 1),
@@ -94,6 +95,14 @@
     foil-brightness 5s infinite ease-in-out;
 }
 
+@keyframes foil-oil {
+  from {
+    filter: saturate(1.6) contrast(1.2);
+  }
+  to {
+    filter: saturate(1.6) contrast(1.2) hue-rotate(360deg);
+  }
+}
 .foil-oil {
   position: absolute;
   inset: 0;
@@ -122,9 +131,15 @@
   mask: var(--foil-mask) center/cover no-repeat;
   transition: opacity 1s;
   transition-delay: 0;
-  :has(> &):hover & {
-    opacity: 0.12;
-    transition-delay: 0.5s;
-  }
+  animation: foil-oil 5s linear infinite;
+  /* :has(> &):hover & {
+    opacity: 0.2;
+    transition-delay: 0.3s;
+  } */
+}
+
+:global(.card-perspective-wrapper:hover .foil-oil) {
+  opacity: 0.12;
+  transition-delay: 0.3s;
 }
 </style>

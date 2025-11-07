@@ -1,9 +1,7 @@
-import type { Values } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
 import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy';
 import { Interceptable } from '../../utils/interceptable';
-import { TypedSerializableEvent } from '../../utils/typed-emitter';
 import type { GeneralBlueprint } from '../card-blueprint';
 import {
   Card,
@@ -15,6 +13,7 @@ import {
 import { Ability, type SerializedAbility } from './ability.entity';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
+import { GENERAL_EVENTS, GeneralUseAbilityEvent } from '../events/general.events';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
@@ -28,29 +27,6 @@ export type GeneralCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
   canUseAbility: Interceptable<boolean, GeneralCard>;
-};
-
-export const GENERAL_EVENTS = {
-  GENERAL_BEFORE_USE_ABILITY: 'general:before-use-ability',
-  GENERAL_AFTER_USE_ABILITY: 'general:after-use-ability'
-} as const;
-export type GeneralEvent = Values<typeof GENERAL_EVENTS>;
-
-export class GeneralUseAbilityEvent extends TypedSerializableEvent<
-  { card: GeneralCard; abilityId: string },
-  { card: string; abilityId: string }
-> {
-  serialize() {
-    return {
-      card: this.data.card.id,
-      abilityId: this.data.abilityId
-    };
-  }
-}
-
-export type GeneralEventMap = {
-  [GENERAL_EVENTS.GENERAL_BEFORE_USE_ABILITY]: GeneralUseAbilityEvent;
-  [GENERAL_EVENTS.GENERAL_AFTER_USE_ABILITY]: GeneralUseAbilityEvent;
 };
 
 export class GeneralCard extends Card<

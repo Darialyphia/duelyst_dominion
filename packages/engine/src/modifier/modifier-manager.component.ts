@@ -1,5 +1,6 @@
 import { isString, type Constructor, type Nullable } from '@game/shared';
 import { Modifier, type ModifierTarget } from './modifier.entity';
+import type { AnyCard } from '../card/entities/card.entity';
 
 export class ModifierManager<T extends ModifierTarget> {
   private _modifiers: Modifier<T>[] = [];
@@ -49,8 +50,15 @@ export class ModifierManager<T extends ModifierTarget> {
     }
   }
 
-  async remove(modifierOrType: string | Modifier<T> | Constructor<Modifier<T>>) {
+  async remove(
+    modifierOrType: string | Modifier<T> | Constructor<Modifier<T>>,
+    source?: AnyCard
+  ) {
     const idx = this._modifiers.findIndex(mod => {
+      if (source && !mod.source.equals(source)) {
+        return false;
+      }
+
       if (modifierOrType instanceof Modifier) {
         return mod.equals(modifierOrType);
       } else if (isString(modifierOrType)) {

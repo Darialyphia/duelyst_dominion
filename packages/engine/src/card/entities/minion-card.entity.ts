@@ -19,8 +19,8 @@ import {
   TARGETING_TYPE,
   type TargetingStrategy
 } from '../../targeting/targeting-strategy';
-import type { MaybePromise, Point, Values } from '@game/shared';
-import { TypedSerializableEvent } from '../../utils/typed-emitter';
+import type { MaybePromise } from '@game/shared';
+import { MINION_EVENTS, MinionSummonedEvent } from '../events/minion.events';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedMinionCard = SerializedCard & {
@@ -38,29 +38,6 @@ export type MinionCardInterceptors = CardInterceptors & {
   cmd: Interceptable<number>;
   summonTargetingStrategy: Interceptable<TargetingStrategy>;
   canPlay: Interceptable<boolean, MinionCard>;
-};
-
-export const MINION_EVENTS = {
-  MINION_BEFORE_SUMMON: 'minion:before-summon',
-  MINION_AFTER_SUMMON: 'minion:after-summon'
-} as const;
-export type MinionEvent = Values<typeof MINION_EVENTS>;
-
-export class MinionSummonedEvent extends TypedSerializableEvent<
-  { card: MinionCard; cell: BoardCell },
-  { card: SerializedMinionCard; position: Point }
-> {
-  serialize() {
-    return {
-      card: this.data.card.serialize(),
-      position: this.data.cell.position.serialize()
-    };
-  }
-}
-
-export type MinionEventMap = {
-  [MINION_EVENTS.MINION_BEFORE_SUMMON]: MinionSummonedEvent;
-  [MINION_EVENTS.MINION_AFTER_SUMMON]: MinionSummonedEvent;
 };
 
 export class MinionCard extends Card<
@@ -168,12 +145,12 @@ export class MinionCard extends Card<
 
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
-      new MinionSummonedEvent({ card: this, cell: position })
+      new MinionSummonedEvent({ card: this, cell: position, targets })
     );
     this.game.unitSystem.addUnit(this, position);
     await this.game.emit(
       MINION_EVENTS.MINION_AFTER_SUMMON,
-      new MinionSummonedEvent({ card: this, cell: position })
+      new MinionSummonedEvent({ card: this, cell: position, targets })
     );
 
     await this.blueprint.onPlay(this.game, this, {

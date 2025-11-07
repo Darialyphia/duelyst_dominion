@@ -14,6 +14,8 @@ export const UNIT_EVENTS = {
   UNIT_BEFORE_DESTROY: 'unit.before_destroy',
   UNIT_AFTER_DESTROY: 'unit.after_destroy',
   UNIT_BEFORE_TELEPORT: 'unit.before_teleport',
-  UNIT_AFTER_TELEPORT: 'unit.after_teleport'
+  UNIT_AFTER_TELEPORT: 'unit.after_teleport',
+  UNIT_BEFORE_HEAL: 'unit.before_heal',
+  UNIT_AFTER_HEAL: 'unit.after_heal'
 } as const;
 export type UnitEvent = Values<typeof UNIT_EVENTS>;

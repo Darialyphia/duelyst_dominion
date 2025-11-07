@@ -19,13 +19,10 @@ import type { PlayerEventMap } from '../player/player.events';
 import type { UnitEventMap } from '../unit/unit-events';
 import { UNIT_EVENTS } from '../unit/unit.enums';
 import type { ArtifactEventMap } from '../player/player-artifact.events';
-import { MINION_EVENTS, type MinionEventMap } from '../card/entities/minion-card.entity';
 import { FX_EVENTS, type FxEventMap } from './systems/fx.system';
-import {
-  GENERAL_EVENTS,
-  type GeneralEventMap
-} from '../card/entities/general-card.entity';
+import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
 import { SHRINE_EVENTS, type ShrineEventMap } from '../board/entities/shrine.entity';
+import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },

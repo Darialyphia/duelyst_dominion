@@ -1,9 +1,9 @@
 import type { Point, Vec2 } from '@game/shared';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
-import type { SerializedUnit, Unit } from './unit.entity';
+import type { Unit } from './unit.entity';
 import type { UNIT_EVENTS } from './unit.enums';
 import type { Damage } from '../utils/damage';
-import type { AnyCard, SerializedCard } from '../card/entities/card.entity';
+import type { AnyCard } from '../card/entities/card.entity';
 import type { Position } from '../utils/position';
 
 export class UnitBeforeMoveEvent extends TypedSerializableEvent<
@@ -75,24 +75,52 @@ export class UnitReceiveDamageEvent extends TypedSerializableEvent<
 }
 
 export class UnitBeforeDestroyEvent extends TypedSerializableEvent<
-  { source: AnyCard },
-  { source: SerializedCard }
+  { source: AnyCard; unit: Unit },
+  { source: string; unit: string }
 > {
   serialize() {
     return {
-      source: this.data.source.serialize()
+      source: this.data.source.id,
+      unit: this.data.unit.id
     };
   }
 }
 
 export class UnitAfterDestroyEvent extends TypedSerializableEvent<
-  { source: AnyCard; destroyedAt: Position },
-  { source: SerializedCard; destroyedAt: Point }
+  { unit: Unit; source: AnyCard; destroyedAt: Position },
+  { unit: string; source: string; destroyedAt: Point }
 > {
   serialize() {
     return {
-      source: this.data.source.serialize(),
+      unit: this.data.unit.id,
+      source: this.data.source.id,
       destroyedAt: this.data.destroyedAt.serialize()
+    };
+  }
+}
+
+export class UnitBeforeHealEvent extends TypedSerializableEvent<
+  { unit: Unit; amount: number; source: AnyCard },
+  { unit: string; amount: number; source: string }
+> {
+  serialize() {
+    return {
+      unit: this.data.unit.id,
+      amount: this.data.amount,
+      source: this.data.source.id
+    };
+  }
+}
+
+export class UnitAfterHealEvent extends TypedSerializableEvent<
+  { unit: Unit; amount: number; source: AnyCard },
+  { unit: string; amount: number; source: string }
+> {
+  serialize() {
+    return {
+      unit: this.data.unit.id,
+      amount: this.data.amount,
+      source: this.data.source.id
     };
   }
 }
@@ -112,4 +140,6 @@ export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_AFTER_DESTROY]: UnitAfterDestroyEvent;
   [UNIT_EVENTS.UNIT_BEFORE_TELEPORT]: UnitBeforeMoveEvent;
   [UNIT_EVENTS.UNIT_AFTER_TELEPORT]: UnitAfterMoveEvent;
+  [UNIT_EVENTS.UNIT_BEFORE_HEAL]: UnitBeforeHealEvent;
+  [UNIT_EVENTS.UNIT_AFTER_HEAL]: UnitAfterHealEvent;
 };

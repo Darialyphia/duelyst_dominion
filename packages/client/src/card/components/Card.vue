@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  RARITIES,
   type CardKind,
   type Faction,
   type Rarity
@@ -43,17 +44,17 @@ const {
   isAnimated?: boolean;
 }>();
 
-// const rarityBg = computed(() => {
-//   if (
-//     [RARITIES.BASIC, RARITIES.COMMON, RARITIES.TOKEN].includes(
-//       card.rarity as any
-//     )
-//   ) {
-//     return `url('/assets/ui/card-rarity-common.png')`;
-//   }
+const rarityBg = computed(() => {
+  if (
+    [RARITIES.BASIC, RARITIES.COMMON, RARITIES.TOKEN].includes(
+      card.rarity as any
+    )
+  ) {
+    return `url('/assets/ui/card-rarity-common.png')`;
+  }
 
-//   return `url('/assets/ui/card-rarity-${card.rarity}.png')`;
-// });
+  return `url('/assets/ui/card-rarity-${card.rarity}.png')`;
+});
 
 const factionBg = computed(() => {
   return `url('/assets/ui/crest-${card.faction.toLocaleLowerCase()}.png')`;
@@ -147,7 +148,7 @@ until(descriptionBox)
 
 const nameBox = useTemplateRef('name-box');
 const NAME_MIN_TEXT_SIZE = 14;
-const NAME_MAX_TEXT_SIZE = 24;
+const NAME_MAX_TEXT_SIZE = 18;
 
 const nameFontSize = ref(NAME_MAX_TEXT_SIZE);
 until(nameBox)
@@ -209,10 +210,9 @@ const onMouseleave = () => {
       ref="card"
     >
       <div class="card-front">
-        <!-- <div class="fx flame" /> -->
         <CardFoil v-if="isFoil" />
 
-        <div class="image parallax" />
+        <div class="image parallax" style="--parallax-factor: 2" />
 
         <div class="top-left parallax">
           <div
@@ -288,6 +288,13 @@ const onMouseleave = () => {
 
         <div ref="name-box" class="name parallax">
           <svg viewBox="0 0 500 200" class="w-full">
+            <defs>
+              <radialGradient id="name-gradient">
+                <stop offset="15%" stop-color="#cbb599" />
+                <stop offset="80%" stop-color="#9a8270" />
+              </radialGradient>
+            </defs>
+
             <path
               id="curve"
               d="
@@ -297,12 +304,13 @@ const onMouseleave = () => {
             />
             <text>
               <textPath
+                class="name-text"
                 xlink:href="#curve"
                 text-anchor="middle"
                 startOffset="50%"
                 stroke="black"
-                stroke-width="5"
                 paint-order="stroke"
+                fill="url(#name-gradient)"
               >
                 {{ card.name }}
               </textPath>
@@ -317,6 +325,8 @@ const onMouseleave = () => {
         <div ref="description-box" class="description parallax">
           <CardText :text="card.description" />
         </div>
+
+        <div class="rarity" />
 
         <CardGlare />
       </div>
@@ -373,9 +383,10 @@ const onMouseleave = () => {
     background-size: cover;
     z-index: -1;
     filter: brightness(3) saturate(2) blur(30px) hue-rotate(0deg);
-    opacity: 1;
+    opacity: 0.75;
     mix-blend-mode: screen;
-    animation: pulse 5s var(--ease-out-3) infinite;
+    scale: 0.95;
+    /* animation: foil-pulse 5s var(--ease-out-3) infinite; */
     --parallax-x: calc(v-bind('angle.y') * -3px);
     --parallax-y: calc(v-bind('angle.x') * 3px);
     translate: var(--parallax-x) var(--parallax-y);
@@ -397,8 +408,15 @@ const onMouseleave = () => {
 
 .card.animated:has(.foil) .parallax {
   --parallax-strength: 1;
-  --parallax-x: calc(v-bind('angle.y') * var(--parallax-strength) * 1px);
-  --parallax-y: calc(v-bind('angle.x') * var(--parallax-strength) * -1px);
+  --parallax-factor: 1;
+  --parallax-x: calc(
+    v-bind('angle.y') * var(--parallax-strength) *
+      calc(1px * var(--parallax-factor))
+  );
+  --parallax-y: calc(
+    v-bind('angle.x') * var(--parallax-strength) *
+      calc(-1px * var(--parallax-factor))
+  );
   translate: var(--parallax-x) var(--parallax-y);
 }
 
@@ -455,10 +473,12 @@ const onMouseleave = () => {
   height: calc(2 * 96px * var(--pixel-scale));
   background: v-bind(imageBg);
   background-size: cover;
-  background-position: center -125px;
+  background-position: center calc(-62px * var(--pixel-scale));
+  background-repeat: no-repeat;
   top: calc(5px * var(--pixel-scale));
   left: 50%;
   translate: calc(-50% + var(--parallax-x, 0)) var(--parallax-y, 0) !important;
+  pointer-events: none;
 
   .card.animated:not(:has(.foil)) & {
     translate: -50% 0 !important;
@@ -470,7 +490,7 @@ const onMouseleave = () => {
   position: absolute;
   top: calc(180px * var(--pixel-scale));
   left: calc(43px * var(--pixel-scale));
-  width: calc(100% - (50px * var(--pixel-scale)));
+  width: calc(100% - (66px * var(--pixel-scale)));
   font-size: calc(var(--pixel-scale) * 0.5px * v-bind(descriptionFontSize));
   overflow: hidden;
   line-height: 1.2;
@@ -566,7 +586,6 @@ const onMouseleave = () => {
   top: calc(108px * var(--pixel-scale));
   width: 100%;
   text-align: center;
-  font-size: calc(var(--pixel-scale) * v-bind(nameFontSize));
   font-weight: bold;
 
   svg path {
@@ -574,7 +593,7 @@ const onMouseleave = () => {
   }
 
   svg text {
-    font-size: calc(18px * var(--pixel-scale));
+    font-size: calc(1px * v-bind(nameFontSize) * var(--pixel-scale));
     fill: #dbc4a4;
     filter: drop-shadow(0 calc(2.5px * var(--pixel-scale)) 0 black);
   }
@@ -614,6 +633,17 @@ const onMouseleave = () => {
   width: calc(39px * var(--pixel-scale));
   height: calc(38px * var(--pixel-scale));
   background: v-bind(factionBg);
+  background-size: cover;
+}
+
+.rarity {
+  position: absolute;
+  bottom: calc(0px * var(--pixel-scale));
+  right: 50%;
+  translate: 50% 0;
+  width: calc(14px * var(--pixel-scale));
+  height: calc(17px * var(--pixel-scale));
+  background: v-bind(rarityBg);
   background-size: cover;
 }
 </style>

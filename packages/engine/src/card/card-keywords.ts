@@ -65,6 +65,12 @@ export const KEYWORDS = {
     description: 'Remove enchantments previously added from enemy sources.',
     aliases: []
   },
+  CONSUME: {
+    id: 'consume',
+    name: 'Consume',
+    description: 'Destroy the mentioned runes when this card is played.',
+    aliases: []
+  },
   DEATHWATCH: {
     id: 'deathwatch',
     name: 'Deathwatch',

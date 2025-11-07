@@ -17,11 +17,11 @@ const { deck } = defineProps<{
 }>();
 
 const general = computed(() => {
-  const { blueprintId } = deck.cards.find(
+  const card = deck.cards.find(
     card => CARDS_DICTIONARY[card.blueprintId].kind === CARD_KINDS.GENERAL
   )!;
-
-  return CARDS_DICTIONARY[blueprintId];
+  if (!card) return null;
+  return CARDS_DICTIONARY[card.blueprintId];
 });
 
 const mainDeck = computed(() =>
@@ -102,7 +102,7 @@ const artifacts = computed(() =>
   background-repeat: no-repeat;
   background-position:
     center center,
-    right calc(100% + 70px);
+    right calc(100% + 50px);
   background-size: 200%, calc(2px * 96);
   padding: var(--size-2) var(--size-4);
   border: solid 1px hsl(var(--color-primary-hsl) / 0.5);

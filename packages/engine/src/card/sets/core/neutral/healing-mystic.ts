@@ -1,6 +1,8 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const healingMystic: MinionBlueprint = {
@@ -21,9 +23,19 @@ export const healingMystic: MinionBlueprint = {
   atk: 2,
   cmd: 1,
   maxHp: 3,
-  getTargets: () => Promise.resolve([]),
+  getTargets(game, card) {
+    return singleMinionTargetRules.getPreResponseTargets(game, card, { required: false });
+  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION),
   canPlay: () => true,
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new MinionOnEnterModifier(game, card, async event => {
+        const [target] = event.data.targets;
+        if (!target) return;
+        await target.unit?.heal(card, 2);
+      })
+    );
+  },
   async onPlay() {}
 };

@@ -218,6 +218,19 @@
         },
         {
           "alias": [
+            "f1_argeon-highmane.png"
+          ],
+          "src": [
+            "/assets/cards/generals/f1_argeon-highmane.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1-argeon-highmane.png"
           ],
           "src": [
@@ -4496,6 +4509,19 @@
         },
         {
           "alias": [
+            "card-kind-general.png"
+          ],
+          "src": [
+            "/assets/ui/card-kind-general.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "card-kind-hero.png"
           ],
           "src": [
@@ -4769,10 +4795,88 @@
         },
         {
           "alias": [
+            "crest-abyssian.png"
+          ],
+          "src": [
+            "/assets/ui/crest-abyssian.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "crest-lyonar.png"
+          ],
+          "src": [
+            "/assets/ui/crest-lyonar.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "crest-magmar.png"
+          ],
+          "src": [
+            "/assets/ui/crest-magmar.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "crest-neutral.png"
           ],
           "src": [
             "/assets/ui/crest-neutral.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "crest-songhai.png"
+          ],
+          "src": [
+            "/assets/ui/crest-songhai.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "crest-vanar.png"
+          ],
+          "src": [
+            "/assets/ui/crest-vanar.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "crest-vetruvian.png"
+          ],
+          "src": [
+            "/assets/ui/crest-vetruvian.png"
           ],
           "data": {
             "tags": {

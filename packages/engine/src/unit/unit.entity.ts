@@ -26,8 +26,10 @@ import { CombatComponent } from './components/combat.component';
 import { UNIT_EVENTS } from './unit.enums';
 import {
   UnitAfterDestroyEvent,
+  UnitAfterHealEvent,
   UnitAfterMoveEvent,
   UnitBeforeDestroyEvent,
+  UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
 import type { Shrine } from '../board/entities/shrine.entity';
@@ -500,6 +502,20 @@ export class Unit
     return this.combat.takeDamage.bind(this.combat);
   }
 
+  async heal(source: AnyCard, amount: number) {
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_BEFORE_HEAL,
+      new UnitBeforeHealEvent({ unit: this, amount, source })
+    );
+
+    this.addHp(amount);
+
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_AFTER_HEAL,
+      new UnitAfterHealEvent({ unit: this, amount, source })
+    );
+  }
+
   addHp(amount: number) {
     this.damageTaken = Math.max(this.damageTaken - amount, 0);
   }
@@ -527,7 +543,7 @@ export class Unit
     if (!this.canBeDestroyed) return;
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_DESTROY,
-      new UnitBeforeDestroyEvent({ source })
+      new UnitBeforeDestroyEvent({ source, unit: this })
     );
     const position = this.position;
     if (this.isGeneral) {
@@ -545,7 +561,7 @@ export class Unit
     }
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_DESTROY,
-      new UnitAfterDestroyEvent({ source, destroyedAt: position })
+      new UnitAfterDestroyEvent({ source, destroyedAt: position, unit: this })
     );
   }
 
