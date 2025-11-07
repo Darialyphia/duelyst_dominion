@@ -24,6 +24,7 @@ const onMouseDown = (e: MouseEvent) => {
 
     setTimeout(() => {
       violationWarning.value = '';
+      isShaking.value = false;
     }, 2500);
     return;
   }
@@ -77,7 +78,6 @@ const onMouseDown = (e: MouseEvent) => {
         :actions-offset="15"
         :is-interactive="isInteractive"
         style="--pixel-scale: 1.5"
-        @animationend="isShaking = false"
       />
     </component>
   </div>
