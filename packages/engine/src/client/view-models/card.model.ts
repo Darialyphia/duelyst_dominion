@@ -6,7 +6,7 @@ import type { PlayerViewModel } from './player.model';
 import type { ModifierViewModel } from './modifier.model';
 import type { GameClientState } from '../controllers/state-controller';
 import { PlayCardAction } from '../actions/play-card';
-import type { CardKind } from '../../card/card.enums';
+import type { CardKind, Rune } from '../../card/card.enums';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 
@@ -64,7 +64,7 @@ export class CardViewModel {
   }
 
   get imagePath() {
-    return `/assets/icons/${this.data.cardIconId}.png`;
+    return `/assets/cards/${this.data.cardIconId}.png`;
   }
 
   get kind() {
@@ -73,6 +73,21 @@ export class CardViewModel {
 
   get rarity() {
     return this.data.rarity;
+  }
+
+  get keywords() {
+    return this.data.keywords;
+  }
+
+  get player() {
+    return this.getEntities()[this.data.player] as PlayerViewModel;
+  }
+
+  get runeCost() {
+    if ('runeCost' in this.data) {
+      return this.data.runeCost as Partial<Record<Rune, number>>;
+    }
+    return null;
   }
 
   get manaCost() {
@@ -89,20 +104,8 @@ export class CardViewModel {
     return null;
   }
 
-  get destinyCost() {
-    if ('destinyCost' in this.data) {
-      return this.data.destinyCost as number;
-    }
-
-    return null;
-  }
-
-  get baseDestinyCost() {
-    if ('baseDestinyCost' in this.data) {
-      return this.data.baseDestinyCost as number;
-    }
-
-    return null;
+  get faction() {
+    return this.data.faction;
   }
 
   get location() {
@@ -148,26 +151,18 @@ export class CardViewModel {
     return null;
   }
 
-  get level() {
-    if ('level' in this.data) {
-      return this.data.level as number;
+  get baseCmd() {
+    if ('baseCmd' in this.data) {
+      return this.data.baseCmd as number;
     }
-
     return null;
   }
 
-  get spellpower() {
-    if ('spellPower' in this.data) {
-      return this.data.spellPower as number;
+  get cmd() {
+    if ('cmd' in this.data) {
+      return this.data.cmd as number;
     }
 
-    return null;
-  }
-
-  get baseSpellpower() {
-    if ('baseSpellPower' in this.data) {
-      return this.data.baseSpellPower as number;
-    }
     return null;
   }
 
@@ -188,9 +183,7 @@ export class CardViewModel {
       return null;
     }
 
-    return this.getPlayer()
-      .getHand()
-      .findIndex(card => card.equals(this));
+    return this.getPlayer().hand.findIndex(card => card.equals(this));
   }
 
   getPlayer() {
@@ -205,9 +198,8 @@ export class CardViewModel {
 
   play() {
     const player = this.getPlayer();
-    const hand = player.getHand();
 
-    const index = hand.findIndex(card => card.equals(this));
+    const index = player.hand.findIndex(card => card.equals(this));
     if (index === -1) return;
 
     player.playCard(index);

@@ -51,6 +51,7 @@ const canAddCard = computed(() => {
       <div>
         <BlueprintCard
           :blueprint="card.card"
+          :is-animated="!isEditingDeck || canAddCard"
           show-stats
           class="collection-card"
           :is-foil="card.isFoil"

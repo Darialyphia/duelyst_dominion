@@ -2,6 +2,7 @@ import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import type { GameClient, GameStateEntities } from '../client';
 import type { BoardCellViewModel } from './board-cell.model';
+import type { CardViewModel } from './card.model';
 import type { PlayerViewModel } from './player.model';
 
 export class UnitViewModel {
@@ -46,6 +47,26 @@ export class UnitViewModel {
 
   get y() {
     return this.data.position.y;
+  }
+
+  get isGeneral() {
+    return this.data.isGeneral;
+  }
+
+  get hp() {
+    return this.data.currentHp;
+  }
+
+  get atk() {
+    return this.data.atk;
+  }
+
+  get cmd() {
+    return this.data.cmd;
+  }
+
+  getCard() {
+    return this.getEntities()[this.data.card] as CardViewModel;
   }
 
   canMoveTo(cell: BoardCellViewModel) {

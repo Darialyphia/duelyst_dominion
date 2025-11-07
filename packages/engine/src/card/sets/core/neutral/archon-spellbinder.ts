@@ -8,6 +8,8 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { isSpell } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import type { MinionCard } from '../../../entities/minion-card.entity';
+import { consume } from '../../../card-actions-utils';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const archonSpellbinder: MinionBlueprint = {
   id: 'archon-spellbinder',
@@ -21,7 +23,7 @@ export const archonSpellbinder: MinionBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.NEUTRAL,
-  rarity: RARITIES.LEGENDARY,
+  rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 6,
   runeCost: {
@@ -36,31 +38,35 @@ export const archonSpellbinder: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     const DEBUFF_ID = 'archon-spellbinder-debuff';
-    await card.modifiers.add(
-      new Modifier<MinionCard>('archon-spellbinder-aura', game, card, {
-        mixins: [
-          new AuraModifierMixin(game, {
-            isElligible(targetCard) {
-              return (
-                isSpell(targetCard) &&
-                targetCard.isEnemy(card) &&
-                targetCard.location === 'hand'
-              );
-            },
-            async onGainAura(candidate) {
-              await candidate.modifiers.add(
-                new SimpleManacostModifier(DEBUFF_ID, game, card, {
-                  amount: 1
-                })
-              );
-            },
-            async onLoseAura(candidate) {
-              await candidate.modifiers.remove(DEBUFF_ID, card);
-            }
-          })
-        ]
-      })
-    );
+
+    const aura = new Modifier<MinionCard>('archon-spellbinder-aura', game, card, {
+      mixins: [
+        new TogglableModifierMixin(game, () => card.location === 'board'),
+        new AuraModifierMixin(game, {
+          isElligible(targetCard) {
+            return (
+              isSpell(targetCard) &&
+              targetCard.isEnemy(card) &&
+              targetCard.location === 'hand'
+            );
+          },
+          async onGainAura(candidate) {
+            await candidate.modifiers.add(
+              new SimpleManacostModifier(DEBUFF_ID, game, card, {
+                amount: 1
+              })
+            );
+          },
+          async onLoseAura(candidate) {
+            await candidate.modifiers.remove(DEBUFF_ID, card);
+          }
+        })
+      ]
+    });
+
+    await card.modifiers.add(aura);
   },
-  async onPlay() {}
+  async onPlay(game, card) {
+    await consume(card, { blue: 1 });
+  }
 };

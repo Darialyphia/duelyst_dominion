@@ -33,6 +33,7 @@ import {
   UnitBeforeMoveEvent
 } from './unit-events';
 import type { Shrine } from '../board/entities/shrine.entity';
+import type { MinionBlueprint } from '../card/card-blueprint';
 
 export type UnitOptions = {
   id: string;
@@ -43,11 +44,13 @@ export type SerializedUnit = {
   id: string;
   entityType: 'unit';
   card: string;
+  isGeneral: boolean;
   position: Point;
   baseAtk: number;
   atk: number;
-  isGeneral: boolean;
   baseMaxHp: number;
+  cmd: number;
+  baseCmd: number;
   maxHp: number;
   currentHp: number;
   isFullHp: boolean;
@@ -598,6 +601,8 @@ export class Unit
       position: this.position.serialize(),
       baseAtk: this.card.blueprint.atk,
       atk: this.atk,
+      baseCmd: this.isGeneral ? 0 : (this.card.blueprint as MinionBlueprint).cmd,
+      cmd: this.cmd,
       baseMaxHp: this.card.blueprint.maxHp,
       maxHp: this.maxHp,
       currentHp: this.remainingHp,

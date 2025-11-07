@@ -47,6 +47,26 @@ export class PlayerViewModel {
     return this.data.maxHp;
   }
 
+  get mana() {
+    return this.data.currentMana;
+  }
+
+  get spentMana() {
+    return Math.max(0, this.data.maxMana - this.data.currentMana);
+  }
+
+  get overspentMana() {
+    return Math.max(0, -this.data.currentMana);
+  }
+
+  get maxMana() {
+    return this.data.maxMana;
+  }
+
+  get runes() {
+    return this.data.runes;
+  }
+
   get handSize() {
     return this.data.handSize;
   }
@@ -69,10 +89,18 @@ export class PlayerViewModel {
     return this.getEntities()[this.data.currentlyPlayedCard] as CardViewModel;
   }
 
-  getHand() {
+  get hand() {
     return this.data.hand.map(cardId => {
       return this.getEntities()[cardId] as CardViewModel;
     });
+  }
+
+  get canUseResourceAction() {
+    return this.data.canUseResourceAction;
+  }
+
+  get maxOverspentMana() {
+    return this.data.maxOverspentMana;
   }
 
   getDiscardPile() {
@@ -89,7 +117,7 @@ export class PlayerViewModel {
   }
 
   playCard(index: number) {
-    const card = this.getHand()[index];
+    const card = this.hand[index];
     if (!card) return;
     if (!card.canPlay) return;
 

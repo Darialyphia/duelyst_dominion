@@ -23,6 +23,8 @@ import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { areArraysIdentical } from '../../utils/helpers';
 import { GAME_PHASES } from '../game.enums';
+import type { SerializedShrine } from '../../board/entities/shrine.entity';
+import type { SerializedTeleporter } from '../../board/entities/two-way-teleporter';
 
 export type GameStateSnapshot<T> =
   | {
@@ -48,6 +50,8 @@ export type EntityDictionary = Record<
   | SerializedCell
   | SerializedUnit
   | SerializedTile
+  | SerializedShrine
+  | SerializedTeleporter
 >;
 
 export type EntityDiffDictionary = Record<
@@ -61,6 +65,8 @@ export type EntityDiffDictionary = Record<
   | Partial<SerializedCell>
   | Partial<SerializedUnit>
   | Partial<SerializedTile>
+  | Partial<SerializedShrine>
+  | Partial<SerializedTeleporter>
 >;
 
 export type SerializedOmniscientState = {
@@ -350,6 +356,21 @@ export class GameSnapshotSystem extends System<{ enabled: boolean }> {
     this.game.playerSystem.players.forEach(player => {
       entities[player.id] = player.serialize();
       player.modifiers.list.forEach(modifier => {
+        entities[modifier.id] = modifier.serialize();
+      });
+    });
+    this.game.boardSystem.cells.forEach(cell => {
+      entities[cell.id] = cell.serialize();
+    });
+    this.game.boardSystem.shrines.forEach(shrine => {
+      entities[shrine.id] = shrine.serialize();
+    });
+    this.game.boardSystem.teleporters.forEach(teleporter => {
+      entities[teleporter.id] = teleporter.serialize();
+    });
+    this.game.unitSystem.units.forEach(unit => {
+      entities[unit.id] = unit.serialize();
+      unit.modifiers.list.forEach(modifier => {
         entities[modifier.id] = modifier.serialize();
       });
     });

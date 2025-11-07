@@ -5,7 +5,13 @@ import { ModifierManager } from '../../modifier/modifier-manager.component';
 import type { Player } from '../../player/player.entity';
 import { Interceptable } from '../../utils/interceptable';
 import type { CardBlueprint } from '../card-blueprint';
-import { CARD_EVENTS, CARD_KINDS, type CardKind, type Rarity } from '../card.enums';
+import {
+  CARD_EVENTS,
+  CARD_KINDS,
+  type CardKind,
+  type Faction,
+  type Rarity
+} from '../card.enums';
 import { CardAddToHandevent, CardDiscardEvent, type CardEventMap } from '../card.events';
 import { match } from 'ts-pattern';
 import { type CardLocation, type DeckCard } from '../components/card-manager.component';
@@ -41,6 +47,7 @@ export type SerializedCard = {
   location: CardLocation | null;
   keywords: Array<{ id: string; name: string; description: string }>;
   modifiers: string[];
+  faction: Faction;
 };
 
 export const isDeckCard = (card: AnyCard): card is DeckCard => {
@@ -193,7 +200,8 @@ export abstract class Card<
         id: keyword.id,
         name: keyword.name,
         description: keyword.description
-      }))
+      })),
+      faction: this.blueprint.faction
     };
   }
 

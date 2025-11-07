@@ -212,7 +212,10 @@ const onMouseleave = () => {
       <div class="card-front">
         <CardFoil v-if="isFoil" />
 
-        <div class="image parallax" style="--parallax-factor: 2" />
+        <div class="image parallax" style="--parallax-factor: 1.5">
+          <div class="image-shadow" />
+          <div class="image-sprite" />
+        </div>
 
         <div class="top-left parallax">
           <div
@@ -471,17 +474,48 @@ const onMouseleave = () => {
   position: absolute;
   width: calc(2 * 96px * var(--pixel-scale));
   height: calc(2 * 96px * var(--pixel-scale));
-  background: v-bind(imageBg);
-  background-size: cover;
-  background-position: center calc(-62px * var(--pixel-scale));
-  background-repeat: no-repeat;
-  top: calc(5px * var(--pixel-scale));
-  left: 50%;
-  translate: calc(-50% + var(--parallax-x, 0)) var(--parallax-y, 0) !important;
   pointer-events: none;
-
-  .card.animated:not(:has(.foil)) & {
+  .card:is(.animated:not(:has(.foil)), :not(.animated)) & {
     translate: -50% 0 !important;
+  }
+
+  .image-shadow {
+    position: absolute;
+    width: calc(2 * 96px * var(--pixel-scale));
+    height: calc(2 * 96px * var(--pixel-scale));
+    opacity: 0;
+    pointer-events: none;
+    background: v-bind(imageBg);
+    background-size: cover;
+    background-position: center calc(-62px * var(--pixel-scale));
+    background-repeat: no-repeat;
+    translate: calc(-2 * var(--parallax-x))
+      calc(-2 * var(--parallax-y) - var(--pixel-scale) * 6px);
+    filter: contrast(0) brightness(0) blur(3px);
+    scale: 1.15;
+    transition: opacity 1s var(--ease-3);
+
+    .card-perspective-wrapper:has(.foil):hover & {
+      opacity: 0.35;
+    }
+
+    .card:is(.animated:not(:has(.foil)), :not(.animated)) & {
+      translate: 50% 0 !important;
+    }
+  }
+
+  .image-sprite {
+    position: absolute;
+    width: calc(2 * 96px * var(--pixel-scale));
+    height: calc(2 * 96px * var(--pixel-scale));
+    background: v-bind(imageBg);
+    background-size: cover;
+    background-position: center calc(-62px * var(--pixel-scale));
+    background-repeat: no-repeat;
+    top: calc(5px * var(--pixel-scale));
+    left: 50%;
+    translate: calc(-50% + var(--parallax-x, 0)) var(--parallax-y, 0) !important;
+    pointer-events: none;
   }
 }
 

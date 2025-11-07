@@ -19,8 +19,9 @@
   mix-blend-mode: overlay;
   mask-image: var(--glare-mask);
   mask-size: cover;
-  :has(> &):hover & {
-    opacity: 1;
-  }
+}
+
+:global(.card-perspective-wrapper:hover .glare) {
+  opacity: 1;
 }
 </style>

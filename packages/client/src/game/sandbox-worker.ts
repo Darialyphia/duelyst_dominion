@@ -33,7 +33,8 @@ self.addEventListener('message', ({ data }) => {
         overrides: {
           cardPool: CARDS_DICTIONARY
         },
-        players: payload.options.players
+        players: payload.options.players,
+        enableSnapshots: true
       });
 
       await game.initialize();

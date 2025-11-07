@@ -10,7 +10,7 @@ import { SpellCard } from '../entities/spell-card.entity';
 import { ArtifactCard } from '../entities/artifact-card.entity';
 
 export type CardManagerComponentOptions = {
-  mainDeck: string[];
+  deck: string[];
   maxHandSize: number;
   shouldShuffleDeck: boolean;
 };
@@ -54,7 +54,7 @@ export class CardManagerComponent {
   }
 
   async init() {
-    const mainDeckCards = await this.buildCards<DeckCard>(this.options.mainDeck);
+    const mainDeckCards = await this.buildCards<DeckCard>(this.options.deck);
 
     this.deck.populate(mainDeckCards);
     this.deck.shuffle();

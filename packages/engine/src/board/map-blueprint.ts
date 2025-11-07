@@ -48,7 +48,7 @@ export const defaultMap: MapBlueprint = {
 
 
   ],
-  generalPositions: [new Vec2(6, 0), new Vec2(6, 6)],
+  generalPositions: [new Vec2(6, 6), new Vec2(6, 0)],
   shrinePositions: [new Vec2(2, 3), new Vec2(6, 3), new Vec2(10, 3)],
   teleporters: [
     { id: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },

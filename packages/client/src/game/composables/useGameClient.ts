@@ -12,6 +12,8 @@ import type { PlayerViewModel } from '@game/engine/src/client/view-models/player
 import { isDefined, type MaybePromise, type Nullable } from '@game/shared';
 import type { InjectionKey, Ref } from 'vue';
 import { gameStateRef } from './gameStateRef';
+import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
+import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 
 type GameClientContext = { client: Ref<GameClient>; playerId: Ref<string> };
 
@@ -52,35 +54,6 @@ export const useGameUi = () => {
   return gameStateRef(() => client.value.ui);
 };
 
-export const useBoardSide = (playerId: MaybeRef<string>) => {
-  const { client } = useGameClient();
-  return computed(() => {
-    return client.value.state.board.sides.find(
-      side => side.playerId === unref(playerId)
-    )!;
-  });
-};
-
-export const useMyBoard = () => {
-  const { client, playerId } = useGameClient();
-  return computed(() => {
-    return client.value.state.board.sides.find(
-      side => side.playerId === playerId.value
-    )!;
-  });
-};
-
-export const useOpponentBoard = () => {
-  const { client, playerId } = useGameClient();
-
-  return computed(
-    () =>
-      client.value.state.board.sides.find(
-        side => side.playerId !== playerId.value
-      )!
-  );
-};
-
 export const useEntity = <T>(entityId: MaybeRef<string>) => {
   return gameStateRef(state => {
     return state.entities[unref(entityId)] as T;
@@ -118,6 +91,11 @@ export const useCard = (cardId: MaybeRef<string>) => {
   return useEntity<CardViewModel>(cardId);
 };
 
+export const useUnits = () => {
+  const state = useGameState();
+  return useEntities<UnitViewModel>(state.value.units);
+};
+
 export const useFxEvent = <T extends FXEvent>(
   name: T,
   handler: (eventArg: FXEventMap[T]) => MaybePromise<void>
@@ -131,18 +109,29 @@ export const useFxEvent = <T extends FXEvent>(
   return unsub;
 };
 
-export const useMyPlayer = () => {
+export const useBoardCells = () => {
   const state = useGameState();
-  const board = useMyBoard();
   return computed(() => {
-    return state.value.entities[board.value.playerId] as PlayerViewModel;
+    return state.value.board.cells.map(cellId => {
+      return state.value.entities[cellId] as BoardCellViewModel;
+    });
   });
+};
+
+export const useMyPlayer = () => {
+  const { playerId } = useGameClient();
+  return usePlayer(playerId);
 };
 
 export const useOpponentPlayer = () => {
   const state = useGameState();
-  const board = useOpponentBoard();
+  const { playerId } = useGameClient();
   return computed(() => {
-    return state.value.entities[board.value.playerId] as PlayerViewModel;
+    const myId = unref(playerId);
+    const opponentId = state.value.players.find(id => id !== myId);
+    if (!opponentId) {
+      throw new Error('Opponent player not found');
+    }
+    return state.value.entities[opponentId] as PlayerViewModel;
   });
 };

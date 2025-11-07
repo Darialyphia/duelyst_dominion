@@ -31,7 +31,6 @@ export type PlayerOptions = {
   id: string;
   name: string;
   deck: { cards: string[] };
-  general: string;
 };
 
 export type SerializedPlayer = {
@@ -54,6 +53,9 @@ export type SerializedPlayer = {
   equipedArtifacts: string[];
   currentlyPlayedCard: string | null;
   victoryPoints: number;
+  canUseResourceAction: boolean;
+  maxOverspentMana: number;
+  runes: Record<Rune, number>;
 };
 
 type PlayerInterceptors = {
@@ -120,20 +122,31 @@ export class Player
     this.game = game;
     this.cardTracker = new CardTrackerComponent(game, this);
     this.cardManager = new CardManagerComponent(game, this, {
-      mainDeck: this.options.deck.cards,
+      deck: this.options.deck.cards.filter(id => {
+        const blueprint = this.game.cardSystem.getBlueprint(id);
+        return blueprint.kind !== CARD_KINDS.GENERAL;
+      }),
       maxHandSize: this.game.config.MAX_HAND_SIZE,
       shouldShuffleDeck: true
     });
     this.modifiers = new ModifierManager<Player>(this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
+  }
+
+  async init() {
     this._mana = this.isPlayer1
       ? this.game.config.PLAYER_1_INITIAL_MANA
       : this.game.config.PLAYER_2_INITIAL_MANA;
     this._baseMaxMana = this.game.config.MAX_MANA;
-  }
 
-  async init() {
-    const generalCard = await this.generateCard<GeneralCard>(this.options.general);
+    const generalId = this.options.deck.cards.find(cardId => {
+      const blueprint = this.game.cardSystem.getBlueprint(cardId);
+      return blueprint.kind === CARD_KINDS.GENERAL;
+    });
+    if (!generalId) {
+      throw new Error(`General card not found in player's deck`);
+    }
+    const generalCard = await this.generateCard<GeneralCard>(generalId);
     await generalCard.play();
 
     this._general = this.game.unitSystem.getUnitByCard(generalCard)!;
@@ -169,7 +182,10 @@ export class Player
       isActive: this.isActive,
       equipedArtifacts: this.artifactManager.artifacts.map(artifact => artifact.id),
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
-      victoryPoints: this._victoryPoints
+      victoryPoints: this._victoryPoints,
+      canUseResourceAction: this.canPerformResourceAction,
+      maxOverspentMana: this.maxOverspendsPerTurn,
+      runes: { ...this._runes }
     };
   }
 
@@ -262,7 +278,7 @@ export class Player
   }
 
   get runes(): Record<Rune, number> {
-    return { ...this.runes };
+    return { ...this._runes };
   }
 
   gainRune(rune: Rune, amount: number) {
@@ -339,7 +355,7 @@ export class Player
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this._mana = Math.max(this._mana - amount, this.game.config.MAX_OVERSPENT_MANA * -1);
+    this._mana = Math.max(this._mana - amount, this.maxOverspendsPerTurn * -1);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
@@ -361,7 +377,14 @@ export class Player
 
   canSpendMana(amount: number) {
     if (this.mana < 0) return false;
-    return this.mana >= amount - this.game.config.MAX_OVERSPENT_MANA;
+    return this.mana >= amount - this.maxOverspendsPerTurn;
+  }
+
+  get maxOverspendsPerTurn() {
+    return this.interceptors.maxOverspendsPerTurn.getValue(
+      this.game.config.MAX_OVERSPENT_MANA,
+      {}
+    );
   }
 
   get maxReplacesPerTurn() {

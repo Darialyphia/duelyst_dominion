@@ -1,18 +1,14 @@
-import type { Point, Serializable, Values } from '@game/shared';
+import type { Point, Serializable } from '@game/shared';
 import { Entity, type EmptyInterceptables } from '../../entity';
 import type { Game } from '../../game/game';
-import { TypedSerializableEvent } from '../../utils/typed-emitter';
-import type { Player } from '../../player/player.entity';
-import type { Position } from '../../utils/position';
 import { GAME_EVENTS } from '../../game/game.events';
-import type { PlayerTurnEvent } from '../../player/player.events';
-import type { Unit } from '../../unit/unit.entity';
 import type { UnitAfterMoveEvent } from '../../unit/unit-events';
 
 export type SerializedTeleporter = {
   id: string;
   entityType: 'teleporter';
   gates: [Point, Point];
+  color: string;
 };
 
 export class Teleporter
@@ -24,7 +20,8 @@ export class Teleporter
   constructor(
     private game: Game,
     id: string,
-    gates: [Point, Point]
+    gates: [Point, Point],
+    private readonly color: string
   ) {
     super(`teleporter_${id}`, {});
     this.gates = gates;
@@ -35,7 +32,8 @@ export class Teleporter
     return {
       id: this.id,
       entityType: 'teleporter',
-      gates: this.gates
+      gates: this.gates,
+      color: this.color
     };
   }
 

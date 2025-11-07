@@ -60,14 +60,8 @@ const isStarted = ref(false);
       {
         id: 'p1',
         name: 'Player 1',
-        spellSchools: p1Deck.spellSchools,
-        mainDeck: {
-          cards: p1Deck.mainDeck
-            .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
-            .flat()
-        },
-        destinyDeck: {
-          cards: p1Deck.destinyDeck
+        deck: {
+          cards: p1Deck.cards
             .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
             .flat()
         }
@@ -75,14 +69,8 @@ const isStarted = ref(false);
       {
         id: 'p2',
         name: 'Player 2',
-        spellSchools: p2Deck.spellSchools,
-        mainDeck: {
-          cards: p2Deck.mainDeck
-            .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
-            .flat()
-        },
-        destinyDeck: {
-          cards: p2Deck.destinyDeck
+        deck: {
+          cards: p2Deck.cards
             .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
             .flat()
         }

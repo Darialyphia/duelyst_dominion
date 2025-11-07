@@ -60,7 +60,7 @@ export class BoardSystem
 
     this.map.cells.forEach((cellBlueprint, index) => {
       if (!cellBlueprint) return;
-      const position = indexToPoint(index, this.map.cols);
+      const position = indexToPoint(this.map.cols, index);
       const cell = new BoardCell(this.game, {
         position,
         player: cellBlueprint.player,

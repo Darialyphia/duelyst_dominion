@@ -257,6 +257,19 @@
         },
         {
           "alias": [
+            "neutral_archon-spellbinder.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_archon-spellbinder.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_healing-mystic.png"
           ],
           "src": [
@@ -4132,6 +4145,19 @@
         },
         {
           "alias": [
+            "atk-frame-textless.png"
+          ],
+          "src": [
+            "/assets/ui/atk-frame-textless.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "atk-frame.png"
           ],
           "src": [
@@ -4457,6 +4483,19 @@
         },
         {
           "alias": [
+            "card-hex.png"
+          ],
+          "src": [
+            "/assets/ui/card-hex.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "card-hp.png"
           ],
           "src": [
@@ -4769,6 +4808,19 @@
         },
         {
           "alias": [
+            "cmd-frame-textless.png"
+          ],
+          "src": [
+            "/assets/ui/cmd-frame-textless.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "cmd-frame.png"
           ],
           "src": [
@@ -5059,6 +5111,19 @@
           ],
           "src": [
             "/assets/ui/hero-hp-filled.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "hp-frame-textless.png"
+          ],
+          "src": [
+            "/assets/ui/hp-frame-textless.png"
           ],
           "data": {
             "tags": {
@@ -5568,6 +5633,58 @@
           ],
           "src": [
             "/assets/ui/ui-surface.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "unit-hex-base.png"
+          ],
+          "src": [
+            "/assets/ui/unit-hex-base.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "unit-hex-border-ally.png"
+          ],
+          "src": [
+            "/assets/ui/unit-hex-border-ally.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "unit-hex-border-enemy.png"
+          ],
+          "src": [
+            "/assets/ui/unit-hex-border-enemy.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "unit-hex-border.png"
+          ],
+          "src": [
+            "/assets/ui/unit-hex-border.png"
           ],
           "data": {
             "tags": {

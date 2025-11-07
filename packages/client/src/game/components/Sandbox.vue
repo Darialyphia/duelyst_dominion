@@ -13,10 +13,10 @@ import {
   ComboboxEmpty
 } from 'reka-ui';
 import { useSandbox } from '../composables/useSandbox';
-import GameBoard from './GameBoard.vue';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Icon } from '@iconify/vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
+import GameBoard from '@/game/components/GameBoard.vue';
 
 const { players } = defineProps<{
   players: Parameters<typeof useSandbox>[0]['players'];
@@ -58,7 +58,7 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
       </RouterLink>
     </template>
   </GameBoard>
-  <PopoverRoot v-model:open="isSandboxPopoverOpened">
+  <!-- <PopoverRoot v-model:open="isSandboxPopoverOpened">
     <PopoverTrigger class="fixed top-0 left-0 bg-gray-10 p-3">
       Sandbox Tools
     </PopoverTrigger>
@@ -133,7 +133,7 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
         </div>
       </div>
     </PopoverContent>
-  </PopoverRoot>
+  </PopoverRoot> -->
 </template>
 
 <style scoped lang="postcss"></style>

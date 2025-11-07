@@ -17,6 +17,9 @@ import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
 import { INTERACTION_STATES } from '../game/game.enums';
+import type { TeleporterViewModel } from './view-models/teleporter.model';
+import type { ShrineViewModel } from './view-models/shrine.model';
+import type { Rune } from '../card/card.enums';
 
 export const GAME_TYPES = {
   LOCAL: 'local',
@@ -33,6 +36,8 @@ export type GameStateEntities = Record<
   | BoardCellViewModel
   | UnitViewModel
   | TileViewModel
+  | ShrineViewModel
+  | TeleporterViewModel
 >;
 
 export type OnSnapshotUpdateCallback = (
@@ -295,6 +300,27 @@ export class GameClient {
       payload: {
         playerId: this.playerId,
         indices
+      }
+    });
+  }
+
+  gainRune(rune: Rune) {
+    this.networkAdapter.dispatch({
+      type: 'useResourceAction',
+      payload: {
+        playerId: this.playerId,
+        type: 'gain-rune',
+        rune
+      }
+    });
+  }
+
+  drawCard() {
+    this.networkAdapter.dispatch({
+      type: 'useResourceAction',
+      payload: {
+        playerId: this.playerId,
+        type: 'draw-card'
       }
     });
   }

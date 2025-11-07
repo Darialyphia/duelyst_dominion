@@ -23,6 +23,10 @@ import { UnitViewModel } from '../view-models/unit.model';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { TileViewModel } from '../view-models/tile.model';
 import type { SerializedStarEvent } from '../../game/game.events';
+import type { SerializedShrine } from '../../board/entities/shrine.entity';
+import type { SerializedTeleporter } from '../../board/entities/two-way-teleporter';
+import { TeleporterViewModel } from '../view-models/teleporter.model';
+import { ShrineViewModel } from '../view-models/shrine.model';
 
 export type GameClientState = Override<
   SerializedOmniscientState | SerializedPlayerState,
@@ -40,7 +44,9 @@ export type SerializedEntity =
   | SerializedModifier
   | SerializedCell
   | SerializedUnit
-  | SerializedTile;
+  | SerializedTile
+  | SerializedShrine
+  | SerializedTeleporter;
 export class ClientStateController {
   state!: GameClientState;
 
@@ -54,18 +60,7 @@ export class ClientStateController {
     this.state.entities = this.buildentities(initialState.entities);
   }
 
-  private buildViewModel(
-    entity:
-      | SerializedMinionCard
-      | SerializedGeneralCard
-      | SerializedSpellCard
-      | SerializedArtifactCard
-      | SerializedPlayer
-      | SerializedModifier
-      | SerializedCell
-      | SerializedTile
-      | SerializedUnit
-  ) {
+  private buildViewModel(entity: SerializedEntity) {
     const dict: GameClientState['entities'] = this.state?.entities ?? {};
 
     return match(entity)
@@ -92,6 +87,14 @@ export class ClientStateController {
       .with(
         { entityType: 'tile' },
         entity => new TileViewModel(entity, dict, this.client)
+      )
+      .with(
+        { entityType: 'shrine' },
+        entity => new ShrineViewModel(entity, dict, this.client)
+      )
+      .with(
+        { entityType: 'teleporter' },
+        entity => new TeleporterViewModel(entity, dict, this.client)
       )
       .exhaustive();
   }
