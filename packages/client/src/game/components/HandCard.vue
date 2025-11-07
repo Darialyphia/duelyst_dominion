@@ -12,6 +12,8 @@ const { card, isInteractive } = defineProps<{
 
 const ui = useGameUi();
 
+const DRAG_THRESHOLD_PX = 100;
+
 const isOutOfScreen = usePageLeave();
 const isDragging = ref(false);
 
@@ -30,15 +32,25 @@ const onMouseDown = (e: MouseEvent) => {
   }
 
   ui.value.select(card);
-  isDragging.value = true;
+
+  const startY = e.clientY;
 
   const stopDragging = () => {
     nextTick(() => {
       isDragging.value = false;
     });
     document.body.removeEventListener('mouseup', onMouseup);
+    document.body.removeEventListener('mousemove', onMousemove);
   };
-  const onMouseup = (e: MouseEvent) => {
+
+  const onMousemove = (e: MouseEvent) => {
+    const deltaY = startY - e.clientY;
+    if (deltaY >= DRAG_THRESHOLD_PX && !isDragging.value) {
+      isDragging.value = true;
+    }
+  };
+
+  const onMouseup = () => {
     // if (app.value.view !== e.target) {
     //   ui.value.unselect();
     // }
@@ -46,6 +58,7 @@ const onMouseDown = (e: MouseEvent) => {
     stopDragging();
   };
 
+  document.body.addEventListener('mousemove', onMousemove);
   document.body.addEventListener('mouseup', onMouseup);
   const unwatch = watchEffect(() => {
     // if (ui.mode !== UI_MODES.PLAY_CARD) {
