@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { Teleport } from 'vue';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { useGameUi } from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
+import { usePageLeave } from '@vueuse/core';
 
 const { card, isInteractive } = defineProps<{
   card: CardViewModel;
@@ -9,6 +11,53 @@ const { card, isInteractive } = defineProps<{
 }>();
 
 const ui = useGameUi();
+
+const isOutOfScreen = usePageLeave();
+const isDragging = ref(false);
+
+const isShaking = ref(false);
+const violationWarning = ref('');
+
+const onMouseDown = (e: MouseEvent) => {
+  if (!card.canPlay) {
+    isShaking.value = true;
+
+    setTimeout(() => {
+      violationWarning.value = '';
+    }, 2500);
+    return;
+  }
+
+  ui.value.select(card);
+  isDragging.value = true;
+
+  const stopDragging = () => {
+    nextTick(() => {
+      isDragging.value = false;
+    });
+    document.body.removeEventListener('mouseup', onMouseup);
+  };
+  const onMouseup = (e: MouseEvent) => {
+    // if (app.value.view !== e.target) {
+    //   ui.value.unselect();
+    // }
+    ui.value.unselect();
+    stopDragging();
+  };
+
+  document.body.addEventListener('mouseup', onMouseup);
+  const unwatch = watchEffect(() => {
+    // if (ui.mode !== UI_MODES.PLAY_CARD) {
+    //   unwatch();
+    //   return;
+    // }
+    if (isOutOfScreen.value) {
+      stopDragging();
+      ui.value.unselect();
+      unwatch();
+    }
+  });
+};
 </script>
 
 <template>
@@ -16,25 +65,25 @@ const ui = useGameUi();
     class="hand-card"
     :class="{
       selected: ui.selectedCard?.equals(card),
-      disabled: !card.canPlay
+      disabled: !card.canPlay,
+      'is-shaking': isShaking
     }"
+    @mousedown="onMouseDown($event)"
   >
-    <GameCard
-      :card-id="card.id"
-      actions-side="top"
-      :actions-offset="15"
-      :is-interactive="isInteractive"
-      style="--pixel-scale: 1.5"
-    />
+    <component :is="isDragging ? Teleport : 'div'" to="#dragged-card">
+      <GameCard
+        :card-id="card.id"
+        actions-side="top"
+        :actions-offset="15"
+        :is-interactive="isInteractive"
+        style="--pixel-scale: 1.5"
+        @animationend="isShaking = false"
+      />
+    </component>
   </div>
 </template>
 
 <style scoped lang="postcss">
-@keyframes selectable-card-hue-rotate {
-  to {
-    filter: blur(25px) hue-rotate(360deg);
-  }
-}
 .hand-card {
   position: absolute;
   left: 0;
@@ -66,8 +115,15 @@ const ui = useGameUi();
     animation: selectable-card-hue-rotate 3s linear infinite;
   } */
 
+  &:not(.disabled) {
+    box-shadow: 0 0 1rem hsl(from lime h s l / 0.5);
+  }
   &.disabled {
     filter: grayscale(0.25) brightness(0.7);
+  }
+  &.is-shaking > * {
+    animation: var(--animation-shake-x);
+    animation-duration: 0.3s;
   }
 }
 </style>
