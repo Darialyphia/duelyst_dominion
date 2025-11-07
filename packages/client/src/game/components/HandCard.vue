@@ -4,6 +4,7 @@ import type { CardViewModel } from '@game/engine/src/client/view-models/card.mod
 import { useGameUi } from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
 import { usePageLeave } from '@vueuse/core';
+import { Flip } from 'gsap/Flip';
 
 const { card, isInteractive } = defineProps<{
   card: CardViewModel;
@@ -20,6 +21,30 @@ const isDragging = ref(false);
 const isShaking = ref(false);
 const violationWarning = ref('');
 
+const unselectCard = () => {
+  const el = document.querySelector('#dragged-card [data-game-card]');
+  if (!el) return;
+
+  const flipState = Flip.getState(el);
+  ui.value.unselect();
+  window.requestAnimationFrame(() => {
+    const target = document.querySelector(
+      `.hand-card [data-game-card="${card.id}"]`
+    );
+    Flip.from(flipState, {
+      targets: target,
+      duration: 0.25,
+      absolute: true,
+      ease: Power1.easeOut,
+      onEnter(e) {
+        console.log('enter', e);
+      },
+      onLeave(e) {
+        console.log('leave', e);
+      }
+    });
+  });
+};
 const onMouseDown = (e: MouseEvent) => {
   if (!card.canPlay) {
     isShaking.value = true;
@@ -47,6 +72,7 @@ const onMouseDown = (e: MouseEvent) => {
     const deltaY = startY - e.clientY;
     if (deltaY >= DRAG_THRESHOLD_PX && !isDragging.value) {
       isDragging.value = true;
+      card.play();
     }
   };
 
@@ -54,7 +80,7 @@ const onMouseDown = (e: MouseEvent) => {
     // if (app.value.view !== e.target) {
     //   ui.value.unselect();
     // }
-    ui.value.unselect();
+    unselectCard();
     stopDragging();
   };
 
@@ -67,7 +93,7 @@ const onMouseDown = (e: MouseEvent) => {
     // }
     if (isOutOfScreen.value) {
       stopDragging();
-      ui.value.unselect();
+      unselectCard();
       unwatch();
     }
   });

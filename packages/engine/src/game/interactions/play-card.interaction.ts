@@ -31,11 +31,14 @@ export class PlayCardContext {
     this.card = options.card;
   }
 
-  async init() {
-    await this.game.inputSystem.askForPlayerInput();
+  async play() {
     await this.player.playCardFromHand(this.card);
     this.game.interaction.dispatch(INTERACTION_STATE_TRANSITIONS.COMMIT_PLAYING_CARD);
     this.game.interaction.onInteractionEnd();
+  }
+
+  async init() {
+    void this.play();
   }
 
   serialize() {

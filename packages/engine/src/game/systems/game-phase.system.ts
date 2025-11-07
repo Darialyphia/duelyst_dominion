@@ -12,13 +12,17 @@ import { GAME_PHASES, GAME_PHASE_EVENTS, type GamePhase } from '../game.enums';
 import { MainPhase } from '../phases/main.phase';
 import { GameEndPhase } from '../phases/game-end.phase';
 import { MulliganPhase } from '../phases/mulligan.phase';
+import { PlayCardPhase } from '../phases/play-card.phase';
 
 export const GAME_PHASE_TRANSITIONS = {
   COMMIT_MULLIGAN: 'commit_mulligan',
   DRAW_FOR_TURN: 'draw_for_turn',
   END_TURN: 'end_turn',
   START_TURN: 'start_turn',
-  PLAYER_WON: 'player_won'
+  PLAYER_WON: 'player_won',
+  START_PLAYING_CARD: 'start_playing_card',
+  COMMIT_PLAYING_CARD: 'commit_playing_card',
+  CANCEL_PLAYING_CARD: 'cancel_playing_card'
 } as const;
 export type GamePhaseTransition = Values<typeof GAME_PHASE_TRANSITIONS>;
 
@@ -39,6 +43,10 @@ export type GamePhaseContext =
       ctx: MainPhase;
     }
   | {
+      state: BetterExtract<GamePhase, 'playing_card_phase'>;
+      ctx: PlayCardPhase;
+    }
+  | {
       state: BetterExtract<GamePhase, 'game_end'>;
       ctx: GameEndPhase;
     };
@@ -51,6 +59,10 @@ export type SerializedGamePhaseContext =
   | {
       state: BetterExtract<GamePhase, 'main_phase'>;
       ctx: ReturnType<MainPhase['serialize']>;
+    }
+  | {
+      state: Extract<GamePhase, 'playing_card_phase'>;
+      ctx: ReturnType<PlayCardPhase['serialize']>;
     }
   | {
       state: Extract<GamePhase, 'game_end'>;
@@ -69,6 +81,7 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
   readonly ctxDictionary = {
     [GAME_PHASES.MULLIGAN]: MulliganPhase,
     [GAME_PHASES.MAIN]: MainPhase,
+    [GAME_PHASES.PLAYING_CARD]: PlayCardPhase,
     [GAME_PHASES.GAME_END]: GameEndPhase
   };
 

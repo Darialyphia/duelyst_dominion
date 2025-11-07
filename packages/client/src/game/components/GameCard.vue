@@ -89,7 +89,11 @@ const classes = computed(() => {
 </script>
 
 <template>
-  <div class="relative">
+  <div
+    class="relative"
+    :data-game-card="card.id"
+    :data-flip-id="`card_${card.id}`"
+  >
     <Card
       is-foil
       :is-animated="true"

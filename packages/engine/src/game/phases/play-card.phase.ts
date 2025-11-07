@@ -3,7 +3,7 @@ import type { Game } from '../game';
 import type { GamePhaseController } from './game-phase';
 import { type EmptyObject, type Serializable } from '@game/shared';
 
-export class MainPhase implements GamePhaseController, Serializable<EmptyObject> {
+export class PlayCardPhase implements GamePhaseController, Serializable<EmptyObject> {
   currentPlayer: Player;
 
   constructor(private game: Game) {
