@@ -91,8 +91,11 @@ const classes = computed(() => {
 <template>
   <div class="relative">
     <Card
-      :is-animated="false"
+      is-foil
+      :is-animated="true"
       :id="card.id"
+      :max-angle="15"
+      :parallax-multiplier="0.35"
       :card="{
         id: card.id,
         name: card.name,
@@ -103,7 +106,7 @@ const classes = computed(() => {
         manaCost: card.manaCost,
         baseManaCost: card.baseManaCost,
         atk: card.atk,
-        hp: card.hp,
+        hp: card.maxHp,
         durability: card.durability,
         faction: card.faction,
         cmd: card.cmd,

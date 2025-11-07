@@ -21,7 +21,9 @@ import type { RuneCost } from '@game/engine/src/card/card-blueprint';
 const {
   card,
   isFoil,
-  isAnimated = true
+  isAnimated = true,
+  maxAngle = 30,
+  parallaxMultiplier = 1
 } = defineProps<{
   card: {
     id: string;
@@ -42,6 +44,8 @@ const {
   };
   isFoil?: boolean;
   isAnimated?: boolean;
+  maxAngle?: number;
+  parallaxMultiplier?: number;
 }>();
 
 const rarityBg = computed(() => {
@@ -173,7 +177,6 @@ const angle = ref({
   y: 0
 });
 
-const MAX_ANGLE = 30;
 const onMousemove = (e: MouseEvent) => {
   if (!root.value) return;
 
@@ -182,8 +185,8 @@ const onMousemove = (e: MouseEvent) => {
     root.value
   )!.getBoundingClientRect();
   angle.value = {
-    y: ((clientX - left) / width - 0.5) * MAX_ANGLE,
-    x: ((clientY - top) / height - 0.5) * MAX_ANGLE
+    y: ((clientX - left) / width - 0.5) * maxAngle,
+    x: ((clientY - top) / height - 0.5) * maxAngle
   };
 };
 
@@ -414,11 +417,11 @@ const onMouseleave = () => {
   --parallax-factor: 1;
   --parallax-x: calc(
     v-bind('angle.y') * var(--parallax-strength) *
-      calc(1px * var(--parallax-factor))
+      calc(1px * var(--parallax-factor) * v-bind('parallaxMultiplier'))
   );
   --parallax-y: calc(
     v-bind('angle.x') * var(--parallax-strength) *
-      calc(-1px * var(--parallax-factor))
+      calc(-1px * var(--parallax-factor) * v-bind('parallaxMultiplier'))
   );
   translate: var(--parallax-x) var(--parallax-y);
 }
@@ -475,9 +478,6 @@ const onMouseleave = () => {
   width: calc(2 * 96px * var(--pixel-scale));
   height: calc(2 * 96px * var(--pixel-scale));
   pointer-events: none;
-  .card:is(.animated:not(:has(.foil)), :not(.animated)) & {
-    translate: -50% 0 !important;
-  }
 
   .image-shadow {
     position: absolute;
@@ -500,7 +500,7 @@ const onMouseleave = () => {
     }
 
     .card:is(.animated:not(:has(.foil)), :not(.animated)) & {
-      translate: 50% 0 !important;
+      translate: 0 0 !important;
     }
   }
 
@@ -513,9 +513,12 @@ const onMouseleave = () => {
     background-position: center calc(-62px * var(--pixel-scale));
     background-repeat: no-repeat;
     top: calc(5px * var(--pixel-scale));
-    left: 50%;
-    translate: calc(-50% + var(--parallax-x, 0)) var(--parallax-y, 0) !important;
+    translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
     pointer-events: none;
+
+    .card:is(.animated:not(:has(.foil)), :not(.animated)) & {
+      translate: 0 0 !important;
+    }
   }
 }
 

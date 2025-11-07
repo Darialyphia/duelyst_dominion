@@ -23,7 +23,11 @@ export class MulliganPhase implements GamePhaseController, Serializable<EmptyObj
     }
   }
 
-  async onEnter() {}
+  async onEnter() {
+    if (this.game.config.MAX_MULLIGANED_CARDS === 0) {
+      await this.game.gamePhaseSystem.commitMulligan();
+    }
+  }
 
   async onExit() {
     for (const player of this.game.playerSystem.players) {

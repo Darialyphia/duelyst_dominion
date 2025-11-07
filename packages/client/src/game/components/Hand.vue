@@ -6,12 +6,12 @@ import {
   useMyPlayer,
   usePlayer
 } from '@/game/composables/useGameClient';
-import GameCard from '@/game/components/GameCard.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { clamp } from '@game/shared';
 import { OnClickOutside } from '@vueuse/components';
 import { useResizeObserver } from '@vueuse/core';
 import type { ShallowRef } from 'vue';
+import HandCard from './HandCard.vue';
 
 const { playerId } = defineProps<{ playerId: string }>();
 
@@ -117,29 +117,6 @@ const cardW = computed(() => {
 
 const handSize = computed(() => player.value.hand.length);
 
-const MAX_FAN_ANGLE = 15;
-const MAX_FAN_SAG = 150;
-
-const tOf = (i: number, n: number) => {
-  // map i=0..n-1 to t in [-1, 1]
-  const half = (n - 1) / 2;
-  return n <= 1 ? 0 : (i - half) / Math.max(half, 1);
-};
-const overlapRatio = computed(() => {
-  if (handSize.value <= 1) return 0;
-  const r = (cardW.value - step.value) / cardW.value; // 0..1
-  return clamp(r, 0.3, 1);
-});
-
-const fanSag = computed(() => overlapRatio.value * MAX_FAN_SAG);
-
-const rotDeg = (i: number) => tOf(i, handSize.value) * (MAX_FAN_ANGLE / 2);
-
-const yOffset = (i: number) => {
-  const t = tOf(i, handSize.value);
-  return fanSag.value * t * t;
-};
-
 const step = computed(() => {
   if (handSize.value <= 1) return 0;
   const natural =
@@ -155,8 +132,7 @@ const cards = computed(() => {
   return player.value.hand.map((card, i) => ({
     card,
     x: offset + i * step.value,
-    y: yOffset(i),
-    rot: rotDeg(i),
+    y: 0,
     z: i
   }));
 });
@@ -172,7 +148,6 @@ const cards = computed(() => {
       class="hand"
       :class="{
         'ui-hidden': !ui.displayedElements.hand,
-        expanded: isExpanded,
         'opponent-hand': !isMyHand
       }"
       :style="{
@@ -181,15 +156,12 @@ const cards = computed(() => {
       }"
       ref="hand"
     >
-      <div
-        class="hand-card"
+      <HandCard
         v-for="(card, index) in cards"
         :key="card.card.id"
-        :class="{
-          selected: ui.selectedCard?.equals(card.card),
-          disabled: !card.card.canPlay
-        }"
-        :data-keyboard-shortcut="isMyHand && isExpanded ? index + 1 : undefined"
+        :card="card.card"
+        :is-interactive="isMyHand"
+        :data-keyboard-shortcut="isMyHand ? index + 1 : undefined"
         data-keyboard-shortcut-centered="true"
         :style="{
           '--x': `${card.x}px`,
@@ -197,17 +169,7 @@ const cards = computed(() => {
           '--z': card.z,
           '--keyboard-shortcut-right': '50%'
         }"
-        @click="isExpanded = true"
-      >
-        <GameCard
-          :card-id="card.card.id"
-          actions-side="top"
-          :actions-offset="15"
-          :is-interactive="isExpanded && isMyHand"
-          show-disabled-message
-          style="--pixel-scale: 1.5"
-        />
-      </div>
+      />
     </section>
   </OnClickOutside>
 </template>
@@ -215,56 +177,18 @@ const cards = computed(() => {
 <style scoped lang="postcss">
 .hand {
   --pixel-scale: 2;
+  background-color: red;
   position: relative;
   z-index: 1;
   height: 100%;
-  width: 100%;
+  width: 70%;
+  transition: transform 0.15s var(--ease-in-2);
   &.opponent-hand:not(.expanded) {
     position: absolute;
     right: 0;
   }
-  /* background-color: blue; */
-  &.expanded {
-    left: 50%;
-    width: 100%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-}
-
-.hand-card {
-  position: absolute;
-  left: 0;
-
-  --hover-offset: 30px;
-  --offset-y: var(--hover-offset);
-  --rot-scale: 0;
-  --_y: var(--offset-y);
-  transform-origin: 50% 100%;
-  transform: translateX(var(--x)) translateY(var(--_y));
-
-  z-index: var(--z);
-  transition: transform 0.2s var(--ease-2);
-  pointer-events: auto;
-
-  .hand.expanded & {
-    --rot-scale: 1;
-    --_y: calc(var(--y) + var(--offset-y));
-    --offset-y: calc(var(--hover-offset) - 1px * var(--hand-offset-y));
-  }
-
   &:hover {
-    --hover-offset: -180px;
-    z-index: var(--hand-size);
-  }
-  .hand.expanded &:hover,
-  &.selected {
-    --hover-offset: -20px;
-    --rot-scale: 0;
-    --_y: var(--offset-y);
-  }
-  &.disabled {
-    filter: brightness(0.75) grayscale(0.3);
+    transform: translateY(-80px);
   }
 }
 </style>

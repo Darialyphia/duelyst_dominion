@@ -11,6 +11,7 @@ import Hand from './Hand.vue';
 import HexPositioner from './HexPositioner.vue';
 import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
+import DraggedCard from './DraggedCard.vue';
 
 const state = useGameState();
 const { client } = useGameClient();
@@ -22,6 +23,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
 <template>
   <div class="game-board">
+    <DraggedCard />
     <div
       class="board"
       :style="{
@@ -131,7 +133,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
 .hand {
   position: fixed;
-  width: 60%;
+  width: 75%;
   bottom: 22%;
   left: var(--size-8);
 }
