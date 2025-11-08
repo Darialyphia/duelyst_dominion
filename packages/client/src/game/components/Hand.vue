@@ -119,9 +119,7 @@ const cardW = computed(() => {
 });
 
 const handSize = computed(() => player.value.handSize);
-watchEffect(() => {
-  console.log(handSize.value);
-});
+
 const step = computed(() => {
   if (handSize.value <= 1) return 0;
   const natural =

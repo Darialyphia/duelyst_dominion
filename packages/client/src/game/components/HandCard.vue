@@ -92,7 +92,7 @@ const onMouseDown = (e: MouseEvent) => {
         unwatch();
         return;
       }
-      if (outOfScreen && !selectedCard) {
+      if (outOfScreen && selectedCard) {
         stopDragging();
         unselectCard();
         unwatch();
@@ -171,13 +171,12 @@ const isDetachedFromHand = computed(() => {
       content: '';
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 2.5rem lime;
-      opacity: 0.35;
+      box-shadow: inset 0 0 2.5rem var(--lime-4);
       z-index: 2;
     }
   }
   &.disabled {
-    filter: brightness(0.8) grayscale(0.5);
+    /* filter: brightness(0.8) grayscale(1); */
   }
   &.is-shaking > * {
     animation: var(--animation-shake-x);

@@ -5120,6 +5120,19 @@
         },
         {
           "alias": [
+            "hex-highlight-selected.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-selected.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "hex-highlight-targetable.png"
           ],
           "src": [

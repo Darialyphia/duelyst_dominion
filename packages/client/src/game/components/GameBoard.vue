@@ -94,10 +94,13 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
       </UiButton>
       <UiButton
         v-show="myPlayer.canUseResourceAction"
-        class="action-button draw"
+        class="action-button"
         @click="client.drawCard()"
       >
         Draw Card
+      </UiButton>
+      <UiButton class="action-button" @click="client.endTurn()">
+        End Turn
       </UiButton>
     </div>
 
@@ -157,6 +160,9 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
 .action-button {
   width: var(--size-12);
+  --ui-button-bg: var(--gray-10);
+  --ui-button-hover-bg: var(--gray-8);
+  --ui-button-color: white;
 
   &.red {
     --ui-button-bg: var(--red-5);
@@ -174,9 +180,6 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
     --ui-button-color: var(--text-on-primary);
   }
   &.draw {
-    --ui-button-bg: var(--gray-10);
-    --ui-button-hover-bg: var(--gray-8);
-    --ui-button-color: white;
   }
 }
 

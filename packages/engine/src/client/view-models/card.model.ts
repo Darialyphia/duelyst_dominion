@@ -191,6 +191,10 @@ export class CardViewModel {
     return this.getClient().ui.selectedCard?.equals(this) ?? false;
   }
 
+  get spacesToHighlight() {
+    return this.data.spacesToHighlight;
+  }
+
   getPlayer() {
     return this.getEntities()[this.data.player] as PlayerViewModel;
   }

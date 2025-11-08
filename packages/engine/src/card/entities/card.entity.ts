@@ -1,4 +1,4 @@
-import { type JSONObject, type MaybePromise } from '@game/shared';
+import { type JSONObject, type MaybePromise, type Point } from '@game/shared';
 import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
 import type { Game } from '../../game/game';
 import { ModifierManager } from '../../modifier/modifier-manager.component';
@@ -48,6 +48,7 @@ export type SerializedCard = {
   keywords: Array<{ id: string; name: string; description: string }>;
   modifiers: string[];
   faction: Faction;
+  spacesToHighlight: Point[];
 };
 
 export const isDeckCard = (card: AnyCard): card is DeckCard => {
@@ -74,6 +75,8 @@ export abstract class Card<
   protected playedAtTurn: number | null = null;
 
   cancelPlay?: () => MaybePromise<void>;
+
+  protected spacesToHighlight: Point[] = [];
 
   constructor(
     game: Game,
@@ -201,7 +204,8 @@ export abstract class Card<
         name: keyword.name,
         description: keyword.description
       })),
-      faction: this.blueprint.faction
+      faction: this.blueprint.faction,
+      spacesToHighlight: this.spacesToHighlight
     };
   }
 

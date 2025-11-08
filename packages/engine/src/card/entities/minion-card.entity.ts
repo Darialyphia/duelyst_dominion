@@ -126,7 +126,7 @@ export class MinionCard extends Card<
           getAoe: () => new PointAOEShape(TARGETING_TYPE.ANYWHERE)
         });
         if (cancelled) return;
-
+        this.spacesToHighlight = [position.position.serialize()];
         const targets = await this.blueprint.getTargets(this.game, this);
         if (cancelled) return;
 
@@ -155,7 +155,7 @@ export class MinionCard extends Card<
       MINION_EVENTS.MINION_AFTER_SUMMON,
       new MinionSummonedEvent({ card: this, cell: position, targets })
     );
-
+    this.spacesToHighlight = [];
     await this.blueprint.onPlay(this.game, this, {
       aoe: this.blueprint.getAoe(this.game, this, position, targets),
       position,

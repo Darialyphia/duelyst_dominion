@@ -79,6 +79,10 @@ const unitBg = computed(() => {
   position: relative;
   background: url('/assets/ui/unit-hex-base.png');
   background-size: cover;
+  transition: transform 1s var(--ease-bounce-2);
+  @starting-style {
+    transform: translateY(-100px);
+  }
 }
 
 .sprite {

@@ -93,7 +93,7 @@ export const useCard = (cardId: MaybeRef<string>) => {
 
 export const useUnits = () => {
   const state = useGameState();
-  return useEntities<UnitViewModel>(state.value.units);
+  return useEntities<UnitViewModel>(computed(() => state.value.units));
 };
 
 export const useFxEvent = <T extends FXEvent>(
@@ -120,6 +120,7 @@ export const useBoardCells = () => {
 
 export const useMyPlayer = () => {
   const { playerId } = useGameClient();
+
   return usePlayer(playerId);
 };
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
 import HexPositioner from './HexPositioner.vue';
+
 const { cell } = defineProps<{
   cell: BoardCellViewModel;
 }>();

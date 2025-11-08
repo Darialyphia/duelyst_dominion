@@ -2,19 +2,19 @@
 import {
   PopoverTrigger,
   PopoverRoot,
-  PopoverContent,
-  ComboboxRoot,
-  ComboboxAnchor,
-  ComboboxTrigger,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxViewport,
-  ComboboxItem,
-  ComboboxEmpty
+  PopoverContent
+  // ComboboxRoot,
+  // ComboboxAnchor,
+  // ComboboxTrigger,
+  // ComboboxInput,
+  // ComboboxContent,
+  // ComboboxViewport,
+  // ComboboxItem,
+  // ComboboxEmpty
 } from 'reka-ui';
 import { useSandbox } from '../composables/useSandbox';
-import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
-import { Icon } from '@iconify/vue';
+// import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
+// import { Icon } from '@iconify/vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import GameBoard from '@/game/components/GameBoard.vue';
 
@@ -28,11 +28,11 @@ const sandbox = useSandbox({
 });
 
 const isSandboxPopoverOpened = ref(false);
-const card = ref(null);
+// const card = ref(null);
 
-const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
-  a.name.localeCompare(b.name)
-);
+// const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
+//   a.name.localeCompare(b.name)
+// );
 </script>
 
 <template>
@@ -58,7 +58,7 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
       </RouterLink>
     </template>
   </GameBoard>
-  <!-- <PopoverRoot v-model:open="isSandboxPopoverOpened">
+  <PopoverRoot v-model:open="isSandboxPopoverOpened">
     <PopoverTrigger class="fixed top-0 left-0 bg-gray-10 p-3">
       Sandbox Tools
     </PopoverTrigger>
@@ -77,7 +77,7 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
       </label>
       <button @click="sandbox.rewindOneStep()">Rewind one step</button>
       <button @click="sandbox.restart()">Restart Game</button>
-      <ComboboxRoot class="relative" v-model="card">
+      <!-- <ComboboxRoot class="relative" v-model="card">
         <ComboboxAnchor
           class="min-w-[160px] inline-flex items-center justify-between rounded-lg border px-[15px] text-xs leading-none h-[35px] gap-[5px] bg-gray-10 text-grass11 shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-grass9 outline-none"
         >
@@ -109,8 +109,8 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
             </ComboboxItem>
           </ComboboxViewport>
         </ComboboxContent>
-      </ComboboxRoot>
-      <button
+      </ComboboxRoot> -->
+      <!-- <button
         :disabled="!card"
         @click="
           () => {
@@ -120,8 +120,8 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
         "
       >
         Play Card
-      </button>
-      <div class="h-13 overflow-auto">
+      </button> -->
+      <!-- <div class="h-13 overflow-auto">
         <h3 class="font-bold mb-2">History</h3>
         <div
           v-for="(input, index) in sandbox.client.value.history"
@@ -131,9 +131,9 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
         >
           {{ input.type }}
         </div>
-      </div>
+      </div> -->
     </PopoverContent>
-  </PopoverRoot> -->
+  </PopoverRoot>
 </template>
 
 <style scoped lang="postcss"></style>

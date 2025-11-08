@@ -27,8 +27,7 @@ export const archonSpellbinder: MinionBlueprint = {
   tags: [],
   manaCost: 6,
   runeCost: {
-    red: 1,
-    blue: 3
+    yellow: 1
   },
   atk: 6,
   cmd: 2,
