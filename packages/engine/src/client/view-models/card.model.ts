@@ -179,6 +179,14 @@ export class CardViewModel {
     return this.data.canPlay;
   }
 
+  get unplayableReason() {
+    if ('unplayableReason' in this.data) {
+      return this.data.unplayableReason as string | null;
+    }
+
+    return null;
+  }
+
   get indexInHand() {
     if (this.data.location !== 'hand') {
       return null;

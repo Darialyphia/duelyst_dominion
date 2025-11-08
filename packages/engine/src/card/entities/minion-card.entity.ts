@@ -29,6 +29,7 @@ export type SerializedMinionCard = SerializedCard & {
   cmd: number;
   manaCost: number;
   runeCost: RuneCost;
+  unplayableReason: string | null;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -85,6 +86,19 @@ export class MinionCard extends Card<
         this.blueprint.canPlay(this.game, this),
       this
     );
+  }
+
+  get unplayableReason() {
+    if (!this.hasAvailablePosition) {
+      return 'No available position to play this card.';
+    }
+    if (!this.canAfford) {
+      return "You don't have enough mana.";
+    }
+    if (!this.hasRunes) {
+      return "You haven't unlocked the necessary runes.";
+    }
+    return this.canPlay() ? null : 'You cannot play this card.';
   }
 
   async removeFromBoard() {
@@ -175,7 +189,8 @@ export class MinionCard extends Card<
       maxHp: this.maxHp,
       cmd: this.cmd,
       manaCost: this.manaCost,
-      runeCost: this.blueprint.runeCost
+      runeCost: this.blueprint.runeCost,
+      unplayableReason: this.unplayableReason
     };
   }
 

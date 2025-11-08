@@ -15,7 +15,7 @@ const { card, isInteractive } = defineProps<{
 const ui = useGameUi();
 const state = useGameState();
 
-const DRAG_THRESHOLD_PX = 100;
+const DRAG_THRESHOLD_PX = 60;
 
 const isOutOfScreen = usePageLeave();
 const isDragging = ref(false);
@@ -45,6 +45,8 @@ const unselectCard = () => {
 const onMouseDown = (e: MouseEvent) => {
   if (!card.canPlay) {
     isShaking.value = true;
+    violationWarning.value =
+      card.unplayableReason || 'You cannot play this card.';
 
     setTimeout(() => {
       violationWarning.value = '';
@@ -122,6 +124,9 @@ const isDetachedFromHand = computed(() => {
     }"
     @mousedown="onMouseDown($event)"
   >
+    <p class="violation-warning" v-if="violationWarning">
+      {{ violationWarning }}
+    </p>
     <component :is="isDetachedFromHand ? Teleport : 'div'" to="#dragged-card">
       <GameCard
         :card-id="card.id"
@@ -173,14 +178,33 @@ const isDetachedFromHand = computed(() => {
       inset: 0;
       box-shadow: inset 0 0 2.5rem var(--lime-4);
       z-index: 2;
+      transition: opacity 0.3s var(--ease-2);
+
+      @starting-style {
+        opacity: 0;
+      }
     }
   }
   &.disabled {
     /* filter: brightness(0.8) grayscale(1); */
   }
-  &.is-shaking > * {
+  &.is-shaking > :not(.violation-warning) {
     animation: var(--animation-shake-x);
     animation-duration: 0.3s;
   }
+}
+
+.violation-warning {
+  position: absolute;
+  bottom: calc(100% + var(--size-3));
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  font-size: var(--size-4);
+  font-weight: var(--font-weight-5);
+  width: 100%;
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
 }
 </style>

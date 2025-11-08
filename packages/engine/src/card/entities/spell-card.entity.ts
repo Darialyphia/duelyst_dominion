@@ -18,6 +18,7 @@ import { Interceptable } from '../../utils/interceptable';
 export type SerializedSpellCard = SerializedCard & {
   manaCost: number;
   runeCost: RuneCost;
+  unplayableReason: string | null;
 };
 
 export type SpellCardInterceptors = CardInterceptors & {
@@ -56,6 +57,16 @@ export class SpellCard extends Card<
       this.canAfford && this.canAfford && this.blueprint.canPlay(this.game, this),
       this
     );
+  }
+
+  get unplayableReason() {
+    if (!this.canAfford) {
+      return "You don't have enough mana.";
+    }
+    if (!this.hasRunes) {
+      return "You haven't unlocked the necessary runes.";
+    }
+    return this.canPlay() ? null : 'You cannot play this card.';
   }
 
   removeFromBoard(): Promise<void> {
@@ -110,7 +121,8 @@ export class SpellCard extends Card<
     return {
       ...this.serializeBase(),
       manaCost: this.blueprint.manaCost,
-      runeCost: this.blueprint.runeCost
+      runeCost: this.blueprint.runeCost,
+      unplayableReason: this.unplayableReason
     };
   }
 }

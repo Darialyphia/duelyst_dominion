@@ -19,6 +19,7 @@ export type SerializedArtifactCard = SerializedCard & {
   durability: number;
   manaCost: number;
   runeCost: RuneCost;
+  unplayableReason: string | null;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -60,6 +61,16 @@ export class ArtifactCard extends Card<
       this.canAfford && this.hasRunes && this.blueprint.canPlay(this.game, this),
       this
     );
+  }
+
+  get unplayableReason() {
+    if (!this.canAfford) {
+      return "You don't have enough mana.";
+    }
+    if (!this.hasRunes) {
+      return "You haven't unlocked the necessary runes.";
+    }
+    return this.canPlay() ? null : 'You cannot play this card.';
   }
 
   removeFromBoard(): Promise<void> {
@@ -123,7 +134,8 @@ export class ArtifactCard extends Card<
       ...this.serializeBase(),
       durability: this.durability,
       manaCost: this.manaCost,
-      runeCost: this.blueprint.runeCost
+      runeCost: this.blueprint.runeCost,
+      unplayableReason: this.unplayableReason
     };
   }
 }

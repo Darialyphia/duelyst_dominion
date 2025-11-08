@@ -142,7 +142,7 @@ watch(isPinned, pinned => {
   &:not(.is-pinned) {
     top: 0;
     left: 0;
-    transform: translateY(var(--y)) translateX(var(--x))
+    transform: translateY(var(--y)) translateX(calc(-50% + var(--x)))
       rotateX(calc(1deg * v-bind('cardRotation.x')))
       rotateY(calc(1deg * v-bind('cardRotation.y')));
   }
