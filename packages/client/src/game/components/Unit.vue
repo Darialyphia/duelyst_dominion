@@ -28,7 +28,8 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
   if (event.unit !== unit.id) return;
   const { path, previousPosition } = event;
 
-  const stepDuration = 0.3;
+  const stepDuration = 0.4;
+  const hopHeight = 30;
 
   const timeline = gsap.timeline();
 
@@ -39,11 +40,19 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
     const deltaX = destinationScaled.x - prevScaled.x;
     const deltaY = destinationScaled.y - prevScaled.y;
 
+    // First half: move forward and up
     timeline.to(hexOffset.value, {
       x: `+=${deltaX}`,
-      y: `+=${deltaY}`,
-      duration: stepDuration,
-      ease: Power1.easeOut
+      y: `+=${deltaY - hopHeight}`,
+      duration: stepDuration / 2,
+      ease: 'power1.out'
+    });
+
+    // Second half: come back down
+    timeline.to(hexOffset.value, {
+      y: `+=${hopHeight}`,
+      duration: stepDuration / 2,
+      ease: 'power1.in'
     });
   });
 

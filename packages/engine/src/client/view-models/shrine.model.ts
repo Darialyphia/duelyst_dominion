@@ -1,6 +1,7 @@
 import type { SerializedShrine } from '../../board/entities/shrine.entity';
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { GameClient, GameStateEntities } from '../client';
+import type { PlayerViewModel } from './player.model';
 
 export class ShrineViewModel {
   private getEntities: () => GameStateEntities;
@@ -44,5 +45,10 @@ export class ShrineViewModel {
 
   get y() {
     return this.data.position.y;
+  }
+
+  get player() {
+    if (!this.data.player) return null;
+    return this.getEntities()[this.data.player] as PlayerViewModel;
   }
 }

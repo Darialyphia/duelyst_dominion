@@ -22,6 +22,8 @@ export type SerializedBoard = {
   rows: number;
   columns: number;
   cells: string[];
+  shrines: string[];
+  teleporters: string[];
 };
 
 export const BoardHex = defineHex({
@@ -140,7 +142,9 @@ export class BoardSystem
     return {
       rows: this.height,
       columns: this.width,
-      cells: this.cells.map(cell => cell.id)
+      cells: this.cells.map(cell => cell.id),
+      shrines: this.shrines.map(shrine => shrine.id),
+      teleporters: this.teleporters.map(teleporter => teleporter.id)
     };
   }
 }

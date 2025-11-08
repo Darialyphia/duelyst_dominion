@@ -6,6 +6,7 @@ import {
   useGameState,
   useMyPlayer,
   useOpponentPlayer,
+  useShrines,
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
@@ -13,11 +14,14 @@ import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
 import BoardCell from './BoardCell.vue';
+import FPS from './FPS.vue';
+import Shrine from './Shrine.vue';
 
 const state = useGameState();
 const { client } = useGameClient();
 const boardCells = useBoardCells();
 const units = useUnits();
+const shrines = useShrines();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
 const dimensions = { height: 102, width: 144, x: 94, y: 51 };
@@ -26,6 +30,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 <template>
   <div class="game-board">
     <DraggedCard />
+    <FPS />
 
     <div
       class="board"
@@ -36,6 +41,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
     >
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
+      <Shrine v-for="shrine in shrines" :key="shrine.id" :shrine="shrine" />
     </div>
 
     <div class="hand">
@@ -44,7 +50,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
     <div class="my-infos">
       {{ myPlayer.name }}
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-row-reverse">
         <div
           v-for="i in myPlayer.maxMana"
           :key="i"
@@ -108,7 +114,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
     <div class="opponent-infos">
       {{ opponent.name }}
-      <div class="flex gap-2 flex-row-reverse">
+      <div class="flex gap-2">
         <div
           v-for="i in opponent.maxMana"
           :key="i"
@@ -121,6 +127,20 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
           class="mana overspent"
           :class="{ spent: i <= opponent.overspentMana }"
         />
+      </div>
+      <div class="flex gap-5 flex-1 flex-row-reverse">
+        <div class="rune-count">
+          <img src="/assets/ui/rune-red.png" />
+          {{ myPlayer.runes.red }}
+        </div>
+        <div class="rune-count">
+          <img src="/assets/ui/rune-yellow.png" />
+          {{ myPlayer.runes.yellow }}
+        </div>
+        <div class="rune-count">
+          <img src="/assets/ui/rune-blue.png" />
+          {{ myPlayer.runes.blue }}
+        </div>
       </div>
     </div>
 
@@ -172,7 +192,6 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   font-weight: bold;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: var(--size-2);
 }
 
@@ -211,8 +230,6 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
     --ui-button-bg: var(--yellow-3);
     --ui-button-hover-bg: var(--yellow-5);
     --ui-button-color: var(--text-on-primary);
-  }
-  &.draw {
   }
 }
 

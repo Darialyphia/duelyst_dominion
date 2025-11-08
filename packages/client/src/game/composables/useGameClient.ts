@@ -19,6 +19,8 @@ import type { InjectionKey, Ref } from 'vue';
 import { gameStateRef } from './gameStateRef';
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
+import type { ShrineViewModel } from '@game/engine/src/client/view-models/shrine.model';
+import type { TeleporterViewModel } from '@game/engine/src/client/view-models/teleporter.model';
 
 type GameClientContext = { client: Ref<GameClient>; playerId: Ref<string> };
 
@@ -99,6 +101,20 @@ export const useCard = (cardId: MaybeRef<string>) => {
 export const useUnits = () => {
   const state = useGameState();
   return useEntities<UnitViewModel>(computed(() => state.value.units));
+};
+
+export const useShrines = () => {
+  const state = useGameState();
+  return useEntities<ShrineViewModel>(
+    computed(() => state.value.board.shrines)
+  );
+};
+
+export const useTeleporters = () => {
+  const state = useGameState();
+  return useEntities<TeleporterViewModel>(
+    computed(() => state.value.board.teleporters)
+  );
 };
 
 export const useFxEvent = <T extends FXEvent>(
