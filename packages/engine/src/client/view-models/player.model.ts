@@ -47,6 +47,10 @@ export class PlayerViewModel {
     return this.data.maxHp;
   }
 
+  get victoryPoints() {
+    return this.data.victoryPoints;
+  }
+
   get mana() {
     return this.data.currentMana;
   }

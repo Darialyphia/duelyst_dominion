@@ -23,6 +23,7 @@ export type SerializedShrine = {
   attackCmdByPlayer: Record<string, number>;
   defendCmdByPlayer: Record<string, number>;
   capturableByPlayer: Record<string, boolean>;
+  capturableByUnit: Record<string, boolean>;
 };
 
 export class Shrine
@@ -55,6 +56,9 @@ export class Shrine
           player.id,
           player.units.some(unit => this.canBeCapturedBy(unit))
         ])
+      ),
+      capturableByUnit: Object.fromEntries(
+        this.neighborUnits.map(unit => [unit.id, unit.canCapture(this)])
       )
     };
   }

@@ -9,7 +9,7 @@ export class UnselectUnitAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
-    const unit = cell.getUnit();
+    const unit = cell.unit;
     return (
       this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&

@@ -17,6 +17,17 @@ const hexOffset = ref({
   x: 0,
   y: 0
 });
+
+const displayedCmd = computed(() => {
+  return {
+    mine: isAlly.value
+      ? shrine.defendCmdByPlayer[myPlayer.value.id]
+      : shrine.attackCmdByPlayer[myPlayer.value.id],
+    opponent: isAlly.value
+      ? shrine.attackCmdByPlayer[opponent.value.id]
+      : shrine.defendCmdByPlayer[opponent.value.id]
+  };
+});
 </script>
 
 <template>
@@ -32,19 +43,13 @@ const hexOffset = ref({
       <div class="shrine-sprite" />
       <div class="shrine-border" />
       <div class="my-cmd">
-        <span
-          class="dual-text"
-          :data-text="shrine.attackCmdByPlayer[myPlayer.id]"
-        >
-          {{ shrine.attackCmdByPlayer[myPlayer.id] }}
+        <span class="dual-text" :data-text="displayedCmd.mine">
+          {{ displayedCmd.mine }}
         </span>
       </div>
       <div class="opponent-cmd">
-        <span
-          class="dual-text"
-          :data-text="shrine.defendCmdByPlayer[opponent.id]"
-        >
-          {{ shrine.defendCmdByPlayer[opponent.id] }}
+        <span class="dual-text" :data-text="displayedCmd.opponent">
+          {{ displayedCmd.opponent }}
         </span>
       </div>
     </div>
@@ -118,11 +123,11 @@ const hexOffset = ref({
   inset: 0;
   background-size: cover;
   background: url('/assets/ui/unit-hex-border-neutral.png');
-  .unit.ally & {
+  .shrine.ally & {
     background: url('/assets/ui/unit-hex-border-ally.png');
   }
 
-  .unit.enemy & {
+  .shrine.enemy & {
     background: url('/assets/ui/unit-hex-border-enemy.png');
   }
 }

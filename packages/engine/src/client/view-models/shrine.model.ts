@@ -59,6 +59,10 @@ export class ShrineViewModel {
     return this.data.capturableByPlayer;
   }
 
+  get capturableByUnit() {
+    return this.data.capturableByUnit;
+  }
+
   get player() {
     if (!this.data.player) return null;
     return this.getEntities()[this.data.player] as PlayerViewModel;

@@ -50,6 +50,14 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
     <div class="my-infos">
       {{ myPlayer.name }}
+      <div class="flex gap-2">
+        <div
+          v-for="i in state.config.VICTORY_POINT_GOAL"
+          :key="i"
+          class="victory-point"
+          :class="{ filled: i <= myPlayer.victoryPoints }"
+        />
+      </div>
       <div class="flex gap-2 flex-row-reverse">
         <div
           v-for="i in myPlayer.maxMana"
@@ -114,6 +122,14 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
     <div class="opponent-infos">
       {{ opponent.name }}
+      <div class="flex gap-2 flex-row-reverse">
+        <div
+          v-for="i in state.config.VICTORY_POINT_GOAL"
+          :key="i"
+          class="victory-point"
+          :class="{ filled: i <= opponent.victoryPoints }"
+        />
+      </div>
       <div class="flex gap-2">
         <div
           v-for="i in opponent.maxMana"
@@ -155,8 +171,6 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   inset: 0;
   pointer-events: none;
 }
-.game-board {
-}
 
 .board {
   position: absolute;
@@ -192,6 +206,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   font-weight: bold;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: var(--size-2);
 }
 
@@ -207,6 +222,18 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   }
   &.overspent {
     --color: magenta;
+  }
+}
+
+.victory-point {
+  --color: gold;
+  width: var(--size-5);
+  aspect-ratio: 1;
+  border-radius: var(--radius-round);
+  border: solid var(--border-size-2) var(--color);
+  background-color: transparent;
+  &.filled {
+    background-color: var(--color);
   }
 }
 

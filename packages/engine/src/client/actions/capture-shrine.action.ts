@@ -2,29 +2,31 @@ import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
 import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
-import { isDefined } from '@game/shared';
 import type { BoardCellClickRule } from '../controllers/ui-controller';
+import { isDefined } from '@game/shared';
 
-export class SelectUnitAction implements BoardCellClickRule {
+export class CaptureShrineAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
-    const unit = cell.unit;
     return (
+      cell.shrine !== null &&
+      isDefined(this.client.ui.selectedUnit) &&
+      cell.shrine.capturableByUnit[this.client.ui.selectedUnit.id] &&
       this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&
-      state.interaction.state === INTERACTION_STATES.IDLE &&
-      isDefined(unit) &&
-      !unit.isExhausted &&
-      this.client.ui.selectedUnit?.id !== unit.id &&
-      unit.getPlayer()?.id === this.client.playerId
+      state.interaction.state === INTERACTION_STATES.IDLE
     );
   }
 
   handler(cell: BoardCellViewModel) {
-    const unit = cell.unit;
-    if (!unit) return;
-
-    this.client.ui.selectUnit(unit);
+    this.client.networkAdapter.dispatch({
+      type: 'captureShrine',
+      payload: {
+        playerId: this.client.playerId,
+        unitId: this.client.ui.selectedUnit!.id,
+        shrineId: cell.shrine!.id
+      }
+    });
   }
 }
