@@ -8,6 +8,7 @@ import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { MoveUnitAction } from '../actions/move-unit';
 import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
 import { SelectUnitAction } from '../actions/select-unit';
+import { UnselectUnitAction } from '../actions/unselect-unit';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
@@ -152,7 +153,8 @@ export class UiController {
     this.boardCellClickRules = [
       new MoveUnitAction(this.client),
       new SelectSpaceOnBoardAction(this.client),
-      new SelectUnitAction(this.client)
+      new SelectUnitAction(this.client),
+      new UnselectUnitAction(this.client)
     ];
   }
 

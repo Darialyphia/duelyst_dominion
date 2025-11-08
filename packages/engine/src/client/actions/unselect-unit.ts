@@ -5,7 +5,7 @@ import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
 import { isDefined } from '@game/shared';
 import type { BoardCellClickRule } from '../controllers/ui-controller';
 
-export class SelectUnitAction implements BoardCellClickRule {
+export class UnselectUnitAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
@@ -14,17 +14,13 @@ export class SelectUnitAction implements BoardCellClickRule {
       this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&
       state.interaction.state === INTERACTION_STATES.IDLE &&
-      isDefined(unit) &&
-      !unit.isExhausted &&
-      this.client.ui.selectedUnit?.id !== unit.id &&
-      unit.getPlayer()?.id === this.client.playerId
+      (!isDefined(unit) ||
+        unit.getPlayer()?.id !== this.client.playerId ||
+        unit.isExhausted)
     );
   }
 
-  handler(cell: BoardCellViewModel) {
-    const unit = cell.getUnit();
-    if (!unit) return;
-
-    this.client.ui.selectUnit(unit);
+  handler() {
+    this.client.ui.unselectUnit();
   }
 }
