@@ -7,6 +7,8 @@ import {
   useMyPlayer
 } from '../composables/useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import gsap from 'gsap';
+import { config } from '@/utils/config';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -21,14 +23,45 @@ const hexOffset = ref({
   x: 0,
   y: 0
 });
-useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, event => {
+
+useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
   if (event.unit !== unit.id) return;
-  const { path, position, previousPosition } = event;
+  const { path, previousPosition } = event;
+
+  const stepDuration = 0.3;
+
+  const timeline = gsap.timeline();
+
+  path.forEach((point, index) => {
+    const prev = index === 0 ? previousPosition : path[index - 1];
+    const prevScaled = config.HEXES.toScreenPosition(prev);
+    const destinationScaled = config.HEXES.toScreenPosition(point);
+    const deltaX = destinationScaled.x - prevScaled.x;
+    const deltaY = destinationScaled.y - prevScaled.y;
+
+    timeline.to(hexOffset.value, {
+      x: `+=${deltaX}`,
+      y: `+=${deltaY}`,
+      duration: stepDuration,
+      ease: Power1.easeOut
+    });
+  });
+
+  timeline.set(hexOffset.value, { x: 0, y: 0 });
+
+  await timeline.play();
 });
 </script>
 
 <template>
-  <HexPositioner :x="unit.x" :y="unit.y" :offset="hexOffset">
+  <HexPositioner
+    :x="unit.x"
+    :y="unit.y"
+    :offset="hexOffset"
+    :style="{
+      translate: `${hexOffset.x}px ${hexOffset.y}px`
+    }"
+  >
     <div
       class="unit"
       :class="[
@@ -52,6 +85,7 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, event => {
         </span>
       </div>
       <div class="cmd" v-if="!unit.isGeneral">{{ unit.cmd }}</div>
+      <div class="debug">{{ unit.x }}, {{ unit.y }}</div>
     </div>
   </HexPositioner>
 </template>
@@ -164,5 +198,20 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, event => {
   right: calc(var(--pixel-scale) * 4px);
   top: 50%;
   translate: 0 -50%;
+}
+
+.cmd {
+  background-image: url('/assets/ui/cmd-frame-textless.png');
+  left: 50%;
+  bottom: calc(var(--pixel-scale) * 1px);
+  translate: -50% 0;
+}
+
+.debug {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  opacity: 0;
 }
 </style>

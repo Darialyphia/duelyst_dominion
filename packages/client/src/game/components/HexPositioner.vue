@@ -11,10 +11,9 @@ import {
 } from '@game/engine/src/game/game.enums';
 import { pointToCellId } from '@game/engine/src/board/board-utils';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
+import { config } from '@/utils/config';
 
-const { x, y, offset } = defineProps<Point & { offset?: Point }>();
-
-const dimensions = { height: 102, width: 144, x: 94, y: 51 };
+const { x, y } = defineProps<Point>();
 
 const state = useGameState();
 const ui = useGameUi();
@@ -67,11 +66,7 @@ const canSprintTo = computed(() => {
 });
 
 const screenPosition = computed(() => {
-  const dim = dimensions;
-  return {
-    x: (x + (offset?.x || 0)) * dim.x,
-    y: (y + (offset?.y || 0)) * dim.height + (x % 2 === 0 ? 0 : dim.y)
-  };
+  return config.HEXES.toScreenPosition({ x, y });
 });
 </script>
 
@@ -85,8 +80,8 @@ const screenPosition = computed(() => {
       'can-sprint-to': canSprintTo
     }"
     :style="{
-      width: `${dimensions.width}px`,
-      height: `${dimensions.height}px`,
+      width: `${config.HEXES.width}px`,
+      height: `${config.HEXES.height}px`,
       transform: `translate(${screenPosition.x}px, ${screenPosition.y}px)`
     }"
   >
