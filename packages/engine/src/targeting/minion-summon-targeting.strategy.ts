@@ -11,8 +11,9 @@ export class MinionSummonTargetingStrategy implements TargetingStrategy {
 
   private isPointValid(point: Point) {
     return (
-      this.card.player.units.some(unit => unit.position.isNearby(point)) &&
-      !!this.game.boardSystem.getCellAt(point)?.isWalkable
+      this.card.player.units.some(
+        unit => this.game.boardSystem.getDistance(unit.position, point) === 1
+      ) && !!this.game.boardSystem.getCellAt(point)?.isWalkable
     );
   }
 

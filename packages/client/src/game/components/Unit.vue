@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 import HexPositioner from './HexPositioner.vue';
-import { useGameState, useMyPlayer } from '../composables/useGameClient';
-import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
+import { useGameUi, useMyPlayer } from '../composables/useGameClient';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
+const ui = useGameUi();
 const myPlayer = useMyPlayer();
-const state = useGameState();
 const isAlly = computed(() => unit.getPlayer()?.equals(myPlayer.value));
 const unitBg = computed(() => {
   return `url(${unit.getCard().imagePath})`;
@@ -15,20 +14,14 @@ const unitBg = computed(() => {
 </script>
 
 <template>
-  <HexPositioner
-    :x="unit.x"
-    :y="unit.y"
-    :class="{
-      'pointer-events-none':
-        state.interaction.state === INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
-    }"
-  >
+  <HexPositioner :x="unit.x" :y="unit.y">
     <div
       class="unit"
       :class="[
         isAlly ? 'ally' : 'enemy',
         {
-          exhausted: unit.isExhausted
+          'is-exhausted': unit.isExhausted,
+          'is-selected': ui.selectedUnit?.equals(unit)
         }
       ]"
     >
@@ -88,8 +81,22 @@ const unitBg = computed(() => {
   background: url('/assets/ui/unit-hex-base.png');
   background-size: cover;
   transition: transform 1s var(--ease-bounce-2);
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+
   @starting-style {
     transform: translateY(-100px);
+  }
+
+  &.is-selected {
+    filter: brightness(1.15);
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/hex-highlight-unit-selected.png');
+    }
   }
 }
 
@@ -103,7 +110,7 @@ const unitBg = computed(() => {
     transform: scaleX(-1);
   }
 
-  .unit.exhausted & {
+  .unit.is-exhausted & {
     filter: grayscale(1) brightness(0.6);
   }
 }

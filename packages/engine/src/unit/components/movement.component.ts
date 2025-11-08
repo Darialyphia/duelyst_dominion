@@ -1,6 +1,5 @@
 import { Vec2, type Point } from '@game/shared';
 import type { PathfinderComponent } from '../../pathfinding/pathfinder.component';
-import { Position } from '../../utils/position';
 import { cellIdToPoint } from '../../board/board-utils';
 import type { SerializedCoords } from '../../board/entities/board-cell.entity';
 import { Unit } from '../unit.entity';
@@ -14,7 +13,7 @@ export type MovementComponentOptions = {
 };
 
 export class MovementComponent {
-  position: Position;
+  position: Vec2;
 
   private pathfinding: PathfinderComponent;
 
@@ -25,7 +24,7 @@ export class MovementComponent {
     private unit: Unit,
     options: MovementComponentOptions
   ) {
-    this.position = Position.fromPoint(options.position);
+    this.position = Vec2.fromPoint(options.position);
     this.pathfinding = options.pathfinding;
   }
 
@@ -85,7 +84,7 @@ export class MovementComponent {
     const currentPosition = this.position;
 
     for (const point of path.path) {
-      this.position = Position.fromPoint(point);
+      this.position = Vec2.fromPoint(point);
     }
 
     this._movementsCount++;

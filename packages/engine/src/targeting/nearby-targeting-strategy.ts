@@ -6,7 +6,6 @@ import {
 } from './targeting-strategy';
 import type { Game } from '../game/game';
 import type { Player } from '../player/player.entity';
-import { Position } from '../utils/position';
 
 export class NearbyTargetingStrategy implements TargetingStrategy {
   constructor(
@@ -17,7 +16,9 @@ export class NearbyTargetingStrategy implements TargetingStrategy {
   ) {}
 
   isWithinRange(point: Point3D) {
-    return this.origins.some(origin => Position.fromPoint(origin).isNearby(point));
+    return this.origins.some(
+      origin => this.game.boardSystem.getDistance(origin, point) === 1
+    );
   }
 
   canTargetAt(point: Point3D) {

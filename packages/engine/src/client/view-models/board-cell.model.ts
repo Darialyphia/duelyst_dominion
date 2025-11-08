@@ -1,16 +1,7 @@
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedModifier } from '../../modifier/modifier.entity';
-import { MoveUnitAction } from '../actions/move-unit';
-import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
-import { SelectUnitAction } from '../actions/select-unit';
 import type { GameClient, GameStateEntities } from '../client';
-import type { GameClientState } from '../controllers/state-controller';
 import type { UnitViewModel } from './unit.model';
-
-export type BoardCellClickRule = {
-  predicate: (tile: BoardCellViewModel, state: GameClientState) => boolean;
-  handler: (tile: BoardCellViewModel, e: MouseEvent) => void;
-};
 
 export class BoardCellViewModel {
   private getEntities: () => GameStateEntities;
@@ -24,8 +15,6 @@ export class BoardCellViewModel {
   ) {
     this.getEntities = () => entityDictionary;
     this.getClient = () => client;
-
-    this.onMouseup = this.onMouseup.bind(this);
   }
 
   equals(unit: BoardCellViewModel | SerializedCell) {
@@ -66,22 +55,5 @@ export class BoardCellViewModel {
     const unit = this.data.unit;
     if (!unit) return null;
     return this.getEntities()[unit] as UnitViewModel;
-  }
-
-  private getActions() {
-    return [
-      new MoveUnitAction(this.getClient()),
-      new SelectSpaceOnBoardAction(this.getClient()),
-      new SelectUnitAction(this.getClient())
-    ];
-  }
-
-  onMouseup(event: MouseEvent) {
-    const action = this.getActions().find(action =>
-      action.predicate(this, this.getClient().state)
-    );
-    if (action) {
-      action.handler(this, event);
-    }
   }
 }

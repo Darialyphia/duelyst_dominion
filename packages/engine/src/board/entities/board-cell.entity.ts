@@ -1,7 +1,6 @@
-import type { EmptyObject, Point, Serializable } from '@game/shared';
+import { Vec2, type EmptyObject, type Point, type Serializable } from '@game/shared';
 import { Entity } from '../../entity';
 import type { Game } from '../../game/game';
-import { Position } from '../../utils/position';
 import { pointToCellId } from '../board-utils';
 import type { BoardHex } from '../board.system';
 
@@ -27,7 +26,7 @@ export class BoardCell
   extends Entity<BoardCellInterceptors>
   implements Serializable<SerializedCell>
 {
-  readonly position: Position;
+  readonly position: Vec2;
 
   readonly player: 'p1' | 'p2' | null;
 
@@ -36,7 +35,7 @@ export class BoardCell
     options: BoardCellOptions
   ) {
     super(pointToCellId(options.position), {});
-    this.position = Position.fromPoint(options.position);
+    this.position = Vec2.fromPoint(options.position);
     this.player = options.player;
   }
 
@@ -63,7 +62,7 @@ export class BoardCell
   }
 
   isNeighbor(point: Point) {
-    return this.position.isNearby(point);
+    return this.game.boardSystem.getDistance(this.position, point) === 1;
   }
 
   serialize(): SerializedCell {

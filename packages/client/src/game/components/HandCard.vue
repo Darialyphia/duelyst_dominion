@@ -179,10 +179,10 @@ const isDetachedFromHand = computed(() => {
       content: '';
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 2.5rem var(--lime-4);
+      box-shadow: inset 0 0 1.5rem var(--lime-4);
       z-index: 2;
       transition: opacity 0.3s var(--ease-2);
-
+      pointer-events: none;
       @starting-style {
         opacity: 0;
       }

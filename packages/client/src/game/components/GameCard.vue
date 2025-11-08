@@ -95,6 +95,7 @@ const classes = computed(() => {
     :data-flip-id="`card_${card.id}`"
   >
     <Card
+      is-foil
       :is-animated="true"
       :id="card.id"
       :max-angle="15"

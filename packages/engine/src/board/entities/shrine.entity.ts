@@ -1,10 +1,8 @@
-import { isDefined, type Serializable, type Values } from '@game/shared';
+import { isDefined, Vec2, type Serializable, type Values } from '@game/shared';
 import { Entity, type EmptyInterceptables } from '../../entity';
 import type { Game } from '../../game/game';
 import { TypedSerializableEvent } from '../../utils/typed-emitter';
 import type { Player } from '../../player/player.entity';
-import type { Position } from '../../utils/position';
-import { GAME_EVENTS } from '../../game/game.events';
 import type { PlayerTurnEvent } from '../../player/player.events';
 import type { Unit } from '../../unit/unit.entity';
 import { PLAYER_EVENTS } from '../../player/player.enums';
@@ -30,11 +28,11 @@ export class Shrine
 {
   player: Player | null = null;
 
-  readonly position: Position;
+  readonly position: Vec2;
 
   constructor(
     private game: Game,
-    position: Position
+    position: Vec2
   ) {
     super(`shrine_${position.x}_${position.y}`, {});
     this.position = position;

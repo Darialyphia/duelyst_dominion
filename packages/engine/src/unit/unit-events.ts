@@ -4,7 +4,6 @@ import type { Unit } from './unit.entity';
 import type { UNIT_EVENTS } from './unit.enums';
 import type { Damage } from '../utils/damage';
 import type { AnyCard } from '../card/entities/card.entity';
-import type { Position } from '../utils/position';
 
 export class UnitBeforeMoveEvent extends TypedSerializableEvent<
   { unit: Unit; position: Vec2; path: Vec2[] },
@@ -87,7 +86,7 @@ export class UnitBeforeDestroyEvent extends TypedSerializableEvent<
 }
 
 export class UnitAfterDestroyEvent extends TypedSerializableEvent<
-  { unit: Unit; source: AnyCard; destroyedAt: Position },
+  { unit: Unit; source: AnyCard; destroyedAt: Vec2 },
   { unit: string; source: string; destroyedAt: Point }
 > {
   serialize() {

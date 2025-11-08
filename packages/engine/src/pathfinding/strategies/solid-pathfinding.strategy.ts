@@ -33,9 +33,8 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
 
   computeNeighbors(node: SerializedCoords) {
     const cell = this.game.boardSystem.getCellAt(node)!;
-    const edges = this.game.boardSystem
-      .getNeighbors(cell.position)
-      .filter(neighbor => neighbor.position.isAxisAligned(cell.position));
+    const edges = this.game.boardSystem.getNeighbors(cell.position);
+
     const result: Array<{ node: SerializedCoords; weight: number }> = [];
 
     for (let i = 0; i <= edges.length; i++) {

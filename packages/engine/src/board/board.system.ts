@@ -2,6 +2,7 @@ import {
   indexToPoint,
   isDefined,
   isString,
+  Vec2,
   type Point,
   type Serializable
 } from '@game/shared';
@@ -11,7 +12,6 @@ import { System } from '../system';
 import type { MapBlueprint } from './map-blueprint';
 import { defineHex, Grid, Orientation, rectangle, spiral } from 'honeycomb-grid';
 import { Shrine } from './entities/shrine.entity';
-import { Position } from '../utils/position';
 import { Teleporter } from './entities/two-way-teleporter';
 
 export type BoardSystemOptions = {
@@ -75,7 +75,7 @@ export class BoardSystem
     };
 
     this.map.shrinePositions.forEach(pos => {
-      const shrine = new Shrine(this.game, Position.fromPoint(pos));
+      const shrine = new Shrine(this.game, Vec2.fromPoint(pos));
       this.shrines = [...(this.shrines || []), shrine];
     });
 

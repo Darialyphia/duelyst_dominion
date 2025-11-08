@@ -87,9 +87,4 @@ const isSelected = computed(() => {
     z-index: 1;
   }
 }
-:slotted(div) {
-  width: 100%;
-  height: 100%;
-  pointer-events: auto;
-}
 </style>

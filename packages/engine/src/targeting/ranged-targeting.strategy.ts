@@ -1,4 +1,4 @@
-import { type Point3D } from '@game/shared';
+import { Vec2, type Point3D } from '@game/shared';
 import type { Game } from '../game/game';
 import {
   isValidTargetingType,
@@ -6,7 +6,6 @@ import {
   type TargetingType
 } from './targeting-strategy';
 import type { AnyCard } from '../card/entities/card.entity';
-import { Position } from '../utils/position';
 
 export type RangedTargetingStrategyOptions = {
   minRange: number;
@@ -23,14 +22,14 @@ export class RangedTargetingStrategy implements TargetingStrategy {
   ) {}
 
   get position() {
-    return Position.fromPoint(this.origin);
+    return Vec2.fromPoint(this.origin);
   }
 
   isWithinRange(point: Point3D) {
-    if (this.position.isWithinCells(point, this.options.minRange)) return false;
-    if (!this.position.isWithinCells(point, this.options.maxRange)) return false;
-
-    return true;
+    return (
+      this.game.boardSystem.getDistance(this.position, point) >= this.options.minRange &&
+      this.game.boardSystem.getDistance(this.position, point) <= this.options.maxRange
+    );
   }
 
   canTargetAt(point: Point3D) {

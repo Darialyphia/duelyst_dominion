@@ -4,10 +4,19 @@ import type { CardViewModel } from '../view-models/card.model';
 import type { GameClientState } from './state-controller';
 import { CancelPlayCardGlobalAction } from '../actions/cancel-play-card';
 import type { UnitViewModel } from '../view-models/unit.model';
+import type { BoardCellViewModel } from '../view-models/board-cell.model';
+import { MoveUnitAction } from '../actions/move-unit';
+import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
+import { SelectUnitAction } from '../actions/select-unit';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
   handler: (card: CardViewModel) => void;
+};
+
+export type BoardCellClickRule = {
+  predicate: (tile: BoardCellViewModel, state: GameClientState) => boolean;
+  handler: (tile: BoardCellViewModel, e: MouseEvent) => void;
 };
 
 export type GlobalActionRule = {
@@ -56,6 +65,8 @@ export class UiController {
   private cardClickRules: CardClickRule[] = [];
 
   private globalActionRules: GlobalActionRule[] = [];
+
+  private boardCellClickRules: BoardCellClickRule[] = [];
 
   private hoverTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -110,6 +121,7 @@ export class UiController {
 
   constructor(private client: GameClient) {
     this.buildCardClickRules();
+    this.buildBoardCellClickRules();
     this.buildGlobalActionRules();
   }
 
@@ -134,6 +146,14 @@ export class UiController {
 
   private buildCardClickRules() {
     this.cardClickRules = [];
+  }
+
+  private buildBoardCellClickRules() {
+    this.boardCellClickRules = [
+      new MoveUnitAction(this.client),
+      new SelectSpaceOnBoardAction(this.client),
+      new SelectUnitAction(this.client)
+    ];
   }
 
   private buildGlobalActionRules() {
@@ -171,6 +191,16 @@ export class UiController {
     }
 
     this.unselectCard();
+  }
+
+  onBoardCellClick(cell: BoardCellViewModel, event: MouseEvent) {
+    const state = this.client.state;
+    for (const rule of this.boardCellClickRules) {
+      if (rule.predicate(cell, state)) {
+        rule.handler(cell, event);
+        return;
+      }
+    }
   }
 
   get isInteractivePlayer() {
