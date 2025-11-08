@@ -14,6 +14,8 @@ const ui = useGameUi();
   <HexPositioner
     :x="cell.x"
     :y="cell.y"
+    @mouseenter="ui.hover(cell)"
+    @mouseleave="ui.unhover()"
     @mouseup="ui.onBoardCellClick(cell, $event)"
   >
     <div class="cell" />

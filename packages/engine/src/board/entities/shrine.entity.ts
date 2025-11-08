@@ -20,6 +20,9 @@ export type SerializedShrine = {
   entityType: 'shrine';
   position: { x: number; y: number };
   player: string | null;
+  attackCmdByPlayer: Record<string, number>;
+  defendCmdByPlayer: Record<string, number>;
+  capturableByPlayer: Record<string, boolean>;
 };
 
 export class Shrine
@@ -44,7 +47,15 @@ export class Shrine
       id: this.id,
       entityType: 'shrine',
       position: { x: this.position.x, y: this.position.y },
-      player: this.player?.id ?? null
+      player: this.player?.id ?? null,
+      attackCmdByPlayer: this.attackingCmdByPlayer,
+      defendCmdByPlayer: this.defendingCmdByPlayer,
+      capturableByPlayer: Object.fromEntries(
+        this.game.playerSystem.players.map(player => [
+          player.id,
+          player.units.some(unit => this.canBeCapturedBy(unit))
+        ])
+      )
     };
   }
 
@@ -71,6 +82,31 @@ export class Shrine
       .getNeighbors(this.position)
       .map(cell => cell.unit)
       .filter(isDefined);
+  }
+
+  get attackingCmdByPlayer() {
+    return Object.fromEntries(
+      this.game.playerSystem.players.map(player => {
+        const cmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
+          if (!neighborUnit.isAlly(player)) return total;
+          if (neighborUnit.isExhausted) return total;
+          return total + neighborUnit.cmd;
+        }, 0);
+        return [player.id, cmdTotal];
+      })
+    );
+  }
+
+  get defendingCmdByPlayer() {
+    return Object.fromEntries(
+      this.game.playerSystem.players.map(player => {
+        const cmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
+          if (!neighborUnit.isAlly(player)) return total;
+          return total + neighborUnit.cmd;
+        }, 0);
+        return [player.id, cmdTotal];
+      })
+    );
   }
 
   canBeCapturedBy(unit: Unit) {

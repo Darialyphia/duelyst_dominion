@@ -123,6 +123,7 @@ export class BoardSystem
       .traverse(spiral({ radius: 1, start: { col: point.x, row: point.y } }))
       .toArray()
       .map(hex => {
+        if (hex.col === point.x && hex.row === point.y) return null;
         return this.getCellAt({ x: hex.col, y: hex.row });
       })
       .filter(isDefined);

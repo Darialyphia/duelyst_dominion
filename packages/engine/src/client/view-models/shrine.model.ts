@@ -47,6 +47,18 @@ export class ShrineViewModel {
     return this.data.position.y;
   }
 
+  get attackCmdByPlayer() {
+    return this.data.attackCmdByPlayer;
+  }
+
+  get defendCmdByPlayer() {
+    return this.data.defendCmdByPlayer;
+  }
+
+  get capturableByPlayer() {
+    return this.data.capturableByPlayer;
+  }
+
   get player() {
     if (!this.data.player) return null;
     return this.getEntities()[this.data.player] as PlayerViewModel;

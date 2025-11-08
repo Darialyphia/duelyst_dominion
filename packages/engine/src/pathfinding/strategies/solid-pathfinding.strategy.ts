@@ -43,12 +43,12 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
         result.push({ node: pointToCellId(edge), weight: 1 });
       }
     }
+
     this.cache.set(node, result);
   }
 
   isEdgeValid(cell: BoardCell) {
     if (this.origin.equals(cell)) return false;
-    if (!cell.isWalkable) return true;
     return cell.isWalkable;
   }
 
