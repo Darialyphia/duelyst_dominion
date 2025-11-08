@@ -23,9 +23,17 @@ const unitBg = computed(() => {
         state.interaction.state === INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
     }"
   >
-    <div class="unit" :class="isAlly ? 'ally' : 'enemy'">
-      <div class="sprite" />
-      <div class="border" />
+    <div
+      class="unit"
+      :class="[
+        isAlly ? 'ally' : 'enemy',
+        {
+          exhausted: unit.isExhausted
+        }
+      ]"
+    >
+      <div class="uni-sprite" />
+      <div class="unit-border" />
       <div class="atk">
         <span class="dual-text" :data-text="unit.atk">
           {{ unit.atk }}
@@ -85,7 +93,7 @@ const unitBg = computed(() => {
   }
 }
 
-.sprite {
+.uni-sprite {
   position: absolute;
   inset: 0;
   background: v-bind(unitBg);
@@ -94,13 +102,16 @@ const unitBg = computed(() => {
   .unit.enemy & {
     transform: scaleX(-1);
   }
+
+  .unit.exhausted & {
+    filter: grayscale(1) brightness(0.6);
+  }
 }
 
-.border {
+.unit-border {
   position: absolute;
   inset: 0;
   background-size: cover;
-  border: none;
   .unit.ally & {
     background: url('/assets/ui/unit-hex-border-ally.png');
   }

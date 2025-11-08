@@ -78,8 +78,6 @@ export type UnitInterceptors = {
   canReceiveModifier: Interceptable<boolean, { modifier: Modifier<Unit> }>;
   canCapture: Interceptable<boolean, { shrine: Shrine }>;
 
-  shouldDeactivateWhenSummoned: Interceptable<boolean>;
-
   maxHp: Interceptable<number>;
   atk: Interceptable<number>;
   cmd: Interceptable<number>;
@@ -137,8 +135,6 @@ export class Unit
       canBeDestroyed: new Interceptable(),
       canReceiveModifier: new Interceptable(),
       canCapture: new Interceptable(),
-
-      shouldDeactivateWhenSummoned: new Interceptable(),
 
       maxHp: new Interceptable(),
       atk: new Interceptable(),
@@ -568,9 +564,18 @@ export class Unit
     );
   }
 
+  exhaust() {
+    this._isExhausted = true;
+  }
+
+  wakeUp() {
+    this._isExhausted = false;
+  }
+
   activate() {
     this.combat.resetAttackCount();
     this.movement.resetMovementsCount();
+    this.wakeUp();
   }
 
   // Check if the unit can attack a point if it were in a given position

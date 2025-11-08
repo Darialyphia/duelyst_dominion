@@ -43,6 +43,9 @@ const unselectCard = () => {
   });
 };
 const onMouseDown = (e: MouseEvent) => {
+  if (state.value.turnPlayer !== card.player.id) {
+    return;
+  }
   if (!card.canPlay) {
     isShaking.value = true;
     violationWarning.value =

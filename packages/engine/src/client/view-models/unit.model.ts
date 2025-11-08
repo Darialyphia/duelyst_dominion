@@ -53,6 +53,10 @@ export class UnitViewModel {
     return this.data.isGeneral;
   }
 
+  get isExhausted() {
+    return this.data.isExhausted;
+  }
+
   get hp() {
     return this.data.currentHp;
   }

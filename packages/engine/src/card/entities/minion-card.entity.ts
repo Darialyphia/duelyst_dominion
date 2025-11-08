@@ -39,6 +39,7 @@ export type MinionCardInterceptors = CardInterceptors & {
   cmd: Interceptable<number>;
   summonTargetingStrategy: Interceptable<TargetingStrategy>;
   canPlay: Interceptable<boolean, MinionCard>;
+  hasSummoningSickness: Interceptable<boolean, MinionCard>;
 };
 
 export class MinionCard extends Card<
@@ -56,7 +57,8 @@ export class MinionCard extends Card<
         atk: new Interceptable(),
         cmd: new Interceptable(),
         summonTargetingStrategy: new Interceptable(),
-        canPlay: new Interceptable()
+        canPlay: new Interceptable(),
+        hasSummoningSickness: new Interceptable()
       },
       options
     );
@@ -76,6 +78,10 @@ export class MinionCard extends Card<
     return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
       return this.player.runes[rune as Rune] >= cost;
     });
+  }
+
+  get hasSummoningSickness(): boolean {
+    return this.interceptors.hasSummoningSickness.getValue(true, this);
   }
 
   canPlay(): boolean {
@@ -165,11 +171,13 @@ export class MinionCard extends Card<
       new MinionSummonedEvent({ card: this, cell: position, targets })
     );
     this.game.unitSystem.addUnit(this, position);
+    if (this.hasSummoningSickness) {
+      this.unit.exhaust();
+    }
     await this.game.emit(
       MINION_EVENTS.MINION_AFTER_SUMMON,
       new MinionSummonedEvent({ card: this, cell: position, targets })
     );
-    this.spacesToHighlight = [];
     await this.blueprint.onPlay(this.game, this, {
       aoe: this.blueprint.getAoe(this.game, this, position, targets),
       position,
@@ -180,6 +188,8 @@ export class MinionCard extends Card<
       CARD_EVENTS.CARD_AFTER_PLAY,
       new CardAfterPlayEvent({ card: this })
     );
+
+    this.spacesToHighlight = [];
   }
 
   serialize() {

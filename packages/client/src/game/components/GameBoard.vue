@@ -5,6 +5,7 @@ import {
   useGameClient,
   useGameState,
   useMyPlayer,
+  useOpponentPlayer,
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
@@ -18,6 +19,7 @@ const { client } = useGameClient();
 const boardCells = useBoardCells();
 const units = useUnits();
 const myPlayer = useMyPlayer();
+const opponent = useOpponentPlayer();
 const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 </script>
 
@@ -37,7 +39,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
     </div>
 
     <div class="hand">
-      <Hand :player-id="myPlayer.id" />
+      <Hand :player-id="myPlayer.id" :key="myPlayer.id" />
     </div>
 
     <div class="my-infos">
@@ -104,6 +106,24 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
       </UiButton>
     </div>
 
+    <div class="opponent-infos">
+      {{ opponent.name }}
+      <div class="flex gap-2 flex-row-reverse">
+        <div
+          v-for="i in opponent.maxMana"
+          :key="i"
+          class="mana"
+          :class="{ spent: i <= opponent.spentMana }"
+        />
+        <div
+          v-for="i in opponent.maxOverspentMana"
+          :key="i"
+          class="mana overspent"
+          :class="{ spent: i <= opponent.overspentMana }"
+        />
+      </div>
+    </div>
+
     <div id="dragged-card-container" />
   </div>
 </template>
@@ -144,14 +164,27 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   gap: var(--size-2);
 }
 
+.opponent-infos {
+  position: fixed;
+  top: var(--size-8);
+  right: var(--size-8);
+  color: white;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--size-2);
+}
+
 .mana {
   --color: cyan;
   width: var(--size-5);
   aspect-ratio: 1;
   border-radius: var(--radius-round);
   border: solid var(--border-size-2) var(--color);
+  background-color: var(--color);
   &.spent {
-    background-color: var(--color);
+    background-color: transparent;
   }
   &.overspent {
     --color: magenta;
