@@ -23,7 +23,8 @@ const {
   isFoil,
   isAnimated = true,
   maxAngle = 30,
-  parallaxMultiplier = 1
+  parallaxMultiplier = 1,
+  hasBacklighting = true
 } = defineProps<{
   card: {
     id: string;
@@ -46,6 +47,7 @@ const {
   isAnimated?: boolean;
   maxAngle?: number;
   parallaxMultiplier?: number;
+  hasBacklighting?: boolean;
 }>();
 
 const rarityBg = computed(() => {
@@ -208,7 +210,11 @@ const onMouseleave = () => {
   >
     <div
       class="card"
-      :class="[card.kind.toLocaleLowerCase(), isAnimated && 'animated']"
+      :class="[
+        card.kind.toLocaleLowerCase(),
+        isAnimated && 'animated',
+        hasBacklighting && 'with-backlighting'
+      ]"
       :data-flip-id="`card_${card.id}`"
       ref="card"
     >
@@ -379,7 +385,7 @@ const onMouseleave = () => {
     grid-column: 1;
     grid-row: 1;
   }
-  &:has(.foil)::after {
+  &.with-backlighting:has(.foil)::after {
     content: '';
     position: absolute;
     inset: 0;

@@ -1,13 +1,20 @@
 import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
-import type {
-  BoardCellClickRule,
-  BoardCellViewModel
-} from '../view-models/board-cell.model';
+import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
+import type { BoardCellClickRule } from '../controllers/ui-controller';
 
 export class MoveUnitAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}
+
+  canMove(cell: BoardCellViewModel) {
+    if (!this.client.ui.selectedUnit) return false;
+
+    return (
+      this.client.ui.selectedUnit.canMoveTo(cell) ||
+      this.client.ui.selectedUnit.canSprintTo(cell)
+    );
+  }
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
     return (
@@ -15,7 +22,7 @@ export class MoveUnitAction implements BoardCellClickRule {
       state.phase.state === GAME_PHASES.MAIN &&
       state.interaction.state === INTERACTION_STATES.IDLE &&
       !!this.client.ui.selectedUnit &&
-      this.client.ui.selectedUnit.canMoveTo(cell)
+      this.canMove(cell)
     );
   }
 

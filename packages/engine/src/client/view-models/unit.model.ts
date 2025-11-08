@@ -77,6 +77,12 @@ export class UnitViewModel {
     return this.data.moveZone.includes(cell.id);
   }
 
+  canSprintTo(cell: BoardCellViewModel) {
+    if (this.canMoveTo(cell)) return false;
+
+    return this.data.sprintZone.includes(cell.id);
+  }
+
   canAttackAt(cell: BoardCellViewModel) {
     return this.data.attackableCells.includes(cell.id);
   }

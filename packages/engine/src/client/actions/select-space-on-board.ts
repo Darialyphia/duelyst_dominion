@@ -1,10 +1,8 @@
 import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
-import type {
-  BoardCellClickRule,
-  BoardCellViewModel
-} from '../view-models/board-cell.model';
+import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { INTERACTION_STATES } from '../../game/game.enums';
+import type { BoardCellClickRule } from '../controllers/ui-controller';
 
 export class SelectSpaceOnBoardAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}

@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 import HexPositioner from './HexPositioner.vue';
-import { useGameUi, useMyPlayer } from '../composables/useGameClient';
+import {
+  useFxEvent,
+  useGameUi,
+  useMyPlayer
+} from '../composables/useGameClient';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -11,10 +16,19 @@ const isAlly = computed(() => unit.getPlayer()?.equals(myPlayer.value));
 const unitBg = computed(() => {
   return `url(${unit.getCard().imagePath})`;
 });
+
+const hexOffset = ref({
+  x: 0,
+  y: 0
+});
+useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, event => {
+  if (event.unit !== unit.id) return;
+  const { path, position, previousPosition } = event;
+});
 </script>
 
 <template>
-  <HexPositioner :x="unit.x" :y="unit.y">
+  <HexPositioner :x="unit.x" :y="unit.y" :offset="hexOffset">
     <div
       class="unit"
       :class="[

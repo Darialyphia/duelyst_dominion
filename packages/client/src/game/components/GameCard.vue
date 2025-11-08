@@ -96,6 +96,7 @@ const classes = computed(() => {
   >
     <Card
       is-foil
+      :has-backlighting="false"
       :is-animated="true"
       :id="card.id"
       :max-angle="15"

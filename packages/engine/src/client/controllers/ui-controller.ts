@@ -49,7 +49,7 @@ export class DOMSelector {
 }
 
 export class UiController {
-  private _hoveredCard: CardViewModel | null = null;
+  private _hoveredCell: BoardCellViewModel | null = null;
 
   private _selectedCard: CardViewModel | null = null;
 
@@ -126,8 +126,8 @@ export class UiController {
     this.buildGlobalActionRules();
   }
 
-  get hoveredCard() {
-    return this._hoveredCard;
+  get hoveredCell() {
+    return this._hoveredCell;
   }
 
   get selectedCard() {
@@ -215,14 +215,17 @@ export class UiController {
 
   update() {
     this.clearOptimisticState();
+    if (this.selectedUnit?.isExhausted) {
+      this.unselectUnit();
+    }
   }
 
-  hover(card: CardViewModel) {
+  hover(cell: BoardCellViewModel) {
     if (this.hoverTimeout) {
       clearTimeout(this.hoverTimeout);
     }
     this.hoverTimeout = setTimeout(() => {
-      this._hoveredCard = card;
+      this._hoveredCell = cell;
     }, 200);
   }
 
@@ -231,7 +234,7 @@ export class UiController {
       clearTimeout(this.hoverTimeout);
       this.hoverTimeout = null;
     }
-    this._hoveredCard = null;
+    this._hoveredCell = null;
   }
 
   selectCard(card: CardViewModel) {

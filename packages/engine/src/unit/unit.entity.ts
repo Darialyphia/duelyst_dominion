@@ -59,6 +59,7 @@ export type SerializedUnit = {
   isExhausted: boolean;
   isDead: boolean;
   moveZone: string[];
+  sprintZone: string[];
   dangerZone: string[];
   attackableCells: string[];
   modifiers: string[];
@@ -590,12 +591,16 @@ export class Unit
 
   serialize() {
     // calculate this upfront as this can be an expensive operation if we call it many times
-    // moves the unit could make provided it was able to move
+    // moves the unit could make provided it was able to move fully
     const potentialMoves = this.getPossibleMoves(this.sprintReach, true).map(
       point => this.game.boardSystem.getCellAt(point)!
     );
+
     // moves the unit can actually make
-    const possibleMoves = this.getPossibleMoves(this.sprintReach).map(
+    const possibleSprintMoves = this.getPossibleMoves(this.sprintReach).map(
+      point => this.game.boardSystem.getCellAt(point)!
+    );
+    const possibleMoves = this.getPossibleMoves(this.movementReach).map(
       point => this.game.boardSystem.getCellAt(point)!
     );
 
@@ -618,6 +623,7 @@ export class Unit
       isExhausted: this.isExhausted,
       isDead: !this.isAlive,
       moveZone: possibleMoves.map(point => point.id),
+      sprintZone: possibleSprintMoves.map(point => point.id),
       dangerZone: this.game.boardSystem.cells
         .filter(cell =>
           potentialMoves

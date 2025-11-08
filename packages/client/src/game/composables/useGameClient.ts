@@ -9,7 +9,12 @@ import type {
 } from '@game/engine/src/client/controllers/fx-controller';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import type { PlayerViewModel } from '@game/engine/src/client/view-models/player.model';
-import { isDefined, type MaybePromise, type Nullable } from '@game/shared';
+import {
+  isDefined,
+  type MaybePromise,
+  type Nullable,
+  type Point
+} from '@game/shared';
 import type { InjectionKey, Ref } from 'vue';
 import { gameStateRef } from './gameStateRef';
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
@@ -115,6 +120,17 @@ export const useBoardCells = () => {
     return state.value.board.cells.map(cellId => {
       return state.value.entities[cellId] as BoardCellViewModel;
     });
+  });
+};
+
+export const useBoardCellByPosition = (position: MaybeRef<Point>) => {
+  const state = useGameState();
+  return computed(() => {
+    const pos = unref(position);
+
+    return state.value.board.cells
+      .map(cellId => state.value.entities[cellId] as BoardCellViewModel)
+      .find(cell => cell.x === pos.x && cell.y === pos.y)!;
   });
 };
 
