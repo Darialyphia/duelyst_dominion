@@ -1,4 +1,4 @@
-import { INTERACTION_STATES } from '../../game/game.enums';
+import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
 import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
 import type { GlobalActionRule } from '../controllers/ui-controller';
@@ -16,7 +16,7 @@ export class CancelPlayCardGlobalAction implements GlobalActionRule {
 
   shouldDisplay(state: GameClientState): boolean {
     return (
-      state.interaction.state === INTERACTION_STATES.PLAYING_CARD &&
+      state.phase.state === GAME_PHASES.PLAYING_CARD &&
       state.interaction.ctx.player === this.client.playerId
     );
   }

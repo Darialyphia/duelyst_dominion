@@ -14,6 +14,7 @@ export type MapBlueprint = {
   shrinePositions: Point[];
   teleporters: Array<{
     id: string;
+    color: string;
     gates: [Point, Point];
   }>;
 };
@@ -51,8 +52,8 @@ export const defaultMap: MapBlueprint = {
   generalPositions: [new Vec2(6, 6), new Vec2(6, 0)],
   shrinePositions: [new Vec2(2, 3), new Vec2(6, 3), new Vec2(10, 3)],
   teleporters: [
-    { id: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
-    { id: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 7)] },
-    { id: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
+    { id: 'green', color: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
+    { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 7)] },
+    { id: 'yellow', color: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
   ]
 };

@@ -8,10 +8,10 @@ import {
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
-import HexPositioner from './HexPositioner.vue';
 import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
+import BoardCell from './BoardCell.vue';
 
 const state = useGameState();
 const { client } = useGameClient();
@@ -24,6 +24,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 <template>
   <div class="game-board">
     <DraggedCard />
+
     <div
       class="board"
       :style="{
@@ -31,15 +32,7 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
         height: `${state.board.rows * dimensions.height + dimensions.y}px`
       }"
     >
-      <HexPositioner
-        v-for="cell in boardCells"
-        :key="cell.id"
-        :x="cell.x"
-        :y="cell.y"
-      >
-        <div class="cell" />
-      </HexPositioner>
-
+      <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </div>
 
@@ -79,38 +72,46 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
         </div>
       </div>
       <UiButton
+        v-show="myPlayer.canUseResourceAction"
         class="action-button red"
-        :disabled="!myPlayer.canUseResourceAction"
         @click="client.gainRune(RUNES.RED)"
       >
         Gain Red Rune
       </UiButton>
       <UiButton
+        v-show="myPlayer.canUseResourceAction"
         class="action-button yellow"
-        :disabled="!myPlayer.canUseResourceAction"
         @click="client.gainRune(RUNES.YELLOW)"
       >
         Gain Yellow Rune
       </UiButton>
       <UiButton
+        v-show="myPlayer.canUseResourceAction"
         class="action-button blue"
-        :disabled="!myPlayer.canUseResourceAction"
         @click="client.gainRune(RUNES.BLUE)"
       >
         Gain Blue Rune
       </UiButton>
       <UiButton
+        v-show="myPlayer.canUseResourceAction"
         class="action-button draw"
-        :disabled="!myPlayer.canUseResourceAction"
         @click="client.drawCard()"
       >
         Draw Card
       </UiButton>
     </div>
+
+    <div id="dragged-card-container" />
   </div>
 </template>
 
 <style scoped lang="postcss">
+#dragged-card-container {
+  perspective: 850px;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
 .game-board {
 }
 
@@ -119,16 +120,6 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   top: var(--size-6);
   left: 50%;
   transform: translateX(-50%);
-}
-
-.cell {
-  background: url('/assets/ui/card-hex.png');
-  background-size: cover;
-  clip-path: var(--hex-path);
-
-  &:hover {
-    filter: brightness(1.5);
-  }
 }
 
 .hand {

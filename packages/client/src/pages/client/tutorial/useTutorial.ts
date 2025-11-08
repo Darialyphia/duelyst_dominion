@@ -61,7 +61,8 @@ export const useTutorial = (options: UseTutorialOptions) => {
         ...(options.config ?? {})
       }
     },
-    players: options.players
+    players: options.players,
+    enableSnapshots: true
   });
 
   // @ts-expect-error

@@ -18,6 +18,6 @@ export class PlayCardInput extends Input<typeof schema> {
   async impl() {
     const card = this.player.cardManager.getCardInHandAt(this.payload.index);
     assert(card.canPlay(), new IllegalCardPlayedError());
-    await this.game.interaction.declarePlayCardIntent(this.payload.index, this.player);
+    await this.game.gamePhaseSystem.playCard(this.payload.index, this.player);
   }
 }

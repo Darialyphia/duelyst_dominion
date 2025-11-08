@@ -105,12 +105,12 @@ export class MinionCard extends Card<
     >(
       // eslint-disable-next-line no-async-promise-executor
       async resolve => {
+        let cancelled = false;
         this.cancelPlay = async () => {
-          resolve({ cancelled: true });
+          cancelled = true;
           await this.game.interaction.getContext().ctx.cancel(this.player);
+          resolve({ cancelled: true });
         };
-
-        await this.removeFromCurrentLocation();
 
         const [position] = await this.game.interaction.selectSpacesOnBoard({
           player: this.player,
@@ -125,8 +125,10 @@ export class MinionCard extends Card<
           },
           getAoe: () => new PointAOEShape(TARGETING_TYPE.ANYWHERE)
         });
+        if (cancelled) return;
 
         const targets = await this.blueprint.getTargets(this.game, this);
+        if (cancelled) return;
 
         resolve({ position, targets, cancelled: false });
       }
@@ -135,8 +137,9 @@ export class MinionCard extends Card<
 
   async play(onCancel?: () => MaybePromise<void>) {
     const { position, targets, cancelled } = await this.selectPositionAndTargets();
-
     if (cancelled) return await onCancel?.();
+
+    await this.removeFromCurrentLocation();
 
     await this.game.emit(
       CARD_EVENTS.CARD_BEFORE_PLAY,

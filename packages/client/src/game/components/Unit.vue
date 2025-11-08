@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 import HexPositioner from './HexPositioner.vue';
-import { useMyPlayer } from '../composables/useGameClient';
+import { useGameState, useMyPlayer } from '../composables/useGameClient';
+import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
 const myPlayer = useMyPlayer();
-
+const state = useGameState();
 const isAlly = computed(() => unit.getPlayer()?.equals(myPlayer.value));
 const unitBg = computed(() => {
   return `url(${unit.getCard().imagePath})`;
@@ -14,7 +15,14 @@ const unitBg = computed(() => {
 </script>
 
 <template>
-  <HexPositioner :x="unit.x" :y="unit.y">
+  <HexPositioner
+    :x="unit.x"
+    :y="unit.y"
+    :class="{
+      'pointer-events-none':
+        state.interaction.state === INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
+    }"
+  >
     <div class="unit" :class="isAlly ? 'ally' : 'enemy'">
       <div class="sprite" />
       <div class="border" />

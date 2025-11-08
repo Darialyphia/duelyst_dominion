@@ -3,6 +3,7 @@ import type { GameClient } from '../client';
 import type { CardViewModel } from '../view-models/card.model';
 import type { GameClientState } from './state-controller';
 import { CancelPlayCardGlobalAction } from '../actions/cancel-play-card';
+import type { UnitViewModel } from '../view-models/unit.model';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
@@ -41,6 +42,8 @@ export class UiController {
   private _hoveredCard: CardViewModel | null = null;
 
   private _selectedCard: CardViewModel | null = null;
+
+  private _selectedUnit: UnitViewModel | null = null;
 
   isHandExpanded = false;
 
@@ -118,12 +121,15 @@ export class UiController {
     return this._selectedCard;
   }
 
+  get selectedUnit() {
+    return this._selectedUnit;
+  }
+
   get playedCardId() {
-    if (this.client.state.interaction.state !== INTERACTION_STATES.PLAYING_CARD)
-      return null;
+    if (this.client.state.phase.state !== GAME_PHASES.PLAYING_CARD) return null;
     if (this.client.playerId !== this.client.state.interaction.ctx.player) return null;
 
-    return this.client.state.interaction.ctx.card;
+    return this.client.state.phase.ctx.card;
   }
 
   private buildCardClickRules() {
@@ -164,7 +170,7 @@ export class UiController {
       }
     }
 
-    this.unselect();
+    this.unselectCard();
   }
 
   get isInteractivePlayer() {
@@ -176,10 +182,6 @@ export class UiController {
   }
 
   update() {
-    if (this.client.state.interaction.state !== INTERACTION_STATES.PLAYING_CARD) {
-      this.selectedManaCostIndices = [];
-    }
-
     this.clearOptimisticState();
   }
 
@@ -200,12 +202,20 @@ export class UiController {
     this._hoveredCard = null;
   }
 
-  select(card: CardViewModel) {
+  selectCard(card: CardViewModel) {
     this._selectedCard = card;
   }
 
-  unselect() {
+  unselectCard() {
     this._selectedCard = null;
+  }
+
+  selectUnit(unit: UnitViewModel) {
+    this._selectedUnit = unit;
+  }
+
+  unselectUnit() {
+    this._selectedUnit = null;
   }
 
   getPlayedCardZoneDOMSelector() {
@@ -238,14 +248,6 @@ export class UiController {
 
     if (state.interaction.state === INTERACTION_STATES.SELECTING_SPACE_ON_BOARD) {
       return 'Select targets';
-    }
-
-    if (
-      state.interaction.state === INTERACTION_STATES.PLAYING_CARD &&
-      state.interaction.ctx.player === this.client.playerId
-    ) {
-      const card = state.entities[state.interaction.ctx.card] as CardViewModel;
-      return `Put cards in the Destiny Zone (${this.selectedManaCostIndices.length} / ${card?.manaCost})`;
     }
 
     return '';

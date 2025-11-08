@@ -9,6 +9,7 @@ import { PlayCardAction } from '../actions/play-card';
 import type { CardKind, Rune } from '../../card/card.enums';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
+import { GAME_PHASES } from '../../game/game.enums';
 
 type CardData =
   | SerializedSpellCard
@@ -186,6 +187,10 @@ export class CardViewModel {
     return this.getPlayer().hand.findIndex(card => card.equals(this));
   }
 
+  get isSelected() {
+    return this.getClient().ui.selectedCard?.equals(this) ?? false;
+  }
+
   getPlayer() {
     return this.getEntities()[this.data.player] as PlayerViewModel;
   }
@@ -203,6 +208,14 @@ export class CardViewModel {
     if (index === -1) return;
 
     player.playCard(index);
+  }
+
+  cancelPlay() {
+    const state = this.getClient().state;
+    if (state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
+    if (state.phase.ctx.card !== this.id) return;
+
+    this.getClient().cancelPlayCard();
   }
 
   getActions(): CardActionRule[] {

@@ -13,6 +13,7 @@ import { MainPhase } from '../phases/main.phase';
 import { GameEndPhase } from '../phases/game-end.phase';
 import { MulliganPhase } from '../phases/mulligan.phase';
 import { PlayCardPhase } from '../phases/play-card.phase';
+import { IllegalCardPlayedError } from '../../input/input-errors';
 
 export const GAME_PHASE_TRANSITIONS = {
   COMMIT_MULLIGAN: 'commit_mulligan',
@@ -103,6 +104,26 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
       ),
       stateTransition(
         GAME_PHASES.MAIN,
+        GAME_PHASE_TRANSITIONS.START_PLAYING_CARD,
+        GAME_PHASES.PLAYING_CARD
+      ),
+      stateTransition(
+        GAME_PHASES.PLAYING_CARD,
+        GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD,
+        GAME_PHASES.MAIN
+      ),
+      stateTransition(
+        GAME_PHASES.PLAYING_CARD,
+        GAME_PHASE_TRANSITIONS.CANCEL_PLAYING_CARD,
+        GAME_PHASES.MAIN
+      ),
+      stateTransition(
+        GAME_PHASES.MAIN,
+        GAME_PHASE_TRANSITIONS.PLAYER_WON,
+        GAME_PHASES.GAME_END
+      ),
+      stateTransition(
+        GAME_PHASES.PLAYING_CARD,
         GAME_PHASE_TRANSITIONS.PLAYER_WON,
         GAME_PHASES.GAME_END
       )
@@ -210,6 +231,19 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     assert(this.can(GAME_PHASE_TRANSITIONS.PLAYER_WON), new WrongGamePhaseError());
     this._winner = player;
     await this.sendTransition(GAME_PHASE_TRANSITIONS.PLAYER_WON);
+  }
+
+  async playCard(index: number, player: Player) {
+    assert(this.getState() === GAME_PHASES.MAIN, new WrongGamePhaseError());
+
+    const canPlay = this.game.gamePhaseSystem.turnPlayer.equals(player);
+    assert(canPlay, new IllegalCardPlayedError());
+
+    const card = player.cardManager.getCardInHandAt(index);
+    assert(card, new IllegalCardPlayedError());
+    assert(card.canPlay(), new IllegalCardPlayedError());
+    await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);
+    await (this._ctx as PlayCardPhase).play(card);
   }
 
   serialize() {

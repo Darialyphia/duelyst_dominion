@@ -83,8 +83,8 @@ export class SpellCard extends Card<
   }
 
   async play(onCancel: () => MaybePromise<void>) {
-    await this.sendToDiscardPile();
     const { targets, cancelled } = await this.selectTargets();
+    await this.sendToDiscardPile();
 
     if (cancelled) {
       await onCancel();

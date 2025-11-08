@@ -13,7 +13,7 @@ export class SelectUnitAction implements BoardCellClickRule {
   predicate(cell: BoardCellViewModel, state: GameClientState) {
     const unit = cell.getUnit();
     return (
-      this.client.ui.isInteractingPlayer &&
+      this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&
       state.interaction.state === INTERACTION_STATES.IDLE &&
       isDefined(unit) &&

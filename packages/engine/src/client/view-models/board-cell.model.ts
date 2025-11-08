@@ -9,7 +9,7 @@ import type { UnitViewModel } from './unit.model';
 
 export type BoardCellClickRule = {
   predicate: (tile: BoardCellViewModel, state: GameClientState) => boolean;
-  handler: (tile: BoardCellViewModel) => void;
+  handler: (tile: BoardCellViewModel, e: MouseEvent) => void;
 };
 
 export class BoardCellViewModel {
@@ -24,6 +24,8 @@ export class BoardCellViewModel {
   ) {
     this.getEntities = () => entityDictionary;
     this.getClient = () => client;
+
+    this.onMouseup = this.onMouseup.bind(this);
   }
 
   equals(unit: BoardCellViewModel | SerializedCell) {
@@ -74,9 +76,12 @@ export class BoardCellViewModel {
     ];
   }
 
-  getAction() {
-    return this.getActions().find(action =>
+  onMouseup(event: MouseEvent) {
+    const action = this.getActions().find(action =>
       action.predicate(this, this.getClient().state)
     );
+    if (action) {
+      action.handler(this, event);
+    }
   }
 }

@@ -439,25 +439,29 @@ export class Player
     await this.spendMana(card.manaCost);
   }
 
-  async playCardFromHand(card: DeckCard) {
-    this.currentlyPlayedCard = card;
-    this.currentlyPlayedCardIndexInHand = this.cardManager.hand.indexOf(card);
-    const stop = card.once(
-      CARD_EVENTS.CARD_BEFORE_PLAY,
-      this.onBeforePlayFromHand.bind(this, card)
-    );
-    await card.play(async () => {
+  playCardFromHand(card: DeckCard) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise<{ cancelled: boolean }>(async resolve => {
+      this.currentlyPlayedCard = card;
+      this.currentlyPlayedCardIndexInHand = this.cardManager.hand.indexOf(card);
+      const stop = card.once(
+        CARD_EVENTS.CARD_BEFORE_PLAY,
+        this.onBeforePlayFromHand.bind(this, card)
+      );
+      await card.play(async () => {
+        this.currentlyPlayedCard = null;
+        this.currentlyPlayedCardIndexInHand = null;
+        resolve({ cancelled: true });
+      });
+      await this.game.emit(
+        PLAYER_EVENTS.PLAYER_AFTER_PLAY_CARD,
+        new PlayerPlayCardEvent({ player: this, card })
+      );
+      stop();
       this.currentlyPlayedCard = null;
       this.currentlyPlayedCardIndexInHand = null;
-      await card.addToHand();
+      resolve({ cancelled: false });
     });
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_AFTER_PLAY_CARD,
-      new PlayerPlayCardEvent({ player: this, card })
-    );
-    stop();
-    this.currentlyPlayedCard = null;
-    this.currentlyPlayedCardIndexInHand = null;
   }
 
   async drawForTurn() {

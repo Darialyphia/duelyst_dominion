@@ -32,43 +32,6 @@ export const useFxAdapter = (): FxAdapter => {
           ease: 'back.out'
         });
       });
-    },
-
-    onSelectCardForManaCost(card, client) {
-      return new Promise<void>(resolve => {
-        const flipState = Flip.getState(
-          client.ui.DOMSelectors.cardInHand(card.id, card.player.id).selector
-        );
-
-        window.requestAnimationFrame(() => {
-          Flip.from(flipState, {
-            targets: client.ui.DOMSelectors.cardInDestinyZone(
-              card.id,
-              card.player.id
-            ).selector,
-            duration: 0.4,
-            absolute: true,
-            ease: Power3.easeOut,
-            onComplete: resolve
-          });
-        });
-      });
-    },
-
-    onUnselectCardForManaCost(card, client) {
-      const flipState = Flip.getState(
-        client.ui.getCardDOMSelectorInDestinyZone(card.id, card.player.id)
-      );
-
-      window.requestAnimationFrame(() => {
-        Flip.from(flipState, {
-          targets: client.ui.DOMSelectors.cardInHand(card.id, card.player.id)
-            .selector,
-          duration: 0.4,
-          absolute: true,
-          ease: Power3.easeOut
-        });
-      });
     }
   };
 };

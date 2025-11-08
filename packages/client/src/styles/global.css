@@ -76,3 +76,13 @@
 *:nth-child(12) {
   --child-index: 12;
 }
+
+#dragged-card .card-perspective-wrapper {
+  transition: transform 0.25s var(--ease-out-2);
+  .is-pinning & {
+    transform: rotateY(360deg);
+  }
+}
+.is-pinning #dragged-card .card-perspective-wrapper {
+  transform: rotateY(180deg);
+}

@@ -84,6 +84,7 @@ export class ChoosingCardsContext {
 
   cancel(player: Player) {
     assert(player.equals(this.player), new InvalidPlayerError());
+    this.game.interaction.dispatch(INTERACTION_STATE_TRANSITIONS.CANCEL_CHOOSING_CARDS);
     this.game.interaction.onInteractionEnd();
     this.game.inputSystem.unpause([]);
   }

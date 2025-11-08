@@ -75,7 +75,6 @@ export class SelectingSpaceOnBoardContext {
         units: []
       };
     }
-
     return {
       cells: aoe
         .getArea(spaces)
@@ -119,6 +118,9 @@ export class SelectingSpaceOnBoardContext {
 
   cancel(player: Player) {
     assert(player.equals(this.player), new InvalidPlayerError());
+    this.game.interaction.dispatch(
+      INTERACTION_STATE_TRANSITIONS.CANCEL_SELECTING_SPACE_ON_BOARD
+    );
     this.game.interaction.onInteractionEnd();
     this.game.inputSystem.unpause([]);
   }

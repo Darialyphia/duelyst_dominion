@@ -12,8 +12,8 @@ export class IllegalGameStateError extends GameError {
 }
 
 export class CorruptedInteractionContextError extends GameError {
-  constructor() {
-    super('Corrupted interaction context');
+  constructor(expected: string, received?: string) {
+    super(`Corrupted interaction context: expected ${expected}, received ${received}`);
   }
 }
 

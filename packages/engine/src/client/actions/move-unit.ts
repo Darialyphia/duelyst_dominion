@@ -11,7 +11,7 @@ export class MoveUnitAction implements BoardCellClickRule {
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
     return (
-      this.client.ui.isInteractingPlayer &&
+      this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&
       state.interaction.state === INTERACTION_STATES.IDLE &&
       !!this.client.ui.selectedUnit &&

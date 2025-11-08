@@ -56,12 +56,7 @@ socket.value.on('clockUpdate', updatedClocks => {
     }"
   >
     <template #menu>
-      <FancyButton
-        text="Surrender"
-        variant="error"
-        class="w-full"
-        @click="client.surrender()"
-      />
+      <FancyButton text="Surrender" variant="error" class="w-full" />
     </template>
   </GameBoard>
 </template>

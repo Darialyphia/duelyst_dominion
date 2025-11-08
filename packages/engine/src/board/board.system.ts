@@ -83,7 +83,8 @@ export class BoardSystem
       const teleporter = new Teleporter(
         this.game,
         teleporterData.id,
-        teleporterData.gates
+        teleporterData.gates,
+        teleporterData.color
       );
       this.teleporters = [...(this.teleporters || []), teleporter];
     });

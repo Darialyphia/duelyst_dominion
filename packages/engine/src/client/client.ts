@@ -16,7 +16,7 @@ import { TypedEventEmitter } from '../utils/typed-emitter';
 import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
-import { INTERACTION_STATES } from '../game/game.enums';
+import { GAME_PHASES, INTERACTION_STATES } from '../game/game.enums';
 import type { TeleporterViewModel } from './view-models/teleporter.model';
 import type { ShrineViewModel } from './view-models/shrine.model';
 import type { Rune } from '../card/card.enums';
@@ -272,15 +272,13 @@ export class GameClient {
   }
 
   cancelPlayCard() {
-    if (this.state.interaction.state !== INTERACTION_STATES.PLAYING_CARD) return;
+    if (this.state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
 
     this.networkAdapter.dispatch({
       type: 'cancelPlayCard',
       payload: { playerId: this.state.turnPlayer }
     });
-    const playedCard = this.state.entities[
-      this.state.interaction.ctx.card
-    ] as CardViewModel;
+    const playedCard = this.state.entities[this.state.phase.ctx.card] as CardViewModel;
 
     void this.fxAdapter.onCancelPlayCard(playedCard, this);
   }

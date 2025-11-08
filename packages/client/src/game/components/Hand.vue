@@ -2,6 +2,7 @@
 import {
   useFxEvent,
   useGameClient,
+  useGameState,
   useGameUi,
   useMyPlayer,
   usePlayer
@@ -12,11 +13,13 @@ import { OnClickOutside } from '@vueuse/components';
 import { useResizeObserver } from '@vueuse/core';
 import type { ShallowRef } from 'vue';
 import HandCard from './HandCard.vue';
+import { GAME_PHASES } from '@game/engine/src/game/game.enums';
 
 const { playerId } = defineProps<{ playerId: string }>();
 
 const player = usePlayer(playerId);
 const ui = useGameUi();
+const state = useGameState();
 const { client } = useGameClient();
 
 const myPlayer = useMyPlayer();
@@ -115,8 +118,10 @@ const cardW = computed(() => {
   );
 });
 
-const handSize = computed(() => player.value.hand.length);
-
+const handSize = computed(() => player.value.handSize);
+watchEffect(() => {
+  console.log(handSize.value);
+});
 const step = computed(() => {
   if (handSize.value <= 1) return 0;
   const natural =
@@ -148,7 +153,8 @@ const cards = computed(() => {
       class="hand"
       :class="{
         'ui-hidden': !ui.displayedElements.hand,
-        'opponent-hand': !isMyHand
+        'opponent-hand': !isMyHand,
+        hoverable: state.phase.state !== GAME_PHASES.PLAYING_CARD
       }"
       :style="{
         '--hand-size': player.hand.length,
@@ -157,12 +163,10 @@ const cards = computed(() => {
       ref="hand"
     >
       <HandCard
-        v-for="(card, index) in cards"
+        v-for="card in cards"
         :key="card.card.id"
         :card="card.card"
         :is-interactive="isMyHand"
-        :data-keyboard-shortcut="isMyHand ? index + 1 : undefined"
-        data-keyboard-shortcut-centered="true"
         :style="{
           '--x': `${card.x}px`,
           '--y': `${card.y}px`,
@@ -187,7 +191,7 @@ const cards = computed(() => {
     position: absolute;
     right: 0;
   }
-  &:hover {
+  &.hoverable:hover {
     transform: translateY(-80px);
   }
 }

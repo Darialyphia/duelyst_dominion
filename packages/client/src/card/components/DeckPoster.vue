@@ -1,57 +1,33 @@
 <script setup lang="ts">
-import { CARD_KINDS, type SpellSchool } from '@game/engine/src/card/card.enums';
-import type {
-  CardBlueprint,
-  HeroBlueprint
-} from '@game/engine/src/card/card-blueprint';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import BlueprintSmallCard from './BlueprintSmallCard.vue';
 import { domToPng } from 'modern-screenshot';
 import BlueprintCard from './BlueprintCard.vue';
 import UiButton from '@/ui/components/UiButton.vue';
 
-const { spellSchools, mainDeck, destinyDeck, name } = defineProps<{
-  spellSchools: SpellSchool[];
-  mainDeck: Array<{ blueprint: CardBlueprint; copies: number }>;
-  destinyDeck: Array<{ blueprint: CardBlueprint; copies: number }>;
+const { deck, name } = defineProps<{
+  deck: Array<{ blueprint: CardBlueprint; copies: number }>;
   name: string;
 }>();
 
-const heroes = computed(() =>
-  destinyDeck
-    .filter(item => item.blueprint.kind === CARD_KINDS.HERO)
-    .sort(
-      (a, b) =>
-        (a.blueprint as HeroBlueprint).level -
-        (b.blueprint as HeroBlueprint).level
-    )
-);
-const otherDestinyCards = computed(() =>
-  destinyDeck.filter(item => item.blueprint.kind !== CARD_KINDS.HERO)
-);
-
 const minions = computed(() =>
-  mainDeck.filter(item => item.blueprint.kind === CARD_KINDS.MINION)
+  deck.filter(item => item.blueprint.kind === CARD_KINDS.MINION)
 );
 const minionsCount = computed(() =>
   minions.value.reduce((sum, item) => sum + item.copies, 0)
 );
 const spells = computed(() =>
-  mainDeck.filter(item => item.blueprint.kind === CARD_KINDS.SPELL)
+  deck.filter(item => item.blueprint.kind === CARD_KINDS.SPELL)
 );
 const spellsCount = computed(() =>
   spells.value.reduce((sum, item) => sum + item.copies, 0)
 );
 const artifacts = computed(() =>
-  mainDeck.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
+  deck.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
 );
 const artifactsCount = computed(() =>
   artifacts.value.reduce((sum, item) => sum + item.copies, 0)
-);
-const sigils = computed(() =>
-  mainDeck.filter(item => item.blueprint.kind === CARD_KINDS.SIGIL)
-);
-const sigilsCount = computed(() =>
-  sigils.value.reduce((sum, item) => sum + item.copies, 0)
 );
 
 const root = useTemplateRef('root');
@@ -96,14 +72,7 @@ const cardComponent = computed(() =>
     </div>
     <header class="flex gap-4 items-center mb-5">
       <h2 :data-text="name">{{ name }}</h2>
-      <div class="spellschools">
-        <img
-          v-for="spellSchool in spellSchools"
-          :key="spellSchool"
-          :src="`/assets/ui/spell-school-${spellSchool.toLocaleLowerCase()}.png`"
-          :alt="spellSchool"
-        />
-      </div>
+
       <div class="flex gap-2 ml-auto">
         <div>
           <span class="font-bold text-3">
@@ -123,36 +92,14 @@ const cardComponent = computed(() =>
           </span>
           {{ artifactsCount <= 1 ? 'Artifact' : 'Artifacts' }}
         </div>
-        <div>
-          <span class="font-bold text-3">
-            {{ sigilsCount }}
-          </span>
-          {{ sigilsCount <= 1 ? 'Sigil' : 'Sigils' }}
-        </div>
       </div>
     </header>
 
     <div class="content">
       <div>
         <section>
-          <component
-            v-for="item in heroes"
-            :key="item.blueprint.id"
-            :is="cardComponent"
-            :blueprint="item.blueprint"
-          />
-          <component
-            v-for="item in otherDestinyCards"
-            :key="item.blueprint.id"
-            :is="cardComponent"
-            :blueprint="item.blueprint"
-          />
-        </section>
-
-        <div class="divider" />
-        <section>
           <div
-            v-for="item in [...minions, ...spells, ...artifacts, ...sigils]"
+            v-for="item in [...minions, ...spells, ...artifacts]"
             :key="item.blueprint.id"
             class="card-wrapper"
           >
@@ -167,25 +114,7 @@ const cardComponent = computed(() =>
       </div>
 
       <div class="listing">
-        <h3 data-text="Destiny Deck">Destiny Deck</h3>
-        <ul>
-          <li
-            v-for="item in heroes"
-            :key="item.blueprint.id"
-            :class="item.blueprint.rarity.toLocaleLowerCase()"
-          >
-            {{ item.copies }}x {{ item.blueprint.name }}
-          </li>
-
-          <li
-            v-for="item in otherDestinyCards"
-            :key="item.blueprint.id"
-            :class="item.blueprint.rarity.toLocaleLowerCase()"
-          >
-            {{ item.copies }}x {{ item.blueprint.name }}
-          </li>
-        </ul>
-        <h3 data-text="Main Deck">Main Deck</h3>
+        <h3 data-text="Main Deck">Cards</h3>
         <ul>
           <li v-for="item in minions" :key="item.blueprint.id">
             {{ item.copies }}x
@@ -200,12 +129,6 @@ const cardComponent = computed(() =>
             </span>
           </li>
           <li v-for="item in artifacts" :key="item.blueprint.id">
-            {{ item.copies }}x
-            <span :class="item.blueprint.rarity.toLocaleLowerCase()">
-              {{ item.blueprint.name }}
-            </span>
-          </li>
-          <li v-for="item in sigils" :key="item.blueprint.id">
             {{ item.copies }}x
             <span :class="item.blueprint.rarity.toLocaleLowerCase()">
               {{ item.blueprint.name }}

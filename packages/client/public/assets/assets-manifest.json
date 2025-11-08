@@ -5120,6 +5120,19 @@
         },
         {
           "alias": [
+            "hex-highlight-targetable.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-targetable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "hp-frame-textless.png"
           ],
           "src": [
