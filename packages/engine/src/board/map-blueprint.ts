@@ -53,7 +53,7 @@ export const defaultMap: MapBlueprint = {
   shrinePositions: [new Vec2(2, 3), new Vec2(6, 3), new Vec2(10, 3)],
   teleporters: [
     { id: 'green', color: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
-    { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 7)] },
+    { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 6)] },
     { id: 'yellow', color: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
   ]
 };

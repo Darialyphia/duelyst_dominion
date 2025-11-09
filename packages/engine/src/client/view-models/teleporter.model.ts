@@ -42,4 +42,8 @@ export class TeleporterViewModel {
   get color() {
     return this.data.color;
   }
+
+  get imagePath() {
+    return `/assets/ui/teleporter-${this.color}.png`;
+  }
 }

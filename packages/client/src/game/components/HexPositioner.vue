@@ -54,7 +54,7 @@ const isSelected = computed(() => {
   return false;
 });
 
-const cell = useBoardCellByPosition({ x, y });
+const cell = useBoardCellByPosition(computed(() => ({ x, y })));
 const canMoveTo = computed(() => {
   if (!ui.value.selectedUnit) return false;
   return ui.value.selectedUnit.canMoveTo(cell.value);
@@ -63,6 +63,18 @@ const canMoveTo = computed(() => {
 const canSprintTo = computed(() => {
   if (!ui.value.selectedUnit) return false;
   return ui.value.selectedUnit.canSprintTo(cell.value);
+});
+
+const canCapture = computed(() => {
+  if (!ui.value.selectedUnit) return false;
+  if (!cell.value.shrine) return false;
+  return cell.value.shrine.capturableByUnit[ui.value.selectedUnit.id];
+});
+
+const canAttack = computed(() => {
+  if (!ui.value.selectedUnit) return false;
+
+  return ui.value.selectedUnit.canAttackAt(cell.value);
 });
 
 const screenPosition = computed(() => {
@@ -77,7 +89,9 @@ const screenPosition = computed(() => {
       'is-targetable': isTargetable,
       'is-selected': isSelected,
       'can-move-to': canMoveTo,
-      'can-sprint-to': canSprintTo
+      'can-sprint-to': canSprintTo,
+      'can-capture': canCapture,
+      'can-attack': canAttack
     }"
     :style="{
       width: `${config.HEXES.width}px`,
@@ -123,6 +137,21 @@ const screenPosition = computed(() => {
     position: absolute;
     inset: 0;
     background-image: url('/assets/ui/hex-highlight-sprint-reach.png');
+    background-size: cover;
+  }
+  &.can-capture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/ui/hex-highlight-capturable.png');
+    background-size: cover;
+    z-index: 1;
+  }
+  &.can-attack::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/ui/hex-highlight-attackable.png');
     background-size: cover;
     z-index: 1;
   }

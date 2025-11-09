@@ -83,6 +83,10 @@ export class UnitViewModel {
     return this.data.sprintZone.includes(cell.id);
   }
 
+  get attackableCells() {
+    return this.data.attackableCells;
+  }
+
   canAttackAt(cell: BoardCellViewModel) {
     return this.data.attackableCells.includes(cell.id);
   }

@@ -66,7 +66,6 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
   <HexPositioner
     :x="unit.x"
     :y="unit.y"
-    :offset="hexOffset"
     :style="{
       translate: `${hexOffset.x}px ${hexOffset.y}px`
     }"

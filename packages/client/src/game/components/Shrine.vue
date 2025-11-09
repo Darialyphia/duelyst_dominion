@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import HexPositioner from './HexPositioner.vue';
-import { useMyPlayer, useOpponentPlayer } from '../composables/useGameClient';
+import {
+  useFxEvent,
+  useMyPlayer,
+  useOpponentPlayer
+} from '../composables/useGameClient';
 import type { ShrineViewModel } from '@game/engine/src/client/view-models/shrine.model';
-import { isDefined } from '@game/shared';
+import { isDefined, waitFor } from '@game/shared';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import { refAutoReset } from '@vueuse/core';
 
 const { shrine } = defineProps<{ shrine: ShrineViewModel }>();
 
@@ -12,10 +18,6 @@ const isAlly = computed(() => shrine.player?.equals(myPlayer.value));
 const isEnemy = computed(() => !isAlly.value && isDefined(shrine.player));
 const unitBg = computed(() => {
   return `url('/assets/ui/shrine.png')`;
-});
-const hexOffset = ref({
-  x: 0,
-  y: 0
 });
 
 const displayedCmd = computed(() => {
@@ -28,16 +30,24 @@ const displayedCmd = computed(() => {
       : shrine.defendCmdByPlayer[opponent.value.id]
   };
 });
+
+const isCapturing = refAutoReset(false, 1200);
+useFxEvent(FX_EVENTS.SHRINE_BEFORE_CAPTURE, async event => {
+  if (event.shrine !== shrine.id) return;
+  isCapturing.value = true;
+  await waitFor(1200);
+});
 </script>
 
 <template>
-  <HexPositioner :x="shrine.x" :y="shrine.y" :offset="hexOffset">
+  <HexPositioner :x="shrine.x" :y="shrine.y">
     <div
       class="shrine"
       :class="{
         ally: isAlly,
         enemy: isEnemy,
-        capturable: shrine.capturableByPlayer[myPlayer.id]
+        capturable: shrine.capturableByPlayer[myPlayer.id],
+        'is-capturing': isCapturing
       }"
     >
       <div class="shrine-sprite" />
@@ -94,11 +104,15 @@ const displayedCmd = computed(() => {
   position: relative;
   background: url('/assets/ui/unit-hex-base.png');
   background-size: cover;
-  transition: transform 1s var(--ease-bounce-2);
+  transition:
+    transform 1s var(--ease-bounce-2),
+    filter 0.5s var(--ease-2);
   pointer-events: none;
   width: 100%;
   height: 100%;
-
+  &.is-capturing {
+    filter: brightness(4);
+  }
   @starting-style {
     transform: translateY(-100px);
   }
@@ -108,6 +122,25 @@ const displayedCmd = computed(() => {
   position: absolute;
   inset: 0;
   background: v-bind(unitBg);
+  .shrine.ally &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blue-5);
+    mix-blend-mode: overlay;
+    z-index: 1;
+    mask-image: v-bind(unitBg);
+  }
+
+  .shrine.enemy &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red-6);
+    mix-blend-mode: overlay;
+    z-index: 1;
+    mask-image: v-bind(unitBg);
+  }
   background-size: center;
   .unit.enemy & {
     transform: scaleX(-1);

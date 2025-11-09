@@ -2,26 +2,32 @@ import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
 import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
-import { isDefined } from '@game/shared';
 import type { BoardCellClickRule } from '../controllers/ui-controller';
+import { isDefined } from '@game/shared';
 
-export class UnselectUnitAction implements BoardCellClickRule {
+export class AttackAction implements BoardCellClickRule {
   constructor(private client: GameClient) {}
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {
-    const unit = cell.unit;
     return (
+      isDefined(this.client.ui.selectedUnit) &&
+      this.client.ui.selectedUnit.canAttackAt(cell) &&
       this.client.ui.isInteractivePlayer &&
       state.phase.state === GAME_PHASES.MAIN &&
-      state.interaction.state === INTERACTION_STATES.IDLE &&
-      (!isDefined(unit) ||
-        unit.getPlayer()?.id !== this.client.playerId ||
-        this.client.ui.selectedUnit?.equals(unit) ||
-        unit.isExhausted)
+      state.interaction.state === INTERACTION_STATES.IDLE
     );
   }
 
-  handler() {
+  handler(cell: BoardCellViewModel) {
+    this.client.networkAdapter.dispatch({
+      type: 'attack',
+      payload: {
+        playerId: this.client.playerId,
+        unitId: this.client.ui.selectedUnit!.id,
+        x: cell.x,
+        y: cell.y
+      }
+    });
     this.client.ui.unselectUnit();
   }
 }

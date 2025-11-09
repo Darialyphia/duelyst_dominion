@@ -7,6 +7,7 @@ import {
   useMyPlayer,
   useOpponentPlayer,
   useShrines,
+  useTeleporters,
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
@@ -16,12 +17,14 @@ import DraggedCard from './DraggedCard.vue';
 import BoardCell from './BoardCell.vue';
 import FPS from './FPS.vue';
 import Shrine from './Shrine.vue';
+import Teleporter from './Teleporter.vue';
 
 const state = useGameState();
 const { client } = useGameClient();
 const boardCells = useBoardCells();
 const units = useUnits();
 const shrines = useShrines();
+const teleporters = useTeleporters();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
 const dimensions = { height: 102, width: 144, x: 94, y: 51 };
@@ -40,8 +43,13 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
       }"
     >
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
-      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
       <Shrine v-for="shrine in shrines" :key="shrine.id" :shrine="shrine" />
+      <Teleporter
+        v-for="teleporter in teleporters"
+        :key="teleporter.id"
+        :teleporter="teleporter"
+      />
+      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </div>
 
     <div class="hand">
@@ -186,6 +194,14 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
   left: var(--size-8);
 }
 
+.my-infos,
+.opponent-infos {
+  pointer-events: none;
+  /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
+  button {
+    pointer-events: auto;
+  }
+}
 .my-infos {
   position: fixed;
   top: var(--size-8);
