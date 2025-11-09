@@ -269,8 +269,7 @@ export const KEYWORDS = {
   ZEAL: {
     id: 'zeal',
     name: 'Zeal (x)',
-    description:
-      'Triggers an effect when there are at least X ally units, generals or shrines nearby this unit.',
+    description: "Triggers an effect when nearby the player's general.",
     aliases: [/zeal \([0-9]+\)/]
   }
 } as const satisfies Record<string, Keyword>;

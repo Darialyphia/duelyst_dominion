@@ -26,7 +26,7 @@ export const ironcliffeGuardian: MinionBlueprint = {
   runeCost: {
     yellow: 3
   },
-  atk: 4,
+  atk: 3,
   cmd: 2,
   maxHp: 10,
   getTargets: () => Promise.resolve([]),

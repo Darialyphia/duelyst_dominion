@@ -24,7 +24,7 @@ const getAOE = (game: Game) =>
 export const tempest: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
-  description: 'Deal 2 damage to all units at a shrine.',
+  description: 'Deal 3 damage to all units at a shrine.',
   cardIconId: 'spells/f1_tempest',
   kind: CARD_KINDS.SPELL,
   collectable: true,
@@ -55,7 +55,7 @@ export const tempest: SpellBlueprint = {
       .filter(isDefined);
 
     for (const unit of unitsToDamage) {
-      await unit.takeDamage(card, new SpellDamage(card, 2));
+      await unit.takeDamage(card, new SpellDamage(card, 3));
     }
   }
 };

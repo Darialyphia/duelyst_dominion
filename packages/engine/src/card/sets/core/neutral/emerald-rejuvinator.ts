@@ -16,7 +16,7 @@ export const emeraldRejuvinator: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  manaCost: 2,
+  manaCost: 4,
   runeCost: {
     blue: 1,
     yellow: 1
