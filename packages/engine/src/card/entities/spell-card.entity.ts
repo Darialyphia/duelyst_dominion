@@ -54,7 +54,7 @@ export class SpellCard extends Card<
 
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
-      this.canAfford && this.canAfford && this.blueprint.canPlay(this.game, this),
+      this.canAfford && this.hasRunes && this.blueprint.canPlay(this.game, this),
       this
     );
   }
@@ -84,8 +84,6 @@ export class SpellCard extends Card<
           await this.game.interaction.getContext().ctx.cancel(this.player);
         };
 
-        await this.removeFromCurrentLocation();
-
         const targets = await this.blueprint.getTargets(this.game, this);
 
         resolve({ targets, cancelled: false });
@@ -95,7 +93,8 @@ export class SpellCard extends Card<
 
   async play(onCancel: () => MaybePromise<void>) {
     const { targets, cancelled } = await this.selectTargets();
-    await this.sendToDiscardPile();
+
+    await this.removeFromCurrentLocation();
 
     if (cancelled) {
       await onCancel();
@@ -106,6 +105,7 @@ export class SpellCard extends Card<
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })
     );
+
     await this.blueprint.onPlay(this.game, this, {
       targets,
       aoe: this.blueprint.getAoe(this.game, this, targets)

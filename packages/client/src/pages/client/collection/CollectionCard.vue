@@ -90,11 +90,11 @@ const canAddCard = computed(() => {
       </div>
     </HoverCardTrigger>
     <HoverCardPortal>
-      <Transition>
-        <HoverCardContent v-if="viewMode === 'compact'">
+      <HoverCardContent v-if="viewMode === 'compact'" class="compact-details">
+        <div>
           <BlueprintCard :blueprint="card.card" style="--pixel-scale: 1.5" />
-        </HoverCardContent>
-      </Transition>
+        </div>
+      </HoverCardContent>
     </HoverCardPortal>
   </HoverCardRoot>
 </template>
@@ -121,17 +121,36 @@ const canAddCard = computed(() => {
   cursor: url('/assets/ui/cursor-hover.png'), auto;
 }
 
-.v-enter-active {
-  transition: opacity 0.5s var(--ease-3);
-  > * {
-    transition: transform 0.5s var(--ease-3);
+:deep(.compact-details) {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+:deep(.compact-details[data-side='top']) {
+  animation-name: slideUp;
+}
+:deep(.compact-details[data-side='bottom']) {
+  animation-name: slideDown;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.v-enter-from {
-  opacity: 0.5;
-  > * {
-    transform: translateY(15px);
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>

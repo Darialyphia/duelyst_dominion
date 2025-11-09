@@ -43,7 +43,7 @@ export const singleEnemyTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT),
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
       required = true
     }: {
       predicate?: (unit: Unit) => boolean;
@@ -87,7 +87,7 @@ export const singleEnemyMinionTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {})
     }: {
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
@@ -132,7 +132,7 @@ export const singleMinionTargetRules = {
     {
       required = true,
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
     }: {
       required?: boolean;
       predicate?: (unit: Unit) => boolean;
@@ -203,6 +203,41 @@ export const multipleEnemyTargetRules = {
               ? true
               : !selectedCards.some(selected => selected.equals(candidate))) &&
             predicate(candidate.unit)
+          );
+        },
+        canCommit(selectedCards) {
+          return selectedCards.length >= min;
+        },
+        isDone(selectedCards) {
+          return selectedCards.length === max;
+        }
+      });
+    }
+};
+
+export const anywhere = {
+  getPreResponseTargets:
+    ({ min, max, allowRepeat }: { min: number; max: number; allowRepeat: boolean }) =>
+    async (
+      game: Game,
+      card: AnyCard,
+      {
+        predicate = () => true,
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
+      }: {
+        predicate?: (cell: BoardCell) => boolean;
+        getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      } = {}
+    ) => {
+      return await game.interaction.selectSpacesOnBoard({
+        player: card.player,
+        getAoe,
+        isElligible(candidate, selectedCells) {
+          return (
+            (allowRepeat
+              ? true
+              : !selectedCells.some(selected => selected.equals(candidate))) &&
+            predicate(candidate)
           );
         },
         canCommit(selectedCards) {

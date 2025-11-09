@@ -484,6 +484,9 @@ const onMouseleave = () => {
   width: calc(2 * 96px * var(--pixel-scale));
   height: calc(2 * 96px * var(--pixel-scale));
   pointer-events: none;
+  .card.spell & {
+    top: calc(-20px * var(--pixel-scale));
+  }
 
   .image-shadow {
     position: absolute;

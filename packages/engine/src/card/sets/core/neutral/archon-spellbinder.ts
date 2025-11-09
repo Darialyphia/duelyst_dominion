@@ -34,7 +34,7 @@ export const archonSpellbinder: MinionBlueprint = {
   cmd: 2,
   maxHp: 7,
   getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     const DEBUFF_ID = 'archon-spellbinder-debuff';

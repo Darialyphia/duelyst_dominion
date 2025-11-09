@@ -133,7 +133,7 @@ export class GeneralCard extends Card<
   }
 
   get attackAOEShape() {
-    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 
   get counterattackPattern() {
@@ -146,6 +146,6 @@ export class GeneralCard extends Card<
   }
 
   get counterattackAOEShape() {
-    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 }

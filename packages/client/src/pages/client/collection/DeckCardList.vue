@@ -48,7 +48,10 @@ const { deckBuilder } = useCollectionPage();
         </HoverCardTrigger>
         <HoverCardPortal>
           <HoverCardContent side="left" :side-offset="10">
-            <BlueprintCard :blueprint="card.blueprint" />
+            <BlueprintCard
+              :blueprint="card.blueprint"
+              style="--pixel-scale: 1.5"
+            />
           </HoverCardContent>
         </HoverCardPortal>
       </HoverCardRoot>
@@ -64,10 +67,14 @@ const { deckBuilder } = useCollectionPage();
   border: solid var(--border-size-1) #bba08377;
   padding: var(--size-2) var(--size-3);
   cursor: url('/assets/ui/cursor-hover.png'), auto;
-  background-image: var(--bg);
+  background-image:
+    linear-gradient(to right, hsl(0deg 0% 20% / 0.5), hsl(0deg 0% 0% / 0.5)),
+    var(--bg);
   background-repeat: no-repeat;
-  background-position: calc(100% + 40px) -104px;
-  background-size: calc(2px * 96);
+  background-position:
+    center center,
+    calc(100% + 40px) -104px;
+  background-size: 200%, calc(2px * 96);
   transition: transform 0.3s var(--ease-2);
   &:first-of-type {
     border-top-left-radius: var(--radius-2);
@@ -80,9 +87,9 @@ const { deckBuilder } = useCollectionPage();
 
   &.artifact,
   &.spell {
-    background-position: calc(100% + 40px), calc(100% + 40px);
-    background-size: calc(2px * 96), calc(2px * 96);
-    background-image: var(--bg), var(--frame-bg);
+    background-position:
+      center center,
+      calc(100% + 40px) -120px;
   }
 
   @starting-style {

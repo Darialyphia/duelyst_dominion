@@ -1,4 +1,4 @@
-import type { EmptyObject, Point3D } from '@game/shared';
+import type { EmptyObject, Point } from '@game/shared';
 import type { AOEShape } from './aoe-shape';
 import type { TargetingType } from './aoe.enums';
 
@@ -8,14 +8,20 @@ type SerializedPoint = {
   params: EmptyObject;
 };
 
+type PointAoeShapeOptions = {
+  override?: Point;
+};
 export class PointAOEShape implements AOEShape<SerializedPoint> {
-  static fromJSON(json: EmptyObject): PointAOEShape {
-    return new PointAOEShape(json.targetingType);
+  static fromJSON(type: TargetingType, options?: PointAoeShapeOptions): PointAOEShape {
+    return new PointAOEShape(type, options ?? {});
   }
 
   readonly type = 'point' as const;
 
-  constructor(readonly targetingType: TargetingType) {}
+  constructor(
+    readonly targetingType: TargetingType,
+    private readonly options: PointAoeShapeOptions
+  ) {}
 
   serialize() {
     return {
@@ -25,9 +31,10 @@ export class PointAOEShape implements AOEShape<SerializedPoint> {
     };
   }
 
-  getArea([point]: [Point3D]): Point3D[] {
-    if (!point) return [];
+  getArea([point]: [Point]): Point[] {
+    const area = this.options.override ?? point;
+    if (!area) return [];
 
-    return [point];
+    return [area];
   }
 }

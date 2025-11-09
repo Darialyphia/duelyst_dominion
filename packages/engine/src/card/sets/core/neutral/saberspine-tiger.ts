@@ -1,14 +1,16 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { MinionOnCaptureModifier } from '../../../../modifier/modifiers/on-capture.modifier';
+import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
+import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
+import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
-export const sojourner: MinionBlueprint = {
-  id: 'sojourner',
-  name: 'Sojourner',
-  description: '@On Capture@: Draw 2.',
-  cardIconId: 'minions/neutral_sojourner',
+export const saberspineTiger: MinionBlueprint = {
+  id: 'saberspine-tiger',
+  name: 'Saberspine Tiger',
+  description: '@Rush@.',
+  cardIconId: 'minions/neutral_saberspine-tiger',
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -17,22 +19,16 @@ export const sojourner: MinionBlueprint = {
   tags: [],
   manaCost: 3,
   runeCost: {
-    blue: 2
+    red: 2
   },
-  atk: 1,
+  atk: 3,
   cmd: 1,
-  maxHp: 5,
+  maxHp: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
-    await card.modifiers.add(
-      new MinionOnCaptureModifier(game, card, {
-        handler: async () => {
-          await card.player.cardManager.draw(2);
-        }
-      })
-    );
+    await card.modifiers.add(new RushModifier(game, card));
   },
   async onPlay() {}
 };

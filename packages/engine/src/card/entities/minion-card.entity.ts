@@ -143,7 +143,7 @@ export class MinionCard extends Card<
           isDone(selectedSlots) {
             return selectedSlots.length === 1;
           },
-          getAoe: () => new PointAOEShape(TARGETING_TYPE.ANYWHERE)
+          getAoe: () => new PointAOEShape(TARGETING_TYPE.ANYWHERE, {})
         });
         if (cancelled) return;
         this.spacesToHighlight = [position.position.serialize()];
@@ -230,7 +230,7 @@ export class MinionCard extends Card<
   }
 
   get attackAOEShape() {
-    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 
   get counterattackPattern() {
@@ -243,6 +243,6 @@ export class MinionCard extends Card<
   }
 
   get counterattackAOEShape() {
-    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT);
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 }
