@@ -8,12 +8,17 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { ShrineCaptureEvent } from '../../board/entities/shrine.entity';
+import { TogglableModifierMixin } from '../mixins/togglable.mixin';
+import type { ModifierMixin } from '../modifier-mixin';
 
 export class MinionOnCaptureModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    handler: (event: ShrineCaptureEvent) => MaybePromise<void>
+    options: {
+      handler: (event: ShrineCaptureEvent) => MaybePromise<void>;
+      mixins?: ModifierMixin<MinionCard>[];
+    }
   ) {
     super(KEYWORDS.ON_CAPTURE.id, game, source, {
       name: KEYWORDS.ON_CAPTURE.name,
@@ -21,14 +26,16 @@ export class MinionOnCaptureModifier extends Modifier<MinionCard> {
       icon: 'icons/keywords/on-capture.png',
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.ON_CAPTURE),
+        new TogglableModifierMixin(game, () => this.target.location === 'board'),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.SHRINE_AFTER_CAPTURE,
           handler: event => {
             if (event.data.unit.equals(this.target.unit)) {
-              return handler(event);
+              return options.handler(event);
             }
           }
-        })
+        }),
+        ...(options.mixins ?? [])
       ]
     });
   }
