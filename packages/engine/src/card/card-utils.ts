@@ -43,10 +43,12 @@ export const singleEnemyTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT)
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT),
+      required = true
     }: {
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      required?: boolean;
     }
   ) {
     return await game.interaction.selectSpacesOnBoard({
@@ -63,7 +65,7 @@ export const singleEnemyTargetRules = {
         );
       },
       canCommit(selectedCards) {
-        return selectedCards.length === 1;
+        return required ? selectedCards.length === 1 : true;
       },
       isDone(selectedCards) {
         return selectedCards.length === 1;

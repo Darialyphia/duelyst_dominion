@@ -280,6 +280,19 @@
               "m": true
             }
           }
+        },
+        {
+          "alias": [
+            "neutral_primus_shieldmaster.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_primus_shieldmaster.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
         }
       ]
     },
@@ -5120,6 +5133,45 @@
         },
         {
           "alias": [
+            "hex-highlight-attackable.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-attackable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "hex-highlight-capturable.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-capturable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "hex-highlight-move-reach.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-move-reach.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "hex-highlight-selected.png"
           ],
           "src": [
@@ -5133,10 +5185,36 @@
         },
         {
           "alias": [
+            "hex-highlight-sprint-reach.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-sprint-reach.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "hex-highlight-targetable.png"
           ],
           "src": [
             "/assets/ui/hex-highlight-targetable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "hex-highlight-unit-selected.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-unit-selected.png"
           ],
           "data": {
             "tags": {
@@ -5354,6 +5432,71 @@
         },
         {
           "alias": [
+            "shrine-ally.png"
+          ],
+          "src": [
+            "/assets/ui/shrine-ally.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "shrine-cmd-ally.png"
+          ],
+          "src": [
+            "/assets/ui/shrine-cmd-ally.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "shrine-cmd-enemy.png"
+          ],
+          "src": [
+            "/assets/ui/shrine-cmd-enemy.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "shrine-enemy.png"
+          ],
+          "src": [
+            "/assets/ui/shrine-enemy.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "shrine.png"
+          ],
+          "src": [
+            "/assets/ui/shrine.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "speed-fast.png"
           ],
           "src": [
@@ -5562,6 +5705,45 @@
         },
         {
           "alias": [
+            "teleporter-green.png"
+          ],
+          "src": [
+            "/assets/ui/teleporter-green.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "teleporter-purple.png"
+          ],
+          "src": [
+            "/assets/ui/teleporter-purple.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "teleporter-yellow.png"
+          ],
+          "src": [
+            "/assets/ui/teleporter-yellow.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "template-small-back.png"
           ],
           "src": [
@@ -5698,6 +5880,19 @@
           ],
           "src": [
             "/assets/ui/unit-hex-border-enemy.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "unit-hex-border-neutral.png"
+          ],
+          "src": [
+            "/assets/ui/unit-hex-border-neutral.png"
           ],
           "data": {
             "tags": {
