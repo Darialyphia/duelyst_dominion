@@ -80,7 +80,7 @@ export class PlayerArtifact
   }
 
   private async onGeneralDamageTaken(event: UnitReceiveDamageEvent) {
-    if (event.data.target.id !== this.player.general.id) return;
+    if (event.data.unit.id !== this.player.general.id) return;
     if (event.data.damage.getFinalAmount(this.player.general) === 0) return;
     if (this.shouldLoseDurabilityOnGeneralDamage) {
       await this.loseDurability();

@@ -49,11 +49,12 @@ export class UnitAttackEvent extends TypedSerializableEvent<
 }
 
 export class UnitDealDamageEvent extends TypedSerializableEvent<
-  { targets: Unit[]; damage: Damage },
-  { targets: Array<{ unit: string; damage: number }> }
+  { unit: Unit; targets: Unit[]; damage: Damage },
+  { unit: string; targets: Array<{ unit: string; damage: number }> }
 > {
   serialize() {
     return {
+      unit: this.data.unit.id,
       targets: this.data.targets.map(target => ({
         unit: target.id,
         damage: this.data.damage.getFinalAmount(target)
@@ -63,13 +64,14 @@ export class UnitDealDamageEvent extends TypedSerializableEvent<
 }
 
 export class UnitReceiveDamageEvent extends TypedSerializableEvent<
-  { from: AnyCard; target: Unit; damage: Damage },
-  { from: string; damage: number }
+  { unit: Unit; from: AnyCard; damage: Damage },
+  { unit: string; from: string; damage: number }
 > {
   serialize() {
     return {
+      unit: this.data.unit.id,
       from: this.data.from.id,
-      damage: this.data.damage.getFinalAmount(this.data.target)
+      damage: this.data.damage.getFinalAmount(this.data.unit)
     };
   }
 }

@@ -9,6 +9,7 @@ import {
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import gsap from 'gsap';
 import { config } from '@/utils/config';
+import type { Point } from '@game/shared';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -62,7 +63,7 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
 });
 
 const isAttacking = ref(false);
-useFxEvent(FX_EVENTS.UNIT_AFTER_ATTACK, async event => {
+const onAttack = async (event: { unit: string; target: Point }) => {
   if (event.unit !== unit.id) return;
 
   const timeline = gsap.timeline();
@@ -77,16 +78,16 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_ATTACK, async event => {
   // anticipation
   timeline.to(hexOffset.value, {
     x: `-=${delta.x / 4}`,
-    y: `-=${delta.y / 4}`,
+    y: `-=${delta.y / 4 - 15}`,
     duration: 0.15,
     ease: Power1.easeIn
   });
 
   // attack
   timeline.to(hexOffset.value, {
-    x: delta.x,
-    y: delta.y,
-    duration: 0.15
+    x: delta.x * 0.75,
+    y: delta.y * 0.75,
+    duration: 0.1
   });
 
   // recover
@@ -98,6 +99,48 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_ATTACK, async event => {
     onComplete: () => {
       isAttacking.value = false;
     }
+  });
+
+  await timeline.play();
+};
+useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, onAttack);
+useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, onAttack);
+
+useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
+  if (event.unit !== unit.id) return;
+
+  const timeline = gsap.timeline();
+  const shakeIntensity = 10;
+
+  // Shake left and right multiple times
+  timeline.to(hexOffset.value, {
+    x: shakeIntensity,
+    duration: 0.05,
+    ease: 'power1.inOut'
+  });
+
+  timeline.to(hexOffset.value, {
+    x: -shakeIntensity,
+    duration: 0.05,
+    ease: 'power1.inOut'
+  });
+
+  timeline.to(hexOffset.value, {
+    x: shakeIntensity / 2,
+    duration: 0.05,
+    ease: 'power1.inOut'
+  });
+
+  timeline.to(hexOffset.value, {
+    x: -shakeIntensity / 2,
+    duration: 0.05,
+    ease: 'power1.inOut'
+  });
+
+  timeline.to(hexOffset.value, {
+    x: 0,
+    duration: 0.05,
+    ease: 'power1.inOut'
   });
 
   await timeline.play();

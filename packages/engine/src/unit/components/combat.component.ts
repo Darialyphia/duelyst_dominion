@@ -114,14 +114,14 @@ export class CombatComponent {
   async dealDamage(targets: Unit[], damage: Damage) {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_DEAL_DAMAGE,
-      new UnitDealDamageEvent({ targets, damage })
+      new UnitDealDamageEvent({ targets, damage, unit: this.unit })
     );
     for (const target of targets) {
       await target.takeDamage(this.unit.card, damage);
     }
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_DEAL_DAMAGE,
-      new UnitDealDamageEvent({ targets, damage })
+      new UnitDealDamageEvent({ targets, damage, unit: this.unit })
     );
   }
 
@@ -130,7 +130,7 @@ export class CombatComponent {
       UNIT_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE,
       new UnitReceiveDamageEvent({
         from,
-        target: this.unit,
+        unit: this.unit,
         damage
       })
     );
@@ -141,7 +141,7 @@ export class CombatComponent {
       UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
       new UnitReceiveDamageEvent({
         from,
-        target: this.unit,
+        unit: this.unit,
         damage
       })
     );
