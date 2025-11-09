@@ -4,6 +4,7 @@ import {
   useBoardCells,
   useGameClient,
   useGameState,
+  useGameUi,
   useMyPlayer,
   useOpponentPlayer,
   useShrines,
@@ -18,6 +19,7 @@ import BoardCell from './BoardCell.vue';
 import FPS from './FPS.vue';
 import Shrine from './Shrine.vue';
 import Teleporter from './Teleporter.vue';
+import GameCard from './GameCard.vue';
 
 const state = useGameState();
 const { client } = useGameClient();
@@ -28,6 +30,12 @@ const teleporters = useTeleporters();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
 const dimensions = { height: 102, width: 144, x: 94, y: 51 };
+
+const ui = useGameUi();
+const hoveredCard = computed(() => {
+  if (!ui.value.hoveredCell) return null;
+  return ui.value.hoveredCell.unit?.getCard();
+});
 </script>
 
 <template>
@@ -168,6 +176,13 @@ const dimensions = { height: 102, width: 144, x: 94, y: 51 };
       </div>
     </div>
 
+    <div class="fixed bottom-2 right-2">
+      <GameCard
+        v-if="hoveredCard"
+        :card-id="hoveredCard.id"
+        :is-interactive="false"
+      />
+    </div>
     <div id="dragged-card-container" />
   </div>
 </template>
