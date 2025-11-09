@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
 import { useCollectionPage } from './useCollectionPage';
-
+import CardText from '@/card/components/CardText.vue';
 const { deckBuilder } = useCollectionPage();
 
 const getCount = (cards: Array<{ copies: number }>) => {
@@ -27,20 +28,51 @@ const getCountForCostAndUp = (minCost: number) =>
       return c.blueprint.manaCost >= minCost;
     })
   );
+
+const getAverageRuneCost = (rune: Rune) => {
+  return deckBuilder.value.cards.reduce((acc, card) => {
+    if (!('runeCost' in card.blueprint)) return acc;
+    const runeCost = card.blueprint.runeCost[rune];
+    if (!runeCost) return acc;
+    return acc + runeCost * (card.copies ?? 1);
+  }, 0);
+};
+
+const bars = computed(() => {
+  const result: Array<{ label: string; count: number }> = [];
+  for (let i = 0; i < 6; i++) {
+    result.push({ label: i.toString(), count: getCountForCost(i) });
+  }
+  result.push({ label: '6+', count: getCountForCostAndUp(6) });
+  result.push({ label: '@[rune:red]@', count: getAverageRuneCost(RUNES.RED) });
+  result.push({
+    label: '@[rune:yellow]@',
+    count: getAverageRuneCost(RUNES.YELLOW)
+  });
+  result.push({
+    label: '@[rune:blue]@',
+    count: getAverageRuneCost(RUNES.BLUE)
+  });
+  return result;
+});
 </script>
 
 <template>
   <div class="bars" :style="{ '--total': deckBuilder.deckSize }">
     <div
-      v-for="i in 7"
-      :key="i"
+      v-for="bar in bars"
+      :key="bar.label"
       :style="{
-        '--count':
-          i === 7 ? getCountForCostAndUp(i - 1) : getCountForCost(i - 1)
+        '--count': bar.count
       }"
     >
-      <div class="bar" :data-count="getCountForCost(i - 1)" />
-      <div class="cost">{{ i === 7 ? '6+' : i - 1 }}</div>
+      <div
+        class="bar"
+        :data-count="
+          (bar.count * 10) % 10 === 0 ? bar.count : bar.count.toFixed(1)
+        "
+      />
+      <div class="cost"><CardText :text="bar.label" /></div>
     </div>
   </div>
 </template>
@@ -48,7 +80,7 @@ const getCountForCostAndUp = (minCost: number) =>
 <style scoped lang="postcss">
 .bars {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(10, 1fr);
   gap: var(--size-1);
   height: var(--size-10);
   margin-top: var(--size-2);

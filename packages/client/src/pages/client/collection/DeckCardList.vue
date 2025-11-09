@@ -37,8 +37,25 @@ const { deckBuilder } = useCollectionPage();
                 {{ card.blueprint.manaCost }}
               </span>
             </div>
-            <div class="destiny-cost" v-if="'destinyCost' in card.blueprint">
-              {{ card.blueprint.destinyCost }}
+            <div
+              class="runes"
+              :style="{ opacity: 'runeCost' in card.blueprint ? 1 : 0 }"
+            >
+              <div class="rune red">
+                <span v-if="'runeCost' in card.blueprint">
+                  {{ card.blueprint.runeCost.red || '' }}
+                </span>
+              </div>
+              <div class="rune yellow">
+                <span v-if="'runeCost' in card.blueprint">
+                  {{ card.blueprint.runeCost.yellow || '' }}
+                </span>
+              </div>
+              <div class="rune blue">
+                <span v-if="'runeCost' in card.blueprint">
+                  {{ card.blueprint.runeCost.blue || '' }}
+                </span>
+              </div>
             </div>
             <span class="card-name">
               <template v-if="'copies' in card">X {{ card.copies }}</template>
@@ -65,7 +82,7 @@ const { deckBuilder } = useCollectionPage();
   gap: var(--size-2);
   align-items: center;
   border: solid var(--border-size-1) #bba08377;
-  padding: var(--size-2) var(--size-3);
+  padding: var(--size-2) var(--size-2);
   cursor: url('/assets/ui/cursor-hover.png'), auto;
   background-image:
     linear-gradient(to right, hsl(0deg 0% 20% / 0.5), hsl(0deg 0% 0% / 0.5)),
@@ -118,5 +135,32 @@ const { deckBuilder } = useCollectionPage();
   white-space: nowrap;
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
+}
+
+.runes {
+  display: flex;
+  gap: var(--size-1);
+}
+
+.rune {
+  background-size: contain;
+  font-size: var(--size-3);
+  font-weight: var(--font-weight-5);
+  width: 17px;
+  height: 21px;
+  display: grid;
+  place-content: center;
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
+
+  &.red {
+    background: url(/assets/ui/rune-red.png) no-repeat center center;
+  }
+  &.yellow {
+    background: url(/assets/ui/rune-yellow.png) no-repeat center center;
+  }
+  &.blue {
+    background: url(/assets/ui/rune-blue.png) no-repeat center center;
+  }
 }
 </style>
