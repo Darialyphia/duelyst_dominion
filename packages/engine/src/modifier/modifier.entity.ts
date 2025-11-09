@@ -73,7 +73,7 @@ export type SerializedModifier = {
   name?: string;
   description?: string;
   icon?: string;
-  target: string;
+  target: string | null;
   source: string;
   stacks: number;
   isEnabled: boolean;
@@ -266,7 +266,7 @@ export class Modifier<
         ? this.infos.description
         : this.infos.description?.(),
       icon: this.infos.icon,
-      target: this._target.id,
+      target: this._target?.id ?? null,
       source: this.source.id,
       stacks: this._stacks,
       isEnabled: this.isEnabled

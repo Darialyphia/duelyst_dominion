@@ -286,6 +286,8 @@ const tokens = computed<Token[]>(() => {
 
 .token-rune {
   img {
+    width: calc(17px * var(--pixel-scale) / 2);
+    height: calc(21px * var(--pixel-scale) / 2);
     transform: translateY(3px);
   }
 }

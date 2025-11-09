@@ -16,7 +16,14 @@ export const cards = {
 "tempest": "tempest",
 "windblade_adept": "windblade_adept",
 "silverguard_knight": "silverguard_knight",
-"azurite_lion": "azurite_lion"
+"azurite_lion": "azurite_lion",
+"war_judicator": "war_judicator",
+"spirit-of-power": "spirit-of-power",
+"spirit-of-vitality": "spirit-of-vitality",
+"spirit-of-wisdom": "spirit-of-wisdom",
+"emerald-rejuvinator": "emerald-rejuvinator",
+"ironcliffe_guardian": "ironcliffe_guardian",
+"frostbone-naga": "frostbone-naga"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -31,5 +38,12 @@ export const collectableCards = {
 "tempest": "tempest",
 "windblade_adept": "windblade_adept",
 "silverguard_knight": "silverguard_knight",
-"azurite_lion": "azurite_lion"
+"azurite_lion": "azurite_lion",
+"war_judicator": "war_judicator",
+"spirit-of-power": "spirit-of-power",
+"spirit-of-vitality": "spirit-of-vitality",
+"spirit-of-wisdom": "spirit-of-wisdom",
+"emerald-rejuvinator": "emerald-rejuvinator",
+"ironcliffe_guardian": "ironcliffe_guardian",
+"frostbone-naga": "frostbone-naga"
 } as const satisfies Record<string, string>;

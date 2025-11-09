@@ -168,7 +168,12 @@ export class MinionCard extends Card<
 
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
-      new MinionSummonedEvent({ card: this, cell: position, targets })
+      new MinionSummonedEvent({
+        card: this,
+        cell: position,
+        targets,
+        aoe: this.blueprint.getAoe(this.game, this, position, targets)
+      })
     );
     this.game.unitSystem.addUnit(this, position);
     if (this.hasSummoningSickness) {
@@ -176,7 +181,12 @@ export class MinionCard extends Card<
     }
     await this.game.emit(
       MINION_EVENTS.MINION_AFTER_SUMMON,
-      new MinionSummonedEvent({ card: this, cell: position, targets })
+      new MinionSummonedEvent({
+        card: this,
+        cell: position,
+        targets,
+        aoe: this.blueprint.getAoe(this.game, this, position, targets)
+      })
     );
     await this.blueprint.onPlay(this.game, this, {
       aoe: this.blueprint.getAoe(this.game, this, position, targets),

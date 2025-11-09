@@ -5,24 +5,25 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
-export const windbladeAdept: MinionBlueprint = {
-  id: 'windblade_adept',
-  name: 'Windblade Adept',
-  description: '@Zeal (2)@ : +2 Attack.',
-  cardIconId: 'minions/f1_windblade-adept',
+export const warJudicator: MinionBlueprint = {
+  id: 'war_judicator',
+  name: 'War Judicator',
+  description: '@Zeal (2)@ : +2 Commandment.',
+  cardIconId: 'minions/f1_war-judicator',
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.RARE,
   tags: [],
-  manaCost: 2,
+  manaCost: 3,
   runeCost: {
-    red: 1
+    red: 1,
+    blue: 1
   },
   atk: 2,
   cmd: 1,
-  maxHp: 3,
+  maxHp: 5,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
@@ -32,7 +33,7 @@ export const windbladeAdept: MinionBlueprint = {
         threshold: 2,
         mixins: [
           new UnitInterceptorModifierMixin(game, {
-            key: 'atk',
+            key: 'cmd',
             interceptor: value => value + 2
           })
         ]

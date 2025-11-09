@@ -10,10 +10,7 @@ export class AirdropTargetingtrategy implements TargetingStrategy {
   ) {}
 
   private isPointValid(point: Point) {
-    return (
-      !this.game.unitSystem.getUnitAt(point) &&
-      !!this.game.boardSystem.getCellAt(point)?.isWalkable
-    );
+    return !!this.game.boardSystem.getCellAt(point)?.isWalkable;
   }
 
   isWithinRange(point: Point) {

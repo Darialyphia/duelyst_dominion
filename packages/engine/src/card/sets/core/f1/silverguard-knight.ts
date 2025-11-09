@@ -4,15 +4,13 @@ import { SubModifierMixin } from '../../../../modifier/mixins/sub-modifier.mixin
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import type { Unit } from '../../../../unit/unit.entity';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import type { MinionCard } from '../../../entities/minion-card.entity';
 
 export const silverguardKnight: MinionBlueprint = {
   id: 'silverguard_knight',
   name: 'Silverguard Knight',
-  description: '@Zeal (2)@ : +2 atk and @Provoke@.',
+  description: '@Zeal (2)@ : +2 Attack and @Provoke@.',
   cardIconId: 'minions/f1_silverguard-knight',
   kind: CARD_KINDS.MINION,
   collectable: true,

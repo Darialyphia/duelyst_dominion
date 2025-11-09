@@ -5,11 +5,11 @@ import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
-export const flamebloodWarlock: MinionBlueprint = {
-  id: 'flameblood-warlock',
-  name: 'Flameblood Warlock',
-  description: '@On Enter@: Deal 2 damage to all generals.',
-  cardIconId: 'minions/neutral_flameblood-warlock',
+export const emeraldRejuvinator: MinionBlueprint = {
+  id: 'emerald-rejuvinator',
+  name: 'Emerald Rejuvinator',
+  description: '@On Enter@: Heal your general for 3.',
+  cardIconId: 'minions/neutral_emerald-rejuvinator',
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -18,20 +18,19 @@ export const flamebloodWarlock: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {
-    red: 1
+    blue: 1,
+    yellow: 1
   },
-  atk: 3,
+  atk: 4,
   cmd: 1,
-  maxHp: 1,
+  maxHp: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
-        for (const player of game.playerSystem.players) {
-          await player.general?.takeDamage(card, new AbilityDamage(card, 2));
-        }
+        await card.player.general.heal(card, 2);
       })
     );
   },
