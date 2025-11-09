@@ -17,7 +17,7 @@ export const spiritOfVitality: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {
-    red: 1
+    yellow: 1
   },
   atk: 1,
   cmd: 1,

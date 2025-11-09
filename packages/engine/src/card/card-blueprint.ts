@@ -100,6 +100,7 @@ export type GeneralBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.GENERAL>;
   atk: number;
   maxHp: number;
+  cmd: number;
   abilities: AbilityBlueprint<GeneralCard>[];
   onInit: (game: Game, card: GeneralCard) => Promise<void>;
   onPlay: (game: Game, card: GeneralCard) => Promise<void>;

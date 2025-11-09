@@ -22,11 +22,11 @@ export const ironcliffeGuardian: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  manaCost: 2,
+  manaCost: 5,
   runeCost: {
     yellow: 3
   },
-  atk: 3,
+  atk: 4,
   cmd: 2,
   maxHp: 10,
   getTargets: () => Promise.resolve([]),

@@ -14,13 +14,13 @@ import { Ability, type SerializedAbility } from './ability.entity';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import { GENERAL_EVENTS, GeneralUseAbilityEvent } from '../events/general.events';
-import { GeneralAltarModifier } from '../../modifier/modifiers/generalaltar.modifier';
 import { GAME_EVENTS } from '../../game/game.events';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
   atk: number;
   maxHp: number;
+  cmd: number;
   abilities: SerializedAbility[];
 };
 
@@ -28,6 +28,7 @@ export type SerializedGeneralCard = SerializedCard & {
 export type GeneralCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
+  cmd: Interceptable<number>;
   canUseAbility: Interceptable<boolean, GeneralCard>;
 };
 
@@ -46,6 +47,7 @@ export class GeneralCard extends Card<
         ...makeCardInterceptors(),
         maxHp: new Interceptable(),
         atk: new Interceptable(),
+        cmd: new Interceptable(),
         canUseAbility: new Interceptable()
       },
       options
@@ -68,10 +70,7 @@ export class GeneralCard extends Card<
   async play() {
     await this.game.unitSystem.addUnit(this, this.spawnPosition);
     await this.blueprint.onPlay(this.game, this);
-    this.game.once(GAME_EVENTS.READY, async () => {
-      await this.unit.modifiers.add(new GeneralAltarModifier(this.game, this));
-      this.unit.exhaust();
-    });
+    this.game.once(GAME_EVENTS.READY, async () => {});
   }
 
   canUseAbility(id: string) {
@@ -103,6 +102,7 @@ export class GeneralCard extends Card<
       ...this.serializeBase(),
       atk: this.atk,
       maxHp: this.maxHp,
+      cmd: this.cmd,
       abilities: this.abilities.map(ability => ability.serialize())
     };
   }
@@ -117,6 +117,10 @@ export class GeneralCard extends Card<
 
   get atk() {
     return this.interceptors.atk.getValue(this.blueprint.atk, {});
+  }
+
+  get cmd() {
+    return this.interceptors.cmd.getValue(this.blueprint.cmd, {});
   }
 
   get unit() {

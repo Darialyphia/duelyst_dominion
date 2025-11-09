@@ -17,7 +17,7 @@ export const spiritOfWisdom: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {
-    red: 1
+    blue: 1
   },
   atk: 1,
   cmd: 1,

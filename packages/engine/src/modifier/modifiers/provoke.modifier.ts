@@ -47,6 +47,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     if (!isMinionOrGeneral(candidate)) return false;
     if (!candidate.unit) return false;
     if (candidate.location !== 'board') return false;
+    if (candidate.isAlly(this.target)) return false;
 
     return (
       this.game.boardSystem.getDistance(
@@ -64,9 +65,11 @@ export class ProvokeModifier extends Modifier<MinionCard> {
             return this.shouldBeProvoked(candidate);
           },
           onGainAura: async candidate => {
+            console.log('provoking', candidate.id);
             await this.provokeEnemy(candidate);
           },
           onLoseAura: async candidate => {
+            console.log('unprovoking', candidate.id);
             await candidate.unit?.modifiers.remove(PROVOKED_MODIFIER_ID);
           }
         })

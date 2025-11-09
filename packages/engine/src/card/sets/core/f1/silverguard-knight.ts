@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { SubModifierMixin } from '../../../../modifier/mixins/sub-modifier.mixin';
@@ -10,7 +11,10 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const silverguardKnight: MinionBlueprint = {
   id: 'silverguard_knight',
   name: 'Silverguard Knight',
-  description: '@Zeal (2)@ : +2 Attack and @Provoke@.',
+  description: dedent`
+  @Provoke@.
+  @Zeal (2)@ : +2 Attack.
+  `,
   cardIconId: 'minions/f1_silverguard-knight',
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -29,6 +33,7 @@ export const silverguardKnight: MinionBlueprint = {
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
+    await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {
         threshold: 2,
@@ -36,10 +41,6 @@ export const silverguardKnight: MinionBlueprint = {
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',
             interceptor: value => value + 2
-          }),
-          new SubModifierMixin(game, {
-            modifier: new ProvokeModifier(game, card),
-            getModifierTarget: () => card
           })
         ]
       })

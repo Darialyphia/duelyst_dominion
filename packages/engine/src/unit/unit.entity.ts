@@ -34,6 +34,7 @@ import {
 } from './unit-events';
 import type { Shrine } from '../board/entities/shrine.entity';
 import type { MinionBlueprint } from '../card/card-blueprint';
+import { GeneralAltarModifier } from '../modifier/modifiers/generalaltar.modifier';
 
 export type UnitOptions = {
   id: string;
@@ -229,9 +230,7 @@ export class Unit
   }
 
   get cmd() {
-    if (this.isGeneral) return 0;
-
-    return this.interceptors.cmd.getValue((this.card as MinionCard).cmd, {});
+    return this.interceptors.cmd.getValue(this.card.cmd, {});
   }
 
   canCapture(shrine: Shrine) {
@@ -242,7 +241,7 @@ export class Unit
 
   async captureShrine(shrine: Shrine) {
     await shrine.capture(this);
-    this._isExhausted = true;
+    this.exhaust();
   }
 
   get movementReach() {
@@ -317,7 +316,7 @@ export class Unit
       distance > this.movementReach &&
       this.movementsMadeThisTurn >= this.maxMovementsPerTurn
     ) {
-      this._isExhausted = true;
+      this.exhaust();
     }
   }
 
@@ -500,8 +499,8 @@ export class Unit
 
   async attack(point: Point) {
     await this.combat.attack(point);
-    if (this.attacksPerformedThisTurn > this.maxAttacksPerTurn) {
-      this._isExhausted = true;
+    if (this.attacksPerformedThisTurn >= this.maxAttacksPerTurn) {
+      this.exhaust();
     }
   }
 
@@ -565,10 +564,14 @@ export class Unit
       await this.player.earnVictoryPoints(
         this.game.config.GENERAL_DESTROYED_VICTORY_POINTS_REWARD
       );
+
+      // smh
+      await (this as Unit).modifiers.add(
+        new GeneralAltarModifier(this.game, this.card as GeneralCard)
+      );
       await this.teleport((this.player.general.card as GeneralCard).spawnPosition);
-      await this.addInterceptor('canBeAttackTarget', () => false, 999);
-      await this.addInterceptor('canBeCardTarget', () => false, 999);
-      await this.addInterceptor('damageReceived', () => 0, 999);
+
+      this.exhaust();
     } else {
       await this.removeFromBoard();
       this.modifiers.list.forEach(async modifier => {
@@ -627,7 +630,7 @@ export class Unit
       position: this.position.serialize(),
       baseAtk: this.card.blueprint.atk,
       atk: this.atk,
-      baseCmd: this.isGeneral ? 0 : (this.card.blueprint as MinionBlueprint).cmd,
+      baseCmd: this.card.blueprint.cmd,
       cmd: this.cmd,
       baseMaxHp: this.card.blueprint.maxHp,
       maxHp: this.maxHp,

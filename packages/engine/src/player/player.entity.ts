@@ -324,9 +324,9 @@ export class Player
       await this.drawForTurn();
     }
 
-    for (const minion of this.minions) {
-      if (minion.shouldActivateOnTurnStart) {
-        minion.activate();
+    for (const unit of this.units) {
+      if (unit.shouldActivateOnTurnStart) {
+        unit.activate();
       }
     }
   }

@@ -10,13 +10,50 @@ export class GeneralAltarModifier extends Modifier<Unit> {
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'shouldActivateOnTurnStart',
-          interceptor: () => false
+          interceptor: () => false,
+          priority: 999
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canCounterAttack',
           interceptor: () => {
             return false;
-          }
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canAttack',
+          interceptor: () => {
+            return false;
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canMove',
+          interceptor: () => {
+            return false;
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canBeAttackTarget',
+          interceptor: () => {
+            return false;
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canBeCardTarget',
+          interceptor: () => {
+            return false;
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'damageReceived',
+          interceptor: () => {
+            return 0;
+          },
+          priority: 999
         })
       ]
     });

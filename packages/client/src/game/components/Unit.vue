@@ -192,7 +192,7 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
           {{ unit.hp }}
         </span>
       </div>
-      <div class="cmd" v-if="!unit.isGeneral">
+      <div class="cmd">
         <span
           class="dual-text"
           :class="{
