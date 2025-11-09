@@ -1,6 +1,8 @@
 import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
+import { azuriteLion } from './core/f1/azurite-lion';
+import { silverguardKnight } from './core/f1/silverguard-knight';
 import { tempest } from './core/f1/tempest';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
@@ -25,6 +27,8 @@ export const coreSet: CardSet = {
     flamebloodWarlock,
     saberspineTiger,
     tempest,
-    windbladeAdept
+    windbladeAdept,
+    silverguardKnight,
+    azuriteLion
   ]
 };

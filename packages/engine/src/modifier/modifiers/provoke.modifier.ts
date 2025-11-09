@@ -15,6 +15,8 @@ import type { Unit } from '../../unit/unit.entity';
 const PROVOKED_MODIFIER_ID = 'provoked';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
+  private unitModifier: Modifier<Unit> | null = null;
+
   constructor(
     game: Game,
     source: AnyCard,
@@ -54,7 +56,6 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     );
   }
 
-  private unitModifier: Modifier<Unit> | null = null;
   private async applyProvokeToUnit(unit: Unit): Promise<void> {
     this.unitModifier = new Modifier(KEYWORDS.PROVOKE.id, this.game, unit.card, {
       mixins: [
@@ -66,7 +67,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
             await this.provokeEnemy(candidate);
           },
           onLoseAura: async candidate => {
-            await candidate.unit.modifiers.remove(PROVOKED_MODIFIER_ID);
+            await candidate.unit?.modifiers.remove(PROVOKED_MODIFIER_ID);
           }
         })
       ]

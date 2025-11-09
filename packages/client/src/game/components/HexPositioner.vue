@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Vec2, type Point } from '@game/shared';
+import { isDefined, Vec2, type Point } from '@game/shared';
 import {
   useBoardCellByPosition,
   useGameState,
@@ -93,7 +93,13 @@ const isInAoe = computed(() => {
     interaction.ctx.aoe.shape.targetingType,
     interaction.ctx.aoe.shape.params
   );
-  const area = shape.getArea(interaction.ctx.selectedSpaces);
+
+  const targets = [
+    ...interaction.ctx.selectedSpaces,
+    ui.value.hoveredCell?.position
+  ].filter(isDefined);
+  const area = shape.getArea(targets);
+
   return (
     !isSelected.value && area.some(point => point.x === x && point.y === y)
   );

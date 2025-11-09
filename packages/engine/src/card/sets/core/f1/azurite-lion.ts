@@ -1,33 +1,34 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
+import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
+import { CelerityModifier } from '../../../../modifier/modifiers/celerity.modifier';
+import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
-export const primusShieldmaster: MinionBlueprint = {
-  id: 'primus-shieldmaster',
-  name: 'Primus Shieldmaster',
-  description: '@Provoke@.',
-  cardIconId: 'minions/neutral_primus-shieldmaster',
+export const azuriteLion: MinionBlueprint = {
+  id: 'azurite_lion',
+  name: 'Azurite Lion',
+  description: '@Celerity@.',
+  cardIconId: 'minions/f1_azurite-lion',
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
-  faction: FACTIONS.NEUTRAL,
+  faction: FACTIONS.F1,
   rarity: RARITIES.BASIC,
   tags: [],
-  manaCost: 4,
+  manaCost: 2,
   runeCost: {
-    red: 1,
-    yellow: 1
+    red: 1
   },
-  atk: 3,
+  atk: 2,
   cmd: 1,
-  maxHp: 6,
+  maxHp: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
-    await card.modifiers.add(new ProvokeModifier(game, card));
+    await card.modifiers.add(new CelerityModifier(game, card));
   },
   async onPlay() {}
 };

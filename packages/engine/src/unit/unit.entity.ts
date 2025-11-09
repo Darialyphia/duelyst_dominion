@@ -313,7 +313,10 @@ export class Unit
     const distance = this.game.boardSystem.getDistance(this.position, to);
 
     await this.movement.move(to);
-    if (distance > this.movementReach) {
+    if (
+      distance > this.movementReach &&
+      this.movementsMadeThisTurn >= this.maxMovementsPerTurn
+    ) {
       this._isExhausted = true;
     }
   }

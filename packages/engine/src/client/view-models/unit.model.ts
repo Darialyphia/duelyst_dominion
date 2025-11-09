@@ -57,12 +57,28 @@ export class UnitViewModel {
     return this.data.isExhausted;
   }
 
+  get baseMaxHp() {
+    return this.data.baseMaxHp;
+  }
+
+  get maxHp() {
+    return this.data.maxHp;
+  }
+
   get hp() {
     return this.data.currentHp;
   }
 
+  get baseAtk() {
+    return this.data.baseAtk;
+  }
+
   get atk() {
     return this.data.atk;
+  }
+
+  get baseCmd() {
+    return this.data.baseCmd;
   }
 
   get cmd() {

@@ -95,7 +95,6 @@ const classes = computed(() => {
     :data-flip-id="`card_${card.id}`"
   >
     <Card
-      is-foil
       :has-backlighting="false"
       :is-animated="true"
       :id="card.id"

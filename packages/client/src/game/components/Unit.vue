@@ -169,17 +169,38 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
       <div class="uni-sprite" />
       <div class="unit-border" />
       <div class="atk">
-        <span class="dual-text" :data-text="unit.atk">
+        <span
+          class="dual-text"
+          :class="{
+            buff: unit.atk > unit.baseAtk,
+            debuff: unit.atk < unit.baseAtk
+          }"
+          :data-text="unit.atk"
+        >
           {{ unit.atk }}
         </span>
       </div>
       <div class="hp">
-        <span class="dual-text" :data-text="unit.hp">
+        <span
+          class="dual-text"
+          :class="{
+            buff: unit.hp > unit.baseMaxHp,
+            debuff: unit.hp < unit.maxHp
+          }"
+          :data-text="unit.hp"
+        >
           {{ unit.hp }}
         </span>
       </div>
       <div class="cmd" v-if="!unit.isGeneral">
-        <span class="dual-text" :data-text="unit.cmd">
+        <span
+          class="dual-text"
+          :class="{
+            buff: unit.cmd > unit.baseCmd,
+            debuff: unit.cmd < unit.baseCmd
+          }"
+          :data-text="unit.cmd"
+        >
           {{ unit.cmd }}
         </span>
       </div>
@@ -285,6 +306,16 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
   font-weight: var(--font-weight-7);
   font-size: 16px;
   position: absolute;
+
+  .buff {
+    --top-color: var(--green-3);
+    --bottom-color: var(--green-6);
+  }
+
+  .debuff {
+    --top-color: var(--red-4);
+    --bottom-color: var(--red-7);
+  }
 }
 
 .atk {
