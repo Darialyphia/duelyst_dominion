@@ -257,6 +257,19 @@
         },
         {
           "alias": [
+            "f1_windblade-adept.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_windblade-adept.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder.png"
           ],
           "src": [
@@ -516,7 +529,21 @@
     },
     {
       "name": "cards/spells",
-      "assets": []
+      "assets": [
+        {
+          "alias": [
+            "f1_tempest.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_tempest.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        }
+      ]
     },
     {
       "name": "fx",
@@ -1511,6 +1538,19 @@
           ],
           "src": [
             "/assets/icons/keyword-vigilant.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "icon-keyword-zeal"
+          ],
+          "src": [
+            "/assets/icons/keyword-zeal.png"
           ],
           "data": {
             "tags": {
@@ -4616,6 +4656,19 @@
           ],
           "src": [
             "/assets/ui/hero-hp-filled.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "hex-highlight-aoe.png"
+          ],
+          "src": [
+            "/assets/ui/hex-highlight-aoe.png"
           ],
           "data": {
             "tags": {

@@ -2,12 +2,14 @@ import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
 import { tempest } from './core/f1/tempest';
+import { windbladeAdept } from './core/f1/windblade-adept';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
 import { flamebloodWarlock } from './core/neutral/flameblood-warlock';
 import { healingMystic } from './core/neutral/healing-mystic';
 import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
 import { saberspineTiger } from './core/neutral/saberspine-tiger';
+
 import { sojourner } from './core/neutral/sojourner';
 
 export const coreSet: CardSet = {
@@ -22,6 +24,7 @@ export const coreSet: CardSet = {
     sojourner,
     flamebloodWarlock,
     saberspineTiger,
-    tempest
+    tempest,
+    windbladeAdept
   ]
 };

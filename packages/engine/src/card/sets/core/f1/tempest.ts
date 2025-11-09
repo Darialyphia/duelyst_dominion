@@ -5,6 +5,21 @@ import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhere } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
+import type { Game } from '../../../../game/game';
+
+const getAOE = (game: Game) =>
+  new CompositeAOEShape(TARGETING_TYPE.UNIT, {
+    shapes: game.boardSystem.shrines
+      .map(shrine => shrine.neighborUnits)
+      .flat()
+      .flatMap(unit => ({
+        type: 'point' as const,
+        params: {
+          override: unit.position.serialize()
+        },
+        pointIndices: [0]
+      }))
+  });
 
 export const tempest: SpellBlueprint = {
   id: 'tempest',
@@ -17,30 +32,20 @@ export const tempest: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.BASIC,
   tags: [],
-  manaCost: 1,
+  manaCost: 2,
   runeCost: {
     red: 2
   },
-  getAoe: game =>
-    new CompositeAOEShape(TARGETING_TYPE.UNIT, {
-      shapes: game.boardSystem.shrines
-        .map(shrine => shrine.neighborUnits)
-        .flat()
-        .flatMap(unit => ({
-          type: 'point' as const,
-          params: {
-            override: unit.position.serialize()
-          },
-          pointIndices: [0]
-        }))
-    }),
+  getAoe: getAOE,
   canPlay: () => true,
   getTargets(game, card) {
     return anywhere.getPreResponseTargets({
       min: 1,
       max: 1,
       allowRepeat: false
-    })(game, card);
+    })(game, card, {
+      getAoe: () => getAOE(game)
+    });
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {

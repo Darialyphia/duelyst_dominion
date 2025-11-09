@@ -178,7 +178,11 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
           {{ unit.hp }}
         </span>
       </div>
-      <div class="cmd" v-if="!unit.isGeneral">{{ unit.cmd }}</div>
+      <div class="cmd" v-if="!unit.isGeneral">
+        <span class="dual-text" :data-text="unit.cmd">
+          {{ unit.cmd }}
+        </span>
+      </div>
       <div class="debug">{{ unit.x }}, {{ unit.y }}</div>
     </div>
   </HexPositioner>

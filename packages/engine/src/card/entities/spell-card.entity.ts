@@ -94,13 +94,12 @@ export class SpellCard extends Card<
   async play(onCancel: () => MaybePromise<void>) {
     const { targets, cancelled } = await this.selectTargets();
 
-    await this.removeFromCurrentLocation();
-
     if (cancelled) {
       await onCancel();
       return;
     }
 
+    await this.removeFromCurrentLocation();
     await this.game.emit(
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })

@@ -1,16 +1,11 @@
-import {
-  isString,
-  type Constructor,
-  type EmptyObject,
-  type Serializable,
-  type Values
-} from '@game/shared';
+import { isString, type EmptyObject, type Serializable, type Values } from '@game/shared';
 import type { ModifierMixin } from './modifier-mixin';
 import { Entity } from '../entity';
 import type { Game } from '../game/game';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { ModifierManager } from './modifier-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
+import { Interceptable } from '../utils/interceptable';
 
 export type ModifierInfos<TCustomEvents extends Record<string, any>> =
   TCustomEvents extends EmptyObject
@@ -84,7 +79,10 @@ export type SerializedModifier = {
   isEnabled: boolean;
 };
 
-export type ModifierInterceptors = EmptyObject;
+export type ModifierInterceptors = {
+  isEnabled: Interceptable<boolean>;
+};
+
 export class Modifier<
     T extends ModifierTarget,
     TEventsMap extends ModifierEventMap = ModifierEventMap
@@ -112,8 +110,6 @@ export class Modifier<
 
   private _prevEnabled = true;
 
-  private _isEnabled = true;
-
   constructor(
     modifierType: string,
     game: Game,
@@ -123,7 +119,9 @@ export class Modifier<
       Record<Exclude<keyof TEventsMap, keyof ModifierEventMap>, boolean>
     >
   ) {
-    super(game.modifierIdFactory(modifierType), {});
+    super(game.modifierIdFactory(modifierType), {
+      isEnabled: new Interceptable()
+    });
     this.game = game;
     this.modifierType = modifierType;
     this.source = source;
@@ -149,7 +147,7 @@ export class Modifier<
   }
 
   get isEnabled() {
-    return this._isEnabled;
+    return this.interceptors.isEnabled.getValue(true, {});
   }
 
   get stacks() {
@@ -256,20 +254,6 @@ export class Modifier<
     if (this._stacks <= 0) {
       await this.remove();
     }
-  }
-
-  getMixin<T extends ModifierMixin<any>>(cls: Constructor<T>): T[] {
-    return this.mixins.filter(mixin => mixin instanceof cls) as T[];
-  }
-
-  enable() {
-    if (this._isEnabled) return;
-    this._isEnabled = true;
-  }
-
-  disable() {
-    if (!this._isEnabled) return;
-    this._isEnabled = false;
   }
 
   serialize(): SerializedModifier {

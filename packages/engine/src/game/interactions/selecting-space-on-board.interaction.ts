@@ -47,7 +47,7 @@ export class SelectingSpaceOnBoardContext {
   serialize() {
     return {
       player: this.player.id,
-      selectedSpaces: this.selectedSpaces.map(space => space.id),
+      selectedSpaces: this.selectedSpaces.map(space => space.position.serialize()),
       elligibleSpaces: this.game.boardSystem.cells
         .filter(cell => this.isElligible(cell, this.selectedSpaces))
         .map(space => space.id),
@@ -61,21 +61,26 @@ export class SelectingSpaceOnBoardContext {
   private getSerializedAoe() {
     const spaces = this.selectedSpaces;
 
-    const canCommit = this.canCommit(spaces);
-    if (!canCommit) {
-      return {
-        cells: [],
-        units: []
-      };
-    }
     const aoe = this.getAoe(spaces);
     if (!aoe) {
       return {
+        shape: null,
         cells: [],
         units: []
       };
     }
+
+    const canCommit = this.canCommit(spaces);
+    if (!canCommit) {
+      return {
+        shape: aoe.serialize(),
+        cells: [],
+        units: []
+      };
+    }
+
     return {
+      shape: aoe.serialize(),
       cells: aoe
         .getArea(spaces)
         .map(point => this.game.boardSystem.getCellAt(point)?.id)

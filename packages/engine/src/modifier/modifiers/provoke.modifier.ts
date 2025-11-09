@@ -9,6 +9,8 @@ import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { AuraModifierMixin } from '../mixins/aura.mixin';
 import { isMinionOrGeneral } from '../../card/card-utils';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
+import type { Unit } from '../../unit/unit.entity';
 
 const PROVOKED_MODIFIER_ID = 'provoked';
 
@@ -24,25 +26,14 @@ export class ProvokeModifier extends Modifier<MinionCard> {
       icon: 'icons/keyword-provoke.png',
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.PROVOKE),
-        new AuraModifierMixin<MinionCard, MinionCard | GeneralCard>(game, {
-          isElligible: candidate => {
-            if (this.target.location !== 'board') return false;
-            if (!isMinionOrGeneral(candidate)) return false;
-            if (!candidate.unit) return false;
-            if (candidate.location !== 'board') return false;
-
-            return (
-              this.game.boardSystem.getDistance(
-                this.target.unit.position,
-                candidate.unit.position
-              ) === 1
-            );
+        new UnitEffectModifierMixin(game, {
+          onApplied: async unit => {
+            await this.applyProvokeToUnit(unit);
           },
-          onGainAura: async candidate => {
-            await this.addProvoke(candidate);
-          },
-          onLoseAura: async candidate => {
-            await candidate.unit.modifiers.remove(PROVOKED_MODIFIER_ID);
+          onRemoved: async unit => {
+            if (this.unitModifier) {
+              await unit.modifiers.remove(this.unitModifier);
+            }
           }
         }),
         ...(options?.mixins ?? [])
@@ -50,7 +41,41 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     });
   }
 
-  private async addProvoke(candidate: MinionCard | GeneralCard): Promise<void> {
+  private shouldBeProvoked(candidate: AnyCard): boolean {
+    if (!isMinionOrGeneral(candidate)) return false;
+    if (!candidate.unit) return false;
+    if (candidate.location !== 'board') return false;
+
+    return (
+      this.game.boardSystem.getDistance(
+        this.target.unit.position,
+        candidate.unit.position
+      ) === 1
+    );
+  }
+
+  private unitModifier: Modifier<Unit> | null = null;
+  private async applyProvokeToUnit(unit: Unit): Promise<void> {
+    this.unitModifier = new Modifier(KEYWORDS.PROVOKE.id, this.game, unit.card, {
+      mixins: [
+        new AuraModifierMixin<Unit, MinionCard | GeneralCard>(this.game, {
+          isElligible: candidate => {
+            return this.shouldBeProvoked(candidate);
+          },
+          onGainAura: async candidate => {
+            await this.provokeEnemy(candidate);
+          },
+          onLoseAura: async candidate => {
+            await candidate.unit.modifiers.remove(PROVOKED_MODIFIER_ID);
+          }
+        })
+      ]
+    });
+
+    await unit.modifiers.add(this.unitModifier);
+  }
+
+  private async provokeEnemy(candidate: MinionCard | GeneralCard): Promise<void> {
     await candidate.unit.modifiers.add(
       new Modifier(PROVOKED_MODIFIER_ID, this.game, this.source, {
         mixins: [

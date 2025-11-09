@@ -12,6 +12,7 @@ import {
 import { pointToCellId } from '@game/engine/src/board/board-utils';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { config } from '@/utils/config';
+import { makeAoeShape } from '@game/engine/src/aoe/aoe-shape.factory';
 
 const { x, y } = defineProps<Point>();
 
@@ -24,8 +25,12 @@ const isTargetable = computed(() => {
     return false;
   }
 
-  return interaction.ctx.elligibleSpaces.some(
-    spaceId => spaceId === pointToCellId({ x, y })
+  return (
+    !isInAoe.value &&
+    !isSelected.value &&
+    interaction.ctx.elligibleSpaces.some(
+      spaceId => spaceId === pointToCellId({ x, y })
+    )
   );
 });
 
@@ -37,7 +42,7 @@ const isSelected = computed(() => {
 
   if (
     interaction.ctx.selectedSpaces.some(
-      spaceId => spaceId === pointToCellId({ x, y })
+      space => pointToCellId(space) === pointToCellId({ x, y })
     )
   ) {
     return true;
@@ -77,6 +82,23 @@ const canAttack = computed(() => {
   return ui.value.selectedUnit.canAttackAt(cell.value);
 });
 
+const isInAoe = computed(() => {
+  const { interaction } = state.value;
+  if (interaction.state !== INTERACTION_STATES.SELECTING_SPACE_ON_BOARD) {
+    return false;
+  }
+  if (!interaction.ctx.aoe.shape) return false;
+  const shape = makeAoeShape(
+    interaction.ctx.aoe.shape.type,
+    interaction.ctx.aoe.shape.targetingType,
+    interaction.ctx.aoe.shape.params
+  );
+  const area = shape.getArea(interaction.ctx.selectedSpaces);
+  return (
+    !isSelected.value && area.some(point => point.x === x && point.y === y)
+  );
+});
+
 const screenPosition = computed(() => {
   return config.HEXES.toScreenPosition({ x, y });
 });
@@ -91,7 +113,8 @@ const screenPosition = computed(() => {
       'can-move-to': canMoveTo,
       'can-sprint-to': canSprintTo,
       'can-capture': canCapture,
-      'can-attack': canAttack
+      'can-attack': canAttack,
+      'is-in-aoe': isInAoe
     }"
     :style="{
       width: `${config.HEXES.width}px`,
@@ -152,6 +175,14 @@ const screenPosition = computed(() => {
     position: absolute;
     inset: 0;
     background-image: url('/assets/ui/hex-highlight-attackable.png');
+    background-size: cover;
+    z-index: 1;
+  }
+  &.is-in-aoe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/ui/hex-highlight-aoe.png');
     background-size: cover;
     z-index: 1;
   }

@@ -129,6 +129,13 @@ export class BoardSystem
       .filter(isDefined);
   }
 
+  getNearbyShrines({ x, y }: Point) {
+    return this.game.boardSystem
+      .getNeighbors({ x, y })
+      .map(cell => cell.shrine)
+      .filter(isDefined);
+  }
+
   getCellsWithin(topLeft: Point, bottomRight: Point) {
     return [...this.cellsMap.values()].filter(
       cell =>

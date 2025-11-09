@@ -49,7 +49,7 @@ export const KEYWORDS = {
   },
   BURN: {
     id: 'burn',
-    name: 'Burn(x)',
+    name: 'Burn (x)',
     description: 'This unit x receives damage at the beginning of its turn.',
     aliases: [/burn\([0-9]+\)/]
   },
@@ -268,9 +268,10 @@ export const KEYWORDS = {
   },
   ZEAL: {
     id: 'zeal',
-    name: 'Zeal',
-    description: 'Triggers an effect when nearby its general.',
-    aliases: []
+    name: 'Zeal (x)',
+    description:
+      'Triggers an effect when there are at least X ally units, generals or shrines nearby this unit.',
+    aliases: [/zeal \([0-9]+\)/]
   }
 } as const satisfies Record<string, Keyword>;
 

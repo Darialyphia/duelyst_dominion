@@ -1,4 +1,4 @@
-import { type Point } from '@game/shared';
+import { isDefined, type Point } from '@game/shared';
 import { System } from '../system';
 import { Unit } from './unit.entity';
 import { MinionCard } from '../card/entities/minion-card.entity';
@@ -22,10 +22,6 @@ export class UnitSystem extends System<UnitSystemOptions> {
     return [...this.unitMap.values()];
   }
 
-  get unitsOnBoard() {
-    return [...this.unitMap.values()].filter(unit => unit.isAlive);
-  }
-
   getUnitById(id: string) {
     return this.unitMap.get(id) ?? null;
   }
@@ -47,17 +43,10 @@ export class UnitSystem extends System<UnitSystemOptions> {
   }
 
   getNearbyUnits({ x, y }: Point) {
-    // prettier-ignore
-    return [
-      this.getUnitAt({ x: x - 1, y: y - 1 }), // top left
-      this.getUnitAt({ x: x    , y: y - 1 }), // top
-      this.getUnitAt({ x: x + 1, y: y - 1 }), // top right
-      this.getUnitAt({ x: x - 1, y: y     }),  // left
-      this.getUnitAt({ x: x + 1, y: y     }),  // right
-      this.getUnitAt({ x: x - 1, y: y + 1 }), // bottom left
-      this.getUnitAt({ x: x    , y: y + 1 }), // bottom
-      this.getUnitAt({ x: x + 1, y: y + 1 }), // bottom right,
-    ].filter
+    return this.game.boardSystem
+      .getNeighbors({ x, y })
+      .map(cell => cell.unit)
+      .filter(isDefined);
   }
 
   addUnit(card: MinionCard | GeneralCard, position: Point) {

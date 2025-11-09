@@ -471,6 +471,14 @@ export class Unit
     return this.remainingHp > 0;
   }
 
+  get nearbyUnits(): Unit[] {
+    return this.game.unitSystem.getNearbyUnits(this.position);
+  }
+
+  get nearbyShrines(): Shrine[] {
+    return this.game.boardSystem.getNearbyShrines(this.position);
+  }
+
   getReceivedDamage(damage: Damage, source: AnyCard) {
     return this.interceptors.damageReceived.getValue(damage.baseAmount, {
       damage,
