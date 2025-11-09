@@ -44,7 +44,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_COUNTERATTACK,
       new UnitAttackEvent({
-        target: attacker.position
+        target: attacker.position,
+        unit: this.unit
       })
     );
     const targets = this.unit.counterattackAOEShape
@@ -60,7 +61,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_COUNTERATTACK,
       new UnitAttackEvent({
-        target: attacker.position
+        target: attacker.position,
+        unit: this.unit
       })
     );
   }
@@ -69,7 +71,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_ATTACK,
       new UnitAttackEvent({
-        target: Vec2.fromPoint(target)
+        target: Vec2.fromPoint(target),
+        unit: this.unit
       })
     );
     const targets = this.unit.attackAOEShape
@@ -98,7 +101,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_ATTACK,
       new UnitAttackEvent({
-        target: Vec2.fromPoint(target)
+        target: Vec2.fromPoint(target),
+        unit: this.unit
       })
     );
 

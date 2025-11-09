@@ -33,11 +33,12 @@ export class UnitAfterMoveEvent extends TypedSerializableEvent<
 }
 
 export class UnitAttackEvent extends TypedSerializableEvent<
-  { target: Vec2 },
-  { target: Point }
+  { unit: Unit; target: Vec2 },
+  { unit: string; target: Point }
 > {
   serialize() {
     return {
+      unit: this.data.unit.id,
       target: this.data.target.serialize()
     };
   }

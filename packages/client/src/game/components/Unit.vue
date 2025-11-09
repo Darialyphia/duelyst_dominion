@@ -60,12 +60,55 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
 
   await timeline.play();
 });
+
+const isAttacking = ref(false);
+useFxEvent(FX_EVENTS.UNIT_AFTER_ATTACK, async event => {
+  if (event.unit !== unit.id) return;
+
+  const timeline = gsap.timeline();
+
+  const position = config.HEXES.toScreenPosition(unit.position);
+  const targetPosition = config.HEXES.toScreenPosition(event.target);
+  const delta = {
+    x: targetPosition.x - position.x,
+    y: targetPosition.y - position.y
+  };
+  isAttacking.value = true;
+  // anticipation
+  timeline.to(hexOffset.value, {
+    x: `-=${delta.x / 4}`,
+    y: `-=${delta.y / 4}`,
+    duration: 0.15,
+    ease: Power1.easeIn
+  });
+
+  // attack
+  timeline.to(hexOffset.value, {
+    x: delta.x,
+    y: delta.y,
+    duration: 0.15
+  });
+
+  // recover
+  timeline.to(hexOffset.value, {
+    x: 0,
+    y: 0,
+    duration: 0.2,
+    ease: Power1.easeOut,
+    onComplete: () => {
+      isAttacking.value = false;
+    }
+  });
+
+  await timeline.play();
+});
 </script>
 
 <template>
   <HexPositioner
     :x="unit.x"
     :y="unit.y"
+    :class="{ 'is-attacking': isAttacking }"
     :style="{
       translate: `${hexOffset.x}px ${hexOffset.y}px`
     }"
@@ -130,6 +173,9 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
   }
 }
 
+.is-attacking {
+  z-index: 1;
+}
 .unit {
   --pixel-scale: 2;
   clip-path: var(--hex-path);
