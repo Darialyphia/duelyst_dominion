@@ -9,7 +9,8 @@ export const cards = {
 "healing-mystic": "healing-mystic",
 "archon-spellbinder": "archon-spellbinder",
 "primus-shieldmaster": "primus-shieldmaster",
-"bloodtear-alchemist": "bloodtear-alchemist"
+"bloodtear-alchemist": "bloodtear-alchemist",
+"sojourner": "sojourner"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -17,5 +18,6 @@ export const collectableCards = {
 "healing-mystic": "healing-mystic",
 "archon-spellbinder": "archon-spellbinder",
 "primus-shieldmaster": "primus-shieldmaster",
-"bloodtear-alchemist": "bloodtear-alchemist"
+"bloodtear-alchemist": "bloodtear-alchemist",
+"sojourner": "sojourner"
 } as const satisfies Record<string, string>;

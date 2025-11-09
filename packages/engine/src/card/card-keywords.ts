@@ -89,12 +89,6 @@ export const KEYWORDS = {
     description: 'Nullifies all abilities and enchantments previously added.',
     aliases: []
   },
-  DYING_WISH: {
-    id: 'dying_wish',
-    name: 'Dying Wish',
-    description: 'Triggers when the unit is destroyed.',
-    aliases: []
-  },
   ECHO: {
     id: 'echo',
     name: 'Echo',
@@ -172,6 +166,24 @@ export const KEYWORDS = {
     id: 'lone_wolf',
     name: 'Lone wolf',
     description: 'Triggers when this unit has no nearby allies.',
+    aliases: []
+  },
+  ON_DESTROYED: {
+    id: 'on_destroyed',
+    name: 'On Destroyed',
+    description: 'Triggers when the unit is destroyed.',
+    aliases: []
+  },
+  ON_CAPTURE: {
+    id: 'on_capture',
+    name: 'On Capture',
+    description: 'Triggers when this unit captures a shrine.',
+    aliases: []
+  },
+  ON_HOLD: {
+    id: 'on_capture',
+    name: 'On Capture',
+    description: 'Triggers when an ally shrine holds while this is nearby.',
     aliases: []
   },
   ON_ENTER: {

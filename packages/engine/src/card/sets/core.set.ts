@@ -5,6 +5,7 @@ import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
 import { healingMystic } from './core/neutral/healing-mystic';
 import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
+import { sojourner } from './core/neutral/sojourner';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -14,6 +15,7 @@ export const coreSet: CardSet = {
     healingMystic,
     archonSpellbinder,
     primusShieldmaster,
-    bloodtearAlchemist
+    bloodtearAlchemist,
+    sojourner
   ]
 };
