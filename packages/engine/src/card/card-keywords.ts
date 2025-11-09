@@ -183,8 +183,7 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description:
-      'Stops enemy minions and general from moving. They must attack this first.',
+    description: 'Stops nearby enemy units from moving. They must attack this first.',
     aliases: ['provoke']
   },
   PROVOKED: {

@@ -70,7 +70,7 @@ export type UnitInterceptors = {
   canMove: Interceptable<boolean>;
   canMoveThrough: Interceptable<boolean, { unit: Unit }>;
   canMoveAfterAttacking: Interceptable<boolean>;
-  canAttack: Interceptable<boolean, { unit: Unit }>;
+  canAttack: Interceptable<boolean, { target: Unit }>;
   canCounterAttack: Interceptable<boolean, { attacker: Unit }>;
   canBeAttackTarget: Interceptable<boolean, { attacker: Unit }>;
   canBeCounterattackTarget: Interceptable<boolean, { attacker: Unit }>;
@@ -356,7 +356,7 @@ export class Unit
       !this.isGeneral &&
         this.attacksPerformedThisTurn < this.maxAttacksPerTurn &&
         !this.isExhausted,
-      { unit }
+      { target: unit }
     );
   }
 

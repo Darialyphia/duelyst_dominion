@@ -4,13 +4,16 @@ import type { Game } from '../../game/game';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MaybePromise } from '@game/shared';
 
-export type AuraOptions = {
+export type AuraOptions<TCandidate extends AnyCard> = {
   isElligible(candidate: AnyCard): boolean;
-  onGainAura(candidate: AnyCard): MaybePromise<void>;
-  onLoseAura(candidate: AnyCard): MaybePromise<void>;
+  onGainAura(candidate: TCandidate): MaybePromise<void>;
+  onLoseAura(candidate: TCandidate): MaybePromise<void>;
 };
 
-export class AuraModifierMixin<T extends ModifierTarget> extends ModifierMixin<T> {
+export class AuraModifierMixin<
+  T extends ModifierTarget,
+  TCandidate extends AnyCard = AnyCard
+> extends ModifierMixin<T> {
   protected modifier!: Modifier<T>;
 
   private affectedCardIds = new Set<string>();
@@ -23,7 +26,7 @@ export class AuraModifierMixin<T extends ModifierTarget> extends ModifierMixin<T
 
   constructor(
     game: Game,
-    private options: AuraOptions
+    private options: AuraOptions<TCandidate>
   ) {
     super(game);
     this.checkAura = this.checkAura.bind(this);
@@ -40,13 +43,13 @@ export class AuraModifierMixin<T extends ModifierTarget> extends ModifierMixin<T
 
       if (!shouldGetAura && hasAura) {
         this.affectedCardIds.delete(card.id);
-        await this.options.onLoseAura(card);
+        await this.options.onLoseAura(card as TCandidate);
         continue;
       }
 
       if (shouldGetAura && !hasAura) {
         this.affectedCardIds.add(card.id);
-        await this.options.onGainAura(card);
+        await this.options.onGainAura(card as TCandidate);
         continue;
       }
     }
@@ -60,7 +63,7 @@ export class AuraModifierMixin<T extends ModifierTarget> extends ModifierMixin<T
       if (!card) return;
 
       this.affectedCardIds.delete(id);
-      await this.options.onLoseAura(card);
+      await this.options.onLoseAura(card as TCandidate);
     }
   }
 
