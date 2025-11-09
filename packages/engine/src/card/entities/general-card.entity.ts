@@ -14,6 +14,8 @@ import { Ability, type SerializedAbility } from './ability.entity';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import { GENERAL_EVENTS, GeneralUseAbilityEvent } from '../events/general.events';
+import { GeneralAltarModifier } from '../../modifier/modifiers/generalaltar.modifier';
+import { GAME_EVENTS } from '../../game/game.events';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
@@ -57,15 +59,19 @@ export class GeneralCard extends Card<
     return true;
   }
 
-  async play() {
-    await this.game.unitSystem.addUnit(
-      this,
-      this.player.isPlayer1
-        ? this.game.boardSystem.map.generalPositions[0]
-        : this.game.boardSystem.map.generalPositions[1]
-    );
+  get spawnPosition() {
+    return this.player.isPlayer1
+      ? this.game.boardSystem.map.generalPositions[0]
+      : this.game.boardSystem.map.generalPositions[1];
+  }
 
+  async play() {
+    await this.game.unitSystem.addUnit(this, this.spawnPosition);
     await this.blueprint.onPlay(this.game, this);
+    this.game.once(GAME_EVENTS.READY, async () => {
+      await this.unit.modifiers.add(new GeneralAltarModifier(this.game, this));
+      this.unit.exhaust();
+    });
   }
 
   canUseAbility(id: string) {

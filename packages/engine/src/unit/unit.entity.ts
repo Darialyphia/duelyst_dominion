@@ -105,6 +105,8 @@ export type UnitInterceptors = {
     number,
     { amount: number; source: AnyCard; damage: Damage }
   >;
+
+  shouldActivateOnTurnStart: Interceptable<boolean>;
 };
 
 export class Unit
@@ -162,7 +164,9 @@ export class Unit
       damageReceived: new Interceptable<
         number,
         { amount: number; source: AnyCard; damage: Damage }
-      >()
+      >(),
+
+      shouldActivateOnTurnStart: new Interceptable<boolean>()
     });
     this.movement = new MovementComponent(game, this, {
       position: options.position,
@@ -203,6 +207,10 @@ export class Unit
 
   get y() {
     return this.position.y;
+  }
+
+  get shouldActivateOnTurnStart() {
+    return this.interceptors.shouldActivateOnTurnStart.getValue(true, {});
   }
 
   get isAt() {
@@ -287,9 +295,7 @@ export class Unit
 
   get canMove(): boolean {
     return this.interceptors.canMove.getValue(
-      this.movementsMadeThisTurn < this.maxMovementsPerTurn &&
-        !this.isExhausted &&
-        !this.isGeneral,
+      this.movementsMadeThisTurn < this.maxMovementsPerTurn && !this.isExhausted,
       {}
     );
   }
@@ -353,9 +359,7 @@ export class Unit
 
   canAttack(unit: Unit): boolean {
     return this.interceptors.canAttack.getValue(
-      !this.isGeneral &&
-        this.attacksPerformedThisTurn < this.maxAttacksPerTurn &&
-        !this.isExhausted,
+      this.attacksPerformedThisTurn < this.maxAttacksPerTurn && !this.isExhausted,
       { target: unit }
     );
   }
@@ -550,6 +554,7 @@ export class Unit
       await this.player.earnVictoryPoints(
         this.game.config.GENERAL_DESTROYED_VICTORY_POINTS_REWARD
       );
+      await this.teleport((this.player.general.card as GeneralCard).spawnPosition);
       await this.addInterceptor('canBeAttackTarget', () => false, 999);
       await this.addInterceptor('canBeCardTarget', () => false, 999);
       await this.addInterceptor('damageReceived', () => 0, 999);
