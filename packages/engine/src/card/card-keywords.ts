@@ -275,8 +275,7 @@ export const KEYWORDS = {
   STEALTH: {
     id: 'stealth',
     name: 'Stealth',
-    description:
-      'Cannot be targeted or attacked until this attacks, captures or uses an ability.',
+    description: 'Cannot be targeted or attacked until this attacks or captures.',
     aliases: []
   }
 } as const satisfies Record<string, Keyword>;

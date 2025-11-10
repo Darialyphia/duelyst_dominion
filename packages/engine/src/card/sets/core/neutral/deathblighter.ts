@@ -14,7 +14,7 @@ export const deathBlighter: MinionBlueprint = {
   id: 'death-blighter',
   name: 'Death Blighter',
   description: dedent`
-  @Consume@: @[rune:red]@.
+  @Consume@: @[rune:red]@, @Stealth@.
   @On Capture@: set the health of all enemy minions to 1.
   `,
   cardIconId: 'minions/neutral_deathblighter',
@@ -24,11 +24,11 @@ export const deathBlighter: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  manaCost: 6,
+  manaCost: 5,
   runeCost: {
     red: 3
   },
-  atk: 8,
+  atk: 7,
   cmd: 1,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

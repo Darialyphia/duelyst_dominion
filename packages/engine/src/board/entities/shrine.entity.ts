@@ -41,6 +41,7 @@ export class Shrine
     super(`shrine_${position.x}_${position.y}`, {});
     this.position = position;
     game.on(PLAYER_EVENTS.PLAYER_START_TURN, this.onTurnStart.bind(this));
+    game.on(PLAYER_EVENTS.PLAYER_END_TURN, this.onTurnEnd.bind(this));
   }
 
   serialize(): SerializedShrine {
@@ -148,6 +149,15 @@ export class Shrine
       SHRINE_EVENTS.SHRINE_AFTER_HOLD,
       new ShrineHoldEvent({ shrine: this, player: this.player })
     );
+  }
+
+  private async onTurnEnd() {
+    if (!this.player) return;
+
+    const defendingCmd = this.defendingCmdByPlayer[this.player.id];
+    if (defendingCmd === 0) {
+      this.player = null;
+    }
   }
 }
 
