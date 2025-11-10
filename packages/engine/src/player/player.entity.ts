@@ -316,11 +316,11 @@ export class Player
 
     this.replacesDoneThisTurn = 0;
     this._resourceActionsDoneThisTurn = 0;
-    this._mana = this.maxMana;
 
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
       this._baseMaxMana = this.game.config.MAX_MANA;
     }
+    this._mana = this.maxMana;
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
       await this.drawForTurn();

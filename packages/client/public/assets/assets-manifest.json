@@ -701,6 +701,19 @@
         },
         {
           "alias": [
+            "f1_magnetize.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_magnetize.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_martyrdom.png"
           ],
           "src": [
@@ -1382,6 +1395,19 @@
           ],
           "src": [
             "/assets/icons/keyword-fearsome.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "icon-keyword-flying"
+          ],
+          "src": [
+            "/assets/icons/keyword-flying.png"
           ],
           "data": {
             "tags": {

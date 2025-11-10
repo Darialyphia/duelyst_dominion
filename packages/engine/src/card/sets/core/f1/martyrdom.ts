@@ -10,7 +10,7 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  @Consume@ @[mana:blue]@.
+  @Consume@ @[rune:blue]@.
   Destroy an enemy minion. Your opponent gains 1 Victory Points.`,
   cardIconId: 'spells/f1_martyrdom',
   kind: CARD_KINDS.SPELL,

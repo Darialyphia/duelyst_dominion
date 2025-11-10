@@ -15,7 +15,10 @@ type SandboxWorkerEvent =
   | { type: 'dispatch'; payload: { input: SerializedInput } }
   | { type: 'debug' }
   | { type: 'rewind'; payload: { step: number } }
-  | { type: 'playCard'; payload: { blueprintId: string; playerId: string } };
+  | {
+      type: 'addCardtoHand';
+      payload: { blueprintId: string; playerId: string };
+    };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -95,10 +98,11 @@ self.addEventListener('message', ({ data }) => {
         });
       });
     })
-    .with({ type: 'playCard' }, async ({ payload }) => {
+    .with({ type: 'addCardtoHand' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       const card = await player.generateCard(payload.blueprintId);
-      await card.play(() => {});
+      card.addToHand();
+      game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();
 });

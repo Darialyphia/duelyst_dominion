@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS, type Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import {
   HoverCardContent,
@@ -24,7 +24,7 @@ const general = computed(() => {
   return CARDS_DICTIONARY[card.blueprintId];
 });
 
-const mainDeck = computed(() =>
+const cards = computed(() =>
   deck.cards.map(card => ({
     ...card,
     blueprint: CARDS_DICTIONARY[card.blueprintId]
@@ -32,16 +32,35 @@ const mainDeck = computed(() =>
 );
 
 const minions = computed(() =>
-  mainDeck.value.filter(item => item.blueprint.kind === CARD_KINDS.MINION)
+  cards.value.filter(item => item.blueprint.kind === CARD_KINDS.MINION)
 );
 
 const spells = computed(() =>
-  mainDeck.value.filter(item => item.blueprint.kind === CARD_KINDS.SPELL)
+  cards.value.filter(item => item.blueprint.kind === CARD_KINDS.SPELL)
 );
 
 const artifacts = computed(() =>
-  mainDeck.value.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
+  cards.value.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
 );
+const highestRuneCost = computed<Record<Rune, number>>(() => {
+  const runeCosts: Record<Rune, number> = {
+    red: 0,
+    yellow: 0,
+    blue: 0
+  };
+
+  for (const item of cards.value) {
+    if (!('runeCost' in item.blueprint)) continue;
+    for (const [rune, cost] of Object.entries(item.blueprint.runeCost)) {
+      const runeKey = rune as Rune;
+      if (cost > runeCosts[runeKey]) {
+        runeCosts[runeKey] = cost;
+      }
+    }
+  }
+
+  return runeCosts;
+});
 </script>
 
 <template>
@@ -56,6 +75,22 @@ const artifacts = computed(() =>
         >
           <div class="deck-name">
             {{ deck.name }}
+          </div>
+
+          <div class="flex gap-2">
+            <div class="rune-count">
+              <img src="/assets/ui/rune-red.png" />
+              {{ highestRuneCost.red }}
+            </div>
+
+            <div class="rune-count">
+              <img src="/assets/ui/rune-yellow.png" />
+              {{ highestRuneCost.yellow }}
+            </div>
+            <div class="rune-count">
+              <img src="/assets/ui/rune-blue.png" />
+              {{ highestRuneCost.blue }}
+            </div>
           </div>
         </button>
       </HoverCardTrigger>
@@ -106,6 +141,8 @@ const artifacts = computed(() =>
   background-size: 200%, calc(2px * 96);
   padding: var(--size-2) var(--size-4);
   border: solid 1px hsl(var(--color-primary-hsl) / 0.5);
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
 }
 
 .deck-name {
@@ -144,5 +181,20 @@ const artifacts = computed(() =>
 
 .legendary {
   color: var(--orange-4);
+}
+
+.rune-count {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-size: var(--font-size-4);
+  --pixel-scale: 1;
+  font-weight: var(--font-weight-5);
+
+  filter: drop-shadow(0 0 0.5rem black);
+  img {
+    width: calc(17px * var(--pixel-scale));
+    height: calc(21px * var(--pixel-scale));
+  }
 }
 </style>
