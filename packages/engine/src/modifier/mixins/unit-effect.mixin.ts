@@ -5,9 +5,12 @@ import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { ModifierMixin } from '../modifier-mixin';
 import type { Modifier, ModifierEventMap } from '../modifier.entity';
+import type { GeneralCard } from '../../card/entities/general-card.entity';
 
-export class UnitEffectModifierMixin extends ModifierMixin<MinionCard> {
-  modifier!: Modifier<MinionCard>;
+export class UnitEffectModifierMixin<
+  T extends MinionCard | GeneralCard
+> extends ModifierMixin<T> {
+  modifier!: Modifier<T>;
 
   constructor(
     game: Game,
@@ -25,7 +28,7 @@ export class UnitEffectModifierMixin extends ModifierMixin<MinionCard> {
     await this.options.onApplied(event.data.card.unit!);
   }
 
-  async onApplied(target: MinionCard, modifier: Modifier<MinionCard, ModifierEventMap>) {
+  async onApplied(target: T, modifier: Modifier<T>) {
     this.modifier = modifier;
     if (isDefined(this.modifier.target.unit)) {
       await this.options.onApplied(this.modifier.target.unit!);

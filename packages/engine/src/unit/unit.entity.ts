@@ -36,6 +36,7 @@ import type { Shrine } from '../board/entities/shrine.entity';
 import { GeneralAltarModifier } from '../modifier/modifiers/generalaltar.modifier';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import { PassThroughPathfindingStrategy } from '../pathfinding/strategies/passthrough-pathfinding.strategy';
+import type { BoardCell } from '../board/entities/board-cell.entity';
 
 export type UnitOptions = {
   id: string;
@@ -223,6 +224,20 @@ export class Unit
 
   get isAt() {
     return this.movement.isAt.bind(this.movement);
+  }
+
+  get inFront(): BoardCell | null {
+    return this.game.boardSystem.getCellAt({
+      x: this.x,
+      y: this.player.isPlayer1 ? this.y - 1 : this.y + 1
+    });
+  }
+
+  get behind(): BoardCell | null {
+    return this.game.boardSystem.getCellAt({
+      x: this.x,
+      y: this.player.isPlayer1 ? this.y + 1 : this.y - 1
+    });
   }
 
   isEnemy(entity: Unit | Player) {

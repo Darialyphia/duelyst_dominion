@@ -4,6 +4,7 @@ import { argeonHighmane } from './core/f1/argeon-highmane';
 import { azuriteLion } from './core/f1/azurite-lion';
 import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
+import { magnetize } from './core/f1/magnetize';
 import { martyrdom } from './core/f1/martyrdom';
 import { silverguardKnight } from './core/f1/silverguard-knight';
 import { suntideMaiden } from './core/f1/suntide-maiden';
@@ -23,6 +24,7 @@ import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
 import { saberspineTiger } from './core/neutral/saberspine-tiger';
 
 import { sojourner } from './core/neutral/sojourner';
+import { songweaver } from './core/neutral/songweaver';
 import { spiritOfPower } from './core/neutral/spirit-of-power';
 import { spiritOfVitality } from './core/neutral/spirit-of-vitality';
 import { spiritOfWisdom } from './core/neutral/spirit-of-wisdom';
@@ -55,6 +57,8 @@ export const coreSet: CardSet = {
     trueStrike,
     warSurge,
     suntideMaiden,
-    deathBlighter
+    deathBlighter,
+    songweaver,
+    magnetize
   ]
 };

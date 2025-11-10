@@ -29,7 +29,9 @@ export const cards = {
 "true-strike": "true-strike",
 "war-surge": "war-surge",
 "suntide_maiden": "suntide_maiden",
-"death-blighter": "death-blighter"
+"death-blighter": "death-blighter",
+"songweaver": "songweaver",
+"magnetize": "magnetize"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -57,5 +59,7 @@ export const collectableCards = {
 "true-strike": "true-strike",
 "war-surge": "war-surge",
 "suntide_maiden": "suntide_maiden",
-"death-blighter": "death-blighter"
+"death-blighter": "death-blighter",
+"songweaver": "songweaver",
+"magnetize": "magnetize"
 } as const satisfies Record<string, string>;

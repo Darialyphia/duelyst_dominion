@@ -26,7 +26,7 @@ export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
   description: 'Give allied minions at a shrine +1 Attack and +1 Commandment.',
-  cardIconId: 'spells/f1_war_surge',
+  cardIconId: 'spells/f1_war-surge',
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

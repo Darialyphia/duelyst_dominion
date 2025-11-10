@@ -72,9 +72,17 @@ export class Shrine
 
     this.player = unit.player;
 
-    await unit.player.earnVictoryPoints(
-      this.game.config.SHRINE_CAPTURE_VICTORY_POINT_REWARD
-    );
+    const victoryPointsNeededToWin =
+      this.game.config.VICTORY_POINT_GOAL - this.player.victoryPoints;
+    const shouldEarnVP =
+      victoryPointsNeededToWin > 1 ||
+      this.game.boardSystem.shrines.every(shrine => shrine.player?.equals(this.player!));
+
+    if (shouldEarnVP) {
+      await unit.player.earnVictoryPoints(
+        this.game.config.SHRINE_CAPTURE_VICTORY_POINT_REWARD
+      );
+    }
 
     await this.game.emit(
       SHRINE_EVENTS.SHRINE_AFTER_CAPTURE,

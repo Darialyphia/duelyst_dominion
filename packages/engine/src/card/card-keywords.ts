@@ -136,6 +136,18 @@ export const KEYWORDS = {
     description: 'can move one more space and can move through units and shrines.',
     aliases: []
   },
+  IN_FRONT: {
+    id: 'in_front',
+    name: 'in front',
+    description: 'Refers to the tile above for player 1 and below for player 2.',
+    aliases: []
+  },
+  BEHIND: {
+    id: 'behind',
+    name: 'behind',
+    description: 'Refers to the tile below for player 1 and above for player 2.',
+    aliases: []
+  },
   FRENZY: {
     id: 'frenzy',
     name: 'Frenzy',
