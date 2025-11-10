@@ -13,21 +13,23 @@ export type DistanceMap = {
 export class PathfinderComponent {
   constructor(
     private game: Game,
-    private strategy: PathfindingStrategy
+    private getStrategy: () => PathfindingStrategy
   ) {}
 
-  changeStrategy(strategy: PathfindingStrategy) {
-    this.strategy = strategy;
+  get strategy() {
+    return this.getStrategy();
   }
 
   getDistanceMap(from: Point, maxDistance?: number): DistanceMap {
-    this.strategy.setOrigin(from);
-    const map = dijkstra(this.strategy, {
+    const strategy = this.strategy;
+    strategy.setOrigin(from);
+
+    const map = dijkstra(strategy, {
       startNode: pointToCellId(from),
       maxWeight: maxDistance
     });
 
-    this.strategy.done();
+    strategy.done();
 
     return {
       costs: map.costs,
@@ -41,17 +43,18 @@ export class PathfinderComponent {
     const entityAtPoint = this.game.unitSystem.getUnitAt(to);
     if (entityAtPoint) return null;
 
-    this.strategy.setOrigin(from);
+    const strategy = this.strategy;
+    strategy.setOrigin(from);
 
     const path = findShortestPath<SerializedCoords>(
-      this.strategy,
+      strategy,
       pointToCellId(from),
       pointToCellId(to),
       maxDistance
     );
 
     if (!path) return null;
-    this.strategy.done();
+    strategy.done();
 
     return {
       distance: path.distance,

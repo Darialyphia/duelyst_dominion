@@ -133,7 +133,7 @@ export const KEYWORDS = {
   FLYING: {
     id: 'flying',
     name: 'Flying',
-    description: 'can move one more space and can move through units.',
+    description: 'can move one more space and can move through units and shrines.',
     aliases: []
   },
   FRENZY: {

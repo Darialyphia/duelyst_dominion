@@ -33,8 +33,9 @@ import {
   UnitBeforeMoveEvent
 } from './unit-events';
 import type { Shrine } from '../board/entities/shrine.entity';
-import type { MinionBlueprint } from '../card/card-blueprint';
 import { GeneralAltarModifier } from '../modifier/modifiers/generalaltar.modifier';
+import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
+import { PassThroughPathfindingStrategy } from '../pathfinding/strategies/passthrough-pathfinding.strategy';
 
 export type UnitOptions = {
   id: string;
@@ -69,7 +70,6 @@ export type SerializedUnit = {
 
 export type UnitInterceptors = {
   canMove: Interceptable<boolean>;
-  canMoveThrough: Interceptable<boolean, { unit: Unit }>;
   canMoveAfterAttacking: Interceptable<boolean>;
   canAttack: Interceptable<boolean, { target: Unit }>;
   canCounterAttack: Interceptable<boolean, { attacker: Unit }>;
@@ -108,6 +108,8 @@ export type UnitInterceptors = {
   >;
 
   shouldActivateOnTurnStart: Interceptable<boolean>;
+
+  pathfindingStrategy: Interceptable<PathfindingStrategy>;
 };
 
 export class Unit
@@ -130,7 +132,6 @@ export class Unit
     super(options.id, {
       canMove: new Interceptable(),
       canMoveAfterAttacking: new Interceptable(),
-      canMoveThrough: new Interceptable(),
       canAttack: new Interceptable(),
       canCounterAttack: new Interceptable(),
       canBeAttackTarget: new Interceptable(),
@@ -167,14 +168,13 @@ export class Unit
         { amount: number; source: AnyCard; damage: Damage }
       >(),
 
-      shouldActivateOnTurnStart: new Interceptable<boolean>()
+      shouldActivateOnTurnStart: new Interceptable<boolean>(),
+
+      pathfindingStrategy: new Interceptable<PathfindingStrategy>()
     });
     this.movement = new MovementComponent(game, this, {
       position: options.position,
-      pathfinding: new PathfinderComponent(
-        game,
-        new SolidBodyPathfindingStrategy(this.game, this)
-      )
+      pathfinding: new PathfinderComponent(game, () => this.pathfindingStrategy)
     });
 
     this.combat = new CombatComponent(game, this);
@@ -188,6 +188,13 @@ export class Unit
 
   get player() {
     return this.card.player!;
+  }
+
+  get pathfindingStrategy() {
+    return this.interceptors.pathfindingStrategy.getValue(
+      new SolidBodyPathfindingStrategy(this.game, this),
+      {}
+    );
   }
 
   get isGeneral() {
@@ -297,10 +304,6 @@ export class Unit
       this.movementsMadeThisTurn < this.maxMovementsPerTurn && !this.isExhausted,
       {}
     );
-  }
-
-  canMoveThrough(unit: Unit) {
-    return this.interceptors.canMoveThrough.getValue(this.isAlly(unit), { unit });
   }
 
   canMoveTo(point: Point) {
