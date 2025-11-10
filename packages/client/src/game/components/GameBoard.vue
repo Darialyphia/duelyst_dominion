@@ -163,15 +163,15 @@ const hoveredCard = computed(() => {
       <div class="flex gap-5 flex-1 flex-row-reverse">
         <div class="rune-count">
           <img src="/assets/ui/rune-red.png" />
-          {{ myPlayer.runes.red }}
+          {{ opponent.runes.red }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-yellow.png" />
-          {{ myPlayer.runes.yellow }}
+          {{ opponent.runes.yellow }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-blue.png" />
-          {{ myPlayer.runes.blue }}
+          {{ opponent.runes.blue }}
         </div>
       </div>
     </div>

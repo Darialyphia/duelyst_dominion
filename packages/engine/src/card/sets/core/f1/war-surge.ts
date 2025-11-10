@@ -23,10 +23,10 @@ const getAOE = (game: Game) =>
   });
 
 export const warSurge: SpellBlueprint = {
-  id: 'tempest',
-  name: 'Tempest',
+  id: 'war-surge',
+  name: 'War Surge',
   description: 'Give allied minions at a shrine +1 Attack and +1 Commandment.',
-  cardIconId: 'spells/f1_tempest',
+  cardIconId: 'spells/f1_war_surge',
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

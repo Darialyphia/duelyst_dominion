@@ -27,6 +27,7 @@ export const cards = {
 "holy-immolation": "holy-immolation",
 "martyrdom": "martyrdom",
 "true-strike": "true-strike",
+"war-surge": "war-surge",
 "suntide_maiden": "suntide_maiden",
 "death-blighter": "death-blighter"
 } as const satisfies Record<string, string>;
@@ -54,6 +55,7 @@ export const collectableCards = {
 "holy-immolation": "holy-immolation",
 "martyrdom": "martyrdom",
 "true-strike": "true-strike",
+"war-surge": "war-surge",
 "suntide_maiden": "suntide_maiden",
 "death-blighter": "death-blighter"
 } as const satisfies Record<string, string>;
