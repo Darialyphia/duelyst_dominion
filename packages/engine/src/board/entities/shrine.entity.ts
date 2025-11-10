@@ -102,7 +102,6 @@ export class Shrine
       this.game.playerSystem.players.map(player => {
         const cmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
           if (!neighborUnit.isAlly(player)) return total;
-          if (neighborUnit.isExhausted) return total;
           return total + neighborUnit.cmd;
         }, 0);
         return [player.id, cmdTotal];
@@ -128,16 +127,8 @@ export class Shrine
     const isNearby = this.neighborUnits.some(neighborUnit => neighborUnit.equals(unit));
     if (!isNearby) return false;
 
-    const cmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
-      if (!neighborUnit.isAlly(unit)) return total;
-      if (neighborUnit.isExhausted) return total;
-      return total + neighborUnit.cmd;
-    }, 0);
-
-    const enemyCmdTotal = this.neighborUnits.reduce((total, neighborUnit) => {
-      if (!neighborUnit.isEnemy(unit)) return total;
-      return total + neighborUnit.cmd;
-    }, 0);
+    const cmdTotal = this.attackingCmdByPlayer[unit.player.id] ?? 0;
+    const enemyCmdTotal = this.defendingCmdByPlayer[unit.player.opponent.id] ?? 0;
 
     return cmdTotal > enemyCmdTotal;
   }

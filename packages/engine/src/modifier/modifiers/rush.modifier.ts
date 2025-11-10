@@ -1,7 +1,8 @@
 import { KEYWORDS } from '../../card/card-keywords';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
-import { MinionInterceptorModifierMixin } from '../mixins/interceptor.mixin';
+import { GAME_EVENTS } from '../../game/game.events';
+import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 
@@ -13,9 +14,12 @@ export class RushModifier extends Modifier<MinionCard> {
   ) {
     super(KEYWORDS.RUSH.id, game, card, {
       mixins: [
-        new MinionInterceptorModifierMixin(game, {
-          key: 'hasSummoningSickness',
-          interceptor: () => false
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.MINION_AFTER_SUMMON,
+          handler: async event => {
+            if (!event.data.card.equals(this.target)) return;
+            this.target.unit.wakeUp();
+          }
         }),
         ...(options?.mixins ?? [])
       ]

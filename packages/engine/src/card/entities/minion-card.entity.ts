@@ -21,6 +21,7 @@ import {
 } from '../../targeting/targeting-strategy';
 import type { MaybePromise } from '@game/shared';
 import { MINION_EVENTS, MinionSummonedEvent } from '../events/minion.events';
+import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-sickness.modifier';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedMinionCard = SerializedCard & {
@@ -176,9 +177,11 @@ export class MinionCard extends Card<
       })
     );
     this.game.unitSystem.addUnit(this, position);
+    this.unit.exhaust();
     if (this.hasSummoningSickness) {
-      this.unit.exhaust();
+      await this.unit.modifiers.add(new SummoningSicknessModifier(this.game, this));
     }
+
     await this.game.emit(
       MINION_EVENTS.MINION_AFTER_SUMMON,
       new MinionSummonedEvent({

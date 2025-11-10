@@ -260,6 +260,12 @@ export const KEYWORDS = {
     description: 'This unit skips it next turn.',
     aliases: ['stun']
   },
+  SUMMONING_SICKNESS: {
+    id: 'summoning_sickness',
+    name: 'Summoning Sickness',
+    description: 'This unit has 0 commandment the turn it is summoned.',
+    aliases: []
+  },
   TIMELESS: {
     id: 'timeless',
     name: 'Timeless',
