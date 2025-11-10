@@ -8,6 +8,7 @@ import { SpellDamage } from '../../../../utils/damage';
 import type { Game } from '../../../../game/game';
 import dedent from 'dedent';
 import { RingAOEShape } from '../../../../aoe/ring.aoe-shape';
+import { consume } from '../../../card-actions-utils';
 
 const getAOE = (game: Game) =>
   new CompositeAOEShape(TARGETING_TYPE.UNIT, {
@@ -56,6 +57,7 @@ export const holyImmolation: SpellBlueprint = {
     const targetToHeal = targets[0].unit;
     if (!targetToHeal) return;
 
+    await consume(card, { yellow: 1 });
     await targetToHeal.heal(card, 4);
 
     const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);

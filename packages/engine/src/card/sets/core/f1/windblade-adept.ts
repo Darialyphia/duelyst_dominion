@@ -8,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
-  description: '@Zeal (2)@ : +2 Attack.',
+  description: '@Zeal@ : +2 Attack.',
   cardIconId: 'minions/f1_windblade-adept',
   kind: CARD_KINDS.MINION,
   collectable: true,

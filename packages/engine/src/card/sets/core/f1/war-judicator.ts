@@ -8,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const warJudicator: MinionBlueprint = {
   id: 'war_judicator',
   name: 'War Judicator',
-  description: '@Zeal (2)@ : +2 Commandment.',
+  description: '@Zeal@ : +2 Commandment.',
   cardIconId: 'minions/f1_war-judicator',
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -29,7 +29,7 @@ export const warJudicator: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new ZealModifier('windblade-adept-zeal', game, card, {
+      new ZealModifier('war-judicator-zeal', game, card, {
         mixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'cmd',

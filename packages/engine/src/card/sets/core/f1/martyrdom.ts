@@ -1,15 +1,17 @@
-import { isDefined } from '@game/shared';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
+import { consume } from '../../../card-actions-utils';
 
 export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
-  description: 'Destroy an enemy minion. Your opponent gains 2 Victory Points.',
+  description: dedent`
+  @Consume@ @[mana:blue]@.
+  Destroy an enemy minion. Your opponent gains 1 Victory Points.`,
   cardIconId: 'spells/f1_martyrdom',
   kind: CARD_KINDS.SPELL,
   collectable: true,
@@ -19,7 +21,7 @@ export const martyrdom: SpellBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {
-    blue: 2
+    blue: 1
   },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
   canPlay: (game, card) =>
@@ -33,7 +35,8 @@ export const martyrdom: SpellBlueprint = {
     });
   },
   async onInit() {},
-  async onPlay(game, card, { targets, aoe }) {
+  async onPlay(game, card, { targets }) {
+    await consume(card, { blue: 1 });
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 

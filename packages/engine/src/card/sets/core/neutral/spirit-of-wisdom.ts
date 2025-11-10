@@ -16,9 +16,7 @@ export const spiritOfWisdom: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    blue: 1
-  },
+  runeCost: {},
   atk: 1,
   cmd: 1,
   maxHp: 3,

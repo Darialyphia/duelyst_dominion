@@ -268,9 +268,16 @@ export const KEYWORDS = {
   },
   ZEAL: {
     id: 'zeal',
-    name: 'Zeal (x)',
+    name: 'Zeal',
     description: "Triggers an effect when nearby the player's general.",
-    aliases: [/zeal \([0-9]+\)/]
+    aliases: []
+  },
+  STEALTH: {
+    id: 'stealth',
+    name: 'Stealth',
+    description:
+      'Cannot be targeted or attacked until this attacks, captures or uses an ability.',
+    aliases: []
   }
 } as const satisfies Record<string, Keyword>;
 

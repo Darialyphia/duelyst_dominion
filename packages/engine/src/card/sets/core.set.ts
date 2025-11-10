@@ -6,9 +6,11 @@ import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
 import { martyrdom } from './core/f1/martyrdom';
 import { silverguardKnight } from './core/f1/silverguard-knight';
+import { suntideMaiden } from './core/f1/suntide-maiden';
 import { tempest } from './core/f1/tempest';
 import { trueStrike } from './core/f1/true-strike';
 import { warJudicator } from './core/f1/war-judicator';
+import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
@@ -49,6 +51,8 @@ export const coreSet: CardSet = {
     frostboneNaga,
     holyImmolation,
     martyrdom,
-    trueStrike
+    trueStrike,
+    warSurge,
+    suntideMaiden
   ]
 };

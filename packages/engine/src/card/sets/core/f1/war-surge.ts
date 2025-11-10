@@ -4,11 +4,12 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhere } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { SpellDamage } from '../../../../utils/damage';
 import type { Game } from '../../../../game/game';
+import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 
 const getAOE = (game: Game) =>
-  new CompositeAOEShape(TARGETING_TYPE.UNIT, {
+  new CompositeAOEShape(TARGETING_TYPE.ALLY_MINION, {
     shapes: game.boardSystem.shrines
       .map(shrine => shrine.neighborUnits)
       .flat()
@@ -21,10 +22,10 @@ const getAOE = (game: Game) =>
       }))
   });
 
-export const tempest: SpellBlueprint = {
+export const warSurge: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
-  description: 'Deal 3 damage to all units at a shrine.',
+  description: 'Give allied minions at a shrine +1 Attack and +1 Commandment.',
   cardIconId: 'spells/f1_tempest',
   kind: CARD_KINDS.SPELL,
   collectable: true,
@@ -32,9 +33,9 @@ export const tempest: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.BASIC,
   tags: [],
-  manaCost: 2,
+  manaCost: 1,
   runeCost: {
-    red: 2
+    red: 1
   },
   getAoe: getAOE,
   canPlay: () => true,
@@ -49,10 +50,19 @@ export const tempest: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
-    const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
+    const unitsToBuff = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
-    for (const unit of unitsToDamage) {
-      await unit.takeDamage(card, new SpellDamage(card, 3));
+    for (const unit of unitsToBuff) {
+      await unit.modifiers.add(
+        new UnitSimpleAttackBuffModifier('war-surge-atk-buff', game, card, {
+          amount: 1
+        })
+      );
+      await unit.modifiers.add(
+        new UnitSimpleHealthBuffModifier('war-surge-hp-buff', game, card, {
+          amount: 1
+        })
+      );
     }
   }
 };

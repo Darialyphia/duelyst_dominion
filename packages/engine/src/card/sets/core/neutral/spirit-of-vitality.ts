@@ -16,9 +16,7 @@ export const spiritOfVitality: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    yellow: 1
-  },
+  runeCost: {},
   atk: 1,
   cmd: 1,
   maxHp: 3,
