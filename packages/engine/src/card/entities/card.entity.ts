@@ -27,11 +27,13 @@ export type AnyCard = Card<any, any, any>;
 export type CardInterceptors = {
   manaCost: Interceptable<number>;
   player: Interceptable<Player>;
+  canReplace: Interceptable<boolean>;
 };
 
 export const makeCardInterceptors = (): CardInterceptors => ({
   manaCost: new Interceptable(),
-  player: new Interceptable()
+  player: new Interceptable(),
+  canReplace: new Interceptable()
 });
 
 export type SerializedCard = {
@@ -44,6 +46,7 @@ export type SerializedCard = {
   name: string;
   description: string;
   canPlay: boolean;
+  canReplace: boolean;
   location: CardLocation | null;
   keywords: Array<{ id: string; name: string; description: string }>;
   modifiers: string[];
@@ -182,6 +185,10 @@ export abstract class Card<
     this.playedAtTurn = this.game.gamePhaseSystem.elapsedTurns;
   }
 
+  get canReplace() {
+    return this.interceptors.canReplace.getValue(true, {});
+  }
+
   abstract canPlay(): boolean;
 
   abstract play(onCancel?: () => MaybePromise<void>): Promise<void>;
@@ -197,6 +204,7 @@ export abstract class Card<
       name: this.blueprint.name,
       description: this.blueprint.description,
       canPlay: this.canPlay(),
+      canReplace: this.canReplace,
       location: this.location ?? null,
       modifiers: this.modifiers.list.map(modifier => modifier.id),
       keywords: this.keywords.map(keyword => ({

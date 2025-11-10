@@ -398,7 +398,7 @@ export class Player
 
   get maxReplacesPerTurn() {
     return this.interceptors.maxReplacesPerTurn.getValue(
-      this.game.config.MAX_MULLIGANED_CARDS,
+      this.game.config.MAX_REPLACES_PER_TURN,
       {}
     );
   }

@@ -1,4 +1,9 @@
-import type { EmptyObject, MaybePromise, Values } from '@game/shared';
+import {
+  isDefined,
+  type EmptyObject,
+  type MaybePromise,
+  type Values
+} from '@game/shared';
 import type { InputDispatcher, SerializedInput } from '../input/input-system';
 import type {
   GameStateSnapshot,
@@ -16,7 +21,7 @@ import { TypedEventEmitter } from '../utils/typed-emitter';
 import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
-import { GAME_PHASES, INTERACTION_STATES } from '../game/game.enums';
+import { GAME_PHASES } from '../game/game.enums';
 import type { TeleporterViewModel } from './view-models/teleporter.model';
 import type { ShrineViewModel } from './view-models/shrine.model';
 import type { Rune } from '../card/card.enums';
@@ -319,6 +324,18 @@ export class GameClient {
       payload: {
         playerId: this.playerId,
         type: 'draw-card'
+      }
+    });
+  }
+
+  replaceCard(card: CardViewModel) {
+    if (!isDefined(card.indexInHand)) return;
+
+    this.networkAdapter.dispatch({
+      type: 'replaceCard',
+      payload: {
+        playerId: this.playerId,
+        index: card.indexInHand
       }
     });
   }

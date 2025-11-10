@@ -131,6 +131,14 @@ const hoveredCard = computed(() => {
       >
         Draw Card
       </UiButton>
+      <UiButton
+        v-show="myPlayer.canReplace"
+        class="action-button"
+        :class="{ 'is-replacing': ui.isReplacingCard }"
+        @click="ui.isReplacingCard = !ui.isReplacingCard"
+      >
+        Replace Card
+      </UiButton>
       <UiButton class="action-button" @click="client.endTurn()">
         End Turn
       </UiButton>
@@ -287,6 +295,12 @@ const hoveredCard = computed(() => {
   &.yellow {
     --ui-button-bg: var(--yellow-3);
     --ui-button-hover-bg: var(--yellow-5);
+    --ui-button-color: var(--text-on-primary);
+  }
+
+  &.is-replacing {
+    --ui-button-bg: var(--lime-5);
+    --ui-button-hover-bg: var(--lime-6);
     --ui-button-color: var(--text-on-primary);
   }
 }

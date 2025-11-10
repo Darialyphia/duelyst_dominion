@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { Teleport } from 'vue';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
-import { useGameState, useGameUi } from '../composables/useGameClient';
+import {
+  useGameClient,
+  useGameState,
+  useGameUi
+} from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
 import { usePageLeave } from '@vueuse/core';
 import { Flip } from 'gsap/Flip';
@@ -13,6 +17,7 @@ const { card, isInteractive } = defineProps<{
 }>();
 
 const ui = useGameUi();
+const { client } = useGameClient();
 const state = useGameState();
 
 const DRAG_THRESHOLD_PX = 60;
@@ -43,6 +48,8 @@ const unselectCard = () => {
   });
 };
 const onMouseDown = (e: MouseEvent) => {
+  if (ui.value.isReplacingCard) return;
+
   if (state.value.turnPlayer !== card.player.id) {
     return;
   }
@@ -115,6 +122,19 @@ const isDetachedFromHand = computed(() => {
     !card.isSelected
   );
 });
+
+const isDisabled = computed(() => {
+  if (ui.value.isReplacingCard) {
+    return !card.canReplace;
+  }
+  return !card.canPlay;
+});
+const highlightColor = computed(() => {
+  if (ui.value.isReplacingCard) {
+    return 'var(--blue-2)';
+  }
+  return 'var(--lime-4)';
+});
 </script>
 
 <template>
@@ -122,10 +142,18 @@ const isDetachedFromHand = computed(() => {
     class="hand-card"
     :class="{
       selected: ui.selectedCard?.equals(card),
-      disabled: !card.canPlay,
+      disabled: isDisabled,
       'is-shaking': isShaking
     }"
     @mousedown="onMouseDown($event)"
+    @click="
+      () => {
+        if (ui.isReplacingCard) {
+          client.replaceCard(card);
+          ui.isReplacingCard = false;
+        }
+      }
+    "
   >
     <p class="violation-warning" v-if="violationWarning">
       {{ violationWarning }}
@@ -179,7 +207,7 @@ const isDetachedFromHand = computed(() => {
       content: '';
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 1.5rem var(--lime-4);
+      box-shadow: inset 0 0 1.5rem v-bind(highlightColor);
       z-index: 2;
       transition: opacity 0.3s var(--ease-2);
       pointer-events: none;
@@ -189,7 +217,7 @@ const isDetachedFromHand = computed(() => {
     }
   }
   &.disabled {
-    /* filter: brightness(0.8) grayscale(1); */
+    filter: brightness(0.8);
   }
   &.is-shaking > :not(.violation-warning) {
     animation: var(--animation-shake-x);

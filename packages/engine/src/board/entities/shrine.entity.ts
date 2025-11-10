@@ -115,6 +115,8 @@ export class Shrine
   }
 
   canBeCapturedBy(unit: Unit) {
+    if (this.player?.equals(unit.player)) return false;
+
     const isNearby = this.neighborUnits.some(neighborUnit => neighborUnit.equals(unit));
     if (!isNearby) return false;
 

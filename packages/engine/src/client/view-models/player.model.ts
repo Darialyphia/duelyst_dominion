@@ -103,6 +103,10 @@ export class PlayerViewModel {
     return this.data.canUseResourceAction;
   }
 
+  get canReplace() {
+    return this.data.canReplace;
+  }
+
   get maxOverspentMana() {
     return this.data.maxOverspentMana;
   }

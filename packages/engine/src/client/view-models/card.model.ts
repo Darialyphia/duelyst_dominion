@@ -209,6 +209,10 @@ export class CardViewModel {
     );
   }
 
+  get canReplace() {
+    return this.data.canReplace;
+  }
+
   getPlayer() {
     return this.getEntities()[this.data.player] as PlayerViewModel;
   }

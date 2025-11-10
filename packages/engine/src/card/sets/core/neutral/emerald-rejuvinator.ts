@@ -18,7 +18,6 @@ export const emeraldRejuvinator: MinionBlueprint = {
   tags: [],
   manaCost: 4,
   runeCost: {
-    blue: 1,
     yellow: 1
   },
   atk: 4,

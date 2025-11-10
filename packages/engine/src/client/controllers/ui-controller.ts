@@ -65,6 +65,8 @@ export class UiController {
 
   isOpponentHandExpanded = false;
 
+  isReplacingCard = false;
+
   private cardClickRules: CardClickRule[] = [];
 
   private globalActionRules: GlobalActionRule[] = [];

@@ -244,36 +244,10 @@
         },
         {
           "alias": [
-            "f1_argeon-highmane.png"
-          ],
-          "src": [
-            "/assets/cards/minions/f1_argeon-highmane.png"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
             "f1_azurite-lion.png"
           ],
           "src": [
             "/assets/cards/minions/f1_azurite-lion.png"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "f1_deathblighter.png"
-          ],
-          "src": [
-            "/assets/cards/minions/f1_deathblighter.png"
           ],
           "data": {
             "tags": {
@@ -495,6 +469,19 @@
           ],
           "src": [
             "/assets/cards/minions/neutral_sojourner.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_songweaver.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_songweaver.png"
           ],
           "data": {
             "tags": {
