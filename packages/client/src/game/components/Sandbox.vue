@@ -2,21 +2,22 @@
 import {
   PopoverTrigger,
   PopoverRoot,
-  PopoverContent
-  // ComboboxRoot,
-  // ComboboxAnchor,
-  // ComboboxTrigger,
-  // ComboboxInput,
-  // ComboboxContent,
-  // ComboboxViewport,
-  // ComboboxItem,
-  // ComboboxEmpty
+  PopoverContent,
+  ComboboxRoot,
+  ComboboxAnchor,
+  ComboboxTrigger,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxViewport,
+  ComboboxItem,
+  ComboboxEmpty
 } from 'reka-ui';
 import { useSandbox } from '../composables/useSandbox';
-// import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
-// import { Icon } from '@iconify/vue';
+import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
+import { Icon } from '@iconify/vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import GameBoard from '@/game/components/GameBoard.vue';
+import { RUNES } from '@game/engine/src/card/card.enums';
 
 const { players } = defineProps<{
   players: Parameters<typeof useSandbox>[0]['players'];
@@ -28,11 +29,11 @@ const sandbox = useSandbox({
 });
 
 const isSandboxPopoverOpened = ref(false);
-// const card = ref(null);
+const card = ref(null);
 
-// const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
-//   a.name.localeCompare(b.name)
-// );
+const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
+  a.name.localeCompare(b.name)
+);
 </script>
 
 <template>
@@ -77,7 +78,11 @@ const isSandboxPopoverOpened = ref(false);
       </label>
       <button @click="sandbox.rewindOneStep()">Rewind one step</button>
       <button @click="sandbox.restart()">Restart Game</button>
-      <!-- <ComboboxRoot class="relative" v-model="card">
+      <button @click="sandbox.refillMana()">Refill Mana</button>
+      <button @click="sandbox.addRune(RUNES.RED)">Add Power Rune</button>
+      <button @click="sandbox.addRune(RUNES.YELLOW)">Add Vitality Rune</button>
+      <button @click="sandbox.addRune(RUNES.BLUE)">Add Wisdom Rune</button>
+      <ComboboxRoot class="relative" v-model="card">
         <ComboboxAnchor
           class="min-w-[160px] inline-flex items-center justify-between rounded-lg border px-[15px] text-xs leading-none h-[35px] gap-[5px] bg-gray-10 text-grass11 shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-grass9 outline-none"
         >
@@ -109,19 +114,19 @@ const isSandboxPopoverOpened = ref(false);
             </ComboboxItem>
           </ComboboxViewport>
         </ComboboxContent>
-      </ComboboxRoot> -->
-      <!-- <button
+      </ComboboxRoot>
+      <button
         :disabled="!card"
         @click="
           () => {
-            sandbox.playCard(card!);
+            sandbox.addCardToHand(card!);
             card = null;
           }
         "
       >
-        Play Card
-      </button> -->
-      <!-- <div class="h-13 overflow-auto">
+        Add to Hand
+      </button>
+      <div class="h-13 overflow-auto">
         <h3 class="font-bold mb-2">History</h3>
         <div
           v-for="(input, index) in sandbox.client.value.history"
@@ -131,7 +136,7 @@ const isSandboxPopoverOpened = ref(false);
         >
           {{ input.type }}
         </div>
-      </div> -->
+      </div>
     </PopoverContent>
   </PopoverRoot>
 </template>

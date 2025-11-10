@@ -54,6 +54,20 @@ export class GeneralAltarModifier extends Modifier<Unit> {
             return 0;
           },
           priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'atk',
+          interceptor: () => {
+            return 0;
+          },
+          priority: 999
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'cmd',
+          interceptor: () => {
+            return 0;
+          },
+          priority: 999
         })
       ]
     });

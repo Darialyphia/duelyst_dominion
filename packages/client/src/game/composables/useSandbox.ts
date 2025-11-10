@@ -3,6 +3,7 @@ import { type GameOptions } from '@game/engine/src/game/game';
 import { provideGameClient } from './useGameClient';
 import { useFxAdapter } from './useFxAdapter';
 import SandboxWorker from '../sandbox-worker?worker';
+import type { Rune } from '@game/engine/src/card/card.enums';
 
 export const useSandbox = (
   options: Pick<GameOptions, 'players' | 'rngSeed'>
@@ -87,10 +88,22 @@ export const useSandbox = (
     rewindOneStep: () => rewindTo(client.value.history.length - 2),
     rewindTo,
     restart: () => rewindTo(0),
-    playCard(blueprintId: string) {
+    addCardToHand(blueprintId: string) {
       worker.postMessage({
-        type: 'playCard',
+        type: 'addCardtoHand',
         payload: { blueprintId, playerId: client.value.getActivePlayerId() }
+      });
+    },
+    refillMana() {
+      worker.postMessage({
+        type: 'refillMana',
+        payload: { playerId: client.value.getActivePlayerId() }
+      });
+    },
+    addRune(rune: Rune) {
+      worker.postMessage({
+        type: 'addRune',
+        payload: { rune, playerId: client.value.getActivePlayerId() }
       });
     }
   };

@@ -98,7 +98,7 @@ export class Player
 
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
 
-  private replacesDoneThisTurn = 0;
+  private _replacesDoneThisTurn = 0;
 
   private _victoryPoints = 0;
 
@@ -308,19 +308,23 @@ export class Player
     this._resourceActionsDoneThisTurn++;
   }
 
+  refillMana() {
+    this._mana = this.maxMana;
+  }
+
   async startTurn() {
     await this.game.emit(
       GAME_EVENTS.PLAYER_START_TURN,
       new PlayerTurnEvent({ player: this })
     );
 
-    this.replacesDoneThisTurn = 0;
+    this._replacesDoneThisTurn = 0;
     this._resourceActionsDoneThisTurn = 0;
 
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
       this._baseMaxMana = this.game.config.MAX_MANA;
     }
-    this._mana = this.maxMana;
+    this.refillMana();
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
       await this.drawForTurn();
@@ -404,7 +408,7 @@ export class Player
   }
 
   canReplaceCard() {
-    return this.replacesDoneThisTurn < this.maxReplacesPerTurn;
+    return this._replacesDoneThisTurn < this.maxReplacesPerTurn;
   }
 
   async replaceCard(index: number) {
@@ -419,7 +423,7 @@ export class Player
     );
 
     const replacement = this.cardManager.replaceCardAt(index);
-    this.replacesDoneThisTurn++;
+    this._replacesDoneThisTurn++;
 
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_REPLACE_CARD,

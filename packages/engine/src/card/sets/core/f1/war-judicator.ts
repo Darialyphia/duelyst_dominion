@@ -21,7 +21,7 @@ export const warJudicator: MinionBlueprint = {
     red: 1,
     blue: 1
   },
-  atk: 2,
+  atk: 1,
   cmd: 1,
   maxHp: 5,
   getTargets: () => Promise.resolve([]),

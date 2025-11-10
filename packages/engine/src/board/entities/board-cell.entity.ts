@@ -58,7 +58,7 @@ export class BoardCell
     );
   }
 
-  get isWalkable() {
+  get isOccupied() {
     return !this.unit && !this.shrine;
   }
 

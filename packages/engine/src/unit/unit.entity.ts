@@ -369,7 +369,7 @@ export class Unit
     if (!this.canMove && !force) return [];
     return this.movement.getAllPossibleMoves(max ?? this.sprintReach).filter(point => {
       const cell = this.game.boardSystem.getCellAt(point)!;
-      return cell.isWalkable && !cell.unit;
+      return cell.isOccupied && !cell.unit;
     });
   }
 
@@ -579,7 +579,7 @@ export class Unit
     );
     const position = this.position;
     if (this.isGeneral) {
-      await this.player.earnVictoryPoints(
+      await this.player.opponent.earnVictoryPoints(
         this.game.config.GENERAL_DESTROYED_VICTORY_POINTS_REWARD
       );
 

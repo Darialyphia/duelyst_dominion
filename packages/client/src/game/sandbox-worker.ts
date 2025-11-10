@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 
+import type { Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Game, type GameOptions } from '@game/engine/src/game/game';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
@@ -18,7 +19,9 @@ type SandboxWorkerEvent =
   | {
       type: 'addCardtoHand';
       payload: { blueprintId: string; playerId: string };
-    };
+    }
+  | { type: 'refillMana'; payload: { playerId: string } }
+  | { type: 'addRune'; payload: { playerId: string; rune: Rune } };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -101,7 +104,17 @@ self.addEventListener('message', ({ data }) => {
     .with({ type: 'addCardtoHand' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       const card = await player.generateCard(payload.blueprintId);
-      card.addToHand();
+      await card.addToHand();
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'refillMana' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      player.refillMana();
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'addRune' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      player.gainRune(payload.rune, 1);
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();

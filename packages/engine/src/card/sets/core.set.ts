@@ -2,6 +2,7 @@ import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
 import { azuriteLion } from './core/f1/azurite-lion';
+import { divineBond } from './core/f1/divine-bond';
 import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
 import { magnetize } from './core/f1/magnetize';
@@ -59,6 +60,7 @@ export const coreSet: CardSet = {
     suntideMaiden,
     deathBlighter,
     songweaver,
-    magnetize
+    magnetize,
+    divineBond
   ]
 };

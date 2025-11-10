@@ -31,7 +31,8 @@ export const cards = {
 "suntide_maiden": "suntide_maiden",
 "death-blighter": "death-blighter",
 "songweaver": "songweaver",
-"magnetize": "magnetize"
+"magnetize": "magnetize",
+"divine-bond": "divine-bond"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -61,5 +62,6 @@ export const collectableCards = {
 "suntide_maiden": "suntide_maiden",
 "death-blighter": "death-blighter",
 "songweaver": "songweaver",
-"magnetize": "magnetize"
+"magnetize": "magnetize",
+"divine-bond": "divine-bond"
 } as const satisfies Record<string, string>;

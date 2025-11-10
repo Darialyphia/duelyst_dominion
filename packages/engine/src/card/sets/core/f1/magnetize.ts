@@ -23,7 +23,7 @@ export const magnetize: SpellBlueprint = {
   },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => {
-    if (!card.player.general.inFront?.isWalkable) return false;
+    if (!card.player.general.inFront?.isOccupied) return false;
 
     return singleMinionTargetRules.canPlay(game, card);
   },

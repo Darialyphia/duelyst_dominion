@@ -49,7 +49,7 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
 
   isEdgeValid(cell: BoardCell) {
     if (this.origin.equals(cell)) return false;
-    return cell.isWalkable;
+    return cell.isOccupied;
   }
 
   getEdges(node: SerializedCoords): Array<Edge<SerializedCoords>> {
