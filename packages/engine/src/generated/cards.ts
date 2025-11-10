@@ -32,7 +32,8 @@ export const cards = {
 "death-blighter": "death-blighter",
 "songweaver": "songweaver",
 "magnetize": "magnetize",
-"divine-bond": "divine-bond"
+"divine-bond": "divine-bond",
+"neutralizer": "neutralizer"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -63,5 +64,6 @@ export const collectableCards = {
 "death-blighter": "death-blighter",
 "songweaver": "songweaver",
 "magnetize": "magnetize",
-"divine-bond": "divine-bond"
+"divine-bond": "divine-bond",
+"neutralizer": "neutralizer"
 } as const satisfies Record<string, string>;

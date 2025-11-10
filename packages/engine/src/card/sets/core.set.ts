@@ -21,6 +21,7 @@ import { emeraldRejuvinator } from './core/neutral/emerald-rejuvinator';
 import { flamebloodWarlock } from './core/neutral/flameblood-warlock';
 import { frostboneNaga } from './core/neutral/frostbone-naga';
 import { healingMystic } from './core/neutral/healing-mystic';
+import { neutralizer } from './core/neutral/neutralizer';
 import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
 import { saberspineTiger } from './core/neutral/saberspine-tiger';
 
@@ -61,6 +62,7 @@ export const coreSet: CardSet = {
     deathBlighter,
     songweaver,
     magnetize,
-    divineBond
+    divineBond,
+    neutralizer
   ]
 };
