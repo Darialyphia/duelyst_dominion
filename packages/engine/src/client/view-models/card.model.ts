@@ -203,14 +203,14 @@ export class CardViewModel {
     return this.data.spacesToHighlight;
   }
 
-  getPlayer() {
-    return this.getEntities()[this.data.player] as PlayerViewModel;
+  get modifiers() {
+    return this.data.modifiers.map(
+      modId => this.getEntities()[modId] as ModifierViewModel
+    );
   }
 
-  getModifiers() {
-    return this.data.modifiers.map(modifierId => {
-      return this.getEntities()[modifierId] as ModifierViewModel;
-    });
+  getPlayer() {
+    return this.getEntities()[this.data.player] as PlayerViewModel;
   }
 
   play() {

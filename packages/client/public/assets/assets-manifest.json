@@ -257,6 +257,84 @@
         },
         {
           "alias": [
+            "f1_azurite-lion.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_azurite-lion.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_deathblighter.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_deathblighter.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_ironcliffe-guardian.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_ironcliffe-guardian.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_silverguard-knight.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_silverguard-knight.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_suntide-maiden.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_suntide-maiden.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_war-judicator.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_war-judicator.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_windblade-adept.png"
           ],
           "src": [
@@ -296,6 +374,32 @@
         },
         {
           "alias": [
+            "neutral_deathblighter.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_deathblighter.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_emerald-rejuvinator.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_emerald-rejuvinator.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_flameblood-warlock.png"
           ],
           "src": [
@@ -309,10 +413,36 @@
         },
         {
           "alias": [
+            "neutral_frostbone-naga.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_frostbone-naga.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_healing-mystic.png"
           ],
           "src": [
             "/assets/cards/minions/neutral_healing-mystic.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_ironcliffe-guardian.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_ironcliffe-guardian.png"
           ],
           "data": {
             "tags": {
@@ -365,6 +495,45 @@
           ],
           "src": [
             "/assets/cards/minions/neutral_sojourner.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_spirit-of-power.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_spirit-of-power.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_spirit-of-vitality.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_spirit-of-vitality.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_spirit-of-wisdom.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_spirit-of-wisdom.png"
           ],
           "data": {
             "tags": {
@@ -532,10 +701,62 @@
       "assets": [
         {
           "alias": [
+            "f1_holy-immolation.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_holy-immolation.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_martyrdom.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_martyrdom.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_tempest.png"
           ],
           "src": [
             "/assets/cards/spells/f1_tempest.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_true-strike.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_true-strike.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_war-surge.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_war-surge.png"
           ],
           "data": {
             "tags": {
@@ -1040,6 +1261,19 @@
         },
         {
           "alias": [
+            "icon-keyword-celerity"
+          ],
+          "src": [
+            "/assets/icons/keyword-celerity.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "icon-keyword-cleave"
           ],
           "src": [
@@ -1473,6 +1707,19 @@
           ],
           "src": [
             "/assets/icons/keyword-stasis.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "icon-keyword-stealth"
+          ],
+          "src": [
+            "/assets/icons/keyword-stealth.png"
           ],
           "data": {
             "tags": {

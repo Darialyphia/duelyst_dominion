@@ -25,7 +25,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     super(KEYWORDS.PROVOKE.id, game, source, {
       name: KEYWORDS.PROVOKE.name,
       description: KEYWORDS.PROVOKE.description,
-      icon: 'icons/keyword-provoke.png',
+      icon: 'icons/keyword-provoke',
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.PROVOKE),
         new UnitEffectModifierMixin(game, {

@@ -3,6 +3,7 @@ import type { SerializedUnit } from '../../unit/unit.entity';
 import type { GameClient, GameStateEntities } from '../client';
 import type { BoardCellViewModel } from './board-cell.model';
 import type { CardViewModel } from './card.model';
+import type { ModifierViewModel } from './modifier.model';
 import type { PlayerViewModel } from './player.model';
 
 export class UnitViewModel {
@@ -115,5 +116,11 @@ export class UnitViewModel {
     const playerId = this.data.player;
     if (!playerId) return null;
     return this.getEntities()[playerId] as PlayerViewModel;
+  }
+
+  get modifiers() {
+    return this.data.modifiers.map(
+      modId => this.getEntities()[modId] as ModifierViewModel
+    );
   }
 }

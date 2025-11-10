@@ -26,7 +26,9 @@ export const cards = {
 "frostbone-naga": "frostbone-naga",
 "holy-immolation": "holy-immolation",
 "martyrdom": "martyrdom",
-"true-strike": "true-strike"
+"true-strike": "true-strike",
+"suntide_maiden": "suntide_maiden",
+"death-blighter": "death-blighter"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -51,5 +53,7 @@ export const collectableCards = {
 "frostbone-naga": "frostbone-naga",
 "holy-immolation": "holy-immolation",
 "martyrdom": "martyrdom",
-"true-strike": "true-strike"
+"true-strike": "true-strike",
+"suntide_maiden": "suntide_maiden",
+"death-blighter": "death-blighter"
 } as const satisfies Record<string, string>;

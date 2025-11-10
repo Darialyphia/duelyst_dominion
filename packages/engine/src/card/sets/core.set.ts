@@ -14,6 +14,7 @@ import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
+import { deathBlighter } from './core/neutral/deathblighter';
 import { emeraldRejuvinator } from './core/neutral/emerald-rejuvinator';
 import { flamebloodWarlock } from './core/neutral/flameblood-warlock';
 import { frostboneNaga } from './core/neutral/frostbone-naga';
@@ -53,6 +54,7 @@ export const coreSet: CardSet = {
     martyrdom,
     trueStrike,
     warSurge,
-    suntideMaiden
+    suntideMaiden,
+    deathBlighter
   ]
 };

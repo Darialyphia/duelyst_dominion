@@ -9,7 +9,8 @@ import {
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import gsap from 'gsap';
 import { config } from '@/utils/config';
-import type { Point } from '@game/shared';
+import { isDefined, type Point } from '@game/shared';
+import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -145,6 +146,12 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
 
   await timeline.play();
 });
+
+const displayedModifiers = computed(() => {
+  return [...unit.modifiers, ...unit.getCard().modifiers].filter(
+    mod => isDefined(mod.icon) && mod.stacks > 0
+  );
+});
 </script>
 
 <template>
@@ -203,6 +210,26 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
         >
           {{ unit.cmd }}
         </span>
+      </div>
+      <div class="modifiers">
+        <UiSimpleTooltip
+          v-for="modifier in displayedModifiers"
+          :key="modifier.id"
+          use-portal
+          side="left"
+        >
+          <template #trigger>
+            <div
+              :style="{ '--bg': `url(/assets/${modifier.icon}.png)` }"
+              :alt="modifier.name"
+              :data-stacks="modifier.stacks > 1 ? modifier.stacks : undefined"
+              class="modifier"
+            />
+          </template>
+
+          <div class="font-7">{{ modifier.name }}</div>
+          {{ modifier.description }}
+        </UiSimpleTooltip>
       </div>
       <div class="debug">{{ unit.x }}, {{ unit.y }}</div>
     </div>
@@ -345,5 +372,36 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
   top: 50%;
   translate: -50% -50%;
   opacity: 0;
+}
+
+.modifiers {
+  position: absolute;
+  top: var(--size-2);
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--size-2);
+  --pixel-scale: 2;
+}
+
+.modifier {
+  width: 24px;
+  aspect-ratio: 1;
+  background: var(--bg) no-repeat center center;
+  background-size: cover;
+  pointer-events: auto;
+  position: relative;
+  &::after {
+    content: attr(data-stacks);
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    font-size: var(--font-size-2);
+    color: white;
+    paint-order: stroke fill;
+    font-weight: var(--font-weight-7);
+    -webkit-text-stroke: 2px black;
+  }
 }
 </style>
