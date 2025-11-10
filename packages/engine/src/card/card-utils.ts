@@ -74,50 +74,6 @@ export const singleEnemyTargetRules = {
   }
 };
 
-export const singleEnemyMinionTargetRules = {
-  canPlay(game: Game, card: AnyCard, predicate: (c: Unit) => boolean = () => true) {
-    return (
-      card.player.enemyMinions.filter(
-        unit => unit.canBeTargetedBy(card) && predicate(unit)
-      ).length > 0
-    );
-  },
-  async getPreResponseTargets(
-    game: Game,
-    card: AnyCard,
-    {
-      predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {})
-    }: {
-      predicate?: (unit: Unit) => boolean;
-      getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
-    }
-  ) {
-    return await game.interaction.selectSpacesOnBoard({
-      player: card.player,
-      getAoe,
-      isElligible(candidate, selectedCards) {
-        if (!candidate.unit || !isMinion(candidate.unit.card)) {
-          return false;
-        }
-
-        return (
-          candidate.unit.isEnemy(card.player) &&
-          candidate.unit.canBeTargetedBy(card) &&
-          !selectedCards.some(selected => selected.equals(candidate)) &&
-          predicate(candidate.unit)
-        );
-      },
-      canCommit(selectedCards) {
-        return selectedCards.length === 1;
-      },
-      isDone(selectedCards) {
-        return selectedCards.length === 1;
-      }
-    });
-  }
-};
-
 export const singleMinionTargetRules = {
   canPlay(game: Game, card: AnyCard, predicate: (c: Unit) => boolean = () => true) {
     return (

@@ -569,7 +569,7 @@ const onMouseleave = () => {
 .bottom-left {
   position: absolute;
   bottom: calc(3px * var(--pixel-scale));
-  left: calc(5px * var(--pixel-scale));
+  left: calc(3px * var(--pixel-scale));
   display: flex;
   flex-direction: column;
   align-items: center;

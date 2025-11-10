@@ -74,7 +74,7 @@ const hoveredCard = computed(() => {
           :class="{ filled: i <= myPlayer.victoryPoints }"
         />
       </div>
-      <div class="flex gap-2 flex-row-reverse">
+      <div class="flex gap-2">
         <div
           v-for="i in myPlayer.maxMana"
           :key="i"
@@ -146,7 +146,7 @@ const hoveredCard = computed(() => {
           :class="{ filled: i <= opponent.victoryPoints }"
         />
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-row-reverse">
         <div
           v-for="i in opponent.maxMana"
           :key="i"
@@ -247,9 +247,9 @@ const hoveredCard = computed(() => {
   aspect-ratio: 1;
   border-radius: var(--radius-round);
   border: solid var(--border-size-2) var(--color);
-  background-color: var(--color);
+  background-color: transparent;
   &.spent {
-    background-color: transparent;
+    background-color: var(--color);
   }
   &.overspent {
     --color: magenta;

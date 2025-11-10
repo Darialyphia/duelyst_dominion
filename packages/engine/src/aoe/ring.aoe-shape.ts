@@ -47,6 +47,8 @@ export class RingAOEShape implements AOEShape<SerializedRing> {
   }
 
   getArea([point]: [Point]): Point[] {
+    if (!isDefined(point)) return [];
+
     return ringGrid
       .traverse(
         spiral({ radius: this.options.size, start: { col: point.x, row: point.y } })

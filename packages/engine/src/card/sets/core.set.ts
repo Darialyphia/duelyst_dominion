@@ -2,9 +2,12 @@ import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
 import { azuriteLion } from './core/f1/azurite-lion';
+import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
+import { martyrdom } from './core/f1/martyrdom';
 import { silverguardKnight } from './core/f1/silverguard-knight';
 import { tempest } from './core/f1/tempest';
+import { trueStrike } from './core/f1/true-strike';
 import { warJudicator } from './core/f1/war-judicator';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
@@ -43,6 +46,9 @@ export const coreSet: CardSet = {
     spiritOfWisdom,
     emeraldRejuvinator,
     ironcliffeGuardian,
-    frostboneNaga
+    frostboneNaga,
+    holyImmolation,
+    martyrdom,
+    trueStrike
   ]
 };

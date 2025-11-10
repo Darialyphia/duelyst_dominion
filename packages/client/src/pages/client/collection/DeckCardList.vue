@@ -106,7 +106,7 @@ const { deckBuilder } = useCollectionPage();
   &.spell {
     background-position:
       center center,
-      calc(100% + 40px) -120px;
+      calc(100% + 50px) -124px;
   }
 
   @starting-style {

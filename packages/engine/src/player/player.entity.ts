@@ -134,10 +134,10 @@ export class Player
   }
 
   async init() {
-    this._mana = this.isPlayer1
+    this._baseMaxMana = this.isPlayer1
       ? this.game.config.PLAYER_1_INITIAL_MANA
       : this.game.config.PLAYER_2_INITIAL_MANA;
-    this._baseMaxMana = this.game.config.MAX_MANA;
+    this._mana = this._baseMaxMana;
 
     const generalId = this.options.deck.cards.find(cardId => {
       const blueprint = this.game.cardSystem.getBlueprint(cardId);
@@ -316,8 +316,10 @@ export class Player
 
     this.replacesDoneThisTurn = 0;
     this._resourceActionsDoneThisTurn = 0;
+    this._mana = this.maxMana;
+
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
-      this._mana = this.maxMana;
+      this._baseMaxMana = this.game.config.MAX_MANA;
     }
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
@@ -351,7 +353,9 @@ export class Player
   }
 
   get maxMana() {
-    return this._baseMaxMana + this.opponent.overspentMana;
+    return this.isTurnPlayer
+      ? this._baseMaxMana + this.opponent.overspentMana
+      : this._baseMaxMana;
   }
 
   async spendMana(amount: number) {

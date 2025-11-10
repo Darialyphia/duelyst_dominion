@@ -30,7 +30,6 @@ export const warJudicator: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {
-        threshold: 2,
         mixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'cmd',

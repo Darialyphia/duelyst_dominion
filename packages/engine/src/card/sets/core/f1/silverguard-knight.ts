@@ -36,7 +36,6 @@ export const silverguardKnight: MinionBlueprint = {
     await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {
-        threshold: 2,
         mixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',
