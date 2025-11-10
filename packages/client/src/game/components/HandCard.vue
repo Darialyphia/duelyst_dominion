@@ -207,7 +207,9 @@ const highlightColor = computed(() => {
       content: '';
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 1.5rem v-bind(highlightColor);
+      box-shadow:
+        inset 0 0 1.5rem v-bind(highlightColor),
+        0 0 2rem v-bind(highlightColor);
       z-index: 2;
       transition: opacity 0.3s var(--ease-2);
       pointer-events: none;

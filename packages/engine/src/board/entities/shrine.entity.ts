@@ -156,6 +156,7 @@ export class Shrine
     if (!this.player) return;
 
     const defendingCmd = this.defendingCmdByPlayer[this.player.id];
+    console.log(defendingCmd);
     if (defendingCmd === 0) {
       this.player = null;
     }

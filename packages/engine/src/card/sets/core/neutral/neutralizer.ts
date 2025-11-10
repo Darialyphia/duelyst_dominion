@@ -26,8 +26,7 @@ class NeutralizedModifier extends Modifier<Unit> {
         new UnitInterceptorModifierMixin(game, {
           key: 'canCapture',
           interceptor: () => false
-        }),
-        new UntilStartOfNextTurnModifierMixin(game)
+        })
       ]
     });
   }
@@ -38,7 +37,7 @@ export const neutralizer: MinionBlueprint = {
   name: 'Neutralizer',
   description: dedent`
     @Stealth@
-    @On Enter@: units nearby this cannot capture until the start of your next turn.`,
+    Units nearby this cannot capture.`,
   cardIconId: 'minions/neutral_neutralizer',
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -60,30 +59,24 @@ export const neutralizer: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(new StealthModifier(game, card));
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const unit = event.data.card.unit;
-        if (!unit) return;
-
-        await card.unit.modifiers.add(
-          new Modifier('neutralizer-aura', game, card, {
-            mixins: [
-              new UntilStartOfNextTurnModifierMixin(game),
-              new AuraModifierMixin<Unit, MinionCard | GeneralCard>(game, {
-                isElligible: candidate => {
-                  if (candidate.location !== 'board') return false;
-                  if (!isMinionOrGeneral(candidate)) return false;
-                  return card.unit.nearbyUnits.some(u => u.equals(candidate.unit));
-                },
-                async onGainAura(candidate) {
-                  await candidate.unit.modifiers.add(new NeutralizedModifier(game, card));
-                },
-                async onLoseAura(candidate) {
-                  await candidate.unit.modifiers.remove(NeutralizedModifier);
-                }
-              })
-            ]
+      new Modifier('neutralizer-aura', game, card, {
+        mixins: [
+          new AuraModifierMixin<MinionCard, MinionCard | GeneralCard>(game, {
+            isElligible: candidate => {
+              if (card.location !== 'board') return false;
+              if (candidate.location !== 'board') return false;
+              if (!isMinionOrGeneral(candidate)) return false;
+              return card.unit.nearbyUnits.some(u => u.equals(candidate.unit));
+            },
+            async onGainAura(candidate) {
+              console.log('applying neutralized to', candidate.unit.card.id);
+              await candidate.unit.modifiers.add(new NeutralizedModifier(game, card));
+            },
+            async onLoseAura(candidate) {
+              await candidate.unit.modifiers.remove(NeutralizedModifier);
+            }
           })
-        );
+        ]
       })
     );
   },
