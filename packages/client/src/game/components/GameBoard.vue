@@ -204,7 +204,7 @@ const hoveredCard = computed(() => {
 
 .hand {
   position: fixed;
-  width: 75%;
+  width: 60%;
   bottom: 22%;
   left: var(--size-8);
 }

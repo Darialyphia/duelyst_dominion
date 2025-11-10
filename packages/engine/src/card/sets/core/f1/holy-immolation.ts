@@ -40,7 +40,7 @@ export const holyImmolation: SpellBlueprint = {
   runeCost: {
     yellow: 2
   },
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_MINION, { size: 1 }),
+  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { size: 1 }),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),
   getTargets(game, card) {
@@ -58,10 +58,7 @@ export const holyImmolation: SpellBlueprint = {
 
     await targetToHeal.heal(card, 4);
 
-    const unitsToDamage = aoe
-      .getArea(targets)
-      .map(point => game.unitSystem.getUnitAt(point))
-      .filter(isDefined);
+    const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
     for (const unit of unitsToDamage) {
       await unit.takeDamage(card, new SpellDamage(card, 4));

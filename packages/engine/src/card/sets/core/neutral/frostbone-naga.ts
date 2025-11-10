@@ -29,11 +29,14 @@ export const frostboneNaga: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        const area = event.data.aoe.getArea([event.data.cell.position]);
-        for (const point of area) {
-          await game.unitSystem
-            .getUnitAt(point)
-            ?.takeDamage(card, new AbilityDamage(card, 2));
+        const unitsToDamage = game.unitSystem.getUnitsInAOE(
+          event.data.aoe,
+          [event.data.cell.position],
+          card.player
+        );
+
+        for (const unit of unitsToDamage) {
+          await unit.takeDamage(card, new AbilityDamage(card, 2));
         }
       })
     );

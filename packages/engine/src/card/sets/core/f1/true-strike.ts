@@ -33,14 +33,10 @@ export const trueStrike: SpellBlueprint = {
     });
   },
   async onInit() {},
-  async onPlay(game, card, { targets, aoe }) {
-    const unitsToDamage = aoe
-      .getArea(targets)
-      .map(point => game.unitSystem.getUnitAt(point))
-      .filter(isDefined);
+  async onPlay(game, card, { targets }) {
+    const target = game.unitSystem.getUnitAt(targets[0]);
+    if (!target) return;
 
-    for (const unit of unitsToDamage) {
-      await unit.takeDamage(card, new SpellDamage(card, 2));
-    }
+    await target.takeDamage(card, new SpellDamage(card, 2));
   }
 };

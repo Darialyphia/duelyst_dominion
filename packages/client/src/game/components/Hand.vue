@@ -183,7 +183,7 @@ const cards = computed(() => {
   position: relative;
   z-index: 1;
   height: 100%;
-  width: 70%;
+  width: 100%;
   transition: transform 0.15s var(--ease-in-2);
   &.opponent-hand:not(.expanded) {
     position: absolute;

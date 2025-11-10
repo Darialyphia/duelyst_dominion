@@ -34,14 +34,10 @@ export const martyrdom: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
-    const unitsToDestroy = aoe
-      .getArea(targets)
-      .map(point => game.unitSystem.getUnitAt(point))
-      .filter(isDefined);
+    const target = game.unitSystem.getUnitAt(targets[0]);
+    if (!target) return;
 
-    for (const unit of unitsToDestroy) {
-      await unit.destroy(card);
-    }
+    await target.destroy(card);
 
     await card.player.opponent.earnVictoryPoints(2);
   }

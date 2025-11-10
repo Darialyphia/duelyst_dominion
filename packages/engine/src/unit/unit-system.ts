@@ -4,6 +4,8 @@ import { Unit } from './unit.entity';
 import { MinionCard } from '../card/entities/minion-card.entity';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Player } from '../player/player.entity';
+import type { AOEShape, GenericAOEShape } from '../aoe/aoe-shape';
+import { isValidTargetingType } from '../targeting/targeting-strategy';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type UnitSystemOptions = {};
@@ -64,85 +66,11 @@ export class UnitSystem extends System<UnitSystemOptions> {
     }
   }
 
-  getUnitDirectlyBehind(unit: Unit) {
-    const { x, y } = unit.position;
-    if (unit.player.isPlayer1) {
-      return this.getUnitAt({ x: x - 1, y });
-    } else {
-      return this.getUnitAt({ x: x + 1, y });
-    }
-  }
-
-  getClosestUnitBehind(unit: Unit) {
-    if (unit.player.isPlayer1) {
-      for (let x = unit.position.x - 1; x >= 0; x--) {
-        const unitAt = this.getUnitAt({ x, y: unit.position.y });
-        if (unitAt) {
-          return unitAt;
-        }
-      }
-    } else {
-      for (let x = unit.position.x + 1; x < this.game.boardSystem.map.cols; x++) {
-        const unitAt = this.getUnitAt({ x, y: unit.position.y });
-        if (unitAt) {
-          return unitAt;
-        }
-      }
-    }
-  }
-
-  getUnitDirectlyInFront(unit: Unit) {
-    const { x, y } = unit.position;
-    if (unit.player.isPlayer1) {
-      return this.getUnitAt({ x: x + 1, y });
-    } else {
-      return this.getUnitAt({ x: x - 1, y });
-    }
-  }
-
-  getClosestUnitInFront(unit: Unit) {
-    if (unit.player.isPlayer1) {
-      for (let x = unit.position.x + 1; x < this.game.boardSystem.map.cols; x++) {
-        const unitAt = this.getUnitAt({ x, y: unit.position.y });
-        if (unitAt) {
-          return unitAt;
-        }
-      }
-    } else {
-      for (let x = unit.position.x - 1; x >= 0; x--) {
-        const unitAt = this.getUnitAt({ x, y: unit.position.y });
-        if (unitAt) {
-          return unitAt;
-        }
-      }
-    }
-  }
-
-  getUnitDirectlyAbove(unit: Unit) {
-    const { x, y } = unit.position;
-    return this.getUnitAt({ x, y: y - 1 });
-  }
-
-  getClosestUnitAbove(unit: Unit) {
-    for (let y = unit.position.y - 1; y >= 0; y--) {
-      const unitAt = this.getUnitAt({ x: unit.position.x, y });
-      if (unitAt) {
-        return unitAt;
-      }
-    }
-  }
-
-  getUnitDirectlyBelow(unit: Unit) {
-    const { x, y } = unit.position;
-    return this.getUnitAt({ x, y: y + 1 });
-  }
-
-  getClosestUnitBelow(unit: Unit) {
-    for (let y = unit.position.y + 1; y < this.game.boardSystem.map.rows; y++) {
-      const unitAt = this.getUnitAt({ x: unit.position.x, y });
-      if (unitAt) {
-        return unitAt;
-      }
-    }
+  getUnitsInAOE(aoe: GenericAOEShape, points: Point[], player: Player) {
+    return aoe
+      .getArea(points)
+      .filter(point => isValidTargetingType(this.game, point, player, aoe.targetingType))
+      .map(point => this.getUnitAt(point))
+      .filter(isDefined);
   }
 }
