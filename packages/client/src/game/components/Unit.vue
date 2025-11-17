@@ -220,15 +220,23 @@ const displayedModifiers = computed(() => {
         >
           <template #trigger>
             <div
-              :style="{ '--bg': `url(/assets/${modifier.icon}.png)` }"
+              :style="{
+                '--bg': `url(/assets/${modifier.icon}.png)`,
+                '--pixel-scale': 1
+              }"
               :alt="modifier.name"
               :data-stacks="modifier.stacks > 1 ? modifier.stacks : undefined"
               class="modifier"
             />
           </template>
 
-          <div class="font-7">{{ modifier.name }}</div>
-          {{ modifier.description }}
+          <div class="flex gap-2 items-start">
+            <img :src="`/assets/${modifier.icon}.png`" class="modifier" />
+            <div>
+              <div class="font-7">{{ modifier.name }}</div>
+              {{ modifier.description }}
+            </div>
+          </div>
         </UiSimpleTooltip>
       </div>
       <div class="debug">{{ unit.x }}, {{ unit.y }}</div>
@@ -386,7 +394,7 @@ const displayedModifiers = computed(() => {
 }
 
 .modifier {
-  width: 24px;
+  width: calc(24px * var(--pixel-scale));
   aspect-ratio: 1;
   background: var(--bg) no-repeat center center;
   background-size: cover;

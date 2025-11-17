@@ -88,7 +88,7 @@ export class CardManagerComponent {
     const discardPileCard = [...this.discardPile].find(card => card.id === id);
     if (discardPileCard) return { card: discardPileCard as T, location: 'discardPile' };
 
-    const onBoardCard = this.player.units.find(unit => unit.card.id === id)?.card;
+    const onBoardCard = this.player.units.find(unit => unit?.card.id === id)?.card;
     if (onBoardCard) return { card: onBoardCard as T, location: 'board' };
 
     return null;

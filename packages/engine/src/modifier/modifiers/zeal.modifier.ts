@@ -18,9 +18,6 @@ export class ZealModifier extends Modifier<MinionCard> {
     }
   ) {
     super(modifierType, game, source, {
-      name: KEYWORDS.ZEAL.name,
-      description: KEYWORDS.ZEAL.description,
-      icon: 'icons/keyword-zeal',
       mixins: [
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
@@ -41,6 +38,9 @@ export class ZealModifier extends Modifier<MinionCard> {
   private async applyZeal(unit: Unit, game: Game, mixins: ModifierMixin<Unit>[]) {
     await unit.modifiers.add(
       new Modifier(this.unitModifierId, game, this.target, {
+        name: KEYWORDS.ZEAL.name,
+        description: KEYWORDS.ZEAL.description,
+        icon: 'icons/keyword-zeal',
         mixins: [
           new TogglableModifierMixin(game, modifier => this.isZealed(modifier)),
           ...mixins

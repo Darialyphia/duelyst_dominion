@@ -3,8 +3,12 @@ import { Entity } from '../../entity';
 import type { Game } from '../../game/game';
 import { pointToCellId } from '../board-utils';
 import type { BoardHex } from '../board.system';
+import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
+import { Interceptable } from '../../utils/interceptable';
 
-export type BoardCellInterceptors = EmptyObject;
+export type BoardCellInterceptors = {
+  isWalkable: Interceptable<boolean>;
+};
 
 export type SerializedCoords = `${string}:${string}`;
 
@@ -24,7 +28,7 @@ export type BoardCellOptions = {
 };
 
 export class BoardCell
-  extends Entity<BoardCellInterceptors>
+  extends EntityWithModifiers<BoardCellInterceptors>
   implements Serializable<SerializedCell>
 {
   readonly position: Vec2;
@@ -35,7 +39,9 @@ export class BoardCell
     private game: Game,
     options: BoardCellOptions
   ) {
-    super(pointToCellId(options.position), {});
+    super(pointToCellId(options.position), {
+      isWalkable: new Interceptable()
+    });
     this.position = Vec2.fromPoint(options.position);
     this.player = options.player;
   }

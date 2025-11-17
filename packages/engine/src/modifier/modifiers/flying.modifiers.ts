@@ -15,9 +15,6 @@ export class FlyingModifier<T extends MinionCard | GeneralCard> extends Modifier
 
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.FLYING.id, game, source, {
-      name: KEYWORDS.FLYING.name,
-      description: KEYWORDS.FLYING.description,
-      icon: 'icons/keyword-celerity',
       mixins: [
         new UnitEffectModifierMixin<T>(game, {
           onApplied: async unit => {
@@ -36,10 +33,13 @@ export class FlyingModifier<T extends MinionCard | GeneralCard> extends Modifier
 
   private async applyFlyToUnit(unit: Unit): Promise<void> {
     this.unitModifier = new Modifier(KEYWORDS.FLYING.id, this.game, unit.card, {
+      name: KEYWORDS.FLYING.name,
+      description: KEYWORDS.FLYING.description,
+      icon: 'icons/keyword-flying',
       mixins: [
         new UnitInterceptorModifierMixin(this.game, {
           key: 'movementReach',
-          interceptor: value => value + 1
+          interceptor: value => value + 2
         }),
         new UnitInterceptorModifierMixin(this.game, {
           key: 'pathfindingStrategy',

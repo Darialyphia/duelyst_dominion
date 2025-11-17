@@ -426,6 +426,19 @@
         },
         {
           "alias": [
+            "neutral_neutralizer.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_neutralizer.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_primus-shieldmaster.png"
           ],
           "src": [
@@ -686,6 +699,19 @@
     {
       "name": "cards/spells",
       "assets": [
+        {
+          "alias": [
+            "f1_divine-bond.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_divine-bond.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
         {
           "alias": [
             "f1_holy-immolation.png"
@@ -1252,6 +1278,19 @@
           ],
           "src": [
             "/assets/icons/keyword-burn.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "icon-keyword-cannot-cature"
+          ],
+          "src": [
+            "/assets/icons/keyword-cannot-cature.png"
           ],
           "data": {
             "tags": {

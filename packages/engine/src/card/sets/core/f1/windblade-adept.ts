@@ -18,7 +18,7 @@ export const windbladeAdept: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {
-    red: 1
+    red: 2
   },
   atk: 2,
   cmd: 1,

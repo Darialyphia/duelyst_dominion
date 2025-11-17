@@ -10,7 +10,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
-  description: '@Zeal@.',
+  description: '@Zeal@ : fully heal this unit at the end of your turn.',
   cardIconId: 'minions/f1_suntide-maiden',
   kind: CARD_KINDS.MINION,
   collectable: true,

@@ -24,9 +24,6 @@ export class StealthModifier extends Modifier<MinionCard> {
     options?: { mixins: ModifierMixin<MinionCard>[] }
   ) {
     super(KEYWORDS.STEALTH.id, game, source, {
-      name: KEYWORDS.STEALTH.name,
-      description: KEYWORDS.STEALTH.description,
-      icon: 'icons/keyword-stealth',
       mixins: [
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
@@ -61,6 +58,9 @@ export class StealthModifier extends Modifier<MinionCard> {
 
   private async applyStealthToUnit(unit: Unit): Promise<void> {
     this.unitModifier = new Modifier(KEYWORDS.STEALTH.id, this.game, unit.card, {
+      name: KEYWORDS.STEALTH.name,
+      description: KEYWORDS.STEALTH.description,
+      icon: 'icons/keyword-stealth',
       mixins: [
         new UnitInterceptorModifierMixin(this.game, {
           key: 'canBeAttackTarget',
@@ -89,5 +89,6 @@ export class StealthModifier extends Modifier<MinionCard> {
       await unit.modifiers.remove(this.unitModifier);
       this.unitModifier = null;
     }
+    await this.addInterceptor('isEnabled', () => false);
   }
 }

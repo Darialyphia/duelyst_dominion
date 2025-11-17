@@ -122,6 +122,7 @@ export class Shrine
   }
 
   canBeCapturedBy(unit: Unit) {
+    if (this.game.gamePhaseSystem.elapsedTurns === 0) return false;
     if (this.player?.equals(unit.player)) return false;
 
     const isNearby = this.neighborUnits.some(neighborUnit => neighborUnit.equals(unit));
@@ -153,6 +154,7 @@ export class Shrine
   }
 
   private async onTurnEnd() {
+    console.log('Shrine turn end check', this.id);
     if (!this.player) return;
 
     const defendingCmd = this.defendingCmdByPlayer[this.player.id];

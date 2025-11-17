@@ -39,6 +39,9 @@ export class CelerityModifier extends Modifier<MinionCard> {
 
   private async applyCelerityToUnit(unit: Unit): Promise<void> {
     this.unitModifier = new Modifier(KEYWORDS.CELERITY.id, this.game, unit.card, {
+      name: KEYWORDS.CELERITY.name,
+      description: KEYWORDS.CELERITY.description,
+      icon: 'icons/keyword-celerity',
       mixins: [
         new UnitInterceptorModifierMixin(this.game, {
           key: 'maxAttacksPerTurn',

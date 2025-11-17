@@ -274,6 +274,7 @@ export class GameClient {
       type: 'endTurn',
       payload: { playerId: this.playerId }
     });
+    this.ui.unselectUnit();
   }
 
   cancelPlayCard() {

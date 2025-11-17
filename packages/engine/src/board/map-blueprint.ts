@@ -43,7 +43,7 @@ export const defaultMap: MapBlueprint = {
     null, null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null, null, null,
     null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null,
     neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(),
-    null, null, p1(), p1(), p1(), p1(), null, p1(), p1(), p1(), p1(), null, null,
+    null, null, p1(), p1(), p1(), p1(), p1(), p1(), p1(), p1(), p1(), null, null,
     null, null, null, null, p1(), p1(), p1(), p1(), p1(), null, p1(), null, null,
     null, null, null, null, p1(), null, p1(), null, null, null, null, null, null
 
