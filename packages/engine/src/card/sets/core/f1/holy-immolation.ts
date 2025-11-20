@@ -28,7 +28,7 @@ export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  @Consume@ @[mana:yellow]@
+  @Consume@ @[rune:yellow]@
   Heal an allied minion for 4 and deal 4 damage to enemies nearby it.`,
   cardIconId: 'spells/f1_holy-immolation',
   kind: CARD_KINDS.SPELL,
