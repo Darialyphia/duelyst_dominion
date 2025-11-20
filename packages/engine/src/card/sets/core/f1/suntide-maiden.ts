@@ -1,7 +1,6 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
@@ -23,9 +22,9 @@ export const suntideMaiden: MinionBlueprint = {
     red: 1,
     yellow: 1
   },
-  atk: 2,
+  atk: 3,
   cmd: 1,
-  maxHp: 3,
+  maxHp: 6,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

@@ -10,13 +10,13 @@ import CardText from '@/card/components/CardText.vue';
 import {
   unrefElement,
   until,
-  useElementBounding,
-  useMouse,
+  useEventListener,
   useResizeObserver
 } from '@vueuse/core';
 import CardFoil from './CardFoil.vue';
 import CardGlare from './CardGlare.vue';
 import type { RuneCost } from '@game/engine/src/card/card-blueprint';
+import { throttle } from 'lodash-es';
 
 const {
   card,
@@ -71,17 +71,38 @@ const imageBg = computed(() => {
 });
 
 const root = useTemplateRef('card');
-const { x, y } = useMouse({
-  scroll: false
+const x = ref(0);
+const y = ref(0);
+useEventListener(
+  'mousemove',
+  (e: MouseEvent) => {
+    x.value = e.clientX;
+    y.value = e.clientY;
+  },
+  { passive: true, capture: true }
+);
+
+const boundingRect = ref<Omit<DOMRect, 'toJSON'>>({
+  bottom: 0,
+  height: 0,
+  left: 0,
+  right: 0,
+  top: 0,
+  width: 0,
+  x: 0,
+  y: 0
 });
-
-const rect = useElementBounding(root);
-
+const setBoundingRect = () => {
+  if (!root.value) return;
+  boundingRect.value = unrefElement(root.value)!.getBoundingClientRect();
+};
+onMounted(setBoundingRect);
+useEventListener('scroll', throttle(setBoundingRect, 100), {
+  passive: true,
+  capture: true
+});
 const pointerStyle = computed(() => {
-  const left = rect.left.value ?? 0;
-  const top = rect.top.value ?? 0;
-  const width = rect.width.value ?? 0;
-  const height = rect.height.value ?? 0;
+  const { left, top, width, height } = boundingRect.value;
 
   const pointer = {
     x: clamp(x.value - left, 0, width),
@@ -183,13 +204,14 @@ const onMousemove = (e: MouseEvent) => {
   if (!root.value) return;
 
   const { clientX, clientY } = e;
-  const { left, top, width, height } = unrefElement(
-    root.value
-  )!.getBoundingClientRect();
-  angle.value = {
+  const { left, top, width, height } = boundingRect.value;
+  gsap.killTweensOf(angle.value);
+  gsap.to(angle.value, {
     y: ((clientX - left) / width - 0.5) * maxAngle,
-    x: ((clientY - top) / height - 0.5) * maxAngle
-  };
+    x: ((clientY - top) / height - 0.5) * maxAngle,
+    duration: 0.5,
+    ease: Power2.easeOut
+  });
 };
 
 const onMouseleave = () => {
@@ -540,7 +562,7 @@ const onMouseleave = () => {
   font-size: calc(var(--pixel-scale) * 0.5px * v-bind(descriptionFontSize));
   overflow: hidden;
   line-height: 1.2;
-  text-shadow: 0 0 5px black;
+  text-shadow: 0 0 0.75rem black;
   &.is-multi-line {
     text-align: left;
   }
