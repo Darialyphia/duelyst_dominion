@@ -51,9 +51,12 @@ const canAddCard = computed(() => {
       <div>
         <BlueprintCard
           :blueprint="card.card"
-          :is-animated="!isEditingDeck || canAddCard"
+          :is-animated="
+            viewMode === 'expanded' && (!isEditingDeck || canAddCard)
+          "
           show-stats
           class="collection-card"
+          :parallax-multiplier="viewMode === 'compact' ? 0.4 : 1"
           :is-foil="card.isFoil"
           :class="{
             disabled: isEditingDeck && !canAddCard

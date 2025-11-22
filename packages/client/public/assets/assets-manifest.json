@@ -4314,6 +4314,19 @@
         },
         {
           "alias": [
+            "card-front-texture.png"
+          ],
+          "src": [
+            "/assets/ui/card-front-texture.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "card-front.png"
           ],
           "src": [

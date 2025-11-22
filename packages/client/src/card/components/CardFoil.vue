@@ -51,13 +51,12 @@
   --foil-brightness: 0.6;
   position: absolute;
   inset: 0;
-  opacity: 0.2;
+  opacity: 0.15;
   pointer-events: none;
   mask-image: var(--foil-mask);
   mask-size: cover;
   mix-blend-mode: color-dodge;
   background-image:
-    /* url('/assets/ui/foil-texture.webp'), */
     linear-gradient(white, white),
     repeating-linear-gradient(
       0deg,
@@ -78,6 +77,7 @@
       #0e152e 10%,
       #0e152e 12%
     );
+  /* url('/assets/ui/foil-texture.webp'); */
   background-size:
     40%,
     200% 700%,

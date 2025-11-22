@@ -243,11 +243,6 @@ const onMouseleave = () => {
       <div class="card-front">
         <CardFoil v-if="isFoil" />
 
-        <div class="image parallax" style="--parallax-factor: 1.5">
-          <div class="image-shadow" />
-          <div class="image-sprite" />
-        </div>
-
         <div class="top-left parallax">
           <div
             v-if="isDefined(card.manaCost)"
@@ -352,6 +347,10 @@ const onMouseleave = () => {
           </svg>
         </div>
 
+        <div class="image parallax" style="--parallax-factor: 1.5">
+          <div class="image-shadow" />
+          <div class="image-sprite" />
+        </div>
         <div class="kind parallax">
           {{ uppercaseFirstLetter(card.kind.toLocaleLowerCase()) }}
         </div>
@@ -360,7 +359,7 @@ const onMouseleave = () => {
           <CardText :text="card.description" />
         </div>
 
-        <div class="rarity" />
+        <div class="rarity parallax" />
 
         <CardGlare />
       </div>
@@ -401,6 +400,10 @@ const onMouseleave = () => {
     --foil-x: calc(1% * v-bind('pointerStyle?.foilX'));
     --foil-y: calc(1% * v-bind('pointerStyle?.foilY'));
     --foil-animated-toggle: initial;
+  }
+
+  .card-perspective-wrapper:not(:hover):has(.foil) &.animated {
+    transition: transform 0.5s;
   }
 
   > * {
@@ -507,7 +510,7 @@ const onMouseleave = () => {
   height: calc(2 * 96px * var(--pixel-scale));
   pointer-events: none;
   .card.spell & {
-    top: calc(-20px * var(--pixel-scale));
+    top: calc(-10px * var(--pixel-scale));
   }
 
   .image-shadow {
@@ -554,7 +557,7 @@ const onMouseleave = () => {
 }
 
 .description {
-  height: calc(54px * var(--pixel-scale));
+  height: calc(60px * var(--pixel-scale));
   position: absolute;
   top: calc(180px * var(--pixel-scale));
   left: calc(43px * var(--pixel-scale));
@@ -563,6 +566,12 @@ const onMouseleave = () => {
   overflow: hidden;
   line-height: 1.2;
   text-shadow: 0 0 0.75rem black;
+  -webkit-text-stroke: 2px black;
+  paint-order: stroke fill;
+  :is(.spell, .artifact) & {
+    left: calc(22px * var(--pixel-scale));
+    width: calc(100% - (46px * var(--pixel-scale)));
+  }
   &.is-multi-line {
     text-align: left;
   }
@@ -708,7 +717,7 @@ const onMouseleave = () => {
   position: absolute;
   bottom: calc(0px * var(--pixel-scale));
   right: 50%;
-  translate: 50% 0;
+  transform: translateX(50%);
   width: calc(14px * var(--pixel-scale));
   height: calc(17px * var(--pixel-scale));
   background: v-bind(rarityBg);
