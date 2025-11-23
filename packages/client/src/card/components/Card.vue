@@ -48,8 +48,10 @@ const {
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
-    animations: Record<string, { startFrame: number; endFrame: number }>;
-    frameDuration: number;
+    animations: Record<
+      string,
+      { startFrame: number; endFrame: number; frameDuration: number }
+    >;
   };
   isAnimated?: boolean;
   isFoil?: boolean;

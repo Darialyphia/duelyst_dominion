@@ -16,7 +16,7 @@ export const argeonHighmane: GeneralBlueprint = {
   tags: [],
   atk: 2,
   cmd: 1,
-  maxHp: 15,
+  maxHp: 25,
   abilities: [],
   async onInit() {}
 };

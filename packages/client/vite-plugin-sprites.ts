@@ -62,11 +62,12 @@ export default function spritesPlugin(): Plugin {
           // Process animations
           const animations: Record<
             string,
-            { startFrame: number; endFrame: number }
+            { startFrame: number; endFrame: number; frameDuration: number }
           > = {};
 
           let currentAnimName: string | null = null;
           let currentAnimStart = 0;
+          let currentAnimFrameDuration = 0;
 
           json.frames.forEach((frame, index) => {
             // Parse animation name from filename (e.g. "attack-0" -> "attack")
@@ -79,12 +80,14 @@ export default function spritesPlugin(): Plugin {
               if (currentAnimName) {
                 animations[currentAnimName] = {
                   startFrame: currentAnimStart,
-                  endFrame: index - 1
+                  endFrame: index - 1,
+                  frameDuration: currentAnimFrameDuration
                 };
               }
               // Start new animation
               currentAnimName = animName;
               currentAnimStart = index;
+              currentAnimFrameDuration = frame.duration;
             }
           });
 
@@ -92,7 +95,8 @@ export default function spritesPlugin(): Plugin {
           if (currentAnimName) {
             animations[currentAnimName] = {
               startFrame: currentAnimStart,
-              endFrame: json.frames.length - 1
+              endFrame: json.frames.length - 1,
+              frameDuration: currentAnimFrameDuration
             };
           }
 

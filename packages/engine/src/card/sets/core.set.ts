@@ -26,7 +26,7 @@ export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
   name: 'Core Set',
   cards: [
-    argeonHighmane
+    argeonHighmane,
     // healingMystic,
     // archonSpellbinder,
     // primusShieldmaster,
@@ -40,7 +40,7 @@ export const coreSet: CardSet = {
     // emeraldRejuvinator,
     // ironcliffeGuardian,
     // frostboneNaga,
-    // holyImmolation,
+    holyImmolation
     // martyrdom,
     // trueStrike,
     // warSurge,

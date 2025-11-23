@@ -8,8 +8,10 @@ const props = defineProps<{
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
-    animations: Record<string, { startFrame: number; endFrame: number }>;
-    frameDuration: number;
+    animations: Record<
+      string,
+      { startFrame: number; endFrame: number; frameDuration: number }
+    >;
   };
 
   animationSequence?: string[];
@@ -88,7 +90,7 @@ useIntervalFn(
       currentFrame.value++;
     }
   },
-  () => props.sprite.frameDuration
+  () => currentAnimation.value?.frameDuration ?? 100
 );
 
 const activeFrameRect = computed(() => {
@@ -133,13 +135,11 @@ const bgPosition = computed(() => {
   width: calc(var(--width));
   height: calc(var(--height));
   pointer-events: none;
-  scale: calc(2 * var(--pixel-scale));
-  bottom: calc(185px * var(--pixel-scale));
+  bottom: calc(175px * var(--pixel-scale));
   left: 50%;
-  transform: translateX(-12.5%);
-
+  transform: translateX(-50%) scale(calc(2 * var(--pixel-scale)));
   &.is-spell {
-    top: calc(-10px * var(--pixel-scale));
+    top: calc(55px * var(--pixel-scale));
   }
 
   .image-shadow {

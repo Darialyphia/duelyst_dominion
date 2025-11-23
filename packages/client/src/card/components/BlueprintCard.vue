@@ -4,7 +4,7 @@ import Card from './Card.vue';
 import sprites from 'virtual:sprites';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
-
+console.log(sprites);
 const sprite = computed(() => {
   return sprites[blueprint.sprite.id];
 });
@@ -32,6 +32,9 @@ const sprite = computed(() => {
     }"
     :sprite="sprite"
   />
+  <div v-else>
+    Missing sprite for card: {{ blueprint.name }} ({{ blueprint.id }})
+  </div>
 </template>
 
 <style scoped lang="postcss"></style>
