@@ -56,6 +56,10 @@ export class ArtifactCard extends Card<
     });
   }
 
+  getAOE(targets: BoardCell[]) {
+    return this.blueprint.getAoe(this.game, this, targets);
+  }
+
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
       this.canAfford && this.hasRunes && this.blueprint.canPlay(this.game, this),

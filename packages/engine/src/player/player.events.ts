@@ -14,7 +14,7 @@ export class PlayerTurnEvent extends TypedSerializableEvent<
   }
 }
 
-export class PlayerDrawEvent extends TypedSerializableEvent<
+export class PlayerBeforeDrawEvent extends TypedSerializableEvent<
   { player: Player; amount: number },
   { player: SerializedPlayer; amount: number }
 > {
@@ -22,6 +22,18 @@ export class PlayerDrawEvent extends TypedSerializableEvent<
     return {
       player: this.data.player.serialize(),
       amount: this.data.amount
+    };
+  }
+}
+
+export class PlayerAfterDrawEvent extends TypedSerializableEvent<
+  { player: Player; cards: DeckCard[] },
+  { player: SerializedPlayer; cards: string[] }
+> {
+  serialize() {
+    return {
+      player: this.data.player.serialize(),
+      cards: this.data.cards.map(card => card.id)
     };
   }
 }
@@ -103,8 +115,8 @@ export class PlayerAfterEarnVictoryPointsEvent extends TypedSerializableEvent<
 export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_START_TURN]: PlayerTurnEvent;
   [PLAYER_EVENTS.PLAYER_END_TURN]: PlayerTurnEvent;
-  [PLAYER_EVENTS.PLAYER_BEFORE_DRAW]: PlayerDrawEvent;
-  [PLAYER_EVENTS.PLAYER_AFTER_DRAW]: PlayerDrawEvent;
+  [PLAYER_EVENTS.PLAYER_BEFORE_DRAW]: PlayerBeforeDrawEvent;
+  [PLAYER_EVENTS.PLAYER_AFTER_DRAW]: PlayerAfterDrawEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_PLAY_CARD]: PlayerPlayCardEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_PLAY_CARD]: PlayerPlayCardEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE]: PlayerManaChangeEvent;

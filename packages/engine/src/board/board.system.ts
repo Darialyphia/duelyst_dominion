@@ -88,6 +88,31 @@ export class BoardSystem
     return [...this.cellsMap.values()];
   }
 
+  get topLeft() {
+    return this.getCellAt(this.map.corners.topLeft)!;
+  }
+
+  get topRight() {
+    return this.getCellAt(this.map.corners.topRight)!;
+  }
+
+  get bottomLeft() {
+    return this.getCellAt(this.map.corners.bottomLeft)!;
+  }
+
+  get bottomRight() {
+    return this.getCellAt(this.map.corners.bottomRight)!;
+  }
+
+  isInArea(topLeft: Point, size: { width: number; height: number }, point: Point) {
+    return (
+      point.x >= topLeft.x &&
+      point.x < topLeft.x + size.width &&
+      point.y >= topLeft.y &&
+      point.y < topLeft.y + size.height
+    );
+  }
+
   getCellAt(posOrKey: string | Point) {
     if (isString(posOrKey)) {
       return this.cellsMap.get(posOrKey) ?? null;
@@ -128,6 +153,10 @@ export class BoardSystem
         cell.y >= topLeft.y &&
         cell.y <= bottomRight.y
     );
+  }
+
+  isNearby(from: Point, to: Point) {
+    return this.getDistance(from, to) == 1;
   }
 
   serialize(): SerializedBoard {

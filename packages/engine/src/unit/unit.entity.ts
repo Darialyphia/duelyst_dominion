@@ -1,4 +1,10 @@
-import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
+import {
+  isDefined,
+  Vec2,
+  type Nullable,
+  type Point,
+  type Serializable
+} from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
@@ -591,24 +597,12 @@ export class Unit
       new UnitBeforeDestroyEvent({ source, unit: this })
     );
     const position = this.position;
-    if (this.isGeneral) {
-      await this.player.opponent.earnVictoryPoints(
-        this.game.config.GENERAL_DESTROYED_VICTORY_POINTS_REWARD
-      );
 
-      // smh
-      await (this as Unit).modifiers.add(
-        new GeneralAltarModifier(this.game, this.card as GeneralCard)
-      );
-      await this.teleport((this.player.general.card as GeneralCard).spawnPosition);
+    await this.removeFromBoard();
+    this.modifiers.list.forEach(async modifier => {
+      await this.modifiers.remove(modifier.id);
+    });
 
-      this.exhaust();
-    } else {
-      await this.removeFromBoard();
-      this.modifiers.list.forEach(async modifier => {
-        await this.modifiers.remove(modifier.id);
-      });
-    }
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_DESTROY,
       new UnitAfterDestroyEvent({ source, destroyedAt: position, unit: this })
@@ -677,7 +671,7 @@ export class Unit
       dangerZone: this.game.boardSystem.cells
         .filter(cell =>
           potentialMoves
-            .filter(move => cell.isNeighbor(move))
+            .filter(move => cell.isNearby(move))
             .some(point => this.isWithinDangerZone(cell.position, point))
         )
         .map(cell => cell.id),

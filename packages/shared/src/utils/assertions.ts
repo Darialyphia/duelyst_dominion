@@ -30,3 +30,5 @@ export function assert(expr: unknown, errOrMsg?: string | Error): asserts expr {
     throw new Error(errOrMsg);
   }
 }
+
+export const isEmptyArray = (x: unknown) => Array.isArray(x) && x.length === 0;

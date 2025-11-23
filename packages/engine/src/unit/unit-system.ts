@@ -73,4 +73,50 @@ export class UnitSystem extends System<UnitSystemOptions> {
       .map(point => this.getUnitAt(point))
       .filter(isDefined);
   }
+
+  getNearestUnitInFront(unit: Unit) {
+    const diff = unit.player.isPlayer1 ? 1 : -1;
+    for (let x = unit.x + diff; x >= 0 && x < this.game.boardSystem.width; x += diff) {
+      const point = { x, y: unit.y };
+      const foundUnit = this.getUnitAt(point);
+      if (foundUnit) {
+        return foundUnit;
+      }
+    }
+    return null;
+  }
+
+  getNearestUnitBehind(unit: Unit) {
+    const diff = unit.player.isPlayer1 ? -1 : 1;
+    for (let x = unit.x + diff; x >= 0 && x < this.game.boardSystem.width; x += diff) {
+      const point = { x, y: unit.y };
+      const foundUnit = this.getUnitAt(point);
+      if (foundUnit) {
+        return foundUnit;
+      }
+    }
+    return null;
+  }
+
+  getNearestUnitAbove(unit: Unit) {
+    for (let y = unit.y - 1; y >= 0; y--) {
+      const point = { x: unit.x, y };
+      const foundUnit = this.getUnitAt(point);
+      if (foundUnit) {
+        return foundUnit;
+      }
+    }
+    return null;
+  }
+
+  getNearestUnitBelow(unit: Unit) {
+    for (let y = unit.y + 1; y < this.game.boardSystem.height; y++) {
+      const point = { x: unit.x, y };
+      const foundUnit = this.getUnitAt(point);
+      if (foundUnit) {
+        return foundUnit;
+      }
+    }
+    return null;
+  }
 }

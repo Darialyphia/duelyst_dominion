@@ -4,7 +4,7 @@ import type { AnyCard } from '../entities/card.entity';
 import { Deck } from '../entities/deck.entity';
 import { Player } from '../../player/player.entity';
 import { GAME_EVENTS } from '../../game/game.events';
-import { PlayerDrawEvent } from '../../player/player.events';
+import { PlayerBeforeDrawEvent, PlayerAfterDrawEvent } from '../../player/player.events';
 import { MinionCard } from '../entities/minion-card.entity';
 import { SpellCard } from '../entities/spell-card.entity';
 import { ArtifactCard } from '../entities/artifact-card.entity';
@@ -109,7 +109,7 @@ export class CardManagerComponent {
     if (amountToDraw <= 0) return;
     await this.game.emit(
       GAME_EVENTS.PLAYER_BEFORE_DRAW,
-      new PlayerDrawEvent({
+      new PlayerBeforeDrawEvent({
         player: this.player,
         amount: amountToDraw
       })
@@ -122,9 +122,9 @@ export class CardManagerComponent {
 
     await this.game.emit(
       GAME_EVENTS.PLAYER_AFTER_DRAW,
-      new PlayerDrawEvent({
+      new PlayerAfterDrawEvent({
         player: this.player,
-        amount: amountToDraw
+        cards
       })
     );
   }

@@ -156,16 +156,20 @@ export class MinionCard extends Card<
     );
   }
 
+  getAOE(position: BoardCell, targets: BoardCell[]) {
+    return this.blueprint.getAoe(this.game, this, position, targets);
+  }
+
   async play(onCancel?: () => MaybePromise<void>) {
     const { position, targets, cancelled } = await this.selectPositionAndTargets();
     if (cancelled) return await onCancel?.();
 
     await this.removeFromCurrentLocation();
-
     await this.game.emit(
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })
     );
+    const aoe = this.getAOE(position, targets);
 
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
@@ -173,7 +177,7 @@ export class MinionCard extends Card<
         card: this,
         cell: position,
         targets,
-        aoe: this.blueprint.getAoe(this.game, this, position, targets)
+        aoe
       })
     );
     this.game.unitSystem.addUnit(this, position);
@@ -188,11 +192,11 @@ export class MinionCard extends Card<
         card: this,
         cell: position,
         targets,
-        aoe: this.blueprint.getAoe(this.game, this, position, targets)
+        aoe
       })
     );
     await this.blueprint.onPlay(this.game, this, {
-      aoe: this.blueprint.getAoe(this.game, this, position, targets),
+      aoe,
       position,
       targets
     });

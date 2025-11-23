@@ -1,4 +1,4 @@
-import type { EmptyObject } from '@game/shared';
+import { match } from 'ts-pattern';
 import type { CardFilter, EventSpecificCardFilter } from './filters/card.filters';
 import type { Filter } from './filters/filter';
 import type { PlayerFilter } from './filters/player.filter';
@@ -21,16 +21,23 @@ export type Condition<
   | { type: 'active_player'; params: { player: Filter<PlayerFilter> } }
   | { type: 'target_exists'; params: { index: number } }
   | {
-      type: 'player_gold';
+      type: 'player_mana';
       params: {
         player: Filter<PlayerFilter>;
         operator: NumericOperator;
         amount: Amount<T>;
       };
     }
-  | { type: 'played_from_hand'; params: EmptyObject }
   | {
       type: 'player_hp';
+      params: {
+        player: Filter<PlayerFilter>;
+        operator: NumericOperator;
+        amount: Amount<T>;
+      };
+    }
+  | {
+      type: 'player_cards_in_hand';
       params: {
         player: Filter<PlayerFilter>;
         operator: NumericOperator;
@@ -68,6 +75,15 @@ export type Condition<
         amount: Amount<T>;
         name: string;
       };
+    }
+  | {
+      type: 'cards_played_this_turn';
+      params: {
+        player: Filter<PlayerFilter>;
+        card: Filter<CardFilter>;
+        operator: NumericOperator;
+        amount: Amount<T>;
+      };
     };
 
 export type ConditionOverrides = {
@@ -76,3 +92,15 @@ export type ConditionOverrides = {
 };
 
 export type NumericOperator = 'equals' | 'more_than' | 'less_than';
+
+export const matchNumericOperator = (
+  amount: number,
+  reference: number,
+  operator: NumericOperator
+) => {
+  return match(operator)
+    .with('equals', () => amount === reference)
+    .with('less_than', () => amount < reference)
+    .with('more_than', () => amount > reference)
+    .exhaustive();
+};

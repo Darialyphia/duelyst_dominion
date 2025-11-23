@@ -130,6 +130,7 @@ export type GameEventMap = Prettify<
     ShrineEventMap
 >;
 export type GameEventName = keyof GameEventMap;
+export type GameEvent = Values<GameEventMap>;
 
 export type GameStarEvent = StarEvent<GameEventMap>;
 export const GAME_EVENTS = {

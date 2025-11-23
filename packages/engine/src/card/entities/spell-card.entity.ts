@@ -91,6 +91,10 @@ export class SpellCard extends Card<
     );
   }
 
+  getAOE(targets: BoardCell[]) {
+    return this.blueprint.getAoe(this.game, this, targets);
+  }
+
   async play(onCancel: () => MaybePromise<void>) {
     const { targets, cancelled } = await this.selectTargets();
 
