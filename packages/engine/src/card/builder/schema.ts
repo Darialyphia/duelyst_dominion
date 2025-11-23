@@ -14,7 +14,7 @@ import type {
 import type { AnyCard } from '../entities/card.entity';
 import type { Condition } from './conditions';
 import type { CellFilter } from './filters/cell.filters';
-import type { Aoe } from './values/aoe';
+import type { SerializedAOE } from './values/aoe';
 
 export type CardBlueprintSchemaBase = {
   id: string;
@@ -47,7 +47,7 @@ export type MinionBlueprintSchema = CardBlueprintBase & {
     min: number;
     targets: CellFilter[];
   };
-  getAoe: Aoe;
+  getAoe: SerializedAOE;
 };
 
 export type SpellBlueprintSchema = CardBlueprintBase & {

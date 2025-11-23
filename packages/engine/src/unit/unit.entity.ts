@@ -1,10 +1,4 @@
-import {
-  isDefined,
-  Vec2,
-  type Nullable,
-  type Point,
-  type Serializable
-} from '@game/shared';
+import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
@@ -39,7 +33,6 @@ import {
   UnitBeforeMoveEvent
 } from './unit-events';
 import type { Shrine } from '../board/entities/shrine.entity';
-import { GeneralAltarModifier } from '../modifier/modifiers/generalaltar.modifier';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 

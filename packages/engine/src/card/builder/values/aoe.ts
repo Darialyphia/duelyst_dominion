@@ -3,7 +3,7 @@ import type { SerializedPointAOE } from '../../../aoe/point.aoe-shape';
 import type { SerializedRectangleAOE } from '../../../aoe/rectangle.aoe-shape';
 import type { SerializedRingAOE } from '../../../aoe/ring.aoe-shape';
 
-export type Aoe =
+export type SerializedAOE =
   | SerializedPointAOE
   | SerializedRingAOE
   | SerializedCompositeAOE

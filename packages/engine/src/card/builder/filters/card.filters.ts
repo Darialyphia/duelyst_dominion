@@ -2,12 +2,11 @@ import type { Nullable } from '@game/shared';
 import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
-import type { NumericOperator } from '../conditions';
+import { type NumericOperator } from '../values/numeric';
 import { getAmount, type Amount } from '../values/amount';
-import type { BlueprintFilter } from './blueprint.filter';
+import { resolveBlueprintFilter, type BlueprintFilter } from './blueprint.filter';
 import { resolveFilter, type Filter } from './filter';
 import { resolvePlayerFilter, type PlayerFilter } from './player.filter';
-import type { EventspecificUnitFilter } from './unit.filters';
 import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import { CARD_KINDS, type Tag } from '../../card.enums';
@@ -17,7 +16,7 @@ import {
   PlayerBeforeReplaceCardEvent
 } from '../../../player/player.events';
 
-export type CardFilterBase =
+export type CardFilter =
   | { type: 'any_card' }
   | { type: 'self' }
   | { type: 'minion' }
@@ -32,18 +31,14 @@ export type CardFilterBase =
       type: 'cost';
       params: {
         operator: NumericOperator;
-        amount: Amount<{ unit: EventspecificUnitFilter['type'] }>;
+        amount: Amount;
       };
     }
   | { type: 'has_blueprint'; params: { blueprint: Filter<BlueprintFilter> } }
-  | { type: 'has_tag'; params: { tag: string } };
-
-export type EventSpecificCardFilter =
+  | { type: 'has_tag'; params: { tag: string } }
   | { type: 'drawn_card' }
   | { type: 'replaced_card' }
   | { type: 'card_replacement' };
-
-export type CardFilter = CardFilterBase | EventSpecificCardFilter;
 
 export const resolveCardFilter = ({
   game,
@@ -131,15 +126,14 @@ export const resolveCardFilter = ({
               return players.some(p => p.equals(c.player));
             })
             .with({ type: 'has_blueprint' }, condition => {
-              // const blueprints = getBlueprints({
-              //   session: game,
-              //   card,
-              //   targets,
-              //   conditions: condition.params.blueprint,
-              //   event
-              // });
-              // return blueprints.some(b => b.id === c.blueprintId);
-              return false;
+              const blueprints = resolveBlueprintFilter({
+                game,
+                card,
+                targets,
+                filter: condition.params.blueprint,
+                event
+              });
+              return blueprints.some(b => b.id === c.blueprintId);
             })
             .with({ type: 'has_tag' }, condition => {
               return (c.blueprint.tags as Tag[]).some(

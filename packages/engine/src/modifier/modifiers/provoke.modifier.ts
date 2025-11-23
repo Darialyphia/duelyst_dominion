@@ -5,14 +5,11 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { ModifierMixin } from '../modifier-mixin';
-import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { AuraModifierMixin } from '../mixins/aura.mixin';
 import { isMinionOrGeneral } from '../../card/card-utils';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
-
-const PROVOKED_MODIFIER_ID = 'provoked';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -38,6 +35,8 @@ export class ProvokeModifier extends Modifier<MinionCard> {
         ...(options?.mixins ?? [])
       ]
     });
+    this.moveInterceptor = this.moveInterceptor.bind(this);
+    this.attackInterceptor = this.attackInterceptor.bind(this);
   }
 
   private shouldBeProvoked(candidate: AnyCard): boolean {
@@ -65,12 +64,12 @@ export class ProvokeModifier extends Modifier<MinionCard> {
             return this.shouldBeProvoked(candidate);
           },
           onGainAura: async candidate => {
-            console.log('provoking', candidate.id);
-            await this.provokeEnemy(candidate);
+            await candidate.unit.addInterceptor('canMove', this.moveInterceptor);
+            await candidate.unit.addInterceptor('canAttack', this.attackInterceptor);
           },
           onLoseAura: async candidate => {
-            console.log('unprovoking', candidate.id);
-            await candidate.unit?.modifiers.remove(PROVOKED_MODIFIER_ID);
+            await candidate.unit.removeInterceptor('canMove', this.moveInterceptor);
+            await candidate.unit.removeInterceptor('canAttack', this.attackInterceptor);
           }
         })
       ]
@@ -79,24 +78,13 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     await unit.modifiers.add(this.unitModifier);
   }
 
-  private async provokeEnemy(candidate: MinionCard | GeneralCard): Promise<void> {
-    await candidate.unit.modifiers.add(
-      new Modifier(PROVOKED_MODIFIER_ID, this.game, this.source, {
-        mixins: [
-          new UnitInterceptorModifierMixin(this.game, {
-            key: 'canMove',
-            interceptor: () => false
-          }),
-          new UnitInterceptorModifierMixin(this.game, {
-            key: 'canAttack',
-            interceptor: (value, { target }) => {
-              if (!value) return value;
+  moveInterceptor() {
+    return false;
+  }
 
-              return target.modifiers.has(KEYWORDS.PROVOKE.id);
-            }
-          })
-        ]
-      })
-    );
+  attackInterceptor(value: boolean, { target }: { target: Unit }): boolean {
+    if (!value) return value;
+
+    return target.modifiers.has(KEYWORDS.PROVOKE.id);
   }
 }

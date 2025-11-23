@@ -1,23 +1,21 @@
 import { match } from 'ts-pattern';
-import type { CardFilter, EventSpecificCardFilter } from './filters/card.filters';
+import { resolveCardFilter, type CardFilter } from './filters/card.filters';
 import type { Filter } from './filters/filter';
-import type { PlayerFilter } from './filters/player.filter';
-import type {
-  EventspecificUnitFilter,
-  UnitFilter,
-  UnitFilterBase
-} from './filters/unit.filters';
-import type { Amount } from './values/amount';
-import type { KeywordId } from '../card-keywords';
+import { resolvePlayerFilter, type PlayerFilter } from './filters/player.filter';
+import { getAmount, type Amount } from './values/amount';
+import { getKeywordById, type KeywordId } from '../card-keywords';
 import type { Tag } from '../card.enums';
-import type { CellFilter } from './filters/cell.filters';
+import { resolveCellFilter, type CellFilter } from './filters/cell.filters';
+import { resolveUnitFilter, type UnitFilter } from './filters/unit.filters';
+import { matchNumericOperator, type NumericOperator } from './values/numeric';
+import { isEmptyObject, type Nullable } from '@game/shared';
+import type { BoardCell } from '../../board/entities/board-cell.entity';
+import type { Game } from '../..';
+import type { AnyCard } from '../entities/card.entity';
+import type { GameEvent } from '../../game/game.events';
+import type { Unit } from '../../unit/unit.entity';
 
-export type Condition<
-  T extends ConditionOverrides = {
-    unit: EventspecificUnitFilter['type'];
-    card: EventSpecificCardFilter['type'];
-  }
-> =
+export type Condition =
   | { type: 'active_player'; params: { player: Filter<PlayerFilter> } }
   | { type: 'target_exists'; params: { index: number } }
   | {
@@ -25,7 +23,7 @@ export type Condition<
       params: {
         player: Filter<PlayerFilter>;
         operator: NumericOperator;
-        amount: Amount<T>;
+        amount: Amount;
       };
     }
   | {
@@ -33,7 +31,7 @@ export type Condition<
       params: {
         player: Filter<PlayerFilter>;
         operator: NumericOperator;
-        amount: Amount<T>;
+        amount: Amount;
       };
     }
   | {
@@ -41,25 +39,41 @@ export type Condition<
       params: {
         player: Filter<PlayerFilter>;
         operator: NumericOperator;
-        amount: Amount<T>;
+        amount: Amount;
       };
     }
   | {
-      type: 'unit_state';
+      type: 'unit_attack';
       params: {
-        unit: Filter<UnitFilterBase>;
-        mode: 'none' | 'some' | 'all';
-        attack?: {
-          operator: NumericOperator;
-          amount: Amount<T>;
-        };
-        hp?: {
-          operator: NumericOperator;
-          amount: Amount<T>;
-        };
-        keyword?: KeywordId;
-        tag?: Tag;
-        position?: Filter<CellFilter>;
+        mode: 'all' | 'some' | 'none';
+        unit: Filter<UnitFilter>;
+        operator: NumericOperator;
+        amount: Amount;
+      };
+    }
+  | {
+      type: 'unit_hp';
+      params: {
+        mode: 'all' | 'some' | 'none';
+        unit: Filter<UnitFilter>;
+        operator: NumericOperator;
+        amount: Amount;
+      };
+    }
+  | {
+      type: 'unit_position';
+      params: {
+        mode: 'all' | 'some' | 'none';
+        unit: Filter<UnitFilter>;
+        cells: Filter<CellFilter>;
+      };
+    }
+  | {
+      type: 'unit_keyword';
+      params: {
+        mode: 'all' | 'some' | 'none';
+        unit: Filter<UnitFilter>;
+        keyword: KeywordId;
       };
     }
   | {
@@ -69,38 +83,243 @@ export type Condition<
       };
     }
   | {
-      type: 'counter_value';
-      params: {
-        operator: NumericOperator;
-        amount: Amount<T>;
-        name: string;
-      };
-    }
-  | {
       type: 'cards_played_this_turn';
       params: {
         player: Filter<PlayerFilter>;
         card: Filter<CardFilter>;
         operator: NumericOperator;
-        amount: Amount<T>;
+        amount: Amount;
       };
     };
 
-export type ConditionOverrides = {
-  unit?: UnitFilter['type'];
-  card?: CardFilter['type'];
-};
+export const checkGlobalConditions = ({
+  conditions,
+  game,
+  card,
+  targets,
+  event
+}: {
+  conditions: Filter<Condition> | undefined;
+  game: Game;
+  card: AnyCard;
+  targets: Nullable<BoardCell>[];
+  event?: GameEvent;
+}): boolean => {
+  if (!conditions) return true;
+  if (!conditions.groups.length) return true;
 
-export type NumericOperator = 'equals' | 'more_than' | 'less_than';
+  return conditions.groups.some(group => {
+    return group.every(condition => {
+      return match(condition)
+        .with({ type: 'active_player' }, condition => {
+          const [player] = resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          });
 
-export const matchNumericOperator = (
-  amount: number,
-  reference: number,
-  operator: NumericOperator
-) => {
-  return match(operator)
-    .with('equals', () => amount === reference)
-    .with('less_than', () => amount < reference)
-    .with('more_than', () => amount > reference)
-    .exhaustive();
+          return player.isActive;
+        })
+        .with({ type: 'player_mana' }, condition => {
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+          return resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          }).every(player =>
+            matchNumericOperator(player.mana, amount, condition.params.operator)
+          );
+        })
+        .with({ type: 'player_hp' }, condition => {
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+          return resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          }).every(player =>
+            matchNumericOperator(
+              player.general.remainingHp,
+              amount,
+              condition.params.operator
+            )
+          );
+        })
+        .with({ type: 'unit_attack' }, condition => {
+          const units = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unit
+          });
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+
+          const isMatch = (u: Unit) =>
+            matchNumericOperator(u.atk, amount, condition.params.operator);
+
+          return match(condition.params.mode)
+            .with('all', () => units.every(isMatch))
+            .with('none', () => units.every(e => !isMatch(e)))
+            .with('some', () => units.some(isMatch))
+            .exhaustive();
+        })
+        .with({ type: 'unit_hp' }, condition => {
+          const units = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unit
+          });
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+
+          const isMatch = (u: Unit) =>
+            matchNumericOperator(u.remainingHp, amount, condition.params.operator);
+
+          return match(condition.params.mode)
+            .with('all', () => units.every(isMatch))
+            .with('none', () => units.every(e => !isMatch(e)))
+            .with('some', () => units.some(isMatch))
+            .exhaustive();
+        })
+        .with({ type: 'unit_position' }, condition => {
+          const units = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unit
+          });
+          const cells = resolveCellFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.cells
+          });
+
+          const isMatch = (u: Unit) => {
+            return cells.some(cell => cell.position.equals(u.position));
+          };
+
+          return match(condition.params.mode)
+            .with('all', () => units.every(isMatch))
+            .with('none', () => units.every(e => !isMatch(e)))
+            .with('some', () => units.some(isMatch))
+            .exhaustive();
+        })
+        .with({ type: 'unit_keyword' }, condition => {
+          const units = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unit
+          });
+
+          const isMatch = (u: Unit) =>
+            u.card.keywordManager.has(getKeywordById(condition.params.keyword)!);
+          return match(condition.params.mode)
+            .with('all', () => units.every(isMatch))
+            .with('none', () => units.every(e => !isMatch(e)))
+            .with('some', () => units.some(isMatch))
+            .exhaustive();
+        })
+        .with({ type: 'target_exists' }, condition => {
+          return !!targets[condition.params.index];
+        })
+        .with({ type: 'player_has_more_minions' }, condition => {
+          const [player] = resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          });
+
+          return player.units.length > player.opponent.units.length;
+        })
+        .with({ type: 'cards_played_this_turn' }, condition => {
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+          const [player] = resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          });
+
+          const cards = resolveCardFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.card
+          }).filter(card =>
+            card.player.cardTracker.cardsPlayedThisTurn.some(c => c.equals(card))
+          );
+
+          return matchNumericOperator(cards.length, amount, condition.params.operator);
+        })
+        .with({ type: 'player_cards_in_hand' }, condition => {
+          const amount = getAmount({
+            game,
+            card,
+            targets,
+            event,
+            amount: condition.params.amount
+          });
+          return resolvePlayerFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.player
+          }).every(player =>
+            matchNumericOperator(
+              player.cardManager.hand.length,
+              amount,
+              condition.params.operator
+            )
+          );
+        })
+        .exhaustive();
+    });
+  });
 };

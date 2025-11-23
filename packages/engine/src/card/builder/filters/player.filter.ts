@@ -18,24 +18,20 @@ import {
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
 
-export type PlayerFilterBase =
+export type PlayerFilter =
   | { type: 'ally_player' }
   | { type: 'enemy_player' }
   | { type: 'any_player' }
   | { type: 'current_player' }
   | { type: 'is_manual_target_owner'; params: { index: number } }
   | { type: 'player_1' }
-  | { type: 'player_2' };
-
-export type EventSpecificPlayerFilter =
+  | { type: 'player_2' }
   | { type: 'attack_target_owner' }
   | { type: 'attack_source_owner' }
   | { type: 'healing_target_owner' }
   | { type: 'healing_source_owner' }
   | { type: 'moved_unit_owner' }
   | { type: 'destroyed_unit_owner' };
-
-export type PlayerFilter = PlayerFilterBase | EventSpecificPlayerFilter;
 
 export const resolvePlayerFilter = ({
   game,

@@ -1,10 +1,9 @@
 import { isDefined, isEmptyArray, type Nullable, type Point } from '@game/shared';
 import { getKeywordById, type KeywordId } from '../../card-keywords';
 import type { Tag } from '../../card.enums';
-import { matchNumericOperator, type NumericOperator } from '../conditions';
+import { matchNumericOperator, type NumericOperator } from '../values/numeric';
 import { getAmount, type Amount } from '../values/amount';
 import { resolveBlueprintFilter, type BlueprintFilter } from './blueprint.filter';
-import type { EventSpecificCardFilter } from './card.filters';
 import { resolveCellFilter, type CellFilter } from './cell.filters';
 import { resolveFilter, type Filter } from './filter';
 import type { GameEvent } from '../../../game/game.events';
@@ -26,9 +25,8 @@ import {
   UnitDealDamageEvent,
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
-import type { Entity } from '../../../entity';
 
-export type UnitFilterBase =
+export type UnitFilter =
   | { type: 'any_unit' }
   | { type: 'is_self'; params: { not: boolean } }
   | { type: 'is_general'; params: { not: boolean } }
@@ -64,10 +62,7 @@ export type UnitFilterBase =
   | {
       type: 'has_attack';
       params: {
-        amount: Amount<{
-          unit: EventspecificUnitFilter['type'];
-          card: EventSpecificCardFilter['type'];
-        }>;
+        amount: Amount;
         operator: NumericOperator;
         not: boolean;
       };
@@ -75,10 +70,7 @@ export type UnitFilterBase =
   | {
       type: 'has_hp';
       params: {
-        amount: Amount<{
-          unit: EventspecificUnitFilter['type'];
-          card: EventSpecificCardFilter['type'];
-        }>;
+        amount: Amount;
         operator: NumericOperator;
         not: boolean;
       };
@@ -96,17 +88,13 @@ export type UnitFilterBase =
   | { type: 'is_on_own_side_of_board'; params: { not: boolean } }
   | { type: 'is_on_opponent_side_of_board'; params: { not: boolean } }
   | { type: 'artifact_owner'; params: { not: boolean } }
-  | { type: 'in_card_aoe'; params: { not: boolean } };
-
-export type EventspecificUnitFilter =
+  | { type: 'in_card_aoe'; params: { not: boolean } }
   | { type: 'attack_target'; params: { not: boolean } }
   | { type: 'attack_source'; params: { not: boolean } }
   | { type: 'healing_target'; params: { not: boolean } }
   | { type: 'healing_source'; params: { not: boolean } }
   | { type: 'moved_unit'; params: { not: boolean } }
   | { type: 'destroyed_unit'; params: { not: boolean } };
-
-export type UnitFilter = UnitFilterBase | EventspecificUnitFilter;
 
 export const resolveUnitFilter = ({
   game,

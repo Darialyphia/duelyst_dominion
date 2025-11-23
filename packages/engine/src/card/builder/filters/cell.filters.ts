@@ -3,13 +3,8 @@ import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
 import { getAmount, type Amount } from '../values/amount';
-import type { EventSpecificCardFilter } from './card.filters';
 import { resolveFilter, type Filter } from './filter';
-import {
-  resolveUnitFilter,
-  type EventspecificUnitFilter,
-  type UnitFilter
-} from './unit.filters';
+import { resolveUnitFilter, type UnitFilter } from './unit.filters';
 import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import {
@@ -20,14 +15,8 @@ import {
   UnitBeforeMoveEvent
 } from '../../../unit/unit-events';
 import { isArtifact, isMinion, isSpell } from '../../card-utils';
-import type { CardBlueprint } from '../schema';
-import type {
-  ArtifactBlueprint,
-  MinionBlueprint,
-  SpellBlueprint
-} from '../../card-blueprint';
 
-export type CellFilterBase =
+export type CellFilter =
   | { type: 'any_cell' }
   | { type: 'is_empty' }
   | { type: 'has_unit'; params: { unit: Filter<UnitFilter> } }
@@ -50,7 +39,7 @@ export type CellFilterBase =
   | {
       type: 'in_area';
       params: {
-        topLeft: Filter<CellFilterBase>;
+        topLeft: Filter<CellFilter>;
         size: { width: number; height: number };
       };
     }
@@ -58,10 +47,7 @@ export type CellFilterBase =
       type: 'within_cells';
       params: {
         cell: Filter<CellFilter>;
-        amount: Amount<{
-          unit: EventspecificUnitFilter['type'];
-          card: EventSpecificCardFilter['type'];
-        }>;
+        amount: Amount;
       };
     }
   | {
@@ -74,9 +60,7 @@ export type CellFilterBase =
         backwards: number;
       };
     }
-  | { type: 'in_card_aoe'; params: { not: boolean } };
-
-export type EventSpecificCellFilter =
+  | { type: 'in_card_aoe'; params: { not: boolean } }
   | { type: 'moved_unit_old_position' }
   | { type: 'moved_unit_new_position' }
   | { type: 'moved_path' }
@@ -85,8 +69,6 @@ export type EventSpecificCellFilter =
   | { type: 'heal_target_position' }
   | { type: 'heal_source_position' }
   | { type: 'summon_target' };
-
-export type CellFilter = CellFilterBase | EventSpecificCellFilter;
 
 export const resolveCellFilter = ({
   filter,

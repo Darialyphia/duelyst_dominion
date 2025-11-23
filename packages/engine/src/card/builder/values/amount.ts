@@ -1,25 +1,16 @@
 import type { Nullable } from '@game/shared';
 import type { Game } from '../../..';
 import type { AnyCard } from '../../entities/card.entity';
-import type { ConditionOverrides } from '../conditions';
-import {
-  resolveCardFilter,
-  type CardFilterBase,
-  type EventSpecificCardFilter
-} from '../filters/card.filters';
+import { resolveCardFilter, type CardFilter } from '../filters/card.filters';
 import type { Filter } from '../filters/filter';
 import { resolvePlayerFilter, type PlayerFilter } from '../filters/player.filter';
-import {
-  resolveUnitFilter,
-  type EventspecificUnitFilter,
-  type UnitFilterBase
-} from '../filters/unit.filters';
+import { resolveUnitFilter, type UnitFilter } from '../filters/unit.filters';
 import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import { isMinion } from '../../card-utils';
 
-export type Amount<T extends ConditionOverrides> =
+export type Amount =
   | {
       type: 'fixed';
       params: { value: number };
@@ -35,9 +26,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'attack';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -45,9 +34,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'lowest_attack';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -55,9 +42,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'highest_attack';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -65,9 +50,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'maxHp';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -75,9 +58,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'hp';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -85,9 +66,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'lowest_hp';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -95,9 +74,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'highest_hp';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -105,9 +82,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'cost';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -115,9 +90,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'card_played_this_turn';
       params: {
-        card: Filter<
-          CardFilterBase | Extract<EventSpecificCardFilter, { type: T['card'] }>
-        >;
+        card: Filter<CardFilter>;
         add?: number;
         scale?: number;
       };
@@ -147,9 +120,7 @@ export type Amount<T extends ConditionOverrides> =
   | {
       type: 'count_of_units';
       params: {
-        unit: Filter<
-          UnitFilterBase | Extract<EventspecificUnitFilter, { type: T['unit'] }>
-        >;
+        unit: Filter<UnitFilter>;
         add?: number;
         scale?: number;
       };
@@ -166,7 +137,7 @@ export const getAmount = ({
 }: {
   game: Game;
   card: AnyCard;
-  amount: Amount<{ unit: EventspecificUnitFilter['type'] }>;
+  amount: Amount;
   targets: Array<Nullable<BoardCell>>;
   event?: GameEvent;
 }): number => {

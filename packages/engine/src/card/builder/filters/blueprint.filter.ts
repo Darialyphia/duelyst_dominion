@@ -1,15 +1,10 @@
 import type { EmptyObject, Nullable } from '@game/shared';
-import type { KeywordId } from '../../card-keywords';
 import { CARD_KINDS, type Faction } from '../../card.enums';
-import { matchNumericOperator, type NumericOperator } from '../conditions';
+import { matchNumericOperator, type NumericOperator } from '../values/numeric';
 import { getAmount, type Amount } from '../values/amount';
 import { resolveCardFilter, type CardFilter } from './card.filters';
 import { resolveFilter, type Filter } from './filter';
-import {
-  resolveUnitFilter,
-  type EventspecificUnitFilter,
-  type UnitFilter
-} from './unit.filters';
+import { resolveUnitFilter, type UnitFilter } from './unit.filters';
 import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
 import type { BoardCell } from '../../../board/entities/board-cell.entity';
@@ -28,7 +23,7 @@ export type BlueprintFilter =
       type: 'cost';
       params: {
         operator: NumericOperator;
-        amount: Amount<{ unit: EventspecificUnitFilter['type'] }>;
+        amount: Amount;
       };
     }
   | { type: 'has_tag'; params: { tag: string } }
