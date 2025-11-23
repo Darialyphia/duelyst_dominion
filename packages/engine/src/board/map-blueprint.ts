@@ -17,6 +17,12 @@ export type MapBlueprint = {
     color: string;
     gates: [Point, Point];
   }>;
+  corners: {
+    topLeft: Point;
+    topRight: Point;
+    bottomLeft: Point;
+    bottomRight: Point;
+  };
 };
 
 type CellBlueprint = MapBlueprint['cells'][number];
@@ -35,25 +41,27 @@ const neutral = (tile?: string): CellBlueprint => ({
 
 export const defaultMap: MapBlueprint = {
   id: 'default-map',
-  cols: 13,
-  rows: 7,
+  cols: 9,
+  rows: 5,
   // prettier-ignore
   cells: [
-    null, null, null, null, null, p2(), p2(), p2(), p2(), null, null, null, null,
-    null, null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null, null, null,
-    null, p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), p2(), null,
-    neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(), p1(), neutral(),
-    null, null, p1(), p1(), p1(), p1(), p1(), p1(), p1(), p1(), p1(), null, null,
-    null, null, null, null, p1(), p1(), p1(), p1(), p1(), null, p1(), null, null,
-    null, null, null, null, p1(), null, p1(), null, null, null, null, null, null
-
-
+    p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
+    p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
+    p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
+    p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
+    p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
   ],
-  generalPositions: [new Vec2(6, 6), new Vec2(6, 0)],
-  shrinePositions: [new Vec2(2, 3), new Vec2(6, 3), new Vec2(10, 3)],
+  generalPositions: [new Vec2(0, 2), new Vec2(8, 2)],
+  shrinePositions: [],
   teleporters: [
-    { id: 'green', color: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
-    { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 6)] },
-    { id: 'yellow', color: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
-  ]
+    // { id: 'green', color: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
+    // { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 6)] },
+    // { id: 'yellow', color: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
+  ],
+  corners: {
+    topLeft: new Vec2(0, 0),
+    topRight: new Vec2(8, 0),
+    bottomLeft: new Vec2(0, 4),
+    bottomRight: new Vec2(8, 4)
+  }
 };

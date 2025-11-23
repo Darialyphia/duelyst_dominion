@@ -10,7 +10,6 @@ import { BoardCell } from './entities/board-cell.entity';
 import { pointToCellId } from './board-utils';
 import { System } from '../system';
 import type { MapBlueprint } from './map-blueprint';
-import { defineHex, Grid, Orientation, rectangle, spiral } from 'honeycomb-grid';
 import { Shrine } from './entities/shrine.entity';
 import { Teleporter } from './entities/two-way-teleporter';
 
@@ -26,23 +25,11 @@ export type SerializedBoard = {
   teleporters: string[];
 };
 
-export const BoardHex = defineHex({
-  dimensions: {
-    width: 10,
-    height: 10
-  },
-  orientation: Orientation.FLAT
-});
-
-type HexGrid = Grid<InstanceType<typeof BoardHex>>;
-
 export class BoardSystem
   extends System<BoardSystemOptions>
   implements Serializable<SerializedBoard>
 {
   map!: MapBlueprint;
-
-  grid!: HexGrid;
 
   cellsMap = new Map<string, BoardCell>();
 
@@ -55,18 +42,12 @@ export class BoardSystem
   initialize(options: BoardSystemOptions) {
     this.map = options.map;
 
-    this.grid = new Grid(
-      BoardHex,
-      rectangle({ width: this.map.cols, height: this.map.rows })
-    );
-
     this.map.cells.forEach((cellBlueprint, index) => {
       if (!cellBlueprint) return;
       const position = indexToPoint(this.map.cols, index);
       const cell = new BoardCell(this.game, {
         position,
-        player: cellBlueprint.player,
-        hex: this.grid.createHex({ col: position.x, row: position.y })
+        player: cellBlueprint.player
       });
       this.cellsMap.set(cell.id, cell);
     });
@@ -115,18 +96,21 @@ export class BoardSystem
   }
 
   getDistance(from: Point, to: Point) {
-    return this.grid.distance({ col: from.x, row: from.y }, { col: to.x, row: to.y });
+    return Vec2.fromPoint(from).dist(to);
   }
 
   getNeighbors(point: Point) {
-    return this.grid
-      .traverse(spiral({ radius: 1, start: { col: point.x, row: point.y } }))
-      .toArray()
-      .map(hex => {
-        if (hex.col === point.x && hex.row === point.y) return null;
-        return this.getCellAt({ x: hex.col, y: hex.row });
-      })
-      .filter(isDefined);
+    // get neighboring positions in a clockwise order
+    return [
+      this.getCellAt({ x: point.x - 1, y: point.y - 1 }), // top left
+      this.getCellAt({ x: point.x, y: point.y - 1 }), // top
+      this.getCellAt({ x: point.x + 1, y: point.y - 1 }), // top right
+      this.getCellAt({ x: point.x + 1, y: point.y }), // right
+      this.getCellAt({ x: point.x + 1, y: point.y + 1 }), // bottom right
+      this.getCellAt({ x: point.x, y: point.y + 1 }), // bottom
+      this.getCellAt({ x: point.x - 1, y: point.y + 1 }), // bottom left,
+      this.getCellAt({ x: point.x - 1, y: point.y }) // left
+    ].filter(isDefined);
   }
 
   getNearbyShrines({ x, y }: Point) {
