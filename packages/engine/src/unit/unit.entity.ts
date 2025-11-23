@@ -35,7 +35,6 @@ import {
 import type { Shrine } from '../board/entities/shrine.entity';
 import { GeneralAltarModifier } from '../modifier/modifiers/generalaltar.modifier';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
-import { PassThroughPathfindingStrategy } from '../pathfinding/strategies/passthrough-pathfinding.strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 
 export type UnitOptions = {

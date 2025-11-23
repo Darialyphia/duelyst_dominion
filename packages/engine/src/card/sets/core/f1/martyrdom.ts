@@ -10,8 +10,7 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  @Consume@ @[rune:blue]@.
-  Destroy an enemy minion. Your opponent gains 1 Victory Points.`,
+  Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
   cardIconId: 'spells/f1_martyrdom',
   kind: CARD_KINDS.SPELL,
   collectable: true,
@@ -40,8 +39,9 @@ export const martyrdom: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
+    const amounttoHeal = target.remainingHp;
     await target.destroy(card);
 
-    await card.player.opponent.earnVictoryPoints(2);
+    await target.player.general.heal(card, amounttoHeal);
   }
 };

@@ -8,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const flamebloodWarlock: MinionBlueprint = {
   id: 'flameblood-warlock',
   name: 'Flameblood Warlock',
-  description: '@On Enter@: Deal 2 damage to all generals.',
+  description: '@On Enter@: Deal 3 damage to all generals.',
   cardIconId: 'minions/neutral_flameblood-warlock',
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -30,7 +30,7 @@ export const flamebloodWarlock: MinionBlueprint = {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
         for (const player of game.playerSystem.players) {
-          await player.general?.takeDamage(card, new AbilityDamage(card, 2));
+          await player.general?.takeDamage(card, new AbilityDamage(card, 3));
         }
       })
     );

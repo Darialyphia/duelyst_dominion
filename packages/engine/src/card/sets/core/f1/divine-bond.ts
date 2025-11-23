@@ -11,8 +11,7 @@ export const divineBond: SpellBlueprint = {
   id: 'divine-bond',
   name: 'Divine Bond',
   description: dedent`
-  @Consume@ @[rune:yellow]@.
-  Set an allied minion commandment equal to its attack.
+  Set an allied minion's attack equal to its health.
   `,
   cardIconId: 'spells/f1_divine-bond',
   kind: CARD_KINDS.SPELL,
@@ -42,12 +41,13 @@ export const divineBond: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
+    const currentHp = target.remainingHp;
     await target.modifiers.add(
-      new Modifier('divine-bond-cmd-buff', game, card, {
+      new Modifier('divine-bond-atk-buff', game, card, {
         mixins: [
           new UnitInterceptorModifierMixin(game, {
-            key: 'cmd',
-            interceptor: () => target.atk
+            key: 'atk',
+            interceptor: () => currentHp
           })
         ]
       })

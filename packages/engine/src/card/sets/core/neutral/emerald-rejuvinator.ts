@@ -1,14 +1,13 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const emeraldRejuvinator: MinionBlueprint = {
   id: 'emerald-rejuvinator',
   name: 'Emerald Rejuvinator',
-  description: '@On Enter@: Heal your general for 3.',
+  description: '@On Enter@: Heal your general for 4.',
   cardIconId: 'minions/neutral_emerald-rejuvinator',
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -29,7 +28,7 @@ export const emeraldRejuvinator: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
-        await card.player.general.heal(card, 2);
+        await card.player.general.heal(card, 4);
       })
     );
   },
