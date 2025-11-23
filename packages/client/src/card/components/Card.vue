@@ -31,7 +31,6 @@ const {
     id: string;
     name: string;
     description: string;
-    image: string;
     manaCost?: number | null;
     baseManaCost?: number | null;
     rarity: Rarity;

@@ -18,7 +18,7 @@ const props = defineProps<{
 }>();
 
 const imageBg = computed(() => {
-  return `url('${props.sprite.id}')`;
+  return `url(/assets/cards/${props.sprite.id}.png)`;
 });
 
 const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
@@ -34,6 +34,24 @@ const FALLBACK_ANIMATION_BY_KIND: Record<CardKind, string> = {
 const animationToUse = computed(() => {
   return props.animation ?? FALLBACK_ANIMATION_BY_KIND[props.kind];
 });
+
+const activeFrameRect = computed(() => {
+  const animationIndex = props.sprite.animations.indexOf(animationToUse.value);
+  const rowIndex = animationIndex === -1 ? 0 : animationIndex;
+
+  return {
+    x: 0,
+    y: rowIndex * props.sprite.frameSize.h,
+    width: props.sprite.frameSize.w,
+    height: props.sprite.frameSize.h
+  };
+});
+
+const bgPosition = computed(() => {
+  const { x, y } = activeFrameRect.value;
+  console.log(x, y, animationToUse.value);
+  return `calc(-1 * ${x}px) calc(-1 * ${y}px)`;
+});
 </script>
 
 <template>
@@ -45,7 +63,12 @@ const animationToUse = computed(() => {
       'is-hovered': isHovered,
       'is-foil': isFoil
     }"
-    style="--parallax-factor: 1.5"
+    :style="{
+      '--parallax-factor': 0.75,
+      '--bg-position': bgPosition,
+      '--width': `${activeFrameRect.width}px`,
+      '--height': `${activeFrameRect.height}px`
+    }"
   >
     <div class="image-shadow" />
     <div class="image-sprite" />
@@ -55,9 +78,13 @@ const animationToUse = computed(() => {
 <style scoped lang="postcss">
 .image {
   position: absolute;
-  width: calc(2 * 96px * var(--pixel-scale));
-  height: calc(2 * 96px * var(--pixel-scale));
+  width: calc(var(--width));
+  height: calc(var(--height));
   pointer-events: none;
+  scale: calc(2 * var(--pixel-scale));
+  bottom: calc(175px * var(--pixel-scale));
+  left: 50%;
+  transform: translateX(-12.5%);
 
   &.is-spell {
     top: calc(-10px * var(--pixel-scale));
@@ -65,19 +92,18 @@ const animationToUse = computed(() => {
 
   .image-shadow {
     position: absolute;
-    width: calc(2 * 96px * var(--pixel-scale));
-    height: calc(2 * 96px * var(--pixel-scale));
+    width: 100%;
+    height: 100%;
     opacity: 0;
     pointer-events: none;
     background: v-bind(imageBg);
-    background-size: cover;
-    background-position: center calc(-62px * var(--pixel-scale));
+    background-position: var(--bg-position);
     background-repeat: no-repeat;
     translate: calc(-2 * var(--parallax-x))
       calc(-2 * var(--parallax-y) - var(--pixel-scale) * 6px);
     filter: contrast(0) brightness(0) blur(3px);
-    scale: 1.15;
     transition: opacity 1s var(--ease-3);
+    scale: 1.15;
   }
 
   &.is-hovered.is-foil .image-shadow {
@@ -90,13 +116,11 @@ const animationToUse = computed(() => {
 
   .image-sprite {
     position: absolute;
-    width: calc(2 * 96px * var(--pixel-scale));
-    height: calc(2 * 96px * var(--pixel-scale));
+    width: 100%;
+    height: 100%;
     background: v-bind(imageBg);
-    background-size: cover;
-    background-position: center calc(-62px * var(--pixel-scale));
+    background-position: var(--bg-position);
     background-repeat: no-repeat;
-    top: calc(5px * var(--pixel-scale));
     translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
     pointer-events: none;
   }

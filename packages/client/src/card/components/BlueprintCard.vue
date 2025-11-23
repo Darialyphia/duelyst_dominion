@@ -11,7 +11,6 @@ const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
       id: blueprint.id,
       name: blueprint.name,
       description: blueprint.description,
-      image: `/assets/cards/${blueprint.cardIconId}.png`,
       kind: blueprint.kind,
       manaCost: (blueprint as any).manaCost,
       runeCost: (blueprint as any).runeCost,
@@ -25,6 +24,7 @@ const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
       cmd: (blueprint as any).cmd,
       faction: blueprint.faction
     }"
+    :sprite="blueprint.sprite"
   />
 </template>
 

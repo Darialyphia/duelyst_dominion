@@ -5,7 +5,23 @@ export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
   description: 'Allied minions nearby captured Shrines have +1 Atk and +1 Hp.',
-  cardIconId: 'generals/f1_argeon-highmane',
+  sprite: {
+    id: 'generals/f1_argeon-highmane',
+    animations: [
+      'attack',
+      'breathing',
+      'cast',
+      'castend',
+      'castloop',
+      'caststart',
+      'death',
+      'hit',
+      'idle',
+      'run'
+    ],
+    frameSize: { w: 100, h: 100 },
+    frameDuration: 64
+  },
   kind: CARD_KINDS.GENERAL,
   collectable: true,
   setId: CARD_SETS.CORE,
