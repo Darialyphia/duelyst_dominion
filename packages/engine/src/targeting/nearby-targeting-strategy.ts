@@ -1,4 +1,4 @@
-import { type Point3D } from '@game/shared';
+import { type Point } from '@game/shared';
 import {
   isValidTargetingType,
   type TargetingStrategy,
@@ -11,17 +11,17 @@ export class NearbyTargetingStrategy implements TargetingStrategy {
   constructor(
     private game: Game,
     private player: Player,
-    private origins: [Point3D],
+    private getOrigins: () => Point[],
     private type: TargetingType
   ) {}
 
-  isWithinRange(point: Point3D) {
-    return this.origins.some(
+  isWithinRange(point: Point) {
+    return this.getOrigins().some(
       origin => this.game.boardSystem.getDistance(origin, point) === 1
     );
   }
 
-  canTargetAt(point: Point3D) {
+  canTargetAt(point: Point) {
     if (!this.isWithinRange(point)) return false;
 
     return isValidTargetingType(this.game, point, this.player, this.type);

@@ -23,7 +23,9 @@ export const tempest: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
   description: 'Deal 2 damage to all units.',
-  cardIconId: 'spells/f1_tempest',
+  sprite: {
+    id: 'spells/f1_tempest'
+  },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

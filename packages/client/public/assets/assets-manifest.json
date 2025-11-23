@@ -621,6 +621,19 @@
         },
         {
           "alias": [
+            "f1_tempest"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_tempest.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_tempest.png"
           ],
           "src": [

@@ -16,19 +16,16 @@ export class RangedTargetingStrategy implements TargetingStrategy {
   constructor(
     private game: Game,
     private card: AnyCard,
-    private origin: Point,
+    private getOrigins: () => Point[],
     private type: TargetingType,
     public readonly options: RangedTargetingStrategyOptions
   ) {}
 
-  get position() {
-    return Vec2.fromPoint(this.origin);
-  }
-
   isWithinRange(point: Point) {
-    return (
-      this.game.boardSystem.getDistance(this.position, point) >= this.options.minRange &&
-      this.game.boardSystem.getDistance(this.position, point) <= this.options.maxRange
+    return this.getOrigins().some(
+      origin =>
+        this.game.boardSystem.getDistance(origin, point) >= this.options.minRange &&
+        this.game.boardSystem.getDistance(origin, point) <= this.options.maxRange
     );
   }
 

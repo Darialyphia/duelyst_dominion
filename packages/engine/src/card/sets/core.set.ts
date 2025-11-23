@@ -33,7 +33,7 @@ export const coreSet: CardSet = {
     // bloodtearAlchemist,
     // flamebloodWarlock,
     // saberspineTiger,
-    // tempest,
+    tempest,
     // windbladeAdept,
     // silverguardKnight,
     // azuriteLion,

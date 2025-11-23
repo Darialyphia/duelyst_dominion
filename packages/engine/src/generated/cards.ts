@@ -6,10 +6,12 @@
 
 export const cards = {
 "argeon-highmane": "argeon-highmane",
+"tempest": "tempest",
 "holy-immolation": "holy-immolation"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
 "argeon-highmane": "argeon-highmane",
+"tempest": "tempest",
 "holy-immolation": "holy-immolation"
 } as const satisfies Record<string, string>;
