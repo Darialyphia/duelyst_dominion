@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { CardKind } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
+import { isDefined } from '@game/shared';
 
 const props = defineProps<{
   sprite: {
@@ -22,6 +23,17 @@ const imageBg = computed(() => {
 
 const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
+
+const shouldAnimate = computed(() => isDefined(props.animation));
+const FALLBACK_ANIMATION_BY_KIND: Record<CardKind, string> = {
+  [CARD_KINDS.MINION]: 'breathing',
+  [CARD_KINDS.GENERAL]: 'breathing',
+  [CARD_KINDS.SPELL]: 'default',
+  [CARD_KINDS.ARTIFACT]: 'default'
+};
+const animationToUse = computed(() => {
+  return props.animation ?? FALLBACK_ANIMATION_BY_KIND[props.kind];
+});
 </script>
 
 <template>
