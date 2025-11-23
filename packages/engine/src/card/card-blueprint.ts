@@ -23,11 +23,16 @@ export type CardBlueprintBase = {
   description: string;
   setId: CardSetId;
   rarity: Rarity;
-  cardIconId: string;
   collectable: boolean;
   faction: Faction;
   // eslint-disable-next-line @typescript-eslint/ban-types
   tags: (Tag | (string & {}))[];
+  sprite: {
+    id: string;
+    frameSize: { w: number; h: number };
+    animations: string[];
+    frameDuration: number;
+  };
 };
 
 export type RuneCost = Partial<Record<Rune, number>>;
@@ -124,6 +129,7 @@ export type ArtifactBlueprint = CardBlueprintBase & {
   getTargets: (game: Game, card: ArtifactCard) => Promise<BoardCell[]>;
   getAoe: (game: Game, card: ArtifactCard, targets: BoardCell[]) => GenericAOEShape;
 };
+
 export type CardBlueprint =
   | SpellBlueprint
   | ArtifactBlueprint

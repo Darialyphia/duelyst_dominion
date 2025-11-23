@@ -19,8 +19,10 @@ import CardArtwork from './CardArtwork.vue';
 
 const {
   card,
+  sprite,
+  animation,
   isFoil,
-  isAnimated = true,
+  isTiltable = true,
   maxAngle = 30,
   parallaxMultiplier = 1,
   hasBacklighting = true
@@ -42,8 +44,15 @@ const {
     runeCost?: RuneCost;
     faction: Faction;
   };
+  sprite: {
+    id: string;
+    frameSize: { w: number; h: number };
+    animations: string[];
+    frameDuration: number;
+  };
+  animation?: string;
   isFoil?: boolean;
-  isAnimated?: boolean;
+  isTiltable?: boolean;
   maxAngle?: number;
   parallaxMultiplier?: number;
   hasBacklighting?: boolean;
@@ -91,7 +100,7 @@ const handleMouseleave = () => {
       class="card"
       :class="[
         card.kind.toLocaleLowerCase(),
-        isAnimated && 'animated',
+        isTiltable && 'animated',
         hasBacklighting && 'with-backlighting'
       ]"
       :data-flip-id="`card_${card.id}`"
@@ -115,10 +124,11 @@ const handleMouseleave = () => {
         <CardName :name="card.name" />
 
         <CardArtwork
-          :image="card.image"
           :kind="card.kind"
           :is-foil="isFoil"
-          :is-animated="isAnimated"
+          :is-tiltable="isTiltable"
+          :sprite="sprite"
+          :animation="animation"
           :is-hovered="isHovered"
         />
 

@@ -3,19 +3,25 @@ import { computed } from 'vue';
 import type { CardKind } from '@game/engine/src/card/card.enums';
 
 const props = defineProps<{
-  image: string;
+  sprite: {
+    id: string;
+    frameSize: { w: number; h: number };
+    animations: string[];
+    frameDuration: number;
+  };
+  animation?: string;
   kind: CardKind;
   isFoil?: boolean;
-  isAnimated?: boolean;
+  isTiltable?: boolean;
   isHovered?: boolean;
 }>();
 
 const imageBg = computed(() => {
-  return `url('${props.image}')`;
+  return `url('${props.sprite.id}')`;
 });
 
 const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
-const disableParallax = computed(() => !props.isAnimated || !props.isFoil);
+const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
 </script>
 
 <template>
