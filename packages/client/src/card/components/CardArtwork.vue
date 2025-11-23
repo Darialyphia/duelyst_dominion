@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useIntervalFn } from '@vueuse/core';
 import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
 import { isDefined } from '@game/shared';
 
@@ -7,9 +8,10 @@ const props = defineProps<{
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
-    animations: string[];
+    animations: Record<string, { startFrame: number; endFrame: number }>;
     frameDuration: number;
   };
+
   animation?: string;
   kind: CardKind;
   isFoil?: boolean;
@@ -35,13 +37,41 @@ const animationToUse = computed(() => {
   return props.animation ?? FALLBACK_ANIMATION_BY_KIND[props.kind];
 });
 
-const activeFrameRect = computed(() => {
-  const animationIndex = props.sprite.animations.indexOf(animationToUse.value);
-  const rowIndex = animationIndex === -1 ? 0 : animationIndex;
+const currentAnimation = computed(
+  () => props.sprite.animations[animationToUse.value]
+);
+const currentFrame = ref(0);
 
+watch(
+  currentAnimation,
+  anim => {
+    if (anim) {
+      currentFrame.value = anim.startFrame;
+    } else {
+      currentFrame.value = 0;
+    }
+  },
+  { immediate: true }
+);
+
+useIntervalFn(
+  () => {
+    if (!currentAnimation.value || !shouldAnimate.value) return;
+    const { startFrame, endFrame } = currentAnimation.value;
+
+    if (currentFrame.value >= endFrame) {
+      currentFrame.value = startFrame;
+    } else {
+      currentFrame.value++;
+    }
+  },
+  () => props.sprite.frameDuration
+);
+
+const activeFrameRect = computed(() => {
   return {
-    x: 0,
-    y: rowIndex * props.sprite.frameSize.h,
+    x: currentFrame.value * props.sprite.frameSize.w,
+    y: 0,
     width: props.sprite.frameSize.w,
     height: props.sprite.frameSize.h
   };
@@ -49,7 +79,6 @@ const activeFrameRect = computed(() => {
 
 const bgPosition = computed(() => {
   const { x, y } = activeFrameRect.value;
-  console.log(x, y, animationToUse.value);
   return `calc(-1 * ${x}px) calc(-1 * ${y}px)`;
 });
 </script>
@@ -82,7 +111,7 @@ const bgPosition = computed(() => {
   height: calc(var(--height));
   pointer-events: none;
   scale: calc(2 * var(--pixel-scale));
-  bottom: calc(175px * var(--pixel-scale));
+  bottom: calc(180px * var(--pixel-scale));
   left: 50%;
   transform: translateX(-12.5%);
 
@@ -101,7 +130,7 @@ const bgPosition = computed(() => {
     background-repeat: no-repeat;
     translate: calc(-2 * var(--parallax-x))
       calc(-2 * var(--parallax-y) - var(--pixel-scale) * 6px);
-    filter: contrast(0) brightness(0) blur(3px);
+    filter: contrast(0) brightness(0) blur(2px);
     transition: opacity 1s var(--ease-3);
     scale: 1.15;
   }

@@ -30,7 +30,7 @@ export type CardBlueprintBase = {
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
-    animations: string[];
+    animations: Record<string, { startFrame: number; endFrame: number }>;
     frameDuration: number;
   };
 };

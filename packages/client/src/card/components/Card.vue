@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  CARD_KINDS,
   RARITIES,
   type CardKind,
   type Faction,
@@ -16,13 +17,14 @@ import CardDescription from './CardDescription.vue';
 import CardStats from './CardStats.vue';
 import CardCost from './CardCost.vue';
 import CardArtwork from './CardArtwork.vue';
+import { match } from 'ts-pattern';
 
 const {
   card,
   sprite,
-  animation,
   isFoil,
   isTiltable = true,
+  isAnimated = true,
   maxAngle = 30,
   parallaxMultiplier = 1,
   hasBacklighting = true
@@ -46,10 +48,10 @@ const {
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
-    animations: string[];
+    animations: Record<string, { startFrame: number; endFrame: number }>;
     frameDuration: number;
   };
-  animation?: string;
+  isAnimated?: boolean;
   isFoil?: boolean;
   isTiltable?: boolean;
   maxAngle?: number;
@@ -87,6 +89,19 @@ const handleMouseleave = () => {
   isHovered.value = false;
   onMouseleave();
 };
+
+const animation = computed(() => {
+  if (!isAnimated) return undefined;
+
+  return match(card.kind)
+    .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
+      isHovered.value ? 'attack' : 'breathing'
+    )
+    .with(CARD_KINDS.SPELL, CARD_KINDS.ARTIFACT, () =>
+      isHovered.value ? 'active' : 'default'
+    )
+    .exhaustive();
+});
 </script>
 
 <template>
