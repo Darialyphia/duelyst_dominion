@@ -118,7 +118,7 @@ const bgPosition = computed(() => {
       'is-foil': isFoil
     }"
     :style="{
-      '--parallax-factor': 0.75,
+      '--parallax-factor': 0.5,
       '--bg-position': bgPosition,
       '--width': `${activeFrameRect.width}px`,
       '--height': `${activeFrameRect.height}px`

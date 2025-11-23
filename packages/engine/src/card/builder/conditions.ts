@@ -4,11 +4,10 @@ import type { Filter } from './filters/filter';
 import { resolvePlayerFilter, type PlayerFilter } from './filters/player.filter';
 import { getAmount, type Amount } from './values/amount';
 import { getKeywordById, type KeywordId } from '../card-keywords';
-import type { Tag } from '../card.enums';
 import { resolveCellFilter, type CellFilter } from './filters/cell.filters';
 import { resolveUnitFilter, type UnitFilter } from './filters/unit.filters';
 import { matchNumericOperator, type NumericOperator } from './values/numeric';
-import { isEmptyObject, type Nullable } from '@game/shared';
+import { type Nullable } from '@game/shared';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { Game } from '../..';
 import type { AnyCard } from '../entities/card.entity';
@@ -41,6 +40,10 @@ export type Condition =
         operator: NumericOperator;
         amount: Amount;
       };
+    }
+  | {
+      type: 'unit_equals';
+      params: { unitA: Filter<UnitFilter>; unitB: Filter<UnitFilter> };
     }
   | {
       type: 'unit_attack';
@@ -85,14 +88,13 @@ export type Condition =
   | {
       type: 'cards_played_this_turn';
       params: {
-        player: Filter<PlayerFilter>;
         card: Filter<CardFilter>;
         operator: NumericOperator;
         amount: Amount;
       };
     };
 
-export const checkGlobalConditions = ({
+export const checkCondition = ({
   conditions,
   game,
   card,
@@ -161,6 +163,24 @@ export const checkGlobalConditions = ({
               condition.params.operator
             )
           );
+        })
+        .with({ type: 'unit_equals' }, condition => {
+          const unitsA = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unitA
+          });
+          const unitsB = resolveUnitFilter({
+            game,
+            card,
+            event,
+            targets,
+            filter: condition.params.unitB
+          });
+
+          return unitsA.some(unitA => unitsB.some(unitB => unitA.equals(unitB)));
         })
         .with({ type: 'unit_attack' }, condition => {
           const units = resolveUnitFilter({
@@ -276,13 +296,6 @@ export const checkGlobalConditions = ({
             targets,
             event,
             amount: condition.params.amount
-          });
-          const [player] = resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
-            filter: condition.params.player
           });
 
           const cards = resolveCardFilter({
