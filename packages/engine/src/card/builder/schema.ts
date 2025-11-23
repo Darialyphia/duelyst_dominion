@@ -12,6 +12,8 @@ import type {
   CARD_KINDS
 } from '../card.enums';
 import type { AnyCard } from '../entities/card.entity';
+import type { Condition } from './conditions';
+import type { CellFilter } from './filters/cell.filters';
 
 export type CardBlueprintSchemaBase = {
   id: string;
@@ -38,9 +40,12 @@ export type MinionBlueprintSchema = CardBlueprintBase & {
   maxHp: number;
   cmd: number;
   onInit: any;
-  canPlay: any;
+  canPlay: Condition;
   onPlay: any;
-  getTargets: any;
+  getTargets: {
+    min: number;
+    targets: CellFilter[];
+  };
   getAoe: any;
 };
 

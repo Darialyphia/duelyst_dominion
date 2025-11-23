@@ -98,14 +98,14 @@ export const singleMinionTargetRules = {
     return await game.interaction.selectSpacesOnBoard({
       player: card.player,
       getAoe,
-      isElligible(candidate, selectedCards) {
+      isElligible(candidate, selectedCells) {
         if (!candidate.unit || !isMinion(candidate.unit.card)) {
           return false;
         }
 
         return (
           candidate.unit.canBeTargetedBy(card) &&
-          !selectedCards.some(selected => selected.equals(candidate)) &&
+          !selectedCells.some(selected => selected.equals(candidate)) &&
           predicate(candidate.unit)
         );
       },

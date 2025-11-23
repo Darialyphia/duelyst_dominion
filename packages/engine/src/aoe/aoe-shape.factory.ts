@@ -4,11 +4,13 @@ import type { TargetingType } from './aoe.enums';
 import { PointAOEShape } from './point.aoe-shape';
 import { CompositeAOEShape } from './composite.aoe-shape';
 import { RingAOEShape } from './ring.aoe-shape';
+import { RectangleAOEShape } from './rectangle.aoe-shape';
 
 const dict = {
   point: () => PointAOEShape,
   composite: () => CompositeAOEShape,
-  ring: () => RingAOEShape
+  ring: () => RingAOEShape,
+  rectangle: () => RectangleAOEShape
 } as const;
 
 export type AOEType = keyof typeof dict;

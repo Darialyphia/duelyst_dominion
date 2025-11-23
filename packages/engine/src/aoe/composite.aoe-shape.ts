@@ -7,13 +7,13 @@ type CompositeAOEShapeOptions = {
   shapes: Array<{ type: AOEType; params: JSONObject; pointIndices: number[] }>;
 };
 
-type SerializedComposite = {
+export type SerializedCompositeAOE = {
   type: 'composite';
   targetingType: TargetingType;
   params: CompositeAOEShapeOptions;
 };
 
-export class CompositeAOEShape implements AOEShape<SerializedComposite> {
+export class CompositeAOEShape implements AOEShape<SerializedCompositeAOE> {
   static fromJSON(
     type: TargetingType,
     options: CompositeAOEShapeOptions

@@ -3,7 +3,7 @@ import type { AOEShape } from './aoe-shape';
 import type { TargetingType } from './aoe.enums';
 import { defineHex, Grid, Orientation, rectangle, spiral } from 'honeycomb-grid';
 
-type SerializedRing = {
+export type SerializedRingAOE = {
   type: 'ring';
   targetingType: TargetingType;
   params: { size: number };
@@ -24,7 +24,7 @@ export const RingHex = defineHex({
 
 const ringGrid = new Grid(RingHex, rectangle({ width: 30, height: 30 }));
 
-export class RingAOEShape implements AOEShape<SerializedRing> {
+export class RingAOEShape implements AOEShape<SerializedRingAOE> {
   static fromJSON(type: TargetingType, options: RingAoeShapeOptions): RingAOEShape {
     return new RingAOEShape(type, options);
   }
