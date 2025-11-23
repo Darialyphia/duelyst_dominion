@@ -322,7 +322,10 @@ export class Player
     this._resourceActionsDoneThisTurn = 0;
 
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
-      this._baseMaxMana = this.game.config.MAX_MANA;
+      this._baseMaxMana = Math.min(
+        this._baseMaxMana + this.game.config.MAX_MANA_INCREASE_PER_TURN,
+        this.game.config.MAX_MANA
+      );
     }
     this.refillMana();
 
