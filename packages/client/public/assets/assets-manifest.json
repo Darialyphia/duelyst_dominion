@@ -218,6 +218,19 @@
         },
         {
           "alias": [
+            "f1_argeon-highmane"
+          ],
+          "src": [
+            "/assets/cards/generals/f1_argeon-highmane.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_argeon-highmane.png"
           ],
           "src": [

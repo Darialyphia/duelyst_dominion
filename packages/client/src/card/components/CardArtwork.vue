@@ -12,7 +12,7 @@ const props = defineProps<{
     frameDuration: number;
   };
 
-  animation?: string;
+  animationSequence?: string[];
   kind: CardKind;
   isFoil?: boolean;
   isTiltable?: boolean;
@@ -26,20 +26,33 @@ const imageBg = computed(() => {
 const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
 
-const shouldAnimate = computed(() => isDefined(props.animation));
+const shouldAnimate = computed(
+  () => isDefined(props.animationSequence) && props.animationSequence.length > 0
+);
 const FALLBACK_ANIMATION_BY_KIND: Record<CardKind, string> = {
   [CARD_KINDS.MINION]: 'breathing',
   [CARD_KINDS.GENERAL]: 'breathing',
   [CARD_KINDS.SPELL]: 'default',
   [CARD_KINDS.ARTIFACT]: 'default'
 };
-const animationToUse = computed(() => {
-  return props.animation ?? FALLBACK_ANIMATION_BY_KIND[props.kind];
+
+const sequenceToUse = computed(() => {
+  if (props.animationSequence && props.animationSequence.length > 0) {
+    return props.animationSequence;
+  }
+  return [FALLBACK_ANIMATION_BY_KIND[props.kind]];
 });
 
-const currentAnimation = computed(
-  () => props.sprite.animations[animationToUse.value]
-);
+const currentSequenceIndex = ref(0);
+watch(sequenceToUse, () => {
+  currentSequenceIndex.value = 0;
+});
+
+const currentAnimation = computed(() => {
+  const name = sequenceToUse.value[currentSequenceIndex.value];
+  return props.sprite.animations[name];
+});
+
 const currentFrame = ref(0);
 
 watch(
@@ -60,7 +73,17 @@ useIntervalFn(
     const { startFrame, endFrame } = currentAnimation.value;
 
     if (currentFrame.value >= endFrame) {
-      currentFrame.value = startFrame;
+      if (currentSequenceIndex.value < sequenceToUse.value.length - 1) {
+        currentSequenceIndex.value++;
+        // Manually update frame to avoid glitch before watcher runs
+        const nextAnimName = sequenceToUse.value[currentSequenceIndex.value];
+        const nextAnim = props.sprite.animations[nextAnimName];
+        if (nextAnim) {
+          currentFrame.value = nextAnim.startFrame;
+        }
+      } else {
+        currentFrame.value = startFrame;
+      }
     } else {
       currentFrame.value++;
     }
@@ -111,7 +134,7 @@ const bgPosition = computed(() => {
   height: calc(var(--height));
   pointer-events: none;
   scale: calc(2 * var(--pixel-scale));
-  bottom: calc(180px * var(--pixel-scale));
+  bottom: calc(185px * var(--pixel-scale));
   left: 50%;
   transform: translateX(-12.5%);
 

@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import Card from './Card.vue';
+import sprites from 'virtual:sprites';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
+
+const sprite = computed(() => {
+  return sprites[blueprint.sprite.id];
+});
 </script>
 
 <template>
   <Card
+    v-if="sprite"
     :card="{
       id: blueprint.id,
       name: blueprint.name,
@@ -24,7 +30,7 @@ const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
       cmd: (blueprint as any).cmd,
       faction: blueprint.faction
     }"
-    :sprite="blueprint.sprite"
+    :sprite="sprite"
   />
 </template>
 

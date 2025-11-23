@@ -13,6 +13,7 @@ import markdown, { Mode } from 'vite-plugin-markdown';
 import { isCustomElement, transformAssetUrls } from 'vue3-pixi/compiler';
 //@ts-expect-error no types for this package
 import assetpackConfig from '@game/assetpack';
+import spritesPlugin from './vite-plugin-sprites';
 
 const customElements = [
   'viewport',
@@ -108,6 +109,7 @@ export default defineConfig({
     unoCSS(),
     icons({}),
     assetpackPlugin(),
+    spritesPlugin(),
     // @ts-expect-error
     markdown.default({
       mode: [Mode.VUE]

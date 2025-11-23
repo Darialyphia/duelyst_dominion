@@ -29,9 +29,6 @@ export type CardBlueprintBase = {
   tags: (Tag | (string & {}))[];
   sprite: {
     id: string;
-    frameSize: { w: number; h: number };
-    animations: Record<string, { startFrame: number; endFrame: number }>;
-    frameDuration: number;
   };
 };
 

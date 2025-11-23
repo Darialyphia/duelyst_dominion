@@ -90,15 +90,15 @@ const handleMouseleave = () => {
   onMouseleave();
 };
 
-const animation = computed(() => {
+const animationSequence = computed(() => {
   if (!isAnimated) return undefined;
 
   return match(card.kind)
     .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
-      isHovered.value ? 'attack' : 'breathing'
+      isHovered.value ? ['attack', 'idle'] : ['breathing']
     )
     .with(CARD_KINDS.SPELL, CARD_KINDS.ARTIFACT, () =>
-      isHovered.value ? 'active' : 'default'
+      isHovered.value ? ['active'] : ['default']
     )
     .exhaustive();
 });
@@ -142,7 +142,7 @@ const animation = computed(() => {
           :is-foil="isFoil"
           :is-tiltable="isTiltable"
           :sprite="sprite"
-          :animation="animation"
+          :animation-sequence="animationSequence"
           :is-hovered="isHovered"
         />
 
