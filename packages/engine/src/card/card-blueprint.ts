@@ -103,7 +103,6 @@ export type GeneralBlueprint = CardBlueprintBase & {
   cmd: number;
   abilities: AbilityBlueprint<GeneralCard>[];
   onInit: (game: Game, card: GeneralCard) => Promise<void>;
-  onPlay: (game: Game, card: GeneralCard) => Promise<void>;
 };
 
 export type ArtifactBlueprint = CardBlueprintBase & {

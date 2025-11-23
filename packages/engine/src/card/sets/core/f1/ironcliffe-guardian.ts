@@ -11,7 +11,6 @@ export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
   description: dedent`
-  @Consume@ @[rune:yellow]@ @[rune:yellow]@.
   @Airdrop@, @Provoke@.`,
   cardIconId: 'minions/f1_ironcliffe-guardian',
   kind: CARD_KINDS.MINION,
@@ -34,7 +33,5 @@ export const ironcliffeGuardian: MinionBlueprint = {
     await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(new AirdropModifier(game, card));
   },
-  async onPlay(game, card) {
-    await consume(card, { yellow: 2 });
-  }
+  async onPlay() {}
 };

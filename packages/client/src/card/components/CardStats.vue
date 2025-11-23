@@ -10,11 +10,11 @@ defineProps<{
 
 <template>
   <div class="bottom-left parallax">
-    <div class="stat cmd" :style="{ opacity: isDefined(cmd) ? 1 : 0 }">
+    <!-- <div class="stat cmd" :style="{ opacity: isDefined(cmd) ? 1 : 0 }">
       <span class="dual-text" :data-text="cmd">
         {{ cmd }}
       </span>
-    </div>
+    </div> -->
 
     <div class="stat atk" :style="{ opacity: isDefined(atk) ? 1 : 0 }">
       <span class="dual-text" :data-text="atk">

@@ -1,7 +1,5 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { CelerityModifier } from '../../../../modifier/modifiers/celerity.modifier';
-import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';

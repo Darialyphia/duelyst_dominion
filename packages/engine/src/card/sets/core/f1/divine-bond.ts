@@ -2,7 +2,6 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';

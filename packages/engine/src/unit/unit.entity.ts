@@ -228,15 +228,29 @@ export class Unit
 
   get inFront(): BoardCell | null {
     return this.game.boardSystem.getCellAt({
-      x: this.x,
-      y: this.player.isPlayer1 ? this.y - 1 : this.y + 1
+      x: this.player.isPlayer1 ? this.x + 1 : this.x - 1,
+      y: this.y
     });
   }
 
   get behind(): BoardCell | null {
     return this.game.boardSystem.getCellAt({
+      x: this.player.isPlayer1 ? this.x - 1 : this.x + 1,
+      y: this.y
+    });
+  }
+
+  get above(): BoardCell | null {
+    return this.game.boardSystem.getCellAt({
       x: this.x,
-      y: this.player.isPlayer1 ? this.y + 1 : this.y - 1
+      y: this.y - 1
+    });
+  }
+
+  get below(): BoardCell | null {
+    return this.game.boardSystem.getCellAt({
+      x: this.x,
+      y: this.y + 1
     });
   }
 

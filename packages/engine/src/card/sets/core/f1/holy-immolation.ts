@@ -1,34 +1,15 @@
-import { isDefined } from '@game/shared';
-import { CompositeAOEShape } from '../../../../aoe/composite.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { anywhere, singleMinionTargetRules } from '../../../card-utils';
+import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
-import type { Game } from '../../../../game/game';
 import dedent from 'dedent';
 import { RingAOEShape } from '../../../../aoe/ring.aoe-shape';
-import { consume } from '../../../card-actions-utils';
-
-const getAOE = (game: Game) =>
-  new CompositeAOEShape(TARGETING_TYPE.UNIT, {
-    shapes: game.boardSystem.shrines
-      .map(shrine => shrine.neighborUnits)
-      .flat()
-      .flatMap(unit => ({
-        type: 'point' as const,
-        params: {
-          override: unit.position.serialize()
-        },
-        pointIndices: [0]
-      }))
-  });
 
 export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  @Consume@ @[rune:yellow]@
   Heal an allied minion for 4 and deal 4 damage to enemies nearby it.`,
   cardIconId: 'spells/f1_holy-immolation',
   kind: CARD_KINDS.SPELL,
@@ -57,7 +38,6 @@ export const holyImmolation: SpellBlueprint = {
     const targetToHeal = targets[0].unit;
     if (!targetToHeal) return;
 
-    await consume(card, { yellow: 1 });
     await targetToHeal.heal(card, 4);
 
     const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);

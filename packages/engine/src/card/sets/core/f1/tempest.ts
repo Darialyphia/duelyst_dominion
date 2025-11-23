@@ -1,4 +1,3 @@
-import { isDefined } from '@game/shared';
 import { CompositeAOEShape } from '../../../../aoe/composite.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
@@ -9,10 +8,9 @@ import type { Game } from '../../../../game/game';
 
 const getAOE = (game: Game) =>
   new CompositeAOEShape(TARGETING_TYPE.UNIT, {
-    shapes: game.boardSystem.shrines
-      .map(shrine => shrine.neighborUnits)
-      .flat()
-      .flatMap(unit => ({
+    shapes: game.unitSystem.units
+      .filter(u => u.isAlive)
+      .map(unit => ({
         type: 'point' as const,
         params: {
           override: unit.position.serialize()
@@ -24,7 +22,7 @@ const getAOE = (game: Game) =>
 export const tempest: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
-  description: 'Deal 3 damage to all units at a shrine.',
+  description: 'Deal 2 damage to all units.',
   cardIconId: 'spells/f1_tempest',
   kind: CARD_KINDS.SPELL,
   collectable: true,
