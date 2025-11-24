@@ -24,6 +24,8 @@ import {
   SpellInterceptorModifierMixin,
   UnitInterceptorModifierMixin
 } from '../../../modifier/mixins/interceptor.mixin';
+import type { SerializedAction } from '../actions/action';
+import { ACTION_LOOKUP } from '../actions/action-lookup';
 
 type NumericInterceptor<T extends string> = {
   key: T;
@@ -78,7 +80,7 @@ export type SerializedModifierMixin =
       type: 'game-event';
       params: {
         eventName: GameEventName;
-        actions: any[];
+        actions: SerializedAction[];
         filter: Filter<Condition>;
         frequencyPerPlayerTurn: {
           enabled: boolean;
@@ -198,7 +200,20 @@ export const makeModifier = ({
           ({ params }) =>
             new GameEventModifierMixin(game, {
               eventName: params.eventName,
-              handler: event => {},
+              handler: async event => {
+                for (const action of params.actions) {
+                  const ctor = ACTION_LOOKUP[action.type];
+                  // @ts-expect-error
+                  const instance = new ctor(action, {
+                    game,
+                    card,
+                    targets: [],
+                    event
+                  });
+
+                  await instance.execute();
+                }
+              },
               filter: event => {
                 if (!params.filter) return true;
                 return checkCondition({
