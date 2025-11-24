@@ -25,7 +25,7 @@ const {
   isFoil,
   isTiltable = true,
   isAnimated = true,
-  maxAngle = 30,
+  maxAngle = 20,
   parallaxMultiplier = 1,
   hasBacklighting = true
 } = defineProps<{

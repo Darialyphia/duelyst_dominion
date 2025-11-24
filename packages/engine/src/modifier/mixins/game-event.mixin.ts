@@ -16,8 +16,8 @@ export class GameEventModifierMixin<
     game: Game,
     private options: {
       eventName: TEvent;
-      handler: (event: EventMapWithStarEvent<GameEventMap>[TEvent]) => void;
-      filter?: (event: EventMapWithStarEvent<GameEventMap>[TEvent]) => boolean;
+      handler: (event?: EventMapWithStarEvent<GameEventMap>[TEvent]) => void;
+      filter?: (event?: EventMapWithStarEvent<GameEventMap>[TEvent]) => boolean;
       frequencyPerPlayerTurn?: number;
       frequencyPerGameTurn?: number;
     }
@@ -26,6 +26,14 @@ export class GameEventModifierMixin<
     this.wrappedHandler = this.wrappedHandler.bind(this);
     this.onPlayerTurnEnd = this.onPlayerTurnEnd.bind(this);
     this.onGameTurnEnd = this.onGameTurnEnd.bind(this);
+  }
+
+  triggerManually() {
+    return this.options.handler();
+  }
+
+  get eventName() {
+    return this.options.eventName;
   }
 
   private wrappedHandler(event: EventMapWithStarEvent<GameEventMap>[TEvent]) {

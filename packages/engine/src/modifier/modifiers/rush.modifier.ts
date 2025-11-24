@@ -16,8 +16,11 @@ export class RushModifier extends Modifier<MinionCard> {
       mixins: [
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.MINION_AFTER_SUMMON,
-          handler: async event => {
-            if (!event.data.card.equals(this.target)) return;
+          filter: event => {
+            if (!event) return false;
+            return event.data.card.equals(this.target);
+          },
+          handler: async () => {
             this.target.unit.wakeUp();
           }
         }),

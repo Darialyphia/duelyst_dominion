@@ -51,7 +51,7 @@ const canAddCard = computed(() => {
       <div>
         <BlueprintCard
           :blueprint="card.card"
-          :is-animated="
+          :is-tiltable="
             viewMode === 'expanded' && (!isEditingDeck || canAddCard)
           "
           show-stats

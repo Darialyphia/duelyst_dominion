@@ -40,16 +40,18 @@ export class StealthModifier extends Modifier<MinionCard> {
     });
   }
 
-  private onAfterAttack = async (event: UnitAttackEvent) => {
+  private onAfterAttack = async (event?: UnitAttackEvent) => {
     if (!this.unitModifier) return;
+    if (!event) return;
     const unit = event.data.unit;
     if (!unit.equals(this.unitModifier.target)) return;
 
     await this.removeStealthFromUnit(unit);
   };
 
-  private onAfterCapture = async (event: ShrineCaptureEvent) => {
+  private onAfterCapture = async (event?: ShrineCaptureEvent) => {
     if (!this.unitModifier) return;
+    if (!event) return;
     const unit = event.data.unit;
     if (!unit.equals(this.unitModifier.target)) return;
 

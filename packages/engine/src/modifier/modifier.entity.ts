@@ -1,4 +1,10 @@
-import { isString, type EmptyObject, type Serializable, type Values } from '@game/shared';
+import {
+  isString,
+  type Constructor,
+  type EmptyObject,
+  type Serializable,
+  type Values
+} from '@game/shared';
 import type { ModifierMixin } from './modifier-mixin';
 import { Entity } from '../entity';
 import type { Game } from '../game/game';
@@ -152,6 +158,10 @@ export class Modifier<
 
   get stacks() {
     return this._stacks;
+  }
+
+  getMixin(ctor: Constructor<ModifierMixin<T>>): ModifierMixin<T>[] {
+    return this.mixins.filter(mixin => mixin instanceof ctor);
   }
 
   checkEnabled() {

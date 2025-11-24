@@ -4,7 +4,6 @@ import Card from './Card.vue';
 import sprites from 'virtual:sprites';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
-console.log(sprites);
 const sprite = computed(() => {
   return sprites[blueprint.sprite.id];
 });

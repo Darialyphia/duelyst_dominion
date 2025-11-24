@@ -13,7 +13,7 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    handler: (event: MinionSummonedEvent) => MaybePromise<void>
+    handler: (event?: MinionSummonedEvent) => MaybePromise<void>
   ) {
     super(KEYWORDS.ON_ENTER.id, game, source, {
       name: KEYWORDS.ON_ENTER.name,
@@ -22,10 +22,12 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
         new KeywordModifierMixin(game, KEYWORDS.ON_ENTER),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.MINION_BEFORE_SUMMON,
+          filter: event => {
+            if (!event) return false;
+            return event.data.card.equals(this.target);
+          },
           handler: event => {
-            if (event.data.card.equals(this.target)) {
-              return handler(event);
-            }
+            return handler(event);
           }
         })
       ]

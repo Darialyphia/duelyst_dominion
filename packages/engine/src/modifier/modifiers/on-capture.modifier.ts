@@ -29,10 +29,13 @@ export class MinionOnCaptureModifier extends Modifier<MinionCard> {
         new TogglableModifierMixin(game, () => this.target.location === 'board'),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.SHRINE_AFTER_CAPTURE,
+          filter: event => {
+            if (!event) return false;
+            return event.data.unit.equals(this.target.unit);
+          },
           handler: event => {
-            if (event.data.unit.equals(this.target.unit)) {
-              return options.handler(event);
-            }
+            if (!event) return;
+            return options.handler(event);
           }
         }),
         ...(options.mixins ?? [])
