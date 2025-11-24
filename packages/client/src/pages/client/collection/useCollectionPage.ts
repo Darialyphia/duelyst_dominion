@@ -43,6 +43,9 @@ export const provideCollectionPage = () => {
     hasKindFilter,
     toggleKindFilter,
     clearKindFilter,
+    hasFactionFilter,
+    toggleFactionFilter,
+    clearFactionFilter,
     textFilter
   } = provideCardList();
 
@@ -107,6 +110,9 @@ export const provideCollectionPage = () => {
     hasKindFilter,
     toggleKindFilter,
     clearKindFilter,
+    hasFactionFilter,
+    toggleFactionFilter,
+    clearFactionFilter,
     textFilter,
     viewMode,
     isEditingDeck,

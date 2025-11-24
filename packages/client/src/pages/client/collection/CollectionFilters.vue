@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
+import {
+  CARD_KINDS,
+  FACTIONS,
+  type CardKind,
+  type Faction
+} from '@game/engine/src/card/card.enums';
 import { uppercaseFirstLetter } from '@game/shared';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { useCollectionPage } from './useCollectionPage';
 
-const { textFilter, hasKindFilter, toggleKindFilter, viewMode } =
-  useCollectionPage();
+const {
+  textFilter,
+  hasKindFilter,
+  toggleKindFilter,
+  hasFactionFilter,
+  toggleFactionFilter,
+  clearFactionFilter,
+  viewMode
+} = useCollectionPage();
 
 const cardKinds: Array<{
   id: CardKind;
@@ -17,6 +29,18 @@ const cardKinds: Array<{
   id: kind,
   img: `/assets/ui/card-kind-${kind.toLocaleLowerCase()}.png`,
   label: uppercaseFirstLetter(kind),
+  color: '#dec7a6'
+}));
+
+const factions: Array<{
+  id: Faction;
+  img: string;
+  label: string;
+  color: string;
+}> = Object.values(FACTIONS).map(faction => ({
+  id: faction,
+  img: `/assets/ui/crest-${faction.toLocaleLowerCase()}.png`,
+  label: uppercaseFirstLetter(faction),
   color: 'white'
 }));
 </script>
@@ -65,6 +89,33 @@ const cardKinds: Array<{
     </section>
 
     <section>
+      <h4 class="flex items-center">
+        Faction
+
+        <button
+          v-if="Object.values(FACTIONS).some(f => hasFactionFilter(f))"
+          @click="clearFactionFilter()"
+          class="active"
+          aria-label="Clear faction filter"
+        >
+          <Icon icon="mdi:close" width="1.5rem" />
+        </button>
+      </h4>
+      <div class="faction-filter">
+        <button
+          v-for="faction in factions"
+          :key="faction.label"
+          :class="hasFactionFilter(faction.id) && 'active'"
+          :style="{ '--color': faction.color }"
+          :aria-label="faction.label"
+          @click="toggleFactionFilter(faction.id)"
+        >
+          <img :src="faction.img" :alt="faction.label" />
+        </button>
+      </div>
+    </section>
+
+    <section>
       <h4>Card type</h4>
       <div class="kind-filter">
         <button
@@ -87,30 +138,29 @@ const cardKinds: Array<{
 aside {
   width: 18rem;
 }
-.filter {
+.faction-filter {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--size-1);
-  --pixel-scale: 3;
+  grid-template-columns: repeat(3, 1fr);
+  --pixel-scale: 2;
 
   button {
-    border: solid var(--border-size-2) transparent;
+    border: solid var(--border-size-1) transparent;
     border-radius: var(--radius-pill);
-    width: calc(var(--pixel-scale) * 22px);
-    height: calc(var(--pixel-scale) * 20px);
+    width: calc(var(--pixel-scale) * 39px);
+    height: calc(var(--pixel-scale) * 38px);
     aspect-ratio: 1;
     padding: 0;
     display: grid;
     > img {
       width: 100%;
       height: 100%;
+      transform: translateX(-0.5rem);
     }
     &:not(.active) {
-      filter: brightness(70%);
+      filter: brightness(75%);
     }
     &.active {
-      background-color: hsl(from var(--color) h s l / 0.25);
-      /* border-color: var(--color); */
+      filter: brightness(110%);
     }
   }
 }
@@ -119,15 +169,15 @@ aside {
   display: flex;
   flex-direction: column;
   button {
-    border: solid var(--border-size-2) transparent;
-    border-radius: var(--radius-pill);
+    border: solid var(--border-size-1) transparent;
+    border-radius: var(--radius-3);
     text-align: left;
     display: flex;
     gap: var(--size-2);
     align-items: center;
 
     &.active {
-      background-color: hsl(from var(--color) h s l / 0.25);
+      background-color: hsl(from var(--color) h s l / 0.15);
       border-color: var(--color);
     }
 

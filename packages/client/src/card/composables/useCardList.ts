@@ -4,6 +4,7 @@ import { KEYWORDS } from '@game/engine/src/card/card-keywords';
 import {
   CARD_KINDS,
   type CardKind,
+  type Faction,
   FACTIONS
 } from '@game/engine/src/card/card.enums';
 import { CARD_SET_DICTIONARY } from '@game/engine/src/card/sets';
@@ -29,6 +30,10 @@ export type CardListContext = {
   hasKindFilter(kind: CardKind): boolean;
   toggleKindFilter(kind: CardKind): void;
   clearKindFilter(): void;
+
+  hasFactionFilter(faction: Faction): boolean;
+  toggleFactionFilter(faction: Faction): void;
+  clearFactionFilter(): void;
 };
 
 const CardListInjectionKey = Symbol(
@@ -52,6 +57,7 @@ export const provideCardList = () => {
   };
 
   const kindFilter = ref(new Set<CardKind>());
+  const factionFilter = ref(new Set<Faction>());
   const textFilter = ref('');
 
   const allBlueprints = Object.values(CARD_SET_DICTIONARY).flatMap(
@@ -68,6 +74,13 @@ export const provideCardList = () => {
       })
       .filter(({ card }) => {
         if (kindFilter.value.size > 0 && !kindFilter.value.has(card.kind)) {
+          return false;
+        }
+
+        if (
+          factionFilter.value.size > 0 &&
+          !factionFilter.value.has(card.faction)
+        ) {
           return false;
         }
 
@@ -148,6 +161,20 @@ export const provideCardList = () => {
     },
     clearKindFilter: () => {
       kindFilter.value.clear();
+    },
+
+    hasFactionFilter(faction: Faction) {
+      return factionFilter.value.has(faction);
+    },
+    toggleFactionFilter(faction: Faction) {
+      if (factionFilter.value.has(faction)) {
+        factionFilter.value.delete(faction);
+      } else {
+        factionFilter.value.add(faction as Faction);
+      }
+    },
+    clearFactionFilter() {
+      factionFilter.value.clear();
     }
   };
 

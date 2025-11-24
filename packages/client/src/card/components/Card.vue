@@ -27,7 +27,8 @@ const {
   isAnimated = true,
   maxAngle = 20,
   parallaxMultiplier = 1,
-  hasBacklighting = true
+  hasBacklighting = true,
+  animationSequence
 } = defineProps<{
   card: {
     id: string;
@@ -55,6 +56,7 @@ const {
     >;
   };
   isAnimated?: boolean;
+  animationSequence?: string[];
   isFoil?: boolean;
   isTiltable?: boolean;
   maxAngle?: number;
@@ -93,8 +95,9 @@ const handleMouseleave = () => {
   onMouseleave();
 };
 
-const animationSequence = computed(() => {
+const _animationSequence = computed(() => {
   if (!isAnimated) return undefined;
+  if (animationSequence) return animationSequence;
 
   return match(card.kind)
     .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
@@ -149,7 +152,7 @@ const kindImg = computed(() => {
           :is-foil="isFoil"
           :is-tiltable="isTiltable"
           :sprite="sprite"
-          :animation-sequence="animationSequence"
+          :animation-sequence="_animationSequence"
           :is-hovered="isHovered"
         />
 

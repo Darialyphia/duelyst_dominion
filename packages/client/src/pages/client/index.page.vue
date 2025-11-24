@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useAuthedQuery } from '@/auth/composables/useAuth';
 import AuthenticatedHeader from '@/AuthenticatedHeader.vue';
+import BoosterPackContent from '@/card/components/BoosterPackContent.vue';
 import UiButton from '@/ui/components/UiButton.vue';
 import { api, GIFT_STATES } from '@game/api';
+import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 
 definePage({
   name: 'ClientHome',
@@ -29,6 +31,16 @@ const unclaimedGiftsCount = computed(() => {
         View Gifts
       </UiButton>
     </div>
+
+    <BoosterPackContent
+      :cards="[
+        CARDS_DICTIONARY['argeon-highmane'],
+        CARDS_DICTIONARY['argeon-highmane'],
+        CARDS_DICTIONARY['argeon-highmane'],
+        CARDS_DICTIONARY['argeon-highmane'],
+        CARDS_DICTIONARY['argeon-highmane']
+      ]"
+    />
   </div>
 </template>
 

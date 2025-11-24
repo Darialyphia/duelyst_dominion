@@ -52,7 +52,8 @@
 }
 
 .fancy-scrollbar {
-  --scrollbar-foreground: hsl(var(--color-primary-hsl) / 0.75);
+  --scrollbar-foreground: #dec7a6;
+  --scrollbar-foreground-2: #a2846b;
   --scrollbar-background: transparent
     scrollbar-color: var(--scrollbar-foreground) var(--scrollbar-background);
   &::-webkit-scrollbar {
@@ -61,7 +62,11 @@
   }
   &::-webkit-scrollbar-thumb {
     /* Foreground */
-    background: var(--scrollbar-foreground);
+    background: linear-gradient(
+      to bottom,
+      var(--scrollbar-foreground),
+      var(--scrollbar-foreground-2)
+    );
   }
   &::-webkit-scrollbar-track {
     /* Background */
