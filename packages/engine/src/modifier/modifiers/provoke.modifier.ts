@@ -5,7 +5,7 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { ModifierMixin } from '../modifier-mixin';
-import { AuraModifierMixin } from '../mixins/aura.mixin';
+import { CardAuraModifierMixin } from '../mixins/aura.mixin';
 import { isMinionOrGeneral } from '../../card/card-utils';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
@@ -59,7 +59,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
-        new AuraModifierMixin<Unit, MinionCard | GeneralCard>(this.game, {
+        new CardAuraModifierMixin<Unit, MinionCard | GeneralCard>(this.game, {
           isElligible: candidate => {
             return this.shouldBeProvoked(candidate);
           },

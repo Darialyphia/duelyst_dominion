@@ -1,7 +1,6 @@
 import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
-import { SubModifierMixin } from '../../../../modifier/mixins/sub-modifier.mixin';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
@@ -15,7 +14,9 @@ export const silverguardKnight: MinionBlueprint = {
   @Provoke@.
   @Zeal@ : +2 Attack.
   `,
-  cardIconId: 'minions/f1_silverguard-knight',
+  sprite: {
+    id: 'minions/f1_silverguard-knight'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

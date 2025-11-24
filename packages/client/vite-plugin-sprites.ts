@@ -109,6 +109,7 @@ export default function spritesPlugin(): Plugin {
               w: firstFrame.sourceSize.w,
               h: firstFrame.sourceSize.h
             },
+            sheetSize: { w: json.meta.size.w, h: json.meta.size.h },
             frameDuration: firstFrame.duration,
             animations
           };

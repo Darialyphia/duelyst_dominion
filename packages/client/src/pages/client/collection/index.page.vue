@@ -23,9 +23,7 @@ const { isEditingDeck } = provideCollectionPage();
     <AuthenticatedHeader class="collection-header" />
     <CollectionFilters class="filters lt-lg:hidden" />
 
-    <div class="collection">
-      <Collection />
-    </div>
+    <Collection />
 
     <aside class="right-sidebar surface">
       <DeckList v-if="!isEditingDeck" />
@@ -42,7 +40,7 @@ const { isEditingDeck } = provideCollectionPage();
   display: grid;
   grid-template-columns: auto 1fr 22rem;
   grid-template-rows: auto 1fr;
-
+  overflow: hidden;
   transform-style: preserve-3d;
   @screen lt-lg {
     grid-template-columns: 1fr 18rem;

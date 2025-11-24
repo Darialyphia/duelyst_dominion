@@ -283,6 +283,19 @@
         },
         {
           "alias": [
+            "f1_silverguard-knight"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_silverguard-knight.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_silverguard-knight.png"
           ],
           "src": [
@@ -313,6 +326,19 @@
           ],
           "src": [
             "/assets/cards/minions/f1_war-judicator.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_windblade-adept"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_windblade-adept.json"
           ],
           "data": {
             "tags": {

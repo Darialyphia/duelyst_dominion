@@ -8,12 +8,12 @@ const props = defineProps<{
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
+    sheetSize: { w: number; h: number };
     animations: Record<
       string,
       { startFrame: number; endFrame: number; frameDuration: number }
     >;
   };
-
   animationSequence?: string[];
   kind: CardKind;
   isFoil?: boolean;
@@ -73,7 +73,6 @@ useIntervalFn(
   () => {
     if (!currentAnimation.value || !shouldAnimate.value) return;
     const { startFrame, endFrame } = currentAnimation.value;
-
     if (currentFrame.value >= endFrame) {
       if (currentSequenceIndex.value < sequenceToUse.value.length - 1) {
         currentSequenceIndex.value++;
@@ -104,7 +103,7 @@ const activeFrameRect = computed(() => {
 
 const bgPosition = computed(() => {
   const { x, y } = activeFrameRect.value;
-  return `calc(-1 * ${x}px) calc(-1 * ${y}px)`;
+  return `calc(-2 * ${x}px * var(--pixel-scale)) calc(-2 * ${y}px * var(--pixel-scale))`;
 });
 </script>
 
@@ -121,10 +120,12 @@ const bgPosition = computed(() => {
       '--parallax-factor': 0.5,
       '--bg-position': bgPosition,
       '--width': `${activeFrameRect.width}px`,
-      '--height': `${activeFrameRect.height}px`
+      '--height': `${activeFrameRect.height}px`,
+      '--background-width': `calc(2 * ${props.sprite.sheetSize.w}px * var(--pixel-scale))`,
+      '--background-height': `calc(2 * ${props.sprite.sheetSize.h}px * var(--pixel-scale))`
     }"
   >
-    <div class="image-shadow" />
+    <!-- <div class="image-shadow" /> -->
     <div class="image-sprite" />
   </div>
 </template>
@@ -132,14 +133,14 @@ const bgPosition = computed(() => {
 <style scoped lang="postcss">
 .image {
   position: absolute;
-  width: calc(var(--width));
-  height: calc(var(--height));
-  pointer-events: none;
-  bottom: calc(175px * var(--pixel-scale));
+  width: calc(2 * var(--pixel-scale) * var(--width));
+  height: calc(2 * var(--pixel-scale) * var(--height));
+  /* pointer-events: none; */
+  bottom: calc(105px * var(--pixel-scale));
   left: 50%;
-  transform: translateX(-50%) scale(calc(2 * var(--pixel-scale)));
+  transform: translateX(-50%);
   &.is-spell {
-    top: calc(55px * var(--pixel-scale));
+    bottom: calc(140px * var(--pixel-scale));
   }
 
   .image-shadow {
@@ -173,6 +174,7 @@ const bgPosition = computed(() => {
     background: v-bind(imageBg);
     background-position: var(--bg-position);
     background-repeat: no-repeat;
+    background-size: var(--background-width) var(--background-height);
     translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
     pointer-events: none;
   }

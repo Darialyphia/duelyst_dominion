@@ -48,6 +48,7 @@ const {
   sprite: {
     id: string;
     frameSize: { w: number; h: number };
+    sheetSize: { w: number; h: number };
     animations: Record<
       string,
       { startFrame: number; endFrame: number; frameDuration: number }

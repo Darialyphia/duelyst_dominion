@@ -1,6 +1,6 @@
 import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { AuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
+import { CardAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
@@ -41,7 +41,7 @@ export const archonSpellbinder: MinionBlueprint = {
     const aura = new Modifier<MinionCard>('archon-spellbinder-aura', game, card, {
       mixins: [
         new TogglableModifierMixin(game, () => card.location === 'board'),
-        new AuraModifierMixin(game, {
+        new CardAuraModifierMixin(game, {
           isElligible(targetCard) {
             return (
               isSpell(targetCard) &&

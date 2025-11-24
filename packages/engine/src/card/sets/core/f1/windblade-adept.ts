@@ -9,7 +9,9 @@ export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
   description: '@Zeal@ : +2 Attack.',
-  cardIconId: 'minions/f1_windblade-adept',
+  sprite: {
+    id: 'minions/f1_windblade-adept'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
