@@ -104,6 +104,10 @@ const animationSequence = computed(() => {
     )
     .exhaustive();
 });
+
+const kindImg = computed(() => {
+  return `/assets/ui/card-kind-${card.kind.toLocaleLowerCase()}.png`;
+});
 </script>
 
 <template>
@@ -149,6 +153,7 @@ const animationSequence = computed(() => {
         />
 
         <div class="kind parallax">
+          <img :src="kindImg" :alt="card.kind" />
           {{ uppercaseFirstLetter(card.kind.toLocaleLowerCase()) }}
         </div>
 
@@ -268,11 +273,19 @@ const animationSequence = computed(() => {
 
 .kind {
   position: absolute;
-  top: calc(162px * var(--pixel-scale));
+  top: calc(159px * var(--pixel-scale));
   width: 100%;
-  text-align: center;
+  display: flex;
+  gap: calc(var(--size-05) * var(--pixel-scale));
+  align-items: center;
+  justify-content: center;
   color: #dbc4a4;
-  font-size: calc(8px * var(--pixel-scale));
+  font-size: calc(9px * var(--pixel-scale));
+  padding-inline-end: calc(8px * var(--pixel-scale));
+  img {
+    width: calc(16px * var(--pixel-scale));
+    aspect-ratio: 1;
+  }
 }
 
 .faction {

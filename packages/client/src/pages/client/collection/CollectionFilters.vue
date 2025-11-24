@@ -84,6 +84,9 @@ const cardKinds: Array<{
 </template>
 
 <style scoped lang="postcss">
+aside {
+  width: 18rem;
+}
 .filter {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

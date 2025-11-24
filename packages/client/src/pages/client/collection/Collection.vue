@@ -79,7 +79,7 @@ useIntersectionObserver(
   overflow-x: hidden;
   overflow-y: auto;
   align-content: start;
-  padding-inline: var(--size-4);
+  /* padding-inline: var(--size-4); */
   padding-bottom: var(--size-10);
   padding-top: var(--size-3);
   --pixel-scale: 2;
@@ -89,8 +89,8 @@ useIntersectionObserver(
     perspective: 700px;
     perspective-origin: center;
     isolation: isolate;
-    width: calc(var(--card-width) * var(--pixel-scale));
-    aspect-ratio: var(--card-ratio);
+    /* width: calc(var(--card-width) * var(--pixel-scale));
+    aspect-ratio: var(--card-ratio); */
   }
 
   @screen lt-lg {
