@@ -11,15 +11,25 @@ import { match } from 'ts-pattern';
 
 type ExecutionTiming = 'now' | 'end_of_turn' | 'start_of_next_turn' | 'end_of_next_turn';
 
-export type SerializedAction = {
-  type: 'deal_damage';
-  params: {
-    targets: Filter<UnitFilter>;
-    amount: Amount;
-    condition: Filter<Condition>;
-    timing: ExecutionTiming;
-  };
-};
+export type SerializedAction =
+  | {
+      type: 'deal_damage';
+      params: {
+        targets: Filter<UnitFilter>;
+        amount: Amount;
+        condition: Filter<Condition>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'heal';
+      params: {
+        targets: Filter<UnitFilter>;
+        amount: Amount;
+        condition: Filter<Condition>;
+        timing: ExecutionTiming;
+      };
+    };
 
 export type ActionContext = {
   game: Game;
