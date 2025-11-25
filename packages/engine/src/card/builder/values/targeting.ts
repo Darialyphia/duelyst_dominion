@@ -2,15 +2,11 @@ import { match } from 'ts-pattern';
 import type { TargetingType } from '../../../targeting/targeting-strategy';
 import type { UnitFilter } from '../filters/unit.filters';
 import { AnywhereTargetingStrategy } from '../../../targeting/anywhere-targeting-strategy';
-import type { AnyCard } from '../../entities/card.entity';
-import type { Game } from '../../../game/game';
 import { NearbyTargetingStrategy } from '../../../targeting/nearby-targeting-strategy';
 import { resolveCellFilter, type CellFilter } from '../filters/cell.filters';
-import type { Nullable } from '@game/shared';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
-import type { GameEvent } from '../../../game/game.events';
 import type { Filter } from '../filters/filter';
 import { RangedTargetingStrategy } from '../../../targeting/ranged-targeting.strategy';
+import type { BuilderContext } from '../schema';
 
 export type SerializedTargeting =
   | {
@@ -37,19 +33,15 @@ export type SerializedTargeting =
       };
     };
 
+type TargetingContext = BuilderContext & { targeting: SerializedTargeting };
+
 export const getTargeting = ({
   game,
   targeting,
   card,
   targets,
   event
-}: {
-  game: Game;
-  targeting: SerializedTargeting;
-  card: AnyCard;
-  targets: Array<Nullable<BoardCell>>;
-  event?: GameEvent;
-}) => {
+}: TargetingContext) => {
   return match(targeting)
     .with(
       { type: 'anywhere' },

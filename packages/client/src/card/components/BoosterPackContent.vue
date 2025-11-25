@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import gsap from 'gsap';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
@@ -12,6 +13,7 @@ const props = defineProps<{
 }>();
 
 const flippedCards = ref<Set<number>>(new Set());
+const wrapperRefs = ref<HTMLElement[]>([]);
 
 const isRevealed = (index: number) => flippedCards.value.has(index);
 
@@ -19,15 +21,35 @@ const dealingStatus = ref<'waiting' | 'dealing' | 'done'>('waiting');
 
 const isSweeping = ref(false);
 
+const shakeAndDeal = () => {
+  const keyframes = [];
+  for (let i = 0; i < 30; i++) {
+    keyframes.push({
+      x: 'random(-10, 10)',
+      y: 'random(-10, 10)',
+      duration: 0.025
+    });
+  }
+  keyframes.push({ x: 0, y: 0, rotation: 0, duration: 0.05 });
+
+  gsap.to(wrapperRefs.value, {
+    keyframes,
+    clearProps: 'all',
+    onComplete: () => {
+      dealingStatus.value = 'dealing';
+      setTimeout(
+        () => {
+          dealingStatus.value = 'done';
+        },
+        (props.cards.length + 1) * 50
+      );
+    }
+  });
+};
+
 const reveal = (index: number) => {
   if (dealingStatus.value === 'waiting') {
-    dealingStatus.value = 'dealing';
-    setTimeout(
-      () => {
-        dealingStatus.value = 'done';
-      },
-      (props.cards.length + 1) * 200
-    );
+    shakeAndDeal();
     return;
   }
 
@@ -62,7 +84,7 @@ const onCardHover = (index: number) => {
 
 const cardStyles = computed(() => {
   const count = props.cards.length;
-  const radius = 800;
+  const radius = 1000;
   const angleStep = 15;
   const totalArc = (count - 1) * angleStep;
   const startAngle = -90 - totalArc / 2;
@@ -71,16 +93,15 @@ const cardStyles = computed(() => {
     const angle = startAngle + index * angleStep;
     const radian = (angle * Math.PI) / 180;
     const x = Math.cos(radian) * radius;
-    const y = Math.sin(radian) * radius + 600;
+    const y = Math.sin(radian) * radius + 800;
     const rotation = angle + 90;
 
     return {
       transform:
         dealingStatus.value !== 'waiting'
           ? `translate(${x}px, ${y}px) rotate(${rotation}deg)`
-          : `translate(0px, 0px) rotate(0deg)`,
-      '--z-index': count - index,
-      '--child-index': index
+          : `translate(0px, calc(50px + var(--child-index) * -10px)) rotate(0deg)`,
+      '--z-index': count - index
     };
   });
 });
@@ -109,7 +130,11 @@ const getAnimationSequence = (card: CardBlueprint) => {
       @mousedown="startSweep(index)"
       @mouseenter="onCardHover(index)"
     >
-      <div class="card-wrapper" :class="{ revealed: isRevealed(index) }">
+      <div
+        class="card-wrapper"
+        ref="wrapperRefs"
+        :class="{ revealed: isRevealed(index) }"
+      >
         <BlueprintCard
           class="booster-card"
           :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
@@ -187,30 +212,30 @@ const getAnimationSequence = (card: CardBlueprint) => {
       1.007 84.7%,
       1
     );
-  transition-delay: calc(var(--child-index) * 0.2s);
-  &:has(.revealed) {
-    z-index: calc(10 + var(--z-index));
-  }
-  &:not(:has(.revealed))::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    filter: blur(4px);
-    background:
-      conic-gradient(
-        from var(--conic-gradient-angle) at center,
-        cyan 0deg,
-        orange 20deg,
-        transparent 20deg
-      ),
-      conic-gradient(
-        from var(--conic-gradient-angle-2) at center,
-        magenta 0deg,
-        yellow 20deg,
-        transparent 20deg
-      );
-    animation: booster-border-gradient-rotate 2s linear infinite;
+  transition-delay: calc(var(--child-index) * 0.05s);
+
+  &:not(:has(.revealed)) {
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      filter: blur(4px);
+      background:
+        conic-gradient(
+          from var(--conic-gradient-angle) at center,
+          cyan 0deg,
+          orange 20deg,
+          transparent 20deg
+        ),
+        conic-gradient(
+          from var(--conic-gradient-angle-2) at center,
+          magenta 0deg,
+          yellow 20deg,
+          transparent 20deg
+        );
+      animation: booster-border-gradient-rotate 2s linear infinite;
+    }
   }
 }
 
@@ -224,11 +249,10 @@ const getAnimationSequence = (card: CardBlueprint) => {
     transform: rotateY(180deg);
   }
   &.revealed {
-    animation:
-      booster-reveal-bloom 0.6s,
-      booster-reveal-zindex 0.6s;
+    animation: booster-reveal-bloom 0.6s;
+    animation-delay: 0.6s;
     .booster-card {
-      transition: transform 0.6s var(--ease-out-2);
+      transition: transform 0.4s var(--ease-out-2);
     }
   }
 }
@@ -273,22 +297,9 @@ const getAnimationSequence = (card: CardBlueprint) => {
   mix-blend-mode: screen;
 }
 
-@keyframes booster-card-scale {
-  0% {
-    scale: 1;
-  }
-  50% {
-    scale: 1.1;
-  }
-  100% {
-    scale: 1;
-  }
-}
-
 @keyframes booster-reveal-bloom {
-  from,
   25% {
-    filter: brightness(3) blur(5px);
+    filter: saturate(3) brightness(3);
   }
 }
 

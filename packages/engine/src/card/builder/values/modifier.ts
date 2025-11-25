@@ -41,6 +41,7 @@ import {
 } from '../../../modifier/mixins/aura.mixin';
 import type { Unit } from '../../../unit/unit.entity';
 import { UnitEffectModifierMixin } from '../../../modifier/mixins/unit-effect.mixin';
+import type { BuilderContext } from '../schema';
 
 export type SerializedModifierMixin =
   | {
@@ -124,28 +125,22 @@ export type SerializedModifier = {
   mixins: SerializedModifierMixin[];
 };
 
-export const makeModifier = ({
-  game,
-  card,
-  modifier
-}: {
-  game: Game;
-  card: AnyCard;
-  modifier: SerializedModifier;
-}) => {
-  return new Modifier(modifier.modifierType, game, card, {
-    name: isDefined(modifier.name)
-      ? isString(modifier.name)
-        ? modifier.name
-        : modifier.name?.name
+type ModifierContext = BuilderContext & { modifierData: SerializedModifier };
+
+export const makeModifier = ({ game, card, modifierData, ...ctx }: ModifierContext) => {
+  return new Modifier(modifierData.modifierType, game, card, {
+    name: isDefined(modifierData.name)
+      ? isString(modifierData.name)
+        ? modifierData.name
+        : modifierData.name?.name
       : undefined,
-    description: isDefined(modifier.description)
-      ? isString(modifier.description)
-        ? modifier.description
-        : modifier.description?.name
+    description: isDefined(modifierData.description)
+      ? isString(modifierData.description)
+        ? modifierData.description
+        : modifierData.description?.name
       : undefined,
-    icon: modifier.icon,
-    mixins: modifier.mixins.map(mixin => {
+    icon: modifierData.icon,
+    mixins: modifierData.mixins.map(mixin => {
       return match(mixin)
         .with(
           { type: 'togglable' },
@@ -214,6 +209,7 @@ export const makeModifier = ({
           return new UnitInterceptorModifierMixin(game, {
             key: params.key,
             interceptor: getUnitInterceptor({
+              ...ctx,
               game,
               card,
               params
@@ -224,6 +220,7 @@ export const makeModifier = ({
           return new CardInterceptorModifierMixin(game, {
             key: params.key,
             interceptor: getCardInterceptor({
+              ...ctx,
               game,
               card,
               params
@@ -234,6 +231,7 @@ export const makeModifier = ({
           return new MinionInterceptorModifierMixin(game, {
             key: params.key,
             interceptor: getMinionInterceptor({
+              ...ctx,
               game,
               card,
               params
@@ -245,6 +243,7 @@ export const makeModifier = ({
           return new SpellInterceptorModifierMixin(game, {
             key: params.key,
             interceptor: getSpellInterceptor({
+              ...ctx,
               game,
               card,
               params
@@ -255,6 +254,7 @@ export const makeModifier = ({
           return new ArtifactInterceptorModifierMixin(game, {
             key: params.key,
             interceptor: getArtifactInterceptor({
+              ...ctx,
               game,
               card,
               params
@@ -265,16 +265,17 @@ export const makeModifier = ({
           return new UnitAuraModifierMixin(game, {
             isElligible: candidate =>
               resolveUnitFilter({
+                ...ctx,
                 game,
                 card,
-                filter: params.elligibleUnits,
-                targets: []
+                filter: params.elligibleUnits
               }).some(unit => unit.equals(candidate)),
             onGainAura: async candidate => {
               const auraModifier = makeModifier({
+                ...ctx,
                 game,
                 card,
-                modifier: params.modifier
+                modifierData: params.modifier
               }) as Modifier<Unit>;
               await candidate.modifiers.add(auraModifier);
             },
@@ -287,6 +288,7 @@ export const makeModifier = ({
           return new CardAuraModifierMixin(game, {
             isElligible: candidate =>
               resolveCardFilter({
+                ...ctx,
                 game,
                 card,
                 filter: params.elligibleCards,
@@ -294,9 +296,10 @@ export const makeModifier = ({
               }).some(card => card.equals(candidate)),
             onGainAura: async candidate => {
               const auraModifier = makeModifier({
+                ...ctx,
                 game,
                 card,
-                modifier: params.modifier
+                modifierData: params.modifier
               }) as Modifier<AnyCard>;
               await candidate.modifiers.add(auraModifier);
             },
@@ -309,9 +312,10 @@ export const makeModifier = ({
           return new UnitEffectModifierMixin(game, {
             async onApplied(unit) {
               const effectModifier = makeModifier({
+                ...ctx,
                 game,
                 card,
-                modifier: params.modifier
+                modifierData: params.modifier
               }) as Modifier<Unit>;
               await unit.modifiers.add(effectModifier);
             },

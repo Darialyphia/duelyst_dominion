@@ -1,14 +1,10 @@
-import type { Nullable } from '@game/shared';
-import type { Game } from '../../..';
-import type { AnyCard } from '../../entities/card.entity';
 import { resolveCardFilter, type CardFilter } from '../filters/card.filters';
 import type { Filter } from '../filters/filter';
 import { resolvePlayerFilter, type PlayerFilter } from '../filters/player.filter';
 import { resolveUnitFilter, type UnitFilter } from '../filters/unit.filters';
-import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import { isMinion } from '../../card-utils';
+import type { BuilderContext } from '../schema';
 
 export type Amount =
   | {
@@ -131,16 +127,9 @@ const withCommonParams = (params: { add?: number; scale?: number }, amount: numb
   return scaled + (params.add ?? 0);
 };
 
-export const getAmount = ({
-  amount,
-  ...ctx
-}: {
-  game: Game;
-  card: AnyCard;
-  amount: Amount;
-  targets: Array<Nullable<BoardCell>>;
-  event?: GameEvent;
-}): number => {
+type AmountContext = BuilderContext & { amount: Amount };
+
+export const getAmount = ({ amount, ...ctx }: AmountContext): number => {
   return match(amount)
     .with({ type: 'fixed' }, amount => amount.params.value)
     .with({ type: 'cards_in_hands' }, amount => {

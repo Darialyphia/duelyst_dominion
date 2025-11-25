@@ -1,16 +1,13 @@
-import type { EmptyObject, Nullable } from '@game/shared';
+import type { EmptyObject } from '@game/shared';
 import { CARD_KINDS, type Faction } from '../../card.enums';
 import { matchNumericOperator, type NumericOperator } from '../values/numeric';
 import { getAmount, type Amount } from '../values/amount';
 import { resolveCardFilter, type CardFilter } from './card.filters';
 import { resolveFilter, type Filter } from './filter';
 import { resolveUnitFilter, type UnitFilter } from './unit.filters';
-import type { Game } from '../../../game/game';
-import type { AnyCard } from '../../entities/card.entity';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
-import type { GameEvent } from '../../../game/game.events';
 import type { CardBlueprint } from '../../card-blueprint';
 import { match } from 'ts-pattern';
+import type { BuilderContext } from '../schema';
 
 export type BlueprintFilter =
   | { type: 'equals'; params: { blueprints: string[] } }
@@ -29,19 +26,15 @@ export type BlueprintFilter =
   | { type: 'has_tag'; params: { tag: string } }
   | { type: 'from_faction'; params: { factions: (Faction | null)[] } };
 
+type BlueprintFilterContext = BuilderContext & { filter: Filter<BlueprintFilter> };
+
 export const resolveBlueprintFilter = ({
   game: game,
   card,
   targets,
   filter,
   event
-}: {
-  game: Game;
-  card: AnyCard;
-  targets: Array<Nullable<BoardCell>>;
-  filter: Filter<BlueprintFilter>;
-  event?: GameEvent;
-}): CardBlueprint[] => {
+}: BlueprintFilterContext): CardBlueprint[] => {
   return resolveFilter(game, filter, () =>
     Object.values(game.cardPool).filter(blueprint => {
       return filter.groups.some(group => {

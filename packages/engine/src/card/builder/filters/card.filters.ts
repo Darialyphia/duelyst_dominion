@@ -15,6 +15,7 @@ import {
   PlayerAfterReplaceCardEvent,
   PlayerBeforeReplaceCardEvent
 } from '../../../player/player.events';
+import type { BuilderContext } from '../schema';
 
 export type CardFilter =
   | { type: 'any_card' }
@@ -27,6 +28,8 @@ export type CardFilter =
   | { type: 'in_deck' }
   | { type: 'in_discard_pile' }
   | { type: 'from_player'; params: { player: Filter<PlayerFilter> } }
+  | { type: 'modifier_source' }
+  | { type: 'modifier_target' }
   | {
       type: 'cost';
       params: {
@@ -40,19 +43,16 @@ export type CardFilter =
   | { type: 'replaced_card' }
   | { type: 'card_replacement' };
 
+type CardFilterContext = BuilderContext & { filter: Filter<CardFilter> };
+
 export const resolveCardFilter = ({
   game,
   card,
   filter,
   targets,
-  event
-}: {
-  game: Game;
-  card: AnyCard;
-  filter: Filter<CardFilter>;
-  targets: Array<Nullable<BoardCell>>;
-  event?: GameEvent;
-}) => {
+  event,
+  modifier
+}: CardFilterContext) => {
   return resolveFilter<CardFilter, AnyCard>(game, filter, () =>
     game.cardSystem.cards.filter(c => {
       return filter.groups.some(group => {
@@ -139,6 +139,14 @@ export const resolveCardFilter = ({
               return (c.blueprint.tags as Tag[]).some(
                 tag => tag === condition.params.tag
               );
+            })
+            .with({ type: 'modifier_source' }, () => {
+              if (!modifier) return false;
+              return modifier.source.equals(c);
+            })
+            .with({ type: 'modifier_target' }, () => {
+              if (!modifier) return false;
+              return modifier.target?.equals(c) ?? false;
             })
             .exhaustive();
         });

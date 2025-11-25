@@ -11,6 +11,7 @@ import { getTargeting, type SerializedTargeting } from './targeting';
 import { isDefined, type AnyObject } from '@game/shared';
 import type { Unit } from '../../../unit/unit.entity';
 import { getAOE, type SerializedAOE } from './aoe';
+import type { BuilderContext } from '../schema';
 
 export type NumericInterceptor<T extends string> = {
   key: T;
@@ -72,15 +73,13 @@ export type ArtifactSerializedInterceptor =
   | BooleanInterceptor<'canPlay'>
   | NumericInterceptor<'durability'>;
 
+type InterceptorContext<T> = BuilderContext & { params: T };
+
 export const getUnitInterceptor = ({
   game,
   card,
   params
-}: {
-  game: Game;
-  card: AnyCard;
-  params: UnitSerializedInterceptor;
-}) => {
+}: InterceptorContext<UnitSerializedInterceptor>) => {
   const fixedValue =
     'operation' in params && params.operation === 'set'
       ? getAmount({
@@ -223,11 +222,7 @@ export const getCardInterceptor = ({
   game,
   card,
   params
-}: {
-  game: Game;
-  card: AnyCard;
-  params: CardSerializedInterceptor;
-}) => {
+}: InterceptorContext<CardSerializedInterceptor>) => {
   const fixedValue =
     'operation' in params && params.operation === 'set'
       ? getAmount({
@@ -307,11 +302,7 @@ export const getMinionInterceptor = ({
   game,
   card,
   params
-}: {
-  game: Game;
-  card: AnyCard;
-  params: MinionSerializedInterceptor;
-}) => {
+}: InterceptorContext<MinionSerializedInterceptor>) => {
   const fixedValue =
     'operation' in params && params.operation === 'set'
       ? getAmount({
@@ -389,11 +380,7 @@ export const getSpellInterceptor = ({
   game,
   card,
   params
-}: {
-  game: Game;
-  card: AnyCard;
-  params: SpellSerializedInterceptor;
-}) => {
+}: InterceptorContext<SpellSerializedInterceptor>) => {
   return (value: any) => {
     const shouldApply = checkCondition({
       game,
@@ -423,11 +410,7 @@ export const getArtifactInterceptor = ({
   game,
   card,
   params
-}: {
-  game: Game;
-  card: AnyCard;
-  params: ArtifactSerializedInterceptor;
-}) => {
+}: InterceptorContext<ArtifactSerializedInterceptor>) => {
   const fixedValue =
     'operation' in params && params.operation === 'set'
       ? getAmount({

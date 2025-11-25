@@ -15,6 +15,7 @@ import {
   UnitBeforeMoveEvent
 } from '../../../unit/unit-events';
 import { isArtifact, isMinion, isSpell } from '../../card-utils';
+import type { BuilderContext } from '../schema';
 
 export type CellFilter =
   | { type: 'any_cell' }
@@ -70,20 +71,14 @@ export type CellFilter =
   | { type: 'heal_source_position' }
   | { type: 'summon_target' };
 
+type CellFilterContext = BuilderContext & { filter: Filter<CellFilter> };
+
 export const resolveCellFilter = ({
   filter,
   playedPoint,
   isCardTargeting,
   ...ctx
-}: {
-  game: Game;
-  card: AnyCard;
-  filter: Filter<CellFilter>;
-  targets: Array<Nullable<BoardCell>>;
-  event?: GameEvent;
-  playedPoint?: Point;
-  isCardTargeting?: boolean;
-}): BoardCell[] => {
+}: CellFilterContext): BoardCell[] => {
   return resolveFilter(ctx.game, filter, () => {
     const { targets, game, event } = ctx;
 

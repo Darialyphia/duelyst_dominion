@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   CARD_KINDS,
+  FACTIONS,
   RARITIES,
   type CardKind,
   type Faction,
@@ -111,6 +112,28 @@ const _animationSequence = computed(() => {
 
 const kindImg = computed(() => {
   return `/assets/ui/card-kind-${card.kind.toLocaleLowerCase()}.png`;
+});
+
+const factionColor = computed(() => {
+  return `var(--faction-${card.faction.toLocaleLowerCase()})`;
+});
+const factionBgOpacity = computed(() => {
+  switch (card.faction) {
+    case FACTIONS.F1:
+      return 0.4;
+    case FACTIONS.F2:
+      return 0.3;
+    case FACTIONS.F3:
+      return 0.65;
+    case FACTIONS.F4:
+      return 0.3;
+    case FACTIONS.F5:
+      return 0.5;
+    case FACTIONS.F6:
+      return 0.35;
+    default:
+      return 0.5;
+  }
 });
 </script>
 
@@ -235,8 +258,15 @@ const kindImg = computed(() => {
 
 .card-front {
   backface-visibility: hidden;
-  background: url('/assets/ui/card-front.png');
-  background-size: cover;
+  background:
+    linear-gradient(
+      to top,
+      hsla(from v-bind(factionColor) h s l / v-bind(factionBgOpacity)),
+      transparent
+    ),
+    url('/assets/ui/card-front.png');
+  background-size: cover, cover;
+  background-blend-mode: color;
   color: #fcffcb;
   font-size: calc(var(--pixel-scale) * 8px);
   position: relative;

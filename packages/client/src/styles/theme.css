@@ -151,8 +151,15 @@
   --pixel-scale: 2;
 
   --rarity-rare: hsl(220 100% 70%);
-  --rarity-epic: hsl(300 100% 60%);
+  --rarity-epic: hsl(290 100% 60%);
   --rarity-legendary: hsl(40 100% 70%);
+  --faction-lyonar: hsl(60 70% 40%);
+  --faction-songhai: hsl(0 70% 60%);
+  --faction-vetruvian: hsl(30 75% 65%);
+  --faction-abyssian: hsl(270 80% 50%);
+  --faction-magmar: hsl(160 70% 50%);
+  --faction-vanar: hsl(230 80% 70%);
+  --faction-neutral: transparent;
 }
 
 html.dark {

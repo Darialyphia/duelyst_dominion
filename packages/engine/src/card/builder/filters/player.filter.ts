@@ -1,11 +1,6 @@
-import type { Nullable } from '@game/shared';
-import type { AnyCard } from '../../entities/card.entity';
 import { resolveFilter, type Filter } from './filter';
-import type { GameEvent } from '../../../game/game.events';
-import type { Game } from '../../../game/game';
 import type { Player } from '../../../player/player.entity';
 import { match } from 'ts-pattern';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import {
   UnitAfterDestroyEvent,
   UnitAfterHealEvent,
@@ -17,6 +12,7 @@ import {
   UnitDealDamageEvent,
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
+import type { BuilderContext } from '../schema';
 
 export type PlayerFilter =
   | { type: 'ally_player' }
@@ -33,19 +29,15 @@ export type PlayerFilter =
   | { type: 'moved_unit_owner' }
   | { type: 'destroyed_unit_owner' };
 
+type PlayerFilterContext = BuilderContext & { filter: Filter<PlayerFilter> };
+
 export const resolvePlayerFilter = ({
   game,
   card,
   targets,
   filter,
   event
-}: {
-  game: Game;
-  card: AnyCard;
-  targets: Array<Nullable<BoardCell>>;
-  filter: Filter<PlayerFilter>;
-  event?: GameEvent;
-}): Player[] => {
+}: PlayerFilterContext): Player[] => {
   return resolveFilter(game, filter, () => {
     return game.playerSystem.players.filter(p => {
       return filter.groups.some(group => {

@@ -1,4 +1,4 @@
-import { isDefined, isEmptyArray, type Nullable, type Point } from '@game/shared';
+import { isDefined, isEmptyArray } from '@game/shared';
 import { getKeywordById, type KeywordId } from '../../card-keywords';
 import type { Tag } from '../../card.enums';
 import { matchNumericOperator, type NumericOperator } from '../values/numeric';
@@ -6,13 +6,8 @@ import { getAmount, type Amount } from '../values/amount';
 import { resolveBlueprintFilter, type BlueprintFilter } from './blueprint.filter';
 import { resolveCellFilter, type CellFilter } from './cell.filters';
 import { resolveFilter, type Filter } from './filter';
-import type { GameEvent } from '../../../game/game.events';
-import type { Game } from '../../../game/game';
 import { match } from 'ts-pattern';
 import { isArtifact, isMinion, isMinionOrGeneral, isSpell } from '../../card-utils';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
-import type { AnyCard } from '../../entities/card.entity';
-import type { PlayerArtifact } from '../../../player/player-artifact.entity';
 import type { Unit } from '../../../unit/unit.entity';
 import {
   UnitAfterDestroyEvent,
@@ -25,6 +20,7 @@ import {
   UnitDealDamageEvent,
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
+import type { BuilderContext } from '../schema';
 
 export type UnitFilter =
   | { type: 'any_unit' }
@@ -87,14 +83,16 @@ export type UnitFilter =
   | { type: 'is_on_cell'; params: { cell: Filter<CellFilter>; not: boolean } }
   | { type: 'is_on_own_side_of_board'; params: { not: boolean } }
   | { type: 'is_on_opponent_side_of_board'; params: { not: boolean } }
-  | { type: 'artifact_owner'; params: { not: boolean } }
   | { type: 'in_card_aoe'; params: { not: boolean } }
   | { type: 'attack_target'; params: { not: boolean } }
   | { type: 'attack_source'; params: { not: boolean } }
   | { type: 'healing_target'; params: { not: boolean } }
   | { type: 'healing_source'; params: { not: boolean } }
   | { type: 'moved_unit'; params: { not: boolean } }
-  | { type: 'destroyed_unit'; params: { not: boolean } };
+  | { type: 'destroyed_unit'; params: { not: boolean } }
+  | { type: 'modifier_target'; params: { not: boolean } };
+
+type UnitFilterContext = BuilderContext & { filter: Filter<UnitFilter> };
 
 export const resolveUnitFilter = ({
   game,
@@ -103,16 +101,8 @@ export const resolveUnitFilter = ({
   event,
   card,
   playedPoint,
-  artifact
-}: {
-  game: Game;
-  card: AnyCard;
-  filter: Filter<UnitFilter>;
-  targets: Array<Nullable<BoardCell>>;
-  event?: GameEvent;
-  playedPoint?: Point;
-  artifact?: PlayerArtifact;
-}): Unit[] => {
+  modifier
+}: UnitFilterContext): Unit[] => {
   return resolveFilter(game, filter, () =>
     game.unitSystem.units.filter(u => {
       if (!filter.groups.length) return true;
@@ -440,10 +430,6 @@ export const resolveUnitFilter = ({
             .with({ type: 'is_on_own_side_of_board' }, () => {
               return game.boardSystem.getCellAt(u!.position)?.player?.equals(card.player);
             })
-            .with({ type: 'artifact_owner' }, () => {
-              if (!artifact) return false;
-              return u.equals(artifact?.player.general);
-            })
             .with({ type: 'in_card_aoe' }, () => {
               if (!playedPoint) return false;
               const playedPointCell = game.boardSystem.getCellAt(playedPoint);
@@ -471,6 +457,10 @@ export const resolveUnitFilter = ({
                   .some(c => u.position.equals(c));
               }
               return false;
+            })
+            .with({ type: 'modifier_target' }, () => {
+              if (!modifier) return false;
+              return modifier.target?.equals(u) ?? false;
             })
             .exhaustive();
 

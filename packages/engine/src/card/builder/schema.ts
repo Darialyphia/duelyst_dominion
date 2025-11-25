@@ -1,7 +1,9 @@
+import type { Nullable, Point } from '@game/shared';
 import type { GenericAOEShape } from '../../aoe/aoe-shape';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { Game } from '../../game/game';
+import type { Modifier } from '../../modifier/modifier.entity';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import type {
   ArtifactBlueprint,
@@ -9,6 +11,7 @@ import type {
   CardBlueprintBase,
   GeneralBlueprint,
   MinionBlueprint,
+  RuneCost,
   SpellBlueprint
 } from '../card-blueprint';
 import {
@@ -16,17 +19,28 @@ import {
   type Rarity,
   type Faction,
   type Tag,
-  type Rune,
   type CardKind,
   CARD_KINDS
 } from '../card.enums';
-import type { AnyCard } from '../entities/card.entity';
+
 import type { SerializedAction } from './actions/action';
 import { ACTION_LOOKUP } from './actions/action-lookup';
 import { checkCondition, type Condition } from './conditions';
 import { resolveCellFilter, type CellFilter } from './filters/cell.filters';
 import type { Filter } from './filters/filter';
 import { getAOE, type SerializedAOE } from './values/aoe';
+import type { GameEvent } from '../../game/game.events';
+import type { AnyCard } from '../entities/card.entity';
+
+export type BuilderContext = {
+  game: Game;
+  card: AnyCard;
+  targets: Array<Nullable<BoardCell>>;
+  event?: GameEvent;
+  modifier?: Modifier<any, any>;
+  playedPoint?: Point;
+  isCardTargeting?: boolean;
+};
 
 export type CardBlueprintSchemaBase = {
   id: string;
@@ -42,8 +56,6 @@ export type CardBlueprintSchemaBase = {
     id: string;
   };
 };
-
-export type RuneCost = Partial<Record<Rune, number>>;
 
 export type MinionBlueprintSchema = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.MINION>;
