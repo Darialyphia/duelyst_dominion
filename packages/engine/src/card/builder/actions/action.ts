@@ -153,16 +153,7 @@ export type SerializedAction =
       type: 'bounce_units';
       params: {
         condition: Filter<Condition>;
-        units: Filter<CardFilter>;
-        timing: ExecutionTiming;
-      };
-    }
-  | {
-      type: 'change_cards_location';
-      params: {
-        condition: Filter<Condition>;
-        cards: Filter<CardFilter>;
-        destination: 'hand' | 'mainDeck' | 'discard_pile';
+        units: Filter<UnitFilter>;
         timing: ExecutionTiming;
       };
     }
@@ -172,7 +163,12 @@ export type SerializedAction =
         condition: Filter<Condition>;
         blueprint: Filter<BlueprintFilter>;
         player: Filter<PlayerFilter>;
-        location: 'hand' | 'deck' | 'discard_pile';
+        location:
+          | 'hand'
+          | 'top_of_deck'
+          | 'bottom_of_deck'
+          | 'random_position_in_deck'
+          | 'discard_pile';
         timing: ExecutionTiming;
       };
     }
@@ -180,8 +176,8 @@ export type SerializedAction =
       type: 'teleport_unit';
       params: {
         condition: Filter<Condition>;
-        targets: Filter<UnitFilter>;
-        destination: Filter<UnitFilter>;
+        target: Filter<UnitFilter>;
+        destination: Filter<CellFilter>;
         timing: ExecutionTiming;
       };
     }
@@ -193,26 +189,26 @@ export type SerializedAction =
         unit2: Filter<UnitFilter>;
         timing: ExecutionTiming;
       };
-    }
-  | {
-      type: 'select_spaces_on_board';
-      params: {
-        explainerText: string;
-        condition: Filter<Condition>;
-        spaces: Array<Filter<CellFilter>>;
-        player: Filter<PlayerFilter>;
-        timing: ExecutionTiming;
-      };
-    }
-  | {
-      type: 'select_cards_from_pool';
-      params: {
-        explainerText: string;
-        condition: Filter<Condition>;
-        min: Filter<Amount>;
-        max: Filter<Amount>;
-        pool: Filter<CardFilter>;
-        player: Filter<PlayerFilter>;
-        timing: ExecutionTiming;
-      };
     };
+// | {
+//     type: 'select_spaces_on_board';
+//     params: {
+//       explainerText: string;
+//       condition: Filter<Condition>;
+//       spaces: Array<Filter<CellFilter>>;
+//       player: Filter<PlayerFilter>;
+//       timing: ExecutionTiming;
+//     };
+//   }
+// | {
+//     type: 'select_cards_from_pool';
+//     params: {
+//       explainerText: string;
+//       condition: Filter<Condition>;
+//       min: Filter<Amount>;
+//       max: Filter<Amount>;
+//       pool: Filter<CardFilter>;
+//       player: Filter<PlayerFilter>;
+//       timing: ExecutionTiming;
+//     };
+//   };

@@ -1,6 +1,3 @@
-import type { Nullable } from '@game/shared';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
-import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
 import { type NumericOperator } from '../values/numeric';
 import { getAmount, type Amount } from '../values/amount';
@@ -40,20 +37,14 @@ export type CardFilter =
   | { type: 'has_tag'; params: { tag: string } }
   | { type: 'drawn_card' }
   | { type: 'replaced_card' }
-  | { type: 'card_replacement' };
+  | { type: 'card_replacement' }
+  | { type: 'selected_card'; params: { index: number } };
 
 type CardFilterContext = BuilderContext & { filter: Filter<CardFilter> };
 
-export const resolveCardFilter = ({
-  game,
-  card,
-  filter,
-  targets,
-  event,
-  modifier
-}: CardFilterContext) => {
-  return resolveFilter<CardFilter, AnyCard>(game, filter, () =>
-    game.cardSystem.cards.filter(c => {
+export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
+  return resolveFilter<CardFilter, AnyCard>(ctx.game, filter, () =>
+    ctx.game.cardSystem.cards.filter(c => {
       return filter.groups.some(group => {
         return group.every(condition => {
           return match(condition)
@@ -63,11 +54,8 @@ export const resolveCardFilter = ({
             .with({ type: 'minion' }, () => c.kind === CARD_KINDS.MINION)
             .with({ type: 'cost' }, condition => {
               const amount = getAmount({
-                game,
-                card,
-                targets,
-                amount: condition.params.amount,
-                event
+                ...ctx,
+                amount: condition.params.amount
               });
               return match(condition.params.operator)
                 .with('equals', () => c.manaCost === amount)
@@ -88,49 +76,45 @@ export const resolveCardFilter = ({
             .with({ type: 'in_discard_pile' }, () => {
               return c.location === 'discardPile';
             })
-            .with({ type: 'self' }, () => c.equals(card))
+            .with({ type: 'self' }, () => c.equals(ctx.card))
             .with({ type: 'drawn_card' }, () => {
-              if (event instanceof PlayerAfterDrawEvent) {
-                return event.data.cards.some((drawnCard: AnyCard) => drawnCard.equals(c));
+              if (ctx.event instanceof PlayerAfterDrawEvent) {
+                return ctx.event.data.cards.some((drawnCard: AnyCard) =>
+                  drawnCard.equals(c)
+                );
               }
 
               return false;
             })
             .with({ type: 'replaced_card' }, () => {
               if (
-                event instanceof PlayerBeforeReplaceCardEvent ||
-                event instanceof PlayerAfterReplaceCardEvent
+                ctx.event instanceof PlayerBeforeReplaceCardEvent ||
+                ctx.event instanceof PlayerAfterReplaceCardEvent
               ) {
-                return event.data.card.equals(c);
+                return ctx.event.data.card.equals(c);
               }
 
               return false;
             })
             .with({ type: 'card_replacement' }, () => {
-              if (event instanceof PlayerAfterReplaceCardEvent) {
-                return event.data.replacement.equals(c);
+              if (ctx.event instanceof PlayerAfterReplaceCardEvent) {
+                return ctx.event.data.replacement.equals(c);
               }
 
               return false;
             })
             .with({ type: 'from_player' }, condition => {
               const players = resolvePlayerFilter({
-                game,
-                card,
-                targets,
-                filter: condition.params.player,
-                event
+                ...ctx,
+                filter: condition.params.player
               });
 
               return players.some(p => p.equals(c.player));
             })
             .with({ type: 'has_blueprint' }, condition => {
               const blueprints = resolveBlueprintFilter({
-                game,
-                card,
-                targets,
-                filter: condition.params.blueprint,
-                event
+                ...ctx,
+                filter: condition.params.blueprint
               });
               return blueprints.some(b => b.id === c.blueprintId);
             })
@@ -140,12 +124,18 @@ export const resolveCardFilter = ({
               );
             })
             .with({ type: 'modifier_source' }, () => {
-              if (!modifier) return false;
-              return modifier.source.equals(c);
+              if (!ctx.modifier) return false;
+              return ctx.modifier.source.equals(c);
             })
             .with({ type: 'modifier_target' }, () => {
-              if (!modifier) return false;
-              return modifier.target?.equals(c) ?? false;
+              if (!ctx.modifier) return false;
+              return ctx.modifier.target?.equals(c) ?? false;
+            })
+            .with({ type: 'selected_card' }, condition => {
+              if (!ctx.selectedCards) return false;
+              const selectedCard = ctx.selectedCards[condition.params.index];
+              if (!selectedCard) return false;
+              return selectedCard.equals(c);
             })
             .exhaustive();
         });

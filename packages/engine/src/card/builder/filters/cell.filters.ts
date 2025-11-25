@@ -1,11 +1,8 @@
-import { isDefined, isEmptyArray, type Nullable, type Point } from '@game/shared';
+import { isDefined, isEmptyArray, type Point } from '@game/shared';
 import type { BoardCell } from '../../../board/entities/board-cell.entity';
-import type { Game } from '../../../game/game';
-import type { AnyCard } from '../../entities/card.entity';
 import { getAmount, type Amount } from '../values/amount';
 import { resolveFilter, type Filter } from './filter';
 import { resolveUnitFilter, type UnitFilter } from './unit.filters';
-import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import {
   UnitAfterHealEvent,
@@ -69,16 +66,12 @@ export type CellFilter =
   | { type: 'attack_source_position' }
   | { type: 'heal_target_position' }
   | { type: 'heal_source_position' }
-  | { type: 'summon_target' };
+  | { type: 'summon_target' }
+  | { type: 'is_selected_cell'; params: { index: number } };
 
 type CellFilterContext = BuilderContext & { filter: Filter<CellFilter> };
 
-export const resolveCellFilter = ({
-  filter,
-  playedPoint,
-  isCardTargeting,
-  ...ctx
-}: CellFilterContext): BoardCell[] => {
+export const resolveCellFilter = ({ filter, ...ctx }: CellFilterContext): BoardCell[] => {
   return resolveFilter(ctx.game, filter, () => {
     const { targets, game, event } = ctx;
 
@@ -107,14 +100,12 @@ export const resolveCellFilter = ({
                 ? []
                 : resolveUnitFilter({
                     filter: unitFilter,
-                    playedPoint,
                     ...ctx
                   }).map(u => u.position);
               const cellPositions = isEmptyArray(cellFilter.groups)
                 ? []
                 : resolveCellFilter({
                     filter: cellFilter,
-                    playedPoint,
                     ...ctx
                   }).map(c => c.position);
 
@@ -125,7 +116,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_in_front' }, condition => {
               const candidates = resolveUnitFilter({
                 filter: condition.params.unit,
-                playedPoint,
                 ...ctx
               });
               return candidates.some(candidate => cell.isInFront(candidate));
@@ -133,7 +123,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_behind' }, condition => {
               const candidates = resolveUnitFilter({
                 filter: condition.params.unit,
-                playedPoint,
                 ...ctx
               });
               return candidates.some(candidate => cell.isBehind(candidate));
@@ -141,7 +130,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_above' }, condition => {
               const candidates = resolveUnitFilter({
                 filter: condition.params.unit,
-                playedPoint,
                 ...ctx
               });
               return candidates.some(candidate => cell.isAbove(candidate));
@@ -149,7 +137,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_below' }, condition => {
               const candidates = resolveUnitFilter({
                 filter: condition.params.unit,
-                playedPoint,
                 ...ctx
               });
               return candidates.some(candidate => cell.isBelow(candidate));
@@ -157,7 +144,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_same_row' }, condition => {
               const cells = resolveCellFilter({
                 filter: condition.params.cell,
-                playedPoint,
                 ...ctx
               });
 
@@ -166,7 +152,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_same_column' }, condition => {
               const cells = resolveCellFilter({
                 filter: condition.params.cell,
-                playedPoint,
                 ...ctx
               });
 
@@ -190,10 +175,11 @@ export const resolveCellFilter = ({
 
               return resolveUnitFilter({
                 filter: condition.params.unit,
-                playedPoint,
                 ...ctx
               })
-                .filter(unit => (isCardTargeting ? unit.canBeTargetedBy(ctx.card) : true))
+                .filter(unit =>
+                  ctx.isCardTargeting ? unit.canBeTargetedBy(ctx.card) : true
+                )
                 .some(unit => cell.unit?.equals(unit));
             })
             .with({ type: 'moved_unit_new_position' }, () => {
@@ -261,13 +247,12 @@ export const resolveCellFilter = ({
               return false;
             })
             .with({ type: 'summon_target' }, () => {
-              if (!playedPoint) return false;
-              return cell.position.equals(playedPoint);
+              if (!ctx.playedPoint) return false;
+              return cell.position.equals(ctx.playedPoint);
             })
             .with({ type: 'in_area' }, condition => {
               const topLefts = resolveCellFilter({
                 filter: condition.params.topLeft,
-                playedPoint,
                 ...ctx
               });
 
@@ -276,8 +261,8 @@ export const resolveCellFilter = ({
               );
             })
             .with({ type: 'in_card_aoe' }, () => {
-              if (!playedPoint) return false;
-              const playedPointCell = game.boardSystem.getCellAt(playedPoint);
+              if (!ctx.playedPoint) return false;
+              const playedPointCell = game.boardSystem.getCellAt(ctx.playedPoint);
               if (!playedPointCell) return false;
               const validTargets = targets.filter(isDefined);
               const hasAllTargets = targets.length === validTargets.length;
@@ -306,7 +291,6 @@ export const resolveCellFilter = ({
             .with({ type: 'within_cells' }, condition => {
               const centers = resolveCellFilter({
                 filter: condition.params.cell,
-                playedPoint,
                 ...ctx
               });
 
@@ -324,7 +308,6 @@ export const resolveCellFilter = ({
             .with({ type: 'is_relative_from' }, condition => {
               const [origin] = resolveCellFilter({
                 ...ctx,
-                playedPoint,
                 filter: condition.params.origin
               });
               if (!origin) return false;
@@ -340,6 +323,12 @@ export const resolveCellFilter = ({
               });
 
               return target?.equals(cell);
+            })
+            .with({ type: 'is_selected_cell' }, condition => {
+              if (!ctx.selectedCells) return false;
+              const selectedCell = ctx.selectedCells[condition.params.index];
+              if (!selectedCell) return false;
+              return selectedCell.equals(cell);
             })
             .exhaustive();
         });

@@ -40,6 +40,8 @@ export type BuilderContext = {
   modifier?: Modifier<any, any>;
   playedPoint?: Point;
   isCardTargeting?: boolean;
+  selectedCells?: BoardCell[];
+  selectedCards?: AnyCard[];
 };
 
 export type CardBlueprintSchemaBase = {
@@ -159,7 +161,7 @@ export const parseMinionBlueprintSchema = (
             game,
             card,
             targets: selectedSpaces,
-            event: undefined,
+            isCardTargeting: true,
             filter: schema.getTargets.targets[index]
           });
 
@@ -176,11 +178,13 @@ export const parseMinionBlueprintSchema = (
     async onInit(game, card) {
       for (const action of schema.onInit) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
+        // @ts-ignore
         const instance = new ctor(action, {
           game,
           card,
-          targets: []
+          targets: [],
+          selectedCells: [],
+          selectedCards: []
         });
 
         await instance.execute();
@@ -189,7 +193,6 @@ export const parseMinionBlueprintSchema = (
     async onPlay(game, card, { targets }) {
       for (const action of schema.onPlay) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,
@@ -223,7 +226,6 @@ export const parseGeneralBlueprintSchema = (
     async onInit(game, card) {
       for (const action of schema.onInit) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,
@@ -291,7 +293,6 @@ export const parseSpellBlueprintSchema = (
     async onInit(game, card) {
       for (const action of schema.onInit) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,
@@ -304,7 +305,6 @@ export const parseSpellBlueprintSchema = (
     async onPlay(game, card, { targets }) {
       for (const action of schema.onPlay) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,
@@ -373,7 +373,6 @@ export const parseArtifactBlueprintSchema = (
     async onInit(game, card) {
       for (const action of schema.onInit) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,
@@ -386,7 +385,6 @@ export const parseArtifactBlueprintSchema = (
     async onPlay(game, card, { targets }) {
       for (const action of schema.onPlay) {
         const ctor = ACTION_LOOKUP[action.type];
-        // @ts-expect-error
         const instance = new ctor(action, {
           game,
           card,

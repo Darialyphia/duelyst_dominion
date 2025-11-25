@@ -29,14 +29,11 @@ export type BlueprintFilter =
 type BlueprintFilterContext = BuilderContext & { filter: Filter<BlueprintFilter> };
 
 export const resolveBlueprintFilter = ({
-  game: game,
-  card,
-  targets,
   filter,
-  event
+  ...ctx
 }: BlueprintFilterContext): CardBlueprint[] => {
-  return resolveFilter(game, filter, () =>
-    Object.values(game.cardPool).filter(blueprint => {
+  return resolveFilter(ctx.game, filter, () =>
+    Object.values(ctx.game.cardPool).filter(blueprint => {
       return filter.groups.some(group => {
         return group.every(condition => {
           return match(condition)
@@ -45,22 +42,16 @@ export const resolveBlueprintFilter = ({
             })
             .with({ type: 'from_unit' }, condition => {
               const units = resolveUnitFilter({
-                filter: condition.params.unit,
-                targets,
-                game,
-                card,
-                event
+                ...ctx,
+                filter: condition.params.unit
               });
 
               return units.some(unit => unit.card.blueprintId === blueprint.id);
             })
             .with({ type: 'from_card' }, condition => {
               const cards = resolveCardFilter({
-                filter: condition.params.card,
-                targets,
-                game,
-                card,
-                event
+                ...ctx,
+                filter: condition.params.card
               });
 
               return cards.some(card => card.blueprintId === blueprint.id);
@@ -70,11 +61,8 @@ export const resolveBlueprintFilter = ({
             .with({ type: 'artifact' }, () => blueprint.kind === CARD_KINDS.ARTIFACT)
             .with({ type: 'cost' }, condition => {
               const amount = getAmount({
-                game,
-                card,
-                targets,
-                amount: condition.params.amount,
-                event
+                ...ctx,
+                amount: condition.params.amount
               });
               const manaCost =
                 blueprint.kind in

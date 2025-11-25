@@ -13,6 +13,7 @@ import type { Game } from '../..';
 import type { AnyCard } from '../entities/card.entity';
 import type { GameEvent } from '../../game/game.events';
 import type { Unit } from '../../unit/unit.entity';
+import type { BuilderContext } from './schema';
 
 export type Condition =
   | { type: 'active_player'; params: { player: Filter<PlayerFilter> } }
@@ -94,19 +95,14 @@ export type Condition =
       };
     };
 
+type ConditionContext = BuilderContext & { conditions: Filter<Condition> | undefined };
 export const checkCondition = ({
   conditions,
   game,
   card,
   targets,
   event
-}: {
-  conditions: Filter<Condition> | undefined;
-  game: Game;
-  card: AnyCard;
-  targets: Nullable<BoardCell>[];
-  event?: GameEvent;
-}): boolean => {
+}: ConditionContext): boolean => {
   if (!conditions) return true;
   if (!conditions.groups.length) return true;
 

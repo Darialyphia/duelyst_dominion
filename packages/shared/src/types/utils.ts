@@ -1,5 +1,4 @@
 export type Nullable<T> = T | null | undefined;
-export type NonNullable<T> = Exclude<T, undefined | null>;
 export type PartialBy<T, K extends keyof T = never> = Omit<T, K> &
   Partial<Pick<T, K>>;
 export type Boundaries<T = number> = { min: T; max: T };
@@ -40,12 +39,6 @@ export type Intersect<X extends any[]> = X extends []
     : X extends [head: infer A, ...tail: infer B]
       ? A & Intersect<[...B]>
       : never;
-
-export type ApiError = {
-  message: string;
-  statusCode: number;
-  meta: Nullable<AnyObject>;
-};
 
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 

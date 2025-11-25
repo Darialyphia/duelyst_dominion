@@ -19,7 +19,7 @@ import {
   SpellInterceptorModifierMixin,
   UnitInterceptorModifierMixin
 } from '../../../modifier/mixins/interceptor.mixin';
-import type { SerializedAction } from '../actions/action';
+import type { Action, SerializedAction } from '../actions/action';
 import { ACTION_LOOKUP } from '../actions/action-lookup';
 import {
   getArtifactInterceptor,
@@ -122,13 +122,14 @@ export type ModifierData = {
   name?: string | Keyword;
   description?: string | Keyword;
   icon?: string;
+  isRemovable?: boolean;
   mixins: ModifierMixinData[];
 };
 
 type ModifierContext = BuilderContext & { modifierData: ModifierData };
 
-export const makeModifier = ({ game, card, modifierData, ...ctx }: ModifierContext) => {
-  return new Modifier(modifierData.modifierType, game, card, {
+export const resolveModifier = ({ modifierData, ...ctx }: ModifierContext) => {
+  const modifier = new Modifier(modifierData.modifierType, ctx.game, ctx.card, {
     name: isDefined(modifierData.name)
       ? isString(modifierData.name)
         ? modifierData.name
@@ -140,190 +141,178 @@ export const makeModifier = ({ game, card, modifierData, ...ctx }: ModifierConte
         : modifierData.description?.name
       : undefined,
     icon: modifierData.icon,
-    mixins: modifierData.mixins.map(mixin => {
-      return match(mixin)
-        .with(
-          { type: 'togglable' },
-          ({ params }) =>
-            new TogglableModifierMixin(game, () =>
-              checkCondition({
-                game,
-                card,
-                conditions: params.condition,
-                targets: []
-              })
-            )
-        )
-        .with(
-          { type: 'duration' },
-          ({ params }) =>
-            new DurationModifierMixin(
-              game,
-              getAmount({
-                game,
-                card,
-                targets: [],
-                amount: params.duration
-              })
-            )
-        )
-        .with({ type: 'remove-on-destroyed' }, () => new RemoveOnDestroyedMixin(game))
-        .with(
-          { type: 'game-event' },
-          ({ params }) =>
-            new GameEventModifierMixin(game, {
-              eventName: params.eventName,
-              handler: async event => {
-                for (const action of params.actions) {
-                  const ctor = ACTION_LOOKUP[action.type];
-                  const instance = new ctor(action, {
-                    game,
-                    card,
-                    targets: [],
-                    event
-                  });
-
-                  await instance.execute();
-                }
-              },
-              filter: event => {
-                if (!params.filter) return true;
-                return checkCondition({
-                  game,
-                  card,
-                  conditions: params.filter,
-                  targets: [],
-                  event
-                });
-              },
-              frequencyPerGameTurn: params.frequencyPerGameTurn.enabled
-                ? params.frequencyPerGameTurn.frequency
-                : undefined,
-              frequencyPerPlayerTurn: params.frequencyPerPlayerTurn.enabled
-                ? params.frequencyPerPlayerTurn.frequency
-                : undefined
-            })
-        )
-        .with({ type: 'unit-interceptor' }, ({ params }) => {
-          return new UnitInterceptorModifierMixin(game, {
-            key: params.key,
-            interceptor: getUnitInterceptor({
-              ...ctx,
-              game,
-              card,
-              params
-            })
-          });
-        })
-        .with({ type: 'card-interceptor' }, ({ params }) => {
-          return new CardInterceptorModifierMixin(game, {
-            key: params.key,
-            interceptor: getCardInterceptor({
-              ...ctx,
-              game,
-              card,
-              params
-            })
-          });
-        })
-        .with({ type: 'minion-interceptor' }, ({ params }) => {
-          return new MinionInterceptorModifierMixin(game, {
-            key: params.key,
-            interceptor: getMinionInterceptor({
-              ...ctx,
-              game,
-              card,
-              params
-            })
-          });
-        })
-
-        .with({ type: 'spell-interceptor' }, ({ params }) => {
-          return new SpellInterceptorModifierMixin(game, {
-            key: params.key,
-            interceptor: getSpellInterceptor({
-              ...ctx,
-              game,
-              card,
-              params
-            })
-          });
-        })
-        .with({ type: 'artifact-interceptor' }, ({ params }) => {
-          return new ArtifactInterceptorModifierMixin(game, {
-            key: params.key,
-            interceptor: getArtifactInterceptor({
-              ...ctx,
-              game,
-              card,
-              params
-            })
-          });
-        })
-        .with({ type: 'unit-aura' }, ({ params }) => {
-          return new UnitAuraModifierMixin(game, {
-            isElligible: candidate =>
-              resolveUnitFilter({
-                ...ctx,
-                game,
-                card,
-                filter: params.elligibleUnits
-              }).some(unit => unit.equals(candidate)),
-            onGainAura: async candidate => {
-              const auraModifier = makeModifier({
-                ...ctx,
-                game,
-                card,
-                modifierData: params.modifier
-              }) as Modifier<Unit>;
-              await candidate.modifiers.add(auraModifier);
-            },
-            onLoseAura: async candidate => {
-              await candidate.modifiers.remove(params.modifier.modifierType);
-            }
-          });
-        })
-        .with({ type: 'card-aura' }, ({ params }) => {
-          return new CardAuraModifierMixin(game, {
-            isElligible: candidate =>
-              resolveCardFilter({
-                ...ctx,
-                game,
-                card,
-                filter: params.elligibleCards,
-                targets: []
-              }).some(card => card.equals(candidate)),
-            onGainAura: async candidate => {
-              const auraModifier = makeModifier({
-                ...ctx,
-                game,
-                card,
-                modifierData: params.modifier
-              }) as Modifier<AnyCard>;
-              await candidate.modifiers.add(auraModifier);
-            },
-            onLoseAura: async candidate => {
-              await candidate.modifiers.remove(params.modifier.modifierType);
-            }
-          });
-        })
-        .with({ type: 'unit-effect' }, ({ params }) => {
-          return new UnitEffectModifierMixin(game, {
-            async onApplied(unit) {
-              const effectModifier = makeModifier({
-                ...ctx,
-                game,
-                card,
-                modifierData: params.modifier
-              }) as Modifier<Unit>;
-              await unit.modifiers.add(effectModifier);
-            },
-            async onRemoved(unit) {
-              await unit.modifiers.remove(params.modifier.modifierType);
-            }
-          });
-        })
-        .exhaustive();
-    })
+    isRemovable: modifierData.isRemovable ?? true,
+    mixins: []
   });
+
+  for (const mixinData of modifierData.mixins) {
+    const mixin = match(mixinData)
+      .with(
+        { type: 'togglable' },
+        ({ params }) =>
+          new TogglableModifierMixin(ctx.game, () =>
+            checkCondition({
+              ...ctx,
+              conditions: params.condition,
+              modifier
+            })
+          )
+      )
+      .with(
+        { type: 'duration' },
+        ({ params }) =>
+          new DurationModifierMixin(
+            ctx.game,
+            getAmount({
+              ...ctx,
+              targets: [],
+              modifier,
+              amount: params.duration
+            })
+          )
+      )
+      .with({ type: 'remove-on-destroyed' }, () => new RemoveOnDestroyedMixin(ctx.game))
+      .with(
+        { type: 'game-event' },
+        ({ params }) =>
+          new GameEventModifierMixin(ctx.game, {
+            eventName: params.eventName,
+            handler: async event => {
+              for (const action of params.actions) {
+                const ctor = ACTION_LOOKUP[action.type];
+                // @ts-expect-error
+                const instance: Action<any> = new ctor(action as any, {
+                  ...ctx,
+                  event,
+                  modifier
+                }) as Action<any>;
+
+                await instance.execute();
+              }
+            },
+            filter: event => {
+              if (!params.filter) return true;
+              return checkCondition({
+                ...ctx,
+                event,
+                conditions: params.filter,
+                modifier
+              });
+            },
+            frequencyPerGameTurn: params.frequencyPerGameTurn.enabled
+              ? params.frequencyPerGameTurn.frequency
+              : undefined,
+            frequencyPerPlayerTurn: params.frequencyPerPlayerTurn.enabled
+              ? params.frequencyPerPlayerTurn.frequency
+              : undefined
+          })
+      )
+      .with({ type: 'unit-interceptor' }, ({ params }) => {
+        return new UnitInterceptorModifierMixin(ctx.game, {
+          key: params.key,
+          interceptor: getUnitInterceptor({
+            ...ctx,
+            params
+          })
+        });
+      })
+      .with({ type: 'card-interceptor' }, ({ params }) => {
+        return new CardInterceptorModifierMixin(ctx.game, {
+          key: params.key,
+          interceptor: getCardInterceptor({
+            ...ctx,
+            params
+          })
+        });
+      })
+      .with({ type: 'minion-interceptor' }, ({ params }) => {
+        return new MinionInterceptorModifierMixin(ctx.game, {
+          key: params.key,
+          interceptor: getMinionInterceptor({
+            ...ctx,
+            params
+          })
+        });
+      })
+      .with({ type: 'spell-interceptor' }, ({ params }) => {
+        return new SpellInterceptorModifierMixin(ctx.game, {
+          key: params.key,
+          interceptor: getSpellInterceptor({
+            ...ctx,
+            params
+          })
+        });
+      })
+      .with({ type: 'artifact-interceptor' }, ({ params }) => {
+        return new ArtifactInterceptorModifierMixin(ctx.game, {
+          key: params.key,
+          interceptor: getArtifactInterceptor({
+            ...ctx,
+            params
+          })
+        });
+      })
+      .with({ type: 'unit-aura' }, ({ params }) => {
+        return new UnitAuraModifierMixin(ctx.game, {
+          isElligible: candidate =>
+            resolveUnitFilter({
+              ...ctx,
+              filter: params.elligibleUnits
+            }).some(unit => unit.equals(candidate)),
+          onGainAura: async candidate => {
+            const auraModifier = resolveModifier({
+              ...ctx,
+              modifierData: { ...params.modifier, isRemovable: false }
+            }) as Modifier<Unit>;
+            await candidate.modifiers.add(auraModifier);
+          },
+          onLoseAura: async candidate => {
+            await candidate.modifiers.remove(params.modifier.modifierType, {
+              force: true
+            });
+          }
+        });
+      })
+      .with({ type: 'card-aura' }, ({ params }) => {
+        return new CardAuraModifierMixin(ctx.game, {
+          isElligible: candidate =>
+            resolveCardFilter({
+              ...ctx,
+              filter: params.elligibleCards,
+              targets: []
+            }).some(card => card.equals(candidate)),
+          onGainAura: async candidate => {
+            const auraModifier = resolveModifier({
+              ...ctx,
+              modifierData: { ...params.modifier, isRemovable: false }
+            }) as Modifier<AnyCard>;
+            await candidate.modifiers.add(auraModifier);
+          },
+          onLoseAura: async candidate => {
+            await candidate.modifiers.remove(params.modifier.modifierType, {
+              force: true
+            });
+          }
+        });
+      })
+      .with({ type: 'unit-effect' }, ({ params }) => {
+        return new UnitEffectModifierMixin(ctx.game, {
+          async onApplied(unit) {
+            const effectModifier = resolveModifier({
+              ...ctx,
+              modifierData: params.modifier
+            }) as Modifier<Unit>;
+            await unit.modifiers.add(effectModifier);
+          },
+          async onRemoved(unit) {
+            await unit.modifiers.remove(params.modifier.modifierType);
+          }
+        });
+      })
+      .exhaustive();
+
+    modifier.addMixin(mixin);
+  }
+
+  return modifier;
 };

@@ -345,33 +345,35 @@ const getAnimationSequence = (card: CardBlueprint) => {
 
 .stack-glow {
   position: absolute;
-  width: var(--card-width);
-  height: var(--card-height);
+  width: calc(var(--pixel-scale) * var(--card-width));
+  height: calc(var(--pixel-scale) * var(--card-height));
   background: cyan;
   z-index: 6;
   filter: blur(30px);
-  animation: booster-pulse-glow 2s infinite;
+  animation: booster-pulse-glow 4s linear infinite;
   pointer-events: none;
   mix-blend-mode: screen;
+  translate: 0 50px;
+  border-radius: var(--radius-round);
 }
 
 @keyframes booster-reveal-bloom {
   25% {
-    filter: saturate(3) brightness(3);
+    filter: brightness(4) saturate(0.65);
   }
 }
 
 @keyframes booster-pulse-glow {
   0% {
-    transform: scale(0.95);
-    opacity: 0.1;
+    transform: scale(0.8);
+    opacity: 0.025;
   }
   50% {
     transform: scale(1.05);
-    opacity: 0.3;
+    opacity: 0.1;
   }
   100% {
-    transform: scale(0.95);
+    transform: scale(0.8);
     opacity: 0.1;
   }
 }

@@ -15,6 +15,8 @@ export const UNIT_EVENTS = {
   UNIT_AFTER_DESTROY: 'unit.after_destroy',
   UNIT_BEFORE_TELEPORT: 'unit.before_teleport',
   UNIT_AFTER_TELEPORT: 'unit.after_teleport',
+  UNIT_BEFORE_BOUNCE: 'unit.before_bounce',
+  UNIT_AFTER_BOUNCE: 'unit.after_bounce',
   UNIT_BEFORE_HEAL: 'unit.before_heal',
   UNIT_AFTER_HEAL: 'unit.after_heal'
 } as const;

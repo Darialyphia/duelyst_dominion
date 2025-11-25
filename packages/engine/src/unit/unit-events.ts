@@ -127,6 +127,28 @@ export class UnitAfterHealEvent extends TypedSerializableEvent<
   }
 }
 
+export class UnitBeforeBounceEvent extends TypedSerializableEvent<
+  { unit: Unit },
+  { unit: string }
+> {
+  serialize() {
+    return {
+      unit: this.data.unit.id
+    };
+  }
+}
+export class UnitAfterBounceEvent extends TypedSerializableEvent<
+  { unit: Unit; didBounce: boolean },
+  { unit: string; didBounce: boolean }
+> {
+  serialize() {
+    return {
+      unit: this.data.unit.id,
+      didBounce: this.data.didBounce
+    };
+  }
+}
+
 export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_BEFORE_MOVE]: UnitBeforeMoveEvent;
   [UNIT_EVENTS.UNIT_AFTER_MOVE]: UnitAfterMoveEvent;
@@ -144,4 +166,6 @@ export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_AFTER_TELEPORT]: UnitAfterMoveEvent;
   [UNIT_EVENTS.UNIT_BEFORE_HEAL]: UnitBeforeHealEvent;
   [UNIT_EVENTS.UNIT_AFTER_HEAL]: UnitAfterHealEvent;
+  [UNIT_EVENTS.UNIT_BEFORE_BOUNCE]: UnitBeforeBounceEvent;
+  [UNIT_EVENTS.UNIT_AFTER_BOUNCE]: UnitAfterBounceEvent;
 };

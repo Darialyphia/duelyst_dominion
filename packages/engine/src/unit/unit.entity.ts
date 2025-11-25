@@ -25,9 +25,11 @@ import {
 import { CombatComponent } from './components/combat.component';
 import { UNIT_EVENTS } from './unit.enums';
 import {
+  UnitAfterBounceEvent,
   UnitAfterDestroyEvent,
   UnitAfterHealEvent,
   UnitAfterMoveEvent,
+  UnitBeforeBounceEvent,
   UnitBeforeDestroyEvent,
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
@@ -35,6 +37,7 @@ import {
 import type { Shrine } from '../board/entities/shrine.entity';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
+import { isGeneral } from '../card/card-utils';
 
 export type UnitOptions = {
   id: string;
@@ -628,6 +631,31 @@ export class Unit
     const canAttack = this.attackTargettingPattern.isWithinRange(point);
     this.movement.position = original;
     return canAttack;
+  }
+
+  async bounce() {
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_BEFORE_BOUNCE,
+      new UnitBeforeBounceEvent({
+        unit: this
+      })
+    );
+
+    const canBounce = !this.player.cardManager.isHandFull && !isGeneral(this.card);
+    if (canBounce) {
+      await this.player.cardManager.addToHand(this.card);
+      await this.removeFromBoard();
+    } else {
+      await this.destroy(this.card);
+    }
+
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_AFTER_BOUNCE,
+      new UnitAfterBounceEvent({
+        unit: this,
+        didBounce: canBounce
+      })
+    );
   }
 
   serialize() {

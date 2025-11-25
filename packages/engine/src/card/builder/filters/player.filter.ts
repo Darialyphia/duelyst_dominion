@@ -32,91 +32,88 @@ export type PlayerFilter =
 type PlayerFilterContext = BuilderContext & { filter: Filter<PlayerFilter> };
 
 export const resolvePlayerFilter = ({
-  game,
-  card,
-  targets,
   filter,
-  event
+  ...ctx
 }: PlayerFilterContext): Player[] => {
-  return resolveFilter(game, filter, () => {
-    return game.playerSystem.players.filter(p => {
+  return resolveFilter(ctx.game, filter, () => {
+    return ctx.game.playerSystem.players.filter(p => {
       return filter.groups.some(group => {
         return group.every(condition => {
           return match(condition)
-            .with({ type: 'ally_player' }, () => card.player.equals(p))
-            .with({ type: 'enemy_player' }, () => card.player.opponent.equals(p))
+            .with({ type: 'ally_player' }, () => ctx.card.player.equals(p))
+            .with({ type: 'enemy_player' }, () => ctx.card.player.opponent.equals(p))
             .with({ type: 'any_player' }, () => true)
             .with({ type: 'is_manual_target_owner' }, condition => {
-              const cell = targets[condition.params.index];
+              const cell = ctx.targets[condition.params.index];
               if (!cell) return false;
               if (!cell.unit) return false;
               return p.equals(cell.unit.player);
             })
             .with({ type: 'attack_source_owner' }, () => {
               if (
-                event instanceof UnitAttackEvent ||
-                event instanceof UnitDealDamageEvent
+                ctx.event instanceof UnitAttackEvent ||
+                ctx.event instanceof UnitDealDamageEvent
               ) {
-                return event.data.unit.player.equals(p);
+                return ctx.event.data.unit.player.equals(p);
               }
 
-              if (event instanceof UnitReceiveDamageEvent) {
-                return event.data.from.player.equals(p);
+              if (ctx.event instanceof UnitReceiveDamageEvent) {
+                return ctx.event.data.from.player.equals(p);
               }
 
               return false;
             })
             .with({ type: 'attack_target_owner' }, () => {
-              if (event instanceof UnitAttackEvent) {
-                const unit = game.unitSystem.getUnitAt(event.data.target);
+              if (ctx.event instanceof UnitAttackEvent) {
+                const unit = ctx.game.unitSystem.getUnitAt(ctx.event.data.target);
                 return unit ? p.equals(unit.player) : false;
               }
 
-              if (event instanceof UnitDealDamageEvent) {
-                return event.data.targets.some(t => p.equals(t.player));
+              if (ctx.event instanceof UnitDealDamageEvent) {
+                return ctx.event.data.targets.some(t => p.equals(t.player));
               }
 
-              if (event instanceof UnitReceiveDamageEvent) {
-                return p.equals(event.data.unit.player);
+              if (ctx.event instanceof UnitReceiveDamageEvent) {
+                return p.equals(ctx.event.data.unit.player);
               }
 
               return false;
             })
             .with({ type: 'healing_source_owner' }, () => {
               if (
-                event instanceof UnitBeforeHealEvent ||
-                event instanceof UnitAfterHealEvent
+                ctx.event instanceof UnitBeforeHealEvent ||
+                ctx.event instanceof UnitAfterHealEvent
               ) {
-                return event.data.source.equals(event.data.unit.player);
+                return ctx.event.data.source.equals(ctx.event.data.unit.player);
               }
 
               return false;
             })
             .with({ type: 'healing_target_owner' }, () => {
               if (
-                event instanceof UnitBeforeHealEvent ||
-                event instanceof UnitAfterHealEvent
+                ctx.event instanceof UnitBeforeHealEvent ||
+                ctx.event instanceof UnitAfterHealEvent
               ) {
-                return p.equals(event.data.unit.player);
+                return p.equals(ctx.event.data.unit.player);
               }
 
               return false;
             })
             .with({ type: 'moved_unit_owner' }, () => {
               if (
-                event instanceof UnitBeforeMoveEvent ||
-                event instanceof UnitAfterMoveEvent
+                ctx.event instanceof UnitBeforeMoveEvent ||
+                ctx.event instanceof UnitAfterMoveEvent
               ) {
-                return p.equals(event.data.unit.player);
+                return p.equals(ctx.event.data.unit.player);
               }
               return false;
             })
             .with({ type: 'destroyed_unit_owner' }, () => {
               if (
-                event instanceof UnitBeforeDestroyEvent ||
-                event instanceof UnitAfterDestroyEvent
+                ctx.event instanceof UnitBeforeDestroyEvent ||
+                ctx.event instanceof UnitAfterDestroyEvent
               ) {
-                return p.equals(event.data.unit.player);
+                return p.equals(ctx.event.data.unit.player);
               }
               return false;
             })
