@@ -23,7 +23,7 @@ import {
   CARD_KINDS
 } from '../card.enums';
 
-import type { SerializedAction } from './actions/action';
+import type { ActionData } from './actions/action';
 import { ACTION_LOOKUP } from './actions/action-lookup';
 import { checkCondition, type Condition } from './conditions';
 import { resolveCellFilter, type CellFilter } from './filters/cell.filters';
@@ -66,9 +66,9 @@ export type MinionBlueprintSchema = CardBlueprintBase & {
   atk: number;
   maxHp: number;
   cmd: number;
-  onInit: SerializedAction[];
+  onInit: ActionData[];
   canPlay: Filter<Condition>;
-  onPlay: SerializedAction[];
+  onPlay: ActionData[];
   getTargets: {
     min: number;
     targets: Filter<CellFilter>[];
@@ -80,9 +80,9 @@ export type SpellBlueprintSchema = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.SPELL>;
   manaCost: number;
   runeCost: RuneCost;
-  onInit: SerializedAction[];
+  onInit: ActionData[];
   canPlay: Filter<Condition>;
-  onPlay: SerializedAction[];
+  onPlay: ActionData[];
   getTargets: {
     min: number;
     targets: Filter<CellFilter>[];
@@ -96,7 +96,7 @@ export type GeneralBlueprintSchema = CardBlueprintBase & {
   maxHp: number;
   cmd: number;
   abilities: any;
-  onInit: SerializedAction[];
+  onInit: ActionData[];
 };
 
 export type ArtifactBlueprintSchema = CardBlueprintBase & {
@@ -104,9 +104,9 @@ export type ArtifactBlueprintSchema = CardBlueprintBase & {
   durability: number;
   manaCost: number;
   runeCost: RuneCost;
-  onInit: SerializedAction[];
+  onInit: ActionData[];
   canPlay: Filter<Condition>;
-  onPlay: SerializedAction[];
+  onPlay: ActionData[];
   getTargets: {
     min: number;
     targets: Filter<CellFilter>[];

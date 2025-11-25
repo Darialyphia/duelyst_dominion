@@ -5,12 +5,14 @@ import { PointAOEShape } from './point.aoe-shape';
 import { CompositeAOEShape } from './composite.aoe-shape';
 import { RingAOEShape } from './ring.aoe-shape';
 import { RectangleAOEShape } from './rectangle.aoe-shape';
+import { NoAOEShape } from './no-aoe.aoe-shape';
 
 const dict = {
   point: () => PointAOEShape,
   composite: () => CompositeAOEShape,
   ring: () => RingAOEShape,
-  rectangle: () => RectangleAOEShape
+  rectangle: () => RectangleAOEShape,
+  noAOE: () => NoAOEShape
 } as const;
 
 export type AOEType = keyof typeof dict;

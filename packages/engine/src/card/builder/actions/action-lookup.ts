@@ -8,6 +8,8 @@ import { DrawCardsFromDeckAction } from './draw-cards-from-deck.action';
 import { DrawCardsFromPoolAction } from './draw-cards-from-pool.action';
 import { GenerateCardsAction } from './generate-card.action';
 import { HealAction } from './heal.action';
+import { SelectCardsFromPoolAction } from './select-card-from-pool.action';
+import { SelectSpacesOnBoardAction } from './select-spaces-on-board.action';
 import { SwapUnitPositionsAction } from './swap-unit-positions.action';
 import { TeleportUnitAction } from './teleport-unit.action';
 
@@ -23,5 +25,7 @@ export const ACTION_LOOKUP = {
   bounce_units: BounceUnitsAction,
   generate_cards: GenerateCardsAction,
   teleport_unit: TeleportUnitAction,
-  swap_unit_positions: SwapUnitPositionsAction
+  swap_unit_positions: SwapUnitPositionsAction,
+  select_spaces_on_board: SelectSpacesOnBoardAction,
+  select_cards_from_pool: SelectCardsFromPoolAction
 };

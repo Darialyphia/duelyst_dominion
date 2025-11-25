@@ -19,7 +19,7 @@ import {
   SpellInterceptorModifierMixin,
   UnitInterceptorModifierMixin
 } from '../../../modifier/mixins/interceptor.mixin';
-import type { Action, SerializedAction } from '../actions/action';
+import type { Action, ActionData } from '../actions/action';
 import { ACTION_LOOKUP } from '../actions/action-lookup';
 import {
   getArtifactInterceptor,
@@ -64,7 +64,7 @@ export type ModifierMixinData =
       type: 'game-event';
       params: {
         eventName: GameEventName;
-        actions: SerializedAction[];
+        actions: ActionData[];
         filter: Filter<Condition>;
         frequencyPerPlayerTurn: {
           enabled: boolean;

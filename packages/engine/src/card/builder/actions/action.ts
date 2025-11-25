@@ -11,9 +11,9 @@ import type { ModifierData } from '../values/modifier';
 import type { BlueprintFilter } from '../filters/blueprint.filter';
 import type { CellFilter } from '../filters/cell.filters';
 
-export abstract class Action<T extends SerializedAction['type']> {
+export abstract class Action<T extends ActionData['type']> {
   constructor(
-    protected action: SerializedAction & { type: T },
+    protected action: ActionData & { type: T },
     protected ctx: BuilderContext
   ) {}
 
@@ -77,7 +77,7 @@ export abstract class Action<T extends SerializedAction['type']> {
 
 type ExecutionTiming = 'now' | 'end_of_turn' | 'start_of_next_turn' | 'end_of_next_turn';
 
-export type SerializedAction =
+export type ActionData =
   | {
       type: 'deal_damage';
       params: {
@@ -189,26 +189,29 @@ export type SerializedAction =
         unit2: Filter<UnitFilter>;
         timing: ExecutionTiming;
       };
+    }
+  | {
+      type: 'select_spaces_on_board';
+      params: {
+        label: string;
+        condition: Filter<Condition>;
+        spaces: Array<Filter<CellFilter>>;
+        min: Amount;
+        player: Filter<PlayerFilter>;
+        actions: ActionData[];
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'select_cards_from_pool';
+      params: {
+        label: string;
+        condition: Filter<Condition>;
+        min: Amount;
+        max: Amount;
+        pool: Filter<CardFilter>;
+        player: Filter<PlayerFilter>;
+        actions: ActionData[];
+        timing: ExecutionTiming;
+      };
     };
-// | {
-//     type: 'select_spaces_on_board';
-//     params: {
-//       explainerText: string;
-//       condition: Filter<Condition>;
-//       spaces: Array<Filter<CellFilter>>;
-//       player: Filter<PlayerFilter>;
-//       timing: ExecutionTiming;
-//     };
-//   }
-// | {
-//     type: 'select_cards_from_pool';
-//     params: {
-//       explainerText: string;
-//       condition: Filter<Condition>;
-//       min: Filter<Amount>;
-//       max: Filter<Amount>;
-//       pool: Filter<CardFilter>;
-//       player: Filter<PlayerFilter>;
-//       timing: ExecutionTiming;
-//     };
-//   };
