@@ -149,16 +149,10 @@
     var(--artifact-height-unitless);
 
   --pixel-scale: 2;
-  --hex-path: polygon(
-    51px 0,
-    93px 0,
-    143px 50px,
-    143px 51px,
-    93px 102px,
-    50px 102px,
-    0 51px,
-    0 50px
-  );
+
+  --rarity-rare: hsl(220 100% 70%);
+  --rarity-epic: hsl(300 100% 60%);
+  --rarity-legendary: hsl(40 100% 70%);
 }
 
 html.dark {

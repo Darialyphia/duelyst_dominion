@@ -12,43 +12,41 @@ const flippedCards = ref<Set<number>>(new Set());
 
 const isRevealed = (index: number) => flippedCards.value.has(index);
 
-const dealtCount = ref(0);
-const hasStartedDealing = ref(false);
+const dealingStatus = ref<'waiting' | 'dealing' | 'done'>('waiting');
 
 const reveal = (index: number) => {
-  if (!hasStartedDealing.value) {
-    hasStartedDealing.value = true;
-    const deal = () => {
-      if (dealtCount.value < props.cards.length) {
-        dealtCount.value++;
-      } else {
-        clearInterval(interval);
-      }
-    };
-    deal();
-    const interval = setInterval(deal, 100);
+  if (dealingStatus.value === 'waiting') {
+    dealingStatus.value = 'dealing';
+    setTimeout(
+      () => {
+        dealingStatus.value = 'done';
+      },
+      (props.cards.length + 1) * 250
+    );
     return;
   }
 
-  if (!flippedCards.value.has(index)) {
+  if (dealingStatus.value === 'done' && !flippedCards.value.has(index)) {
     flippedCards.value.add(index);
   }
 };
 
 const cardStyles = computed(() => {
   const count = props.cards.length;
-  const radius = 250; // Adjust as needed
-  const startAngle = -90; // Start from top
+  const radius = 280;
+  const startAngle = -90;
 
   return props.cards.map((_, index) => {
-    const isDealt = index < dealtCount.value;
     const angle = startAngle + (index * 360) / count;
     const radian = (angle * Math.PI) / 180;
     const x = Math.cos(radian) * radius;
     const y = Math.sin(radian) * radius;
 
     return {
-      transform: isDealt ? `translate(${x}px, ${y}px)` : `translate(0px, 0px)`,
+      transform:
+        dealingStatus.value !== 'waiting'
+          ? `translate(${x}px, ${y}px)`
+          : `translate(0px, 0px)`,
       zIndex: count - index
     };
   });
@@ -63,7 +61,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
 </script>
 
 <template>
-  <div class="booster-pack-content">
+  <div class="booster-pack-content" :class="dealingStatus">
     <div
       v-for="(card, index) in cards"
       :key="card.id"
@@ -71,24 +69,26 @@ const getAnimationSequence = (card: CardBlueprint) => {
       :style="cardStyles[index]"
       @click="reveal(index)"
     >
-      <div class="card-flipper" :class="{ flipped: isRevealed(index) }">
-        <div class="card-wrapper">
-          <BlueprintCard
-            :blueprint="card"
-            :is-tiltable="isRevealed(index)"
-            :animation-sequence="getAnimationSequence(card)"
-          />
-        </div>
+      <div class="card-wrapper" :class="{ revealed: isRevealed(index) }">
+        <BlueprintCard
+          class="booster-card"
+          :class="`booster-card-${card.rarity.toLocaleLowerCase()}`"
+          :blueprint="card"
+          :is-tiltable="isRevealed(index)"
+          :animation-sequence="getAnimationSequence(card)"
+        />
       </div>
     </div>
     <transition name="fade">
-      <div v-if="!hasStartedDealing" class="stack-glow"></div>
+      <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
     </transition>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .booster-pack-content {
+  transform-style: preserve-3d;
+  perspective: 1300px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -100,29 +100,70 @@ const getAnimationSequence = (card: CardBlueprint) => {
 
 .card-slot {
   position: absolute;
-  cursor: pointer;
-  /* Center the card in the slot */
+  transform-style: preserve-3d;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.card-flipper {
-  position: relative;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
-  transform: rotateY(180deg); /* Start face down */
-}
-
-.card-flipper.flipped {
-  transform: rotateY(0deg); /* Flip to face up */
+  transition: transform 0.4s
+    linear(
+      0,
+      0.544 5.5%,
+      0.947 11.5%,
+      1.213 18.1%,
+      1.298 21.7%,
+      1.352 25.5%,
+      1.372 28.2%,
+      1.379 31.1%,
+      1.374 34.2%,
+      1.357 37.6%,
+      1.307 43.7%,
+      1.121 61.8%,
+      1.074 67.8%,
+      1.04 73.7%,
+      1.007 84.7%,
+      1
+    );
+  transition-delay: calc(var(--child-index) * 0.25s);
 }
 
 .card-wrapper {
-  /* Ensure the card component's 3D context is preserved */
-  transform-style: preserve-3d;
   --pixel-scale: 1;
+  width: calc(var(--card-width) * var(--pixel-scale));
+  aspect-ratio: var(--card-ratio);
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  &:not(.revealed) .booster-card {
+    transform: rotateY(180deg);
+  }
+  &.revealed {
+    animation: booster-reveal-bloom 0.6s;
+    .booster-card {
+      transition: transform 0.6s var(--ease-out-2);
+      animation: booster-card-scale 0.6s;
+    }
+  }
+}
+
+.done .booster-card-rare {
+  box-shadow:
+    0 0 15px var(--rarity-rare),
+    0 0 25px hsla(from var(--rarity-rare) h s l / 0.6),
+    0 0 50px hsla(from var(--rarity-rare) h s l / 0.3);
+  transition: box-shadow 0.5s;
+}
+.done .booster-card-epic {
+  box-shadow:
+    0 0 15px var(--rarity-epic),
+    0 0 25px hsla(from var(--rarity-epic) h s l / 0.6),
+    0 0 50px hsla(from var(--rarity-epic) h s l / 0.3);
+  transition: box-shadow 0.5s;
+}
+.done .booster-card-legendary {
+  box-shadow:
+    0 0 15px var(--rarity-legendary),
+    0 0 25px hsla(from var(--rarity-legendary) h s l / 0.6),
+    0 0 50px hsla(from var(--rarity-legendary) h s l / 0.3);
+  transition: box-shadow 0.5s;
 }
 
 .stack-glow {
@@ -132,12 +173,31 @@ const getAnimationSequence = (card: CardBlueprint) => {
   background: cyan;
   z-index: 6;
   filter: blur(30px);
-  animation: pulse-glow 2s infinite;
+  animation: booster-pulse-glow 2s infinite;
   pointer-events: none;
   mix-blend-mode: screen;
 }
 
-@keyframes pulse-glow {
+@keyframes booster-card-scale {
+  0% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.1;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes booster-reveal-bloom {
+  from,
+  25% {
+    filter: brightness(3) blur(5px);
+  }
+}
+
+@keyframes booster-pulse-glow {
   0% {
     transform: scale(0.95);
     opacity: 0.1;

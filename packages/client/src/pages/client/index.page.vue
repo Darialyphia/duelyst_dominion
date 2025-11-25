@@ -34,11 +34,11 @@ const unclaimedGiftsCount = computed(() => {
 
     <BoosterPackContent
       :cards="[
-        CARDS_DICTIONARY['argeon-highmane'],
-        CARDS_DICTIONARY['argeon-highmane'],
-        CARDS_DICTIONARY['argeon-highmane'],
-        CARDS_DICTIONARY['argeon-highmane'],
-        CARDS_DICTIONARY['argeon-highmane']
+        CARDS_DICTIONARY['holy-immolation'],
+        CARDS_DICTIONARY['windblade_adept'],
+        CARDS_DICTIONARY['windblade_adept'],
+        CARDS_DICTIONARY['windblade_adept'],
+        CARDS_DICTIONARY['windblade_adept']
       ]"
     />
   </div>
@@ -53,5 +53,9 @@ const unclaimedGiftsCount = computed(() => {
   font-size: var(--size-4);
   width: fit-content;
   margin-inline: auto;
+}
+
+.client-home-page {
+  transform-style: preserve-3d;
 }
 </style>
