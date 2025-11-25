@@ -23,9 +23,9 @@ export type CardFilter =
   | { type: 'spell' }
   | { type: 'artifact' }
   | { type: 'index_in_hand'; params: { index: number } }
-  | { type: 'in_hand' }
-  | { type: 'in_deck' }
-  | { type: 'in_discard_pile' }
+  | { type: 'in_hand'; params: { player: Filter<PlayerFilter> } }
+  | { type: 'in_deck'; params: { player: Filter<PlayerFilter> } }
+  | { type: 'in_discard_pile'; params: { player: Filter<PlayerFilter> } }
   | { type: 'from_player'; params: { player: Filter<PlayerFilter> } }
   | { type: 'modifier_source' }
   | { type: 'modifier_target' }

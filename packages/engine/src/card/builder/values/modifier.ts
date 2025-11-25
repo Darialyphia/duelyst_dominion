@@ -43,7 +43,7 @@ import type { Unit } from '../../../unit/unit.entity';
 import { UnitEffectModifierMixin } from '../../../modifier/mixins/unit-effect.mixin';
 import type { BuilderContext } from '../schema';
 
-export type SerializedModifierMixin =
+export type ModifierMixinData =
   | {
       type: 'togglable';
       params: {
@@ -100,32 +100,32 @@ export type SerializedModifierMixin =
       type: 'unit-aura';
       params: {
         elligibleUnits: Filter<UnitFilter>;
-        modifier: SerializedModifier;
+        modifier: ModifierData;
       };
     }
   | {
       type: 'card-aura';
       params: {
         elligibleCards: Filter<CardFilter>;
-        modifier: SerializedModifier;
+        modifier: ModifierData;
       };
     }
   | {
       type: 'unit-effect';
       params: {
-        modifier: SerializedModifier;
+        modifier: ModifierData;
       };
     };
 
-export type SerializedModifier = {
+export type ModifierData = {
   modifierType: string;
   name?: string | Keyword;
   description?: string | Keyword;
   icon?: string;
-  mixins: SerializedModifierMixin[];
+  mixins: ModifierMixinData[];
 };
 
-type ModifierContext = BuilderContext & { modifierData: SerializedModifier };
+type ModifierContext = BuilderContext & { modifierData: ModifierData };
 
 export const makeModifier = ({ game, card, modifierData, ...ctx }: ModifierContext) => {
   return new Modifier(modifierData.modifierType, game, card, {
@@ -176,7 +176,6 @@ export const makeModifier = ({ game, card, modifierData, ...ctx }: ModifierConte
               handler: async event => {
                 for (const action of params.actions) {
                   const ctor = ACTION_LOOKUP[action.type];
-                  // @ts-expect-error
                   const instance = new ctor(action, {
                     game,
                     card,

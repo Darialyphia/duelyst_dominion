@@ -36,7 +36,7 @@ const startShaking = () => {
     shakeTween.value = gsap.to(wrapperRefs.value, {
       x: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
       y: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
-      duration: 0.025,
+      duration: 0.05,
       onComplete: shake
     });
   };
@@ -60,22 +60,21 @@ const stopShakingAndDeal = () => {
       shakeTween.value = null;
     }
 
+    dealingStatus.value = 'dealing';
+    setTimeout(
+      () => {
+        dealingStatus.value = 'done';
+        isDealScheduled.value = false;
+      },
+      (props.cards.length + 1) * 50
+    );
     gsap.to(wrapperRefs.value, {
       x: 0,
       y: 0,
       rotation: 0,
       duration: 0.05,
       clearProps: 'all',
-      onComplete: () => {
-        dealingStatus.value = 'dealing';
-        setTimeout(
-          () => {
-            dealingStatus.value = 'done';
-            isDealScheduled.value = false;
-          },
-          (props.cards.length + 1) * 50
-        );
-      }
+      onComplete: () => {}
     });
   }, remaining);
 };
@@ -148,44 +147,60 @@ const getAnimationSequence = (card: CardBlueprint) => {
 </script>
 
 <template>
-  <div
-    class="booster-pack-content"
-    :class="dealingStatus"
-    @mouseup="endSweep"
-    @mouseleave="endSweep"
-  >
+  <Transition appear>
     <div
-      v-for="(card, index) in cards"
-      :key="card.blueprint.id"
-      class="card-slot"
-      :style="cardStyles[index]"
-      :class="{ 'is-shaking': isShaking }"
-      @click="reveal(index)"
-      @mousedown="startSweep(index)"
-      @mouseenter="onCardHover(index)"
+      class="booster-pack-content"
+      :class="dealingStatus"
+      @mouseup="endSweep"
+      @mouseleave="endSweep"
     >
       <div
-        class="card-wrapper"
-        ref="wrapperRefs"
-        :class="{ revealed: isRevealed(index) }"
+        v-for="(card, index) in cards"
+        :key="card.blueprint.id"
+        class="card-slot"
+        :style="cardStyles[index]"
+        :class="{ 'is-shaking': isShaking }"
+        @click="reveal(index)"
+        @mousedown="startSweep(index)"
+        @mouseenter="onCardHover(index)"
       >
-        <BlueprintCard
-          class="booster-card"
-          :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
-          :blueprint="card.blueprint"
-          :is-tiltable="false"
-          :is-foil="isRevealed(index) ? card.isFoil : false"
-          :animation-sequence="getAnimationSequence(card.blueprint)"
-        />
+        <div
+          class="card-wrapper"
+          ref="wrapperRefs"
+          :class="{ revealed: isRevealed(index) }"
+        >
+          <BlueprintCard
+            class="booster-card"
+            :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
+            :blueprint="card.blueprint"
+            :is-tiltable="false"
+            :is-foil="isRevealed(index) ? card.isFoil : false"
+            :animation-sequence="getAnimationSequence(card.blueprint)"
+          />
+        </div>
       </div>
+      <Transition name="fade">
+        <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
+      </Transition>
     </div>
-    <transition name="fade">
-      <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
-    </transition>
-  </div>
+  </Transition>
 </template>
 
 <style scoped lang="postcss">
+@keyframes booster-enter {
+  from {
+    transform: scale(0.5) rotateX(90deg);
+    opacity: 0;
+    translate: 0 300px;
+  }
+  50% {
+    translate: 0 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 .booster-pack-content {
   transform-style: preserve-3d;
   perspective: 1300px;
@@ -196,6 +211,9 @@ const getAnimationSequence = (card: CardBlueprint) => {
   justify-content: center;
   align-items: center;
   min-height: 800px; /* Ensure enough space */
+  &.v-enter-active {
+    animation: booster-enter 1.5s var(--ease-out-2);
+  }
 }
 
 @property --conic-gradient-angle {
@@ -272,7 +290,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
       transition: transform 0.4s var(--ease-out-2);
     }
   }
-  &::after {
+  &:not(.revealed)::after {
     content: '';
     position: absolute;
     inset: 0;

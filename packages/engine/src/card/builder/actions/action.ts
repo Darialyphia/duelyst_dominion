@@ -1,59 +1,20 @@
-import type { AnyObject, Nullable } from '@game/shared';
-import type { BoardCell } from '../../../board/entities/board-cell.entity';
 import { checkCondition, type Condition } from '../conditions';
 import type { Filter } from '../filters/filter';
 import type { UnitFilter } from '../filters/unit.filters';
 import type { Amount } from '../values/amount';
-import type { Game } from '../../../game/game';
-import type { AnyCard } from '../../entities/card.entity';
-import { GAME_EVENTS, type GameEvent } from '../../../game/game.events';
+import { GAME_EVENTS } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import type { PlayerFilter } from '../filters/player.filter';
 import type { CardFilter } from '../filters/card.filters';
-
-type ExecutionTiming = 'now' | 'end_of_turn' | 'start_of_next_turn' | 'end_of_next_turn';
-
-export type SerializedAction =
-  | {
-      type: 'deal_damage';
-      params: {
-        targets: Filter<UnitFilter>;
-        amount: Amount;
-        condition: Filter<Condition>;
-        timing: ExecutionTiming;
-      };
-    }
-  | {
-      type: 'heal';
-      params: {
-        targets: Filter<UnitFilter>;
-        amount: Amount;
-        condition: Filter<Condition>;
-        timing: ExecutionTiming;
-      };
-    }
-  | {
-      type: 'draw_cards';
-      params: {
-        condition: Filter<Condition>;
-        amount: Amount;
-        player: Filter<PlayerFilter>;
-        timing: ExecutionTiming;
-        pool: Filter<CardFilter>;
-      };
-    };
-
-export type ActionContext = {
-  game: Game;
-  card: AnyCard;
-  targets: Nullable<BoardCell>[];
-  event?: GameEvent;
-};
+import type { BuilderContext } from '../schema';
+import type { ModifierData } from '../values/modifier';
+import type { BlueprintFilter } from '../filters/blueprint.filter';
+import type { CellFilter } from '../filters/cell.filters';
 
 export abstract class Action<T extends SerializedAction['type']> {
   constructor(
     protected action: SerializedAction & { type: T },
-    protected ctx: ActionContext
+    protected ctx: BuilderContext
   ) {}
 
   protected abstract executeImpl(): Promise<void>;
@@ -113,3 +74,145 @@ export abstract class Action<T extends SerializedAction['type']> {
       .exhaustive();
   }
 }
+
+type ExecutionTiming = 'now' | 'end_of_turn' | 'start_of_next_turn' | 'end_of_next_turn';
+
+export type SerializedAction =
+  | {
+      type: 'deal_damage';
+      params: {
+        targets: Filter<UnitFilter>;
+        amount: Amount;
+        condition: Filter<Condition>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'heal';
+      params: {
+        targets: Filter<UnitFilter>;
+        amount: Amount;
+        condition: Filter<Condition>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'draw_cards_from_pool';
+      params: {
+        condition: Filter<Condition>;
+        amount: Amount;
+        player: Filter<PlayerFilter>;
+        timing: ExecutionTiming;
+        pool: Filter<CardFilter>;
+      };
+    }
+  | {
+      type: 'draw_cards_from_deck';
+      params: {
+        condition: Filter<Condition>;
+        amount: Amount;
+        player: Filter<PlayerFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'add_modifier_to_units';
+      params: {
+        condition: Filter<Condition>;
+        modifier: ModifierData;
+        targets: Filter<UnitFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'add_modifier_to_cards';
+      params: {
+        condition: Filter<Condition>;
+        modifier: ModifierData;
+        targets: Filter<CardFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'activate_unit';
+      params: {
+        condition: Filter<Condition>;
+        units: Filter<UnitFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'destroy_units';
+      params: {
+        condition: Filter<Condition>;
+        units: Filter<UnitFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'bounce_units';
+      params: {
+        condition: Filter<Condition>;
+        units: Filter<CardFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'change_cards_location';
+      params: {
+        condition: Filter<Condition>;
+        cards: Filter<CardFilter>;
+        destination: 'hand' | 'mainDeck' | 'discard_pile';
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'generate_cards';
+      params: {
+        condition: Filter<Condition>;
+        blueprint: Filter<BlueprintFilter>;
+        player: Filter<PlayerFilter>;
+        location: 'hand' | 'deck' | 'discard_pile';
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'teleport_unit';
+      params: {
+        condition: Filter<Condition>;
+        targets: Filter<UnitFilter>;
+        destination: Filter<UnitFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'swap_unit_positions';
+      params: {
+        condition: Filter<Condition>;
+        unit1: Filter<UnitFilter>;
+        unit2: Filter<UnitFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'select_spaces_on_board';
+      params: {
+        explainerText: string;
+        condition: Filter<Condition>;
+        spaces: Array<Filter<CellFilter>>;
+        player: Filter<PlayerFilter>;
+        timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'select_cards_from_pool';
+      params: {
+        explainerText: string;
+        condition: Filter<Condition>;
+        min: Filter<Amount>;
+        max: Filter<Amount>;
+        pool: Filter<CardFilter>;
+        player: Filter<PlayerFilter>;
+        timing: ExecutionTiming;
+      };
+    };

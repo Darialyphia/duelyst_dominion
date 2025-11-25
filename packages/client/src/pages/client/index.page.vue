@@ -72,5 +72,6 @@ const unclaimedGiftsCount = computed(() => {
 
 .client-home-page {
   transform-style: preserve-3d;
+  perspective: 1300px;
 }
 </style>
