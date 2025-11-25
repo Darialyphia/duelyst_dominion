@@ -34,11 +34,26 @@ const unclaimedGiftsCount = computed(() => {
 
     <BoosterPackContent
       :cards="[
-        CARDS_DICTIONARY['holy-immolation'],
-        CARDS_DICTIONARY['windblade_adept'],
-        CARDS_DICTIONARY['windblade_adept'],
-        CARDS_DICTIONARY['windblade_adept'],
-        CARDS_DICTIONARY['windblade_adept']
+        {
+          blueprint: CARDS_DICTIONARY['holy-immolation'],
+          isFoil: false
+        },
+        {
+          blueprint: CARDS_DICTIONARY['windblade_adept'],
+          isFoil: true
+        },
+        {
+          blueprint: CARDS_DICTIONARY['windblade_adept'],
+          isFoil: false
+        },
+        {
+          blueprint: CARDS_DICTIONARY['windblade_adept'],
+          isFoil: true
+        },
+        {
+          blueprint: CARDS_DICTIONARY['windblade_adept'],
+          isFoil: false
+        }
       ]"
     />
   </div>

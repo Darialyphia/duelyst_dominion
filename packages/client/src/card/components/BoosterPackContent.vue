@@ -5,7 +5,10 @@ import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
 
 const props = defineProps<{
-  cards: CardBlueprint[];
+  cards: Array<{
+    blueprint: CardBlueprint;
+    isFoil: boolean;
+  }>;
 }>();
 
 const flippedCards = ref<Set<number>>(new Set());
@@ -21,7 +24,7 @@ const reveal = (index: number) => {
       () => {
         dealingStatus.value = 'done';
       },
-      (props.cards.length + 1) * 250
+      (props.cards.length + 1) * 200
     );
     return;
   }
@@ -33,21 +36,25 @@ const reveal = (index: number) => {
 
 const cardStyles = computed(() => {
   const count = props.cards.length;
-  const radius = 280;
-  const startAngle = -90;
+  const radius = 800;
+  const angleStep = 15;
+  const totalArc = (count - 1) * angleStep;
+  const startAngle = -90 - totalArc / 2;
 
   return props.cards.map((_, index) => {
-    const angle = startAngle + (index * 360) / count;
+    const angle = startAngle + index * angleStep;
     const radian = (angle * Math.PI) / 180;
     const x = Math.cos(radian) * radius;
-    const y = Math.sin(radian) * radius;
+    const y = Math.sin(radian) * radius + 600;
+    const rotation = angle + 90;
 
     return {
       transform:
         dealingStatus.value !== 'waiting'
-          ? `translate(${x}px, ${y}px)`
-          : `translate(0px, 0px)`,
-      zIndex: count - index
+          ? `translate(${x}px, ${y}px) rotate(${rotation}deg)`
+          : `translate(0px, 0px) rotate(0deg)`,
+      '--z-index': count - index,
+      '--child-index': index
     };
   });
 });
@@ -64,7 +71,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
   <div class="booster-pack-content" :class="dealingStatus">
     <div
       v-for="(card, index) in cards"
-      :key="card.id"
+      :key="card.blueprint.id"
       class="card-slot"
       :style="cardStyles[index]"
       @click="reveal(index)"
@@ -72,10 +79,11 @@ const getAnimationSequence = (card: CardBlueprint) => {
       <div class="card-wrapper" :class="{ revealed: isRevealed(index) }">
         <BlueprintCard
           class="booster-card"
-          :class="`booster-card-${card.rarity.toLocaleLowerCase()}`"
-          :blueprint="card"
-          :is-tiltable="isRevealed(index)"
-          :animation-sequence="getAnimationSequence(card)"
+          :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
+          :blueprint="card.blueprint"
+          :is-tiltable="false"
+          :is-foil="card.isFoil"
+          :animation-sequence="getAnimationSequence(card.blueprint)"
         />
       </div>
     </div>
@@ -104,6 +112,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: var(--z-index);
   transition: transform 0.4s
     linear(
       0,
@@ -123,11 +132,14 @@ const getAnimationSequence = (card: CardBlueprint) => {
       1.007 84.7%,
       1
     );
-  transition-delay: calc(var(--child-index) * 0.25s);
+  transition-delay: calc(var(--child-index) * 0.2s);
+  &:hover:has(.revealed) {
+    z-index: 10;
+  }
 }
 
 .card-wrapper {
-  --pixel-scale: 1;
+  --pixel-scale: 1.5;
   width: calc(var(--card-width) * var(--pixel-scale));
   aspect-ratio: var(--card-ratio);
   transform-origin: center center;
