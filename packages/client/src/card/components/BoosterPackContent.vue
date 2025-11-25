@@ -17,6 +17,8 @@ const isRevealed = (index: number) => flippedCards.value.has(index);
 
 const dealingStatus = ref<'waiting' | 'dealing' | 'done'>('waiting');
 
+const isSweeping = ref(false);
+
 const reveal = (index: number) => {
   if (dealingStatus.value === 'waiting') {
     dealingStatus.value = 'dealing';
@@ -30,6 +32,30 @@ const reveal = (index: number) => {
   }
 
   if (dealingStatus.value === 'done' && !flippedCards.value.has(index)) {
+    flippedCards.value.add(index);
+  }
+};
+
+const startSweep = (index: number) => {
+  if (dealingStatus.value === 'done') {
+    isSweeping.value = true;
+    // Reveal the card where the sweep starts
+    if (!flippedCards.value.has(index)) {
+      flippedCards.value.add(index);
+    }
+  }
+};
+
+const endSweep = () => {
+  isSweeping.value = false;
+};
+
+const onCardHover = (index: number) => {
+  if (
+    isSweeping.value &&
+    dealingStatus.value === 'done' &&
+    !flippedCards.value.has(index)
+  ) {
     flippedCards.value.add(index);
   }
 };
@@ -68,13 +94,20 @@ const getAnimationSequence = (card: CardBlueprint) => {
 </script>
 
 <template>
-  <div class="booster-pack-content" :class="dealingStatus">
+  <div
+    class="booster-pack-content"
+    :class="dealingStatus"
+    @mouseup="endSweep"
+    @mouseleave="endSweep"
+  >
     <div
       v-for="(card, index) in cards"
       :key="card.blueprint.id"
       class="card-slot"
       :style="cardStyles[index]"
       @click="reveal(index)"
+      @mousedown="startSweep(index)"
+      @mouseenter="onCardHover(index)"
     >
       <div class="card-wrapper" :class="{ revealed: isRevealed(index) }">
         <BlueprintCard
@@ -82,7 +115,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
           :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
           :blueprint="card.blueprint"
           :is-tiltable="false"
-          :is-foil="card.isFoil"
+          :is-foil="isRevealed(index) ? card.isFoil : false"
           :animation-sequence="getAnimationSequence(card.blueprint)"
         />
       </div>
@@ -106,6 +139,27 @@ const getAnimationSequence = (card: CardBlueprint) => {
   min-height: 800px; /* Ensure enough space */
 }
 
+@property --conic-gradient-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --conic-gradient-angle-2 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes booster-border-gradient-rotate {
+  from {
+    --conic-gradient-angle: 0deg;
+    --conic-gradient-angle-2: 0deg;
+  }
+  to {
+    --conic-gradient-angle: 360deg;
+    --conic-gradient-angle-2: -360deg;
+  }
+}
 .card-slot {
   position: absolute;
   transform-style: preserve-3d;
@@ -113,6 +167,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
   justify-content: center;
   align-items: center;
   z-index: var(--z-index);
+
   transition: transform 0.4s
     linear(
       0,
@@ -133,8 +188,29 @@ const getAnimationSequence = (card: CardBlueprint) => {
       1
     );
   transition-delay: calc(var(--child-index) * 0.2s);
-  &:hover:has(.revealed) {
-    z-index: 10;
+  &:has(.revealed) {
+    z-index: calc(10 + var(--z-index));
+  }
+  &:not(:has(.revealed))::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    filter: blur(4px);
+    background:
+      conic-gradient(
+        from var(--conic-gradient-angle) at center,
+        cyan 0deg,
+        orange 20deg,
+        transparent 20deg
+      ),
+      conic-gradient(
+        from var(--conic-gradient-angle-2) at center,
+        magenta 0deg,
+        yellow 20deg,
+        transparent 20deg
+      );
+    animation: booster-border-gradient-rotate 2s linear infinite;
   }
 }
 
@@ -148,34 +224,41 @@ const getAnimationSequence = (card: CardBlueprint) => {
     transform: rotateY(180deg);
   }
   &.revealed {
-    animation: booster-reveal-bloom 0.6s;
+    animation:
+      booster-reveal-bloom 0.6s,
+      booster-reveal-zindex 0.6s;
     .booster-card {
       transition: transform 0.6s var(--ease-out-2);
-      animation: booster-card-scale 0.6s;
     }
   }
 }
 
+@keyframes booster-rarity-shadow {
+  from,
+  to {
+    box-shadow:
+      0 0 0px var(--shadow-color),
+      0 0 10px hsla(from var(--shadow-color) h s l / 0.6),
+      0 0 30px hsla(from var(--shadow-color) h s l / 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 20px var(--shadow-color),
+      0 0 40px hsla(from var(--shadow-color) h s l / 0.6),
+      0 0 60px hsla(from var(--shadow-color) h s l / 0.3);
+  }
+}
 .done .booster-card-rare {
-  box-shadow:
-    0 0 15px var(--rarity-rare),
-    0 0 25px hsla(from var(--rarity-rare) h s l / 0.6),
-    0 0 50px hsla(from var(--rarity-rare) h s l / 0.3);
-  transition: box-shadow 0.5s;
+  --shadow-color: var(--rarity-rare);
+  animation: booster-rarity-shadow 2s infinite;
 }
 .done .booster-card-epic {
-  box-shadow:
-    0 0 15px var(--rarity-epic),
-    0 0 25px hsla(from var(--rarity-epic) h s l / 0.6),
-    0 0 50px hsla(from var(--rarity-epic) h s l / 0.3);
-  transition: box-shadow 0.5s;
+  --shadow-color: var(--rarity-epic);
+  animation: booster-rarity-shadow 2s infinite;
 }
 .done .booster-card-legendary {
-  box-shadow:
-    0 0 15px var(--rarity-legendary),
-    0 0 25px hsla(from var(--rarity-legendary) h s l / 0.6),
-    0 0 50px hsla(from var(--rarity-legendary) h s l / 0.3);
-  transition: box-shadow 0.5s;
+  --shadow-color: var(--rarity-legendary);
+  animation: booster-rarity-shadow 2s infinite;
 }
 
 .stack-glow {
