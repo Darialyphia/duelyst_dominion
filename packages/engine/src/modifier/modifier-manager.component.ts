@@ -52,10 +52,13 @@ export class ModifierManager<T extends ModifierTarget> {
 
   async remove(
     modifierOrType: string | Modifier<T> | Constructor<Modifier<T>>,
-    source?: AnyCard
+    options?: {
+      source?: AnyCard;
+      force?: boolean;
+    }
   ) {
     const idx = this._modifiers.findIndex(mod => {
-      if (source && !mod.source.equals(source)) {
+      if (options?.source && !mod.source.equals(options.source)) {
         return false;
       }
 
@@ -71,8 +74,13 @@ export class ModifierManager<T extends ModifierTarget> {
 
     const modifier = this._modifiers[idx];
 
+    const force = options?.force ?? false;
+    if (!force && !modifier.isRemovable) {
+      return;
+    }
+
     this._modifiers.splice(idx, 1);
-    await modifier.remove();
+    await modifier.remove({ force: force });
   }
 
   get list() {

@@ -62,12 +62,14 @@ type PlayerInterceptors = {
   cardsDrawnForTurn: Interceptable<number>;
   maxReplacesPerTurn: Interceptable<number>;
   maxOverspendsPerTurn: Interceptable<number>;
+  maxManathreshold: Interceptable<number>;
 };
 const makeInterceptors = (): PlayerInterceptors => {
   return {
     cardsDrawnForTurn: new Interceptable<number>(),
     maxReplacesPerTurn: new Interceptable<number>(),
-    maxOverspendsPerTurn: new Interceptable<number>()
+    maxOverspendsPerTurn: new Interceptable<number>(),
+    maxManathreshold: new Interceptable<number>()
   };
 };
 export type PlayerResourceAction =
@@ -298,7 +300,7 @@ export class Player
   async performResourceAction(action: PlayerResourceAction) {
     await match(action)
       .with({ type: 'draw-card' }, async () => {
-        await this.cardManager.draw(1);
+        await this.cardManager.drawFromDeck(1);
       })
       .with({ type: 'gain-rune' }, async ({ rune }) => {
         this.gainRune(rune, 1);
@@ -310,6 +312,10 @@ export class Player
 
   refillMana() {
     this._mana = this.maxMana;
+  }
+
+  get maxManathreshold() {
+    return this.interceptors.maxManathreshold.getValue(this.game.config.MAX_MANA, {});
   }
 
   async startTurn() {
@@ -324,7 +330,7 @@ export class Player
     if (this.game.gamePhaseSystem.elapsedTurns > 0) {
       this._baseMaxMana = Math.min(
         this._baseMaxMana + this.game.config.MAX_MANA_INCREASE_PER_TURN,
-        this.game.config.MAX_MANA
+        this.maxManathreshold
       );
     }
     this.refillMana();
@@ -389,6 +395,17 @@ export class Player
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
+  }
+
+  gainMaxMana(amount: number) {
+    this._baseMaxMana = Math.min(this._baseMaxMana + amount, this.maxManathreshold);
+  }
+
+  loseMaxMana(amount: number) {
+    this._baseMaxMana = Math.max(0, this._baseMaxMana - amount);
+    if (this._mana > this.maxMana) {
+      this._mana = this.maxMana;
+    }
   }
 
   canSpendMana(amount: number) {
@@ -481,6 +498,6 @@ export class Player
   }
 
   async drawForTurn() {
-    await this.cardManager.draw(this.cardsDrawnForTurn);
+    await this.cardManager.drawFromDeck(this.cardsDrawnForTurn);
   }
 }

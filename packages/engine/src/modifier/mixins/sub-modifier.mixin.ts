@@ -6,24 +6,31 @@ export class SubModifierMixin<
   T extends ModifierTarget,
   TTarget extends ModifierTarget
 > extends ModifierMixin<T> {
+  private subModifierTargets = new Map<TTarget, Modifier<TTarget>>();
   constructor(
     game: Game,
     private readonly options: {
-      modifier: Modifier<TTarget>;
-      getModifierTarget: (modifier: Modifier<T>) => TTarget;
+      getTargets: () => Array<{
+        target: TTarget;
+        modifier: Modifier<TTarget>;
+      }>;
     }
   ) {
     super(game);
   }
 
-  async onApplied(target: T, modifier: Modifier<T>) {
-    await this.options.getModifierTarget(modifier).modifiers.add(this.options.modifier);
+  async onApplied() {
+    for (const target of this.options.getTargets()) {
+      await target.target.modifiers.add(target.modifier);
+      this.subModifierTargets.set(target.target, target.modifier);
+    }
   }
 
-  async onRemoved(target: T, modifier: Modifier<T>): Promise<void> {
-    await this.options
-      .getModifierTarget(modifier)
-      .modifiers.remove(this.options.modifier);
+  async onRemoved(t: ModifierTarget, _modifier: Modifier<T>): Promise<void> {
+    for (const [target, modifier] of this.subModifierTargets.entries()) {
+      await target.modifiers.remove(modifier, { source: _modifier.source, force: true });
+    }
+    this.subModifierTargets.clear();
   }
 
   onReapplied(): void {}

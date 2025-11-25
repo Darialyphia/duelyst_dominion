@@ -36,6 +36,7 @@ export type ModifierOptions<
 > = ModifierInfos<TCustomEvents> & {
   mixins: ModifierMixin<T>[];
   stacks?: number;
+  isRemovable?: boolean;
 };
 
 class ModifierLifecycleEvent extends TypedSerializableEvent<
@@ -116,6 +117,8 @@ export class Modifier<
 
   private _prevEnabled = true;
 
+  private _isRemovable: boolean;
+
   constructor(
     modifierType: string,
     game: Game,
@@ -137,6 +140,7 @@ export class Modifier<
       name: options.name,
       icon: options.icon
     };
+    this._isRemovable = options.isRemovable ?? true;
     this._isUnique = options.isUnique ?? false;
     if (options.stacks) {
       this._stacks = options.stacks;
@@ -158,6 +162,10 @@ export class Modifier<
 
   get stacks() {
     return this._stacks;
+  }
+
+  get isRemovable() {
+    return this._isRemovable;
   }
 
   getMixin(ctor: Constructor<ModifierMixin<T>>): ModifierMixin<T>[] {
@@ -233,7 +241,9 @@ export class Modifier<
     );
   }
 
-  async remove() {
+  async remove({ force }: { force?: boolean } = { force: false }) {
+    if (!force && !this._isRemovable) return;
+
     await this.game.emit(
       MODIFIER_EVENTS.MODIFIER_BEFORE_REMOVED,
       new ModifierLifecycleEvent(this)

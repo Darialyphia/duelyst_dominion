@@ -100,7 +100,7 @@ export type UnitInterceptors = {
 
   player: Interceptable<Player>;
 
-  damageDealt: Interceptable<number, { source: AnyCard; target: Unit }>;
+  damageDealt: Interceptable<number, { target: Unit }>;
   damageReceived: Interceptable<
     number,
     { amount: number; source: AnyCard; damage: Damage }
@@ -517,6 +517,10 @@ export class Unit
       amount: damage.baseAmount,
       source
     });
+  }
+
+  getDealtDamage(target: Unit) {
+    return this.interceptors.damageDealt.getValue(this.atk, { target });
   }
 
   get maxHp() {

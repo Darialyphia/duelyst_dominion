@@ -1,5 +1,4 @@
 import { match } from 'ts-pattern';
-import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
 import { checkCondition, type Condition } from '../conditions';
 import { resolveCardFilter, type CardFilter } from '../filters/card.filters';
@@ -12,6 +11,7 @@ import { isDefined, type AnyObject } from '@game/shared';
 import type { Unit } from '../../../unit/unit.entity';
 import { getAOE, type SerializedAOE } from './aoe';
 import type { BuilderContext } from '../schema';
+import { resolveDamageFilter, type DamageFilter } from '../filters/damage.filter';
 
 export type NumericInterceptor<T extends string> = {
   key: T;
@@ -49,7 +49,11 @@ export type UnitSerializedInterceptor =
   | NumericInterceptor<
       'atk' | 'maxHp' | 'movementReach' | 'maxAttacksPerTurn' | 'maxMovementsPerTurn'
     >
-  | BooleanInterceptor<'canMove' | 'canMoveAfterAttacking' | 'canBeDestroyed'>
+  | (NumericInterceptor<'damageDealt'> & { target: Filter<UnitFilter> })
+  | (NumericInterceptor<'damageReceived'> & { filter: Filter<DamageFilter> })
+  | BooleanInterceptor<
+      'canMove' | 'canMoveAfterAttacking' | 'canBeDestroyed' | 'shouldActivateOnTurnStart'
+    >
   | (BooleanInterceptor<
       'canAttack' | 'canCounterAttack' | 'canBeAttackTarget' | 'canBeCounterattackTarget'
     > & { unit: Filter<UnitFilter> })
@@ -137,10 +141,89 @@ export const getUnitInterceptor = ({
           }
         }
       )
+      .with({ key: 'damageDealt' }, params => {
+        const units = resolveUnitFilter({
+          game,
+          card,
+          filter: params.target,
+          targets: []
+        });
+        const matchesTarget = units.some(u => u.equals(ctx.target));
+        if (!matchesTarget) return value;
+
+        if (params.operation === 'set' && isDefined(fixedValue)) {
+          return fixedValue;
+        } else if (params.operation === 'set-dynamic') {
+          return getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+        } else if (params.operation === 'add') {
+          const amt = getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+          return value + amt;
+        } else if (params.operation === 'scale') {
+          const amt = getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+          return value * amt;
+        } else {
+          return value;
+        }
+      })
+      .with({ key: 'damageReceived' }, params => {
+        const matchesDamage = resolveDamageFilter({
+          game,
+          card,
+          filter: params.filter,
+          damage: ctx.damage,
+          targets: []
+        });
+        if (!matchesDamage) return value;
+
+        if (params.operation === 'set' && isDefined(fixedValue)) {
+          return fixedValue;
+        } else if (params.operation === 'set-dynamic') {
+          return getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+        } else if (params.operation === 'add') {
+          const amt = getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+          return value + amt;
+        } else if (params.operation === 'scale') {
+          const amt = getAmount({
+            game,
+            card,
+            targets: [],
+            amount: params.amount
+          });
+          return value * amt;
+        } else {
+          return value;
+        }
+      })
       .with(
         { key: 'canMove' },
         { key: 'canMoveAfterAttacking' },
         { key: 'canBeDestroyed' },
+        { key: 'shouldActivateOnTurnStart' },
         params => {
           if (value === false && params.ignoreIfFalse) {
             return value;

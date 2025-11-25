@@ -7,7 +7,6 @@ import { getAmount, type Amount } from '../values/amount';
 import { resolveBlueprintFilter, type BlueprintFilter } from './blueprint.filter';
 import { resolveFilter, type Filter } from './filter';
 import { resolvePlayerFilter, type PlayerFilter } from './player.filter';
-import type { GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
 import { CARD_KINDS, type Tag } from '../../card.enums';
 import {

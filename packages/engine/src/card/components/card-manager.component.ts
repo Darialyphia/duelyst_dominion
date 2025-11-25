@@ -1,4 +1,4 @@
-import { isDefined } from '@game/shared';
+import { isDefined, shuffleArray } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { AnyCard } from '../entities/card.entity';
 import { Deck } from '../entities/deck.entity';
@@ -98,7 +98,7 @@ export class CardManagerComponent {
     return [...this.hand][index];
   }
 
-  async draw(amount: number) {
+  async drawFromDeck(amount: number) {
     if (this.isHandFull) return;
 
     const amountToDraw = Math.min(
@@ -117,6 +117,37 @@ export class CardManagerComponent {
     const cards = this.deck.draw(amountToDraw);
 
     for (const card of cards) {
+      await card.addToHand();
+    }
+
+    await this.game.emit(
+      GAME_EVENTS.PLAYER_AFTER_DRAW,
+      new PlayerAfterDrawEvent({
+        player: this.player,
+        cards
+      })
+    );
+  }
+
+  async drawFromPool(cards: DeckCard[], amount: number) {
+    const amountToDraw = Math.min(
+      amount,
+      cards.length,
+      this.options.maxHandSize - this.hand.length
+    );
+    if (amountToDraw <= 0) return;
+
+    await this.game.emit(
+      GAME_EVENTS.PLAYER_BEFORE_DRAW,
+      new PlayerBeforeDrawEvent({
+        player: this.player,
+        amount: amountToDraw
+      })
+    );
+    const shuffledPool = shuffleArray(cards, () => this.game.rngSystem.next());
+    const drawnCards = shuffledPool.splice(0, amountToDraw);
+
+    for (const card of drawnCards) {
       await card.addToHand();
     }
 

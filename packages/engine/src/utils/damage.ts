@@ -22,7 +22,7 @@ export abstract class Damage {
 
   readonly type: DamageType;
 
-  protected source: AnyCard;
+  readonly source: AnyCard;
 
   constructor(options: DamageOptions) {
     this._baseAmount = options.baseAmount;
@@ -41,6 +41,7 @@ export abstract class Damage {
 
 export class CombatDamage extends Damage {
   private _attacker: Unit;
+  private _checkedTarget: Unit | null = null;
 
   constructor(attacker: Unit) {
     super({ baseAmount: attacker.atk, type: DAMAGE_TYPES.COMBAT, source: attacker.card });
@@ -49,6 +50,21 @@ export class CombatDamage extends Damage {
 
   get attacker() {
     return this._attacker;
+  }
+
+  get baseAmount() {
+    if (this._checkedTarget === null) {
+      return this._baseAmount;
+    } else {
+      return this._attacker.getDealtDamage(this._checkedTarget);
+    }
+  }
+
+  getFinalAmount(target: Unit): number {
+    this._checkedTarget = target;
+    const amount = super.getFinalAmount(target);
+    this._checkedTarget = null;
+    return amount;
   }
 }
 

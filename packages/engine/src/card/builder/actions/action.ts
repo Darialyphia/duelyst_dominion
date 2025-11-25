@@ -8,6 +8,8 @@ import type { Game } from '../../../game/game';
 import type { AnyCard } from '../../entities/card.entity';
 import { GAME_EVENTS, type GameEvent } from '../../../game/game.events';
 import { match } from 'ts-pattern';
+import type { PlayerFilter } from '../filters/player.filter';
+import type { CardFilter } from '../filters/card.filters';
 
 type ExecutionTiming = 'now' | 'end_of_turn' | 'start_of_next_turn' | 'end_of_next_turn';
 
@@ -28,6 +30,16 @@ export type SerializedAction =
         amount: Amount;
         condition: Filter<Condition>;
         timing: ExecutionTiming;
+      };
+    }
+  | {
+      type: 'draw_cards';
+      params: {
+        condition: Filter<Condition>;
+        amount: Amount;
+        player: Filter<PlayerFilter>;
+        timing: ExecutionTiming;
+        pool: Filter<CardFilter>;
       };
     };
 

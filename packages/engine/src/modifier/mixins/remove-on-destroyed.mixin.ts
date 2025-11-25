@@ -17,7 +17,7 @@ export class RemoveOnDestroyedMixin extends ModifierMixin<MinionCard> {
   async onMinionDestroyed(event: UnitAfterDestroyEvent) {
     if (event.data.unit.card.equals(this.modifier.target)) {
       this.game.off(GAME_EVENTS.UNIT_AFTER_DESTROY, this.onMinionDestroyed);
-      await this.modifier.target.modifiers.remove(this.modifier);
+      await this.modifier.target.modifiers.remove(this.modifier, { force: true });
     }
   }
 

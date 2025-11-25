@@ -21,45 +21,75 @@ const dealingStatus = ref<'waiting' | 'dealing' | 'done'>('waiting');
 
 const isSweeping = ref(false);
 
-const shakeAndDeal = () => {
-  const keyframes = [];
-  for (let i = 0; i < 30; i++) {
-    keyframes.push({
-      x: 'random(-10, 10)',
-      y: 'random(-10, 10)',
-      duration: 0.025
-    });
-  }
-  keyframes.push({ x: 0, y: 0, rotation: 0, duration: 0.05 });
+const shakeTween = ref<gsap.core.Tween | null>(null);
+const shakeStartTime = ref(0);
+const isShaking = ref(false);
+const MIN_SHAKE_TIME = 1500;
+const isDealScheduled = ref(false);
 
-  gsap.to(wrapperRefs.value, {
-    keyframes,
-    clearProps: 'all',
-    onComplete: () => {
-      dealingStatus.value = 'dealing';
-      setTimeout(
-        () => {
-          dealingStatus.value = 'done';
-        },
-        (props.cards.length + 1) * 50
-      );
+const startShaking = () => {
+  if (isDealScheduled.value) return;
+  shakeStartTime.value = Date.now();
+  let shakeCounter = 0;
+  const shake = () => {
+    shakeCounter += 0.5;
+    shakeTween.value = gsap.to(wrapperRefs.value, {
+      x: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
+      y: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
+      duration: 0.025,
+      onComplete: shake
+    });
+  };
+
+  if (shakeTween.value) shakeTween.value.kill();
+  isShaking.value = true;
+  shake();
+};
+
+const stopShakingAndDeal = () => {
+  if (isDealScheduled.value || !shakeTween.value) return;
+  isShaking.value = false;
+  isDealScheduled.value = true;
+
+  const elapsed = Date.now() - shakeStartTime.value;
+  const remaining = Math.max(0, MIN_SHAKE_TIME - elapsed);
+
+  setTimeout(() => {
+    if (shakeTween.value) {
+      shakeTween.value.kill();
+      shakeTween.value = null;
     }
-  });
+
+    gsap.to(wrapperRefs.value, {
+      x: 0,
+      y: 0,
+      rotation: 0,
+      duration: 0.05,
+      clearProps: 'all',
+      onComplete: () => {
+        dealingStatus.value = 'dealing';
+        setTimeout(
+          () => {
+            dealingStatus.value = 'done';
+            isDealScheduled.value = false;
+          },
+          (props.cards.length + 1) * 50
+        );
+      }
+    });
+  }, remaining);
 };
 
 const reveal = (index: number) => {
-  if (dealingStatus.value === 'waiting') {
-    shakeAndDeal();
-    return;
-  }
-
   if (dealingStatus.value === 'done' && !flippedCards.value.has(index)) {
     flippedCards.value.add(index);
   }
 };
 
 const startSweep = (index: number) => {
-  if (dealingStatus.value === 'done') {
+  if (dealingStatus.value === 'waiting') {
+    startShaking();
+  } else if (dealingStatus.value === 'done') {
     isSweeping.value = true;
     // Reveal the card where the sweep starts
     if (!flippedCards.value.has(index)) {
@@ -69,6 +99,9 @@ const startSweep = (index: number) => {
 };
 
 const endSweep = () => {
+  if (dealingStatus.value === 'waiting') {
+    stopShakingAndDeal();
+  }
   isSweeping.value = false;
 };
 
@@ -126,6 +159,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
       :key="card.blueprint.id"
       class="card-slot"
       :style="cardStyles[index]"
+      :class="{ 'is-shaking': isShaking }"
       @click="reveal(index)"
       @mousedown="startSweep(index)"
       @mouseenter="onCardHover(index)"
@@ -215,26 +249,9 @@ const getAnimationSequence = (card: CardBlueprint) => {
   transition-delay: calc(var(--child-index) * 0.05s);
 
   &:not(:has(.revealed)) {
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      filter: blur(4px);
-      background:
-        conic-gradient(
-          from var(--conic-gradient-angle) at center,
-          cyan 0deg,
-          orange 20deg,
-          transparent 20deg
-        ),
-        conic-gradient(
-          from var(--conic-gradient-angle-2) at center,
-          magenta 0deg,
-          yellow 20deg,
-          transparent 20deg
-        );
-      animation: booster-border-gradient-rotate 2s linear infinite;
+    --shake-duration: 3s;
+    &.is-shaking {
+      --shake-duration: 1.5s;
     }
   }
 }
@@ -255,6 +272,28 @@ const getAnimationSequence = (card: CardBlueprint) => {
       transition: transform 0.4s var(--ease-out-2);
     }
   }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    filter: blur(4px);
+    background:
+      conic-gradient(
+        from var(--conic-gradient-angle) at center,
+        cyan 0deg,
+        orange 20deg,
+        transparent 20deg
+      ),
+      conic-gradient(
+        from var(--conic-gradient-angle-2) at center,
+        magenta 0deg,
+        yellow 20deg,
+        transparent 20deg
+      );
+    animation: booster-border-gradient-rotate var(--shake-duration) linear
+      infinite;
+  }
 }
 
 @keyframes booster-rarity-shadow {
@@ -272,6 +311,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
       0 0 60px hsla(from var(--shadow-color) h s l / 0.3);
   }
 }
+
 .done .booster-card-rare {
   --shadow-color: var(--rarity-rare);
   animation: booster-rarity-shadow 2s infinite;
