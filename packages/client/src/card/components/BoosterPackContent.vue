@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import gsap from 'gsap';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
-import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS, RARITIES } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
 
 const props = defineProps<{
@@ -170,18 +170,27 @@ watch(
 );
 
 const cardsWithParticles = computed(() => {
-  return props.cards.map(card => ({
-    ...card,
-    particles: Array.from({ length: 40 }, (_, i) => ({
-      id: i,
-      x: (Math.random() < 0.5 ? -1 : 1) * (150 + Math.random() * 150),
-      y: (Math.random() < 0.5 ? -1 : 1) * (150 + Math.random() * 150),
-      size: Math.random() * 5 + 5,
-      delay: Math.random() * 1,
-      speed: 0.4 + Math.random() * 0.4,
-      color: `var(--rarity-${card.blueprint.rarity.toLocaleLowerCase()})`
-    }))
-  }));
+  return props.cards.map(card => {
+    const isLegendary = card.blueprint.rarity === RARITIES.LEGENDARY;
+    const particleCount = isLegendary ? 60 : 20;
+
+    return {
+      ...card,
+      particles: Array.from({ length: particleCount }, (_, i) => ({
+        id: i,
+        x:
+          (Math.random() < 0.5 ? -1 : 1) *
+          ((isLegendary ? 300 : 200) + Math.random() * 200),
+        y:
+          (Math.random() < 0.5 ? -1 : 1) *
+          ((isLegendary ? 300 : 200) + Math.random() * 200),
+        size: Math.random() * (isLegendary ? 8 : 5) + (isLegendary ? 3 : 2),
+        delay: Math.random() * (isLegendary ? 1.5 : 0.5),
+        speed: isLegendary ? 1.5 : 0.8,
+        color: isLegendary ? '#ffd700' : 'white'
+      }))
+    };
+  });
 });
 </script>
 
@@ -206,7 +215,10 @@ const cardsWithParticles = computed(() => {
         <div
           class="card-wrapper"
           ref="wrapperRefs"
-          :class="{ revealed: isRevealed(index) }"
+          :class="{
+            revealed: isRevealed(index),
+            [`rarity-${card.blueprint.rarity.toLowerCase()}`]: true
+          }"
         >
           <BlueprintCard
             class="booster-card"
@@ -416,25 +428,32 @@ const cardsWithParticles = computed(() => {
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
-  box-shadow:
-    0 0 5px white,
-    0 0 10px var(--color);
+  box-shadow: 0 0 5px var(--color);
   z-index: 10;
 }
 
 .revealed .particle {
-  animation: particle-explode var(--duration) ease-out forwards;
+  animation: particle-explode 0.8s ease-out forwards;
   animation-delay: calc(0.2s + var(--delay));
+  animation-duration: var(--duration, 0.8s);
+}
+
+.rarity-legendary .particle {
+  box-shadow:
+    0 0 10px var(--color),
+    0 0 20px #ff8c00,
+    0 0 40px #ff4500;
+  mix-blend-mode: screen;
 }
 
 @keyframes particle-explode {
   0% {
-    transform: translate(-50%, -50%)
-      translate(calc(var(--x) / 3), calc(var(--y) / 3)) scale(1);
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
     opacity: 1;
   }
   100% {
     transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(0);
+    opacity: 0;
   }
 }
 
