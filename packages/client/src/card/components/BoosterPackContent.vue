@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import gsap from 'gsap';
+import * as PIXI from 'pixi.js';
+import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { CARD_KINDS, RARITIES } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
@@ -15,6 +17,103 @@ const props = defineProps<{
 const flippedCards = ref<Set<number>>(new Set());
 const wrapperRefs = ref<HTMLElement[]>([]);
 const containerRef = ref<HTMLElement | null>(null);
+const canvasContainerRef = ref<HTMLElement | null>(null);
+let pixiApp: PIXI.Application | null = null;
+
+const initPixi = () => {
+  if (!canvasContainerRef.value) return;
+
+  pixiApp = new PIXI.Application({
+    resizeTo: window,
+    backgroundAlpha: 0,
+    antialias: true
+  });
+
+  canvasContainerRef.value.appendChild(pixiApp.view as unknown as Node);
+};
+
+onMounted(() => {
+  initPixi();
+});
+
+onBeforeUnmount(() => {
+  if (pixiApp) {
+    pixiApp.destroy(true, { children: true, texture: true, baseTexture: true });
+  }
+});
+
+const createParticleTexture = () => {
+  const gfx = new PIXI.Graphics();
+  gfx.beginFill(0xffffff);
+  gfx.drawCircle(0, 0, 10);
+  gfx.endFill();
+  return pixiApp?.renderer.generateTexture(gfx);
+};
+
+const triggerPixiExplosion = (x: number, y: number) => {
+  if (!pixiApp) return;
+
+  const container = new PIXI.Container();
+  pixiApp.stage.addChild(container);
+
+  // Shockwave
+  const shockwave = new ShockwaveFilter(
+    [x, y],
+    {
+      amplitude: 30,
+      wavelength: 160,
+      speed: 500,
+      radius: -1
+    },
+    0
+  );
+  // We need something to apply the filter to.
+  // Since we can't easily distort the DOM, let's create a displacement ring visual
+  // or just apply it to the particles container (which won't do much if particles are small).
+  // Instead, let's make a "Ring" graphic that expands.
+
+  const ring = new PIXI.Graphics();
+  ring.lineStyle(5, 0xffd700, 1);
+  ring.drawCircle(0, 0, 100);
+  ring.position.set(x, y);
+  ring.scale.set(0);
+  ring.filters = [shockwave];
+  container.addChild(ring);
+
+  gsap.to(ring.scale, { x: 5, y: 5, duration: 1, ease: 'power2.out' });
+  gsap.to(ring, { alpha: 0, duration: 1, ease: 'power2.out' });
+
+  // Particles
+  const texture = createParticleTexture();
+  if (!texture) return;
+
+  const particleCount = 200;
+  for (let i = 0; i < particleCount; i++) {
+    const sprite = new PIXI.Sprite(texture);
+    sprite.x = x;
+    sprite.y = y;
+    sprite.anchor.set(0.5);
+    sprite.tint = Math.random() < 0.5 ? 0xffd700 : 0xff4500; // Gold or Orange
+    sprite.scale.set(Math.random() * 0.5 + 0.2);
+
+    const angle = Math.random() * Math.PI * 2;
+
+    container.addChild(sprite);
+
+    gsap.to(sprite, {
+      x: x + Math.cos(angle) * (300 + Math.random() * 200),
+      y: y + Math.sin(angle) * (300 + Math.random() * 200),
+      alpha: 0,
+      duration: 1 + Math.random(),
+      ease: 'power2.out'
+    });
+  }
+
+  // Cleanup container
+  setTimeout(() => {
+    container.destroy({ children: true });
+  }, 2000);
+};
 
 const isRevealed = (index: number) => flippedCards.value.has(index);
 
@@ -85,6 +184,16 @@ const reveal = (index: number) => {
     flippedCards.value.add(index);
     if (props.cards[index].blueprint.rarity === RARITIES.LEGENDARY) {
       triggerLegendaryShake();
+
+      // Get card position for explosion
+      const cardEl = wrapperRefs.value[index];
+      if (cardEl) {
+        const rect = cardEl.getBoundingClientRect();
+        triggerPixiExplosion(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2
+        );
+      }
     }
   }
 };
@@ -228,6 +337,7 @@ const cardsWithParticles = computed(() => {
         @mouseup="endSweep"
         @mouseleave="endSweep"
       >
+        <div ref="canvasContainerRef" class="canvas-overlay"></div>
         <div
           v-for="(card, index) in cardsWithParticles"
           :key="`${boosterId}-${index}`"
@@ -303,6 +413,16 @@ const cardsWithParticles = computed(() => {
     opacity: 1;
   }
 }
+.canvas-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100;
+}
+
 .booster-pack-content {
   transform-style: preserve-3d;
   perspective: 1300px;

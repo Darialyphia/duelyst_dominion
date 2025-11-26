@@ -4,10 +4,10 @@ import { RARITIES, type Rarity } from '../card.enums';
 
 const DROP_RATES: Record<string, Record<string, number>> = {
   standard: {
-    [RARITIES.COMMON]: 80,
-    [RARITIES.RARE]: 15,
-    [RARITIES.EPIC]: 4,
-    [RARITIES.LEGENDARY]: 1
+    [RARITIES.COMMON]: 0,
+    [RARITIES.RARE]: 0,
+    [RARITIES.EPIC]: 0,
+    [RARITIES.LEGENDARY]: 100
   },
   guaranteed_rare: {
     [RARITIES.COMMON]: 0,
@@ -55,7 +55,7 @@ export class StandardBoosterPack implements BoosterPack {
       let card = this.pickCard(rarity, pickedIds, options.blueprintWeightModifier);
 
       if (!card) {
-        card = this.pickFallbackCard(pickedIds);
+        card = this.pickFallbackCard(rarity);
       }
 
       if (card) {
@@ -123,21 +123,8 @@ export class StandardBoosterPack implements BoosterPack {
     return candidates[candidates.length - 1];
   }
 
-  private pickFallbackCard(excludeIds: Set<string>): CardBlueprint | null {
-    const fallbackOrder = [
-      RARITIES.COMMON,
-      RARITIES.RARE,
-      RARITIES.EPIC,
-      RARITIES.LEGENDARY
-    ];
-
-    for (const r of fallbackOrder) {
-      const bucket = this.cardsByRarity.get(r) || [];
-      const candidates = bucket.filter(c => !excludeIds.has(c.id));
-      if (candidates.length > 0) {
-        return candidates[Math.floor(Math.random() * candidates.length)];
-      }
-    }
-    return null;
+  private pickFallbackCard(rarity: Rarity): CardBlueprint | null {
+    const bucket = this.cardsByRarity.get(rarity) || [];
+    return bucket[Math.floor(Math.random() * bucket.length)];
   }
 }
