@@ -11,9 +11,9 @@ const DROP_RATES: Record<string, Record<string, number>> = {
   },
   guaranteed_rare: {
     [RARITIES.COMMON]: 0,
-    [RARITIES.RARE]: 80,
-    [RARITIES.EPIC]: 16,
-    [RARITIES.LEGENDARY]: 4
+    [RARITIES.RARE]: 0,
+    [RARITIES.EPIC]: 0,
+    [RARITIES.LEGENDARY]: 100
   }
 };
 

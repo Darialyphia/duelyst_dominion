@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const flippedCards = ref<Set<number>>(new Set());
 const wrapperRefs = ref<HTMLElement[]>([]);
+const containerRef = ref<HTMLElement | null>(null);
 
 const isRevealed = (index: number) => flippedCards.value.has(index);
 
@@ -82,7 +83,30 @@ const stopShakingAndDeal = () => {
 const reveal = (index: number) => {
   if (dealingStatus.value === 'done' && !flippedCards.value.has(index)) {
     flippedCards.value.add(index);
+    if (props.cards[index].blueprint.rarity === RARITIES.LEGENDARY) {
+      triggerLegendaryShake();
+    }
   }
+};
+
+const triggerLegendaryShake = () => {
+  if (!containerRef.value) return;
+  gsap.fromTo(
+    containerRef.value,
+    { x: 0, y: 0 },
+    {
+      x: () => (Math.random() - 0.5) * 30,
+      y: () => (Math.random() - 0.5) * 30,
+      duration: 0.05,
+      repeat: 10,
+      yoyo: true,
+      clearProps: 'x,y',
+      ease: 'power1.inOut',
+      onComplete: () => {
+        console.log('Legendary shake complete');
+      }
+    }
+  );
 };
 
 const startSweep = (index: number) => {
@@ -92,7 +116,7 @@ const startSweep = (index: number) => {
     isSweeping.value = true;
     // Reveal the card where the sweep starts
     if (!flippedCards.value.has(index)) {
-      flippedCards.value.add(index);
+      reveal(index);
     }
   }
 };
@@ -110,7 +134,7 @@ const onCardHover = (index: number) => {
     dealingStatus.value === 'done' &&
     !flippedCards.value.has(index)
   ) {
-    flippedCards.value.add(index);
+    reveal(index);
   }
 };
 
@@ -196,65 +220,70 @@ const cardsWithParticles = computed(() => {
 
 <template>
   <Transition appear>
-    <div
-      class="booster-pack-content"
-      :class="dealingStatus"
-      @mouseup="endSweep"
-      @mouseleave="endSweep"
-    >
+    <div class="overflow-hidden">
       <div
-        v-for="(card, index) in cardsWithParticles"
-        :key="`${boosterId}-${index}`"
-        class="card-slot"
-        :style="cardStyles[index]"
-        :class="{ 'is-shaking': isShaking }"
-        @click="reveal(index)"
-        @mousedown="startSweep(index)"
-        @mouseenter="onCardHover(index)"
+        class="booster-pack-content"
+        :class="dealingStatus"
+        ref="containerRef"
+        @mouseup="endSweep"
+        @mouseleave="endSweep"
       >
         <div
-          class="card-wrapper"
-          ref="wrapperRefs"
-          :class="{
-            revealed: isRevealed(index),
-            [`rarity-${card.blueprint.rarity.toLowerCase()}`]: true
-          }"
+          v-for="(card, index) in cardsWithParticles"
+          :key="`${boosterId}-${index}`"
+          class="card-slot"
+          :style="cardStyles[index]"
+          :class="{ 'is-shaking': isShaking }"
+          @click="reveal(index)"
+          @mousedown="startSweep(index)"
+          @mouseenter="onCardHover(index)"
         >
-          <BlueprintCard
-            class="booster-card"
-            :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
-            :blueprint="card.blueprint"
-            :is-tiltable="false"
-            :is-foil="isRevealed(index) ? card.isFoil : false"
-            :animation-sequence="getAnimationSequence(card.blueprint)"
-          />
-
           <div
-            v-for="particle in card.particles"
-            :key="particle.id"
-            class="particle"
-            :style="{
-              '--x': `${particle.x}px`,
-              '--y': `${particle.y}px`,
-              '--size': `${particle.size}px`,
-              '--delay': `${particle.delay}s`,
-              '--duration': `${particle.speed}s`,
-              '--color': `${particle.color}`
+            class="card-wrapper"
+            ref="wrapperRefs"
+            :class="{
+              revealed: isRevealed(index),
+              [`rarity-${card.blueprint.rarity.toLowerCase()}`]: true
             }"
-          />
+          >
+            <BlueprintCard
+              class="booster-card"
+              :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
+              :blueprint="card.blueprint"
+              :is-tiltable="false"
+              :is-foil="isRevealed(index) ? card.isFoil : false"
+              :animation-sequence="getAnimationSequence(card.blueprint)"
+            />
+
+            <div class="god-rays" />
+
+            <div
+              v-for="particle in card.particles"
+              :key="particle.id"
+              class="particle"
+              :style="{
+                '--x': `${particle.x}px`,
+                '--y': `${particle.y}px`,
+                '--size': `${particle.size}px`,
+                '--delay': `${particle.delay}s`,
+                '--duration': `${particle.speed}s`,
+                '--color': `${particle.color}`
+              }"
+            />
+          </div>
         </div>
+        <Transition name="fade">
+          <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
+        </Transition>
+        <Transition name="done">
+          <div
+            v-if="dealingStatus === 'done' && allRevealed"
+            class="absolute bottom-7"
+          >
+            <slot name="done"></slot>
+          </div>
+        </Transition>
       </div>
-      <Transition name="fade">
-        <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
-      </Transition>
-      <Transition name="done">
-        <div
-          v-if="dealingStatus === 'done' && allRevealed"
-          class="absolute bottom-7"
-        >
-          <slot name="done"></slot>
-        </div>
-      </Transition>
     </div>
   </Transition>
 </template>
@@ -285,7 +314,6 @@ const cardsWithParticles = computed(() => {
   align-items: center;
   min-height: 800px; /* Ensure enough space */
   max-width: 100vw;
-  overflow: hidden;
   &.v-enter-active {
     animation: booster-enter 0.8s var(--ease-out-2);
   }
@@ -444,6 +472,58 @@ const cardsWithParticles = computed(() => {
     0 0 20px #ff8c00,
     0 0 40px #ff4500;
   mix-blend-mode: screen;
+}
+
+.god-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 215, 0, 0) 0deg,
+    rgba(255, 215, 0, 0.15) 10deg,
+    hsla(from var(--rarity-legendary) h s l / 0.75) 20deg,
+    rgba(255, 215, 0, 0.15) 30deg,
+    rgba(255, 215, 0, 0) 40deg
+  );
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(
+    circle at center,
+    black 0%,
+    black 35%,
+    transparent 70%
+  );
+}
+
+.revealed.rarity-legendary .god-rays {
+  animation:
+    god-rays-rotate 20s linear infinite,
+    god-rays-appear 1s ease-out forwards;
+  animation-delay: 0s, 0.2s;
+}
+
+@keyframes god-rays-rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes god-rays-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes particle-explode {

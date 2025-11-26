@@ -44,7 +44,7 @@ const packOptions: BoosterPackOptions = {
 
 <template>
   <div class="client-home-page">
-    <AuthenticatedHeader />
+    <AuthenticatedHeader v-if="!isOpeningPacks" />
     <div class="surface gifts-notification" v-if="unclaimedGiftsCount > 0">
       You have some unclaimed gifts waiting for you !
       <UiButton :to="{ name: 'Gifts' }" class="primary-button">
@@ -55,6 +55,7 @@ const packOptions: BoosterPackOptions = {
     <BoosterPackContent
       v-if="isOpeningPacks && currentPackContent"
       :cards="currentPackContent"
+      class="pt-11"
     >
       <template #done>
         <FancyButton
