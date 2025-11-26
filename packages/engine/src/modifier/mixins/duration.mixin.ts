@@ -20,7 +20,9 @@ export class DurationModifierMixin<T extends AnyCard = AnyCard> extends Modifier
   async onTurnEnd() {
     this.duration--;
     if (this.duration === 0) {
-      await this.modifier.target.modifiers.remove(this.modifier.modifierType);
+      await this.modifier.target.modifiers.remove(this.modifier.modifierType, {
+        force: true
+      });
     }
   }
 

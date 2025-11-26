@@ -160,6 +160,29 @@ watch(
     isDealScheduled.value = false;
   }
 );
+
+const boosterId = ref(0);
+watch(
+  () => props.cards,
+  () => {
+    boosterId.value += 1;
+  }
+);
+
+const cardsWithParticles = computed(() => {
+  return props.cards.map(card => ({
+    ...card,
+    particles: Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      x: (Math.random() < 0.5 ? -1 : 1) * (150 + Math.random() * 150),
+      y: (Math.random() < 0.5 ? -1 : 1) * (150 + Math.random() * 150),
+      size: Math.random() * 5 + 5,
+      delay: Math.random() * 1,
+      speed: 0.4 + Math.random() * 0.4,
+      color: `var(--rarity-${card.blueprint.rarity.toLocaleLowerCase()})`
+    }))
+  }));
+});
 </script>
 
 <template>
@@ -171,8 +194,8 @@ watch(
       @mouseleave="endSweep"
     >
       <div
-        v-for="(card, index) in cards"
-        :key="card.blueprint.id"
+        v-for="(card, index) in cardsWithParticles"
+        :key="`${boosterId}-${index}`"
         class="card-slot"
         :style="cardStyles[index]"
         :class="{ 'is-shaking': isShaking }"
@@ -192,6 +215,20 @@ watch(
             :is-tiltable="false"
             :is-foil="isRevealed(index) ? card.isFoil : false"
             :animation-sequence="getAnimationSequence(card.blueprint)"
+          />
+
+          <div
+            v-for="particle in card.particles"
+            :key="particle.id"
+            class="particle"
+            :style="{
+              '--x': `${particle.x}px`,
+              '--y': `${particle.y}px`,
+              '--size': `${particle.size}px`,
+              '--delay': `${particle.delay}s`,
+              '--duration': `${particle.speed}s`,
+              '--color': `${particle.color}`
+            }"
           />
         </div>
       </div>
@@ -367,6 +404,38 @@ watch(
 .done .booster-card-legendary {
   --shadow-color: var(--rarity-legendary);
   animation: booster-rarity-shadow 2s infinite;
+}
+
+.particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  background: var(--color);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow:
+    0 0 5px white,
+    0 0 10px var(--color);
+  z-index: 10;
+}
+
+.revealed .particle {
+  animation: particle-explode var(--duration) ease-out forwards;
+  animation-delay: calc(0.2s + var(--delay));
+}
+
+@keyframes particle-explode {
+  0% {
+    transform: translate(-50%, -50%)
+      translate(calc(var(--x) / 3), calc(var(--y) / 3)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(0);
+  }
 }
 
 .stack-glow {
