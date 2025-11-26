@@ -30,7 +30,7 @@ export const tempest: SpellBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
   runeCost: {

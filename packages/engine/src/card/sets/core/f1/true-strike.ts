@@ -1,4 +1,3 @@
-import { isDefined } from '@game/shared';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { singleMinionTargetRules } from '../../../card-utils';
@@ -10,7 +9,7 @@ export const trueStrike: SpellBlueprint = {
   id: 'true-strike',
   name: 'True Strike',
   description: 'Deal 2 damage to an  enemy minion.',
-  cardIconId: 'spells/f1_true-strike',
+  sprite: { id: 'spells/f1_true-strike' },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

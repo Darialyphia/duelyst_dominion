@@ -4,16 +4,16 @@ import { RARITIES, type Rarity } from '../card.enums';
 
 const DROP_RATES: Record<string, Record<string, number>> = {
   standard: {
-    [RARITIES.COMMON]: 70,
-    [RARITIES.RARE]: 20,
-    [RARITIES.EPIC]: 9,
+    [RARITIES.COMMON]: 80,
+    [RARITIES.RARE]: 15,
+    [RARITIES.EPIC]: 4,
     [RARITIES.LEGENDARY]: 1
   },
   guaranteed_rare: {
     [RARITIES.COMMON]: 0,
-    [RARITIES.RARE]: 80,
-    [RARITIES.EPIC]: 18,
-    [RARITIES.LEGENDARY]: 2
+    [RARITIES.RARE]: 8,
+    [RARITIES.EPIC]: 16,
+    [RARITIES.LEGENDARY]: 4
   }
 };
 
@@ -51,7 +51,6 @@ export class StandardBoosterPack implements BoosterPack {
     for (let i = 0; i < options.packSize; i++) {
       const isHeroSlot = i === 0;
       const rates = isHeroSlot ? DROP_RATES.guaranteed_rare : DROP_RATES.standard;
-
       const rarity = this.rollRarity(rates, options.rarityWeightModifier);
       let card = this.pickCard(rarity, pickedIds, options.blueprintWeightModifier);
 
@@ -61,7 +60,7 @@ export class StandardBoosterPack implements BoosterPack {
 
       if (card) {
         pickedIds.add(card.id);
-        result.push({
+        result.unshift({
           blueprintId: card.id,
           isFoil: Math.random() < FOIL_CHANCE
         });
@@ -83,7 +82,6 @@ export class StandardBoosterPack implements BoosterPack {
       weightedRates[rarity] = w;
       totalWeight += w;
     }
-
     let random = Math.random() * totalWeight;
 
     for (const [rarity, weight] of Object.entries(weightedRates)) {

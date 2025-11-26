@@ -5,14 +5,13 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { AirdropModifier } from '../../../../modifier/modifiers/airdrop.modifier';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
-import { consume } from '../../../card-actions-utils';
 
 export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
   description: dedent`
   @Airdrop@, @Provoke@.`,
-  cardIconId: 'minions/f1_ironcliffe-guardian',
+  sprite: { id: 'minions/f1_ironcliffe-guardian' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

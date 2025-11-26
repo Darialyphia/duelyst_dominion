@@ -13,12 +13,12 @@ export const divineBond: SpellBlueprint = {
   description: dedent`
   Set an allied minion's attack equal to its health.
   `,
-  cardIconId: 'spells/f1_divine-bond',
+  sprite: { id: 'spells/f1_divine-bond' },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.RARE,
   tags: [],
   manaCost: 2,
   runeCost: {

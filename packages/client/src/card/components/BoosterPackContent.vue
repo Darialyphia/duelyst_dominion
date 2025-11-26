@@ -117,7 +117,7 @@ const onCardHover = (index: number) => {
 const cardStyles = computed(() => {
   const count = props.cards.length;
   const radius = 1000;
-  const angleStep = 15;
+  const angleStep = 18;
   const totalArc = (count - 1) * angleStep;
   const startAngle = -90 - totalArc / 2;
 
@@ -132,7 +132,7 @@ const cardStyles = computed(() => {
       transform:
         dealingStatus.value !== 'waiting'
           ? `translate(${x}px, ${y}px) rotate(${rotation}deg)`
-          : `translate(0px, calc(50px + var(--child-index) * -10px)) rotate(0deg)`,
+          : `translate(0px, 80px rotate(0deg)`,
       '--z-index': count - index
     };
   });
@@ -144,6 +144,22 @@ const getAnimationSequence = (card: CardBlueprint) => {
   }
   return ['default'];
 };
+
+const allRevealed = computed(() => {
+  return flippedCards.value.size === props.cards.length;
+});
+
+watch(
+  () => props.cards,
+  () => {
+    // Reset state when cards change
+    flippedCards.value.clear();
+    dealingStatus.value = 'waiting';
+    isSweeping.value = false;
+    isShaking.value = false;
+    isDealScheduled.value = false;
+  }
+);
 </script>
 
 <template>
@@ -182,6 +198,14 @@ const getAnimationSequence = (card: CardBlueprint) => {
       <Transition name="fade">
         <div v-if="dealingStatus === 'waiting'" class="stack-glow"></div>
       </Transition>
+      <Transition name="done">
+        <div
+          v-if="dealingStatus === 'done' && allRevealed"
+          class="absolute bottom-7"
+        >
+          <slot name="done"></slot>
+        </div>
+      </Transition>
     </div>
   </Transition>
 </template>
@@ -211,8 +235,10 @@ const getAnimationSequence = (card: CardBlueprint) => {
   justify-content: center;
   align-items: center;
   min-height: 800px; /* Ensure enough space */
+  max-width: 100vw;
+  overflow: hidden;
   &.v-enter-active {
-    animation: booster-enter 1.5s var(--ease-out-2);
+    animation: booster-enter 0.8s var(--ease-out-2);
   }
 }
 
@@ -347,14 +373,14 @@ const getAnimationSequence = (card: CardBlueprint) => {
   position: absolute;
   width: calc(var(--pixel-scale) * var(--card-width));
   height: calc(var(--pixel-scale) * var(--card-height));
-  background: cyan;
+  background: radial-gradient(circle at center, red, transparent 40%);
   z-index: 6;
   filter: blur(30px);
   animation: booster-pulse-glow 4s linear infinite;
   pointer-events: none;
   mix-blend-mode: screen;
   translate: 0 50px;
-  border-radius: var(--radius-round);
+  scale: 2;
 }
 
 @keyframes booster-reveal-bloom {
@@ -365,15 +391,17 @@ const getAnimationSequence = (card: CardBlueprint) => {
 
 @keyframes booster-pulse-glow {
   0% {
+    opacity: 0.1;
     transform: scale(0.8);
-    opacity: 0.025;
+    filter: hue-rotate(0deg);
   }
   50% {
     transform: scale(1.05);
-    opacity: 0.1;
+    opacity: 0.3;
   }
   100% {
     transform: scale(0.8);
+    filter: hue-rotate(360deg);
     opacity: 0.1;
   }
 }
@@ -386,5 +414,16 @@ const getAnimationSequence = (card: CardBlueprint) => {
 .fade-enter-from,
 .fade-leave-to {
   scale: 0;
+}
+
+.done-enter-active,
+.done-leave-active {
+  transition: all 0.3s;
+}
+
+.done-enter-from,
+.done-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>

@@ -10,7 +10,7 @@ export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
   description: '@Zeal@ : fully heal this unit at the end of your turn.',
-  cardIconId: 'minions/f1_suntide-maiden',
+  sprite: { id: 'minions/f1_suntide-maiden' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -34,8 +34,10 @@ export const suntideMaiden: MinionBlueprint = {
         mixins: [
           new GameEventModifierMixin(game, {
             eventName: GAME_EVENTS.PLAYER_END_TURN,
-            handler: async event => {
-              if (!event.data.player.equals(card.player)) return;
+            filter(event) {
+              return !!event?.data.player.equals(card.player);
+            },
+            handler: async () => {
               await card.unit.heal(card, card.unit.maxHp - card.unit.remainingHp);
             }
           })

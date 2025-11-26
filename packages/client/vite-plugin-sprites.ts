@@ -47,7 +47,6 @@ export default function spritesPlugin(): Plugin {
         console.log(
           `[vite-plugin-sprites] Found ${files.length} sprite files.`
         );
-
         const sprites: Record<string, any> = {};
 
         for (const file of files) {

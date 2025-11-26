@@ -8,8 +8,8 @@ defineProps<{
 
 const nameBox = useTemplateRef('name-box');
 const { fontSize: nameFontSize } = useAutoResizeText(nameBox, {
-  min: 14,
-  max: 18
+  min: 16,
+  max: 20
 });
 </script>
 

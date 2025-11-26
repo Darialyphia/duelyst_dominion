@@ -94,6 +94,7 @@ const tag = computed(() => {
 
     &:disabled {
       border-image-source: url('/assets/ui/button-disabled.png');
+      color: #8d7a5f;
       cursor: not-allowed;
     }
 
@@ -148,6 +149,10 @@ const tag = computed(() => {
 
     .info &::after {
       background-image: linear-gradient(#fcfcfc, #fcfcfc 50%, #c7fffc 50%);
+    }
+
+    :disabled &::after {
+      background-image: linear-gradient(#8d7a5f, #8d7a5f 50%, #8d7a5f 50%);
     }
     &:before {
       -webkit-text-stroke: 2px hsl(0 0% 0% / 0.75);

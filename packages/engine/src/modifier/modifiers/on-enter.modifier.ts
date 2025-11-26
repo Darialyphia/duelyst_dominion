@@ -13,7 +13,7 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    handler: (event?: MinionSummonedEvent) => MaybePromise<void>
+    handler: (event: MinionSummonedEvent) => MaybePromise<void>
   ) {
     super(KEYWORDS.ON_ENTER.id, game, source, {
       name: KEYWORDS.ON_ENTER.name,
@@ -27,6 +27,7 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
             return event.data.card.equals(this.target);
           },
           handler: event => {
+            if (!event) return; // dont trigger when event it triggered manually
             return handler(event);
           }
         })

@@ -9,7 +9,7 @@ export const healingMystic: MinionBlueprint = {
   id: 'healing-mystic',
   name: 'Healing Mystic',
   description: '@On Enter@: Heal a minion for 2.',
-  cardIconId: 'minions/neutral_healing-mystic',
+  sprite: { id: 'minions/neutral_healing-mystic' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

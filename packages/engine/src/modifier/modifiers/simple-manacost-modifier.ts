@@ -12,9 +12,11 @@ export class SimpleManacostModifier<T extends AnyCard> extends Modifier<T> {
     options: {
       amount: number;
       mixins?: ModifierMixin<T>[];
+      isRemovable?: boolean;
     }
   ) {
     super(modifierType, game, card, {
+      isRemovable: options.isRemovable,
       mixins: [
         // @ts-expect-error
         new CardInterceptorModifierMixin(game, {

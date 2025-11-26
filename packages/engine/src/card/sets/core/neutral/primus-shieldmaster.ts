@@ -8,7 +8,7 @@ export const primusShieldmaster: MinionBlueprint = {
   id: 'primus-shieldmaster',
   name: 'Primus Shieldmaster',
   description: '@Provoke@.',
-  cardIconId: 'minions/neutral_primus-shieldmaster',
+  sprite: { id: 'minions/neutral_primus-shieldmaster' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

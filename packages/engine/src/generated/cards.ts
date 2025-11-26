@@ -6,16 +6,48 @@
 
 export const cards = {
 "argeon-highmane": "argeon-highmane",
+"healing-mystic": "healing-mystic",
+"archon-spellbinder": "archon-spellbinder",
+"primus-shieldmaster": "primus-shieldmaster",
+"bloodtear-alchemist": "bloodtear-alchemist",
+"flameblood-warlock": "flameblood-warlock",
+"saberspine-tiger": "saberspine-tiger",
 "tempest": "tempest",
 "windblade_adept": "windblade_adept",
 "silverguard_knight": "silverguard_knight",
-"holy-immolation": "holy-immolation"
+"azurite_lion": "azurite_lion",
+"emerald-rejuvinator": "emerald-rejuvinator",
+"ironcliffe_guardian": "ironcliffe_guardian",
+"frostbone-naga": "frostbone-naga",
+"holy-immolation": "holy-immolation",
+"martyrdom": "martyrdom",
+"true-strike": "true-strike",
+"war-surge": "war-surge",
+"suntide_maiden": "suntide_maiden",
+"magnetize": "magnetize",
+"divine-bond": "divine-bond"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
 "argeon-highmane": "argeon-highmane",
+"healing-mystic": "healing-mystic",
+"archon-spellbinder": "archon-spellbinder",
+"primus-shieldmaster": "primus-shieldmaster",
+"bloodtear-alchemist": "bloodtear-alchemist",
+"flameblood-warlock": "flameblood-warlock",
+"saberspine-tiger": "saberspine-tiger",
 "tempest": "tempest",
 "windblade_adept": "windblade_adept",
 "silverguard_knight": "silverguard_knight",
-"holy-immolation": "holy-immolation"
+"azurite_lion": "azurite_lion",
+"emerald-rejuvinator": "emerald-rejuvinator",
+"ironcliffe_guardian": "ironcliffe_guardian",
+"frostbone-naga": "frostbone-naga",
+"holy-immolation": "holy-immolation",
+"martyrdom": "martyrdom",
+"true-strike": "true-strike",
+"war-surge": "war-surge",
+"suntide_maiden": "suntide_maiden",
+"magnetize": "magnetize",
+"divine-bond": "divine-bond"
 } as const satisfies Record<string, string>;

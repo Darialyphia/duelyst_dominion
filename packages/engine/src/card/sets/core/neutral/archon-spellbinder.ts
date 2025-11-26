@@ -8,7 +8,6 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { isSpell } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import type { MinionCard } from '../../../entities/minion-card.entity';
-import { consume } from '../../../card-actions-utils';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const archonSpellbinder: MinionBlueprint = {
@@ -17,12 +16,12 @@ export const archonSpellbinder: MinionBlueprint = {
   description: dedent`
   Enemy spells cost 1 more to play.
   `,
-  cardIconId: 'minions/neutral_archon-spellbinder',
+  sprite: { id: 'minions/neutral_archon-spellbinder' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.NEUTRAL,
-  rarity: RARITIES.EPIC,
+  rarity: RARITIES.LEGENDARY,
   tags: [],
   manaCost: 6,
   runeCost: {
@@ -52,12 +51,16 @@ export const archonSpellbinder: MinionBlueprint = {
           async onGainAura(candidate) {
             await candidate.modifiers.add(
               new SimpleManacostModifier(DEBUFF_ID, game, card, {
+                isRemovable: true,
                 amount: 1
               })
             );
           },
           async onLoseAura(candidate) {
-            await candidate.modifiers.remove(DEBUFF_ID, card);
+            await candidate.modifiers.remove(DEBUFF_ID, {
+              source: card,
+              force: true
+            });
           }
         })
       ]

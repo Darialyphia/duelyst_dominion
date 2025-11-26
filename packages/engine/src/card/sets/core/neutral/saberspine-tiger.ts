@@ -1,8 +1,6 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
@@ -10,7 +8,7 @@ export const saberspineTiger: MinionBlueprint = {
   id: 'saberspine-tiger',
   name: 'Saberspine Tiger',
   description: '@Rush@.',
-  cardIconId: 'minions/neutral_saberspine-tiger',
+  sprite: { id: 'minions/neutral_saberspine-tiger' },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

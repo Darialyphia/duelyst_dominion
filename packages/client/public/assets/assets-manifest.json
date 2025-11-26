@@ -257,10 +257,36 @@
         },
         {
           "alias": [
+            "f1_azurite-lion"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_azurite-lion.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_azurite-lion.png"
           ],
           "src": [
             "/assets/cards/minions/f1_azurite-lion.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_ironcliffe-guardian"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_ironcliffe-guardian.json"
           ],
           "data": {
             "tags": {
@@ -300,6 +326,19 @@
           ],
           "src": [
             "/assets/cards/minions/f1_silverguard-knight.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_suntide-maiden"
+          ],
+          "src": [
+            "/assets/cards/minions/f1_suntide-maiden.json"
           ],
           "data": {
             "tags": {
@@ -361,10 +400,36 @@
         },
         {
           "alias": [
+            "neutral_archon-spellbinder"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_archon-spellbinder.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder.png"
           ],
           "src": [
             "/assets/cards/minions/neutral_archon-spellbinder.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_bloodtear-alchemist"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_bloodtear-alchemist.json"
           ],
           "data": {
             "tags": {
@@ -400,10 +465,36 @@
         },
         {
           "alias": [
+            "neutral_emerald-rejuvinator"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_emerald-rejuvinator.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_emerald-rejuvinator.png"
           ],
           "src": [
             "/assets/cards/minions/neutral_emerald-rejuvinator.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_flameblood-warlock"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_flameblood-warlock.json"
           ],
           "data": {
             "tags": {
@@ -426,10 +517,36 @@
         },
         {
           "alias": [
+            "neutral_frostbone-naga"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_frostbone-naga.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_frostbone-naga.png"
           ],
           "src": [
             "/assets/cards/minions/neutral_frostbone-naga.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_healing-mystic"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_healing-mystic.json"
           ],
           "data": {
             "tags": {
@@ -478,6 +595,19 @@
         },
         {
           "alias": [
+            "neutral_primus-shieldmaster"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_primus-shieldmaster.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_primus-shieldmaster.png"
           ],
           "src": [
@@ -495,6 +625,19 @@
           ],
           "src": [
             "/assets/cards/minions/neutral_primus_shieldmaster.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_saberspine-tiger"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_saberspine-tiger.json"
           ],
           "data": {
             "tags": {
@@ -582,6 +725,19 @@
         },
         {
           "alias": [
+            "f1_divine-bond"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_divine-bond.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_divine-bond.png"
           ],
           "src": [
@@ -621,10 +777,49 @@
         },
         {
           "alias": [
+            "f1_maartyrdom"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_maartyrdom.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_magnetize"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_magnetize.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_magnetize.png"
           ],
           "src": [
             "/assets/cards/spells/f1_magnetize.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_martyrdom"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_martyrdom.json"
           ],
           "data": {
             "tags": {
@@ -673,10 +868,36 @@
         },
         {
           "alias": [
+            "f1_true-strike"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_true-strike.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_true-strike.png"
           ],
           "src": [
             "/assets/cards/spells/f1_true-strike.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_war-surge"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_war-surge.json"
           ],
           "data": {
             "tags": {

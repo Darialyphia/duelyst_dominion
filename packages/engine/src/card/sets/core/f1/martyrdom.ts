@@ -11,12 +11,12 @@ export const martyrdom: SpellBlueprint = {
   name: 'Martyrdom',
   description: dedent`
   Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
-  cardIconId: 'spells/f1_martyrdom',
+  sprite: { id: 'spells/f1_martyrdom' },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.RARE,
   tags: [],
   manaCost: 2,
   runeCost: {
