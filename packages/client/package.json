@@ -24,6 +24,7 @@
     "@pixi/filter-advanced-bloom": "^5.1.1",
     "@pixi/filter-color-overlay": "^5.1.1",
     "@pixi/filter-drop-shadow": "^5.2.0",
+    "@pixi/filter-godray": "^5.1.1",
     "@pixi/filter-outline": "^5.2.0",
     "@pixi/filter-shockwave": "^5.1.1",
     "@pixi/layers": "^2.1.0",

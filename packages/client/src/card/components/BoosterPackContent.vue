@@ -2,7 +2,6 @@
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import gsap from 'gsap';
 import * as PIXI from 'pixi.js';
-import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { CARD_KINDS, RARITIES } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
@@ -56,28 +55,11 @@ const triggerPixiExplosion = (x: number, y: number) => {
   const container = new PIXI.Container();
   pixiApp.stage.addChild(container);
 
-  // Shockwave
-  const shockwave = new ShockwaveFilter(
-    [x, y],
-    {
-      amplitude: 30,
-      wavelength: 160,
-      speed: 500,
-      radius: -1
-    },
-    0
-  );
-  // We need something to apply the filter to.
-  // Since we can't easily distort the DOM, let's create a displacement ring visual
-  // or just apply it to the particles container (which won't do much if particles are small).
-  // Instead, let's make a "Ring" graphic that expands.
-
   const ring = new PIXI.Graphics();
   ring.lineStyle(5, 0xffd700, 1);
   ring.drawCircle(0, 0, 100);
   ring.position.set(x, y);
   ring.scale.set(0);
-  ring.filters = [shockwave];
   container.addChild(ring);
 
   gsap.to(ring.scale, { x: 5, y: 5, duration: 1, ease: 'power2.out' });
@@ -93,7 +75,7 @@ const triggerPixiExplosion = (x: number, y: number) => {
     sprite.x = x;
     sprite.y = y;
     sprite.anchor.set(0.5);
-    sprite.tint = Math.random() < 0.5 ? 0xffd700 : 0xff4500; // Gold or Orange
+    sprite.tint = Math.random() < 0.5 ? 0xffd700 : 0xff4500;
     sprite.scale.set(Math.random() * 0.5 + 0.2);
 
     const angle = Math.random() * Math.PI * 2;
@@ -592,58 +574,6 @@ const cardsWithParticles = computed(() => {
     0 0 20px #ff8c00,
     0 0 40px #ff4500;
   mix-blend-mode: screen;
-}
-
-.god-rays {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300%;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  background: repeating-conic-gradient(
-    from 0deg,
-    rgba(255, 215, 0, 0) 0deg,
-    rgba(255, 215, 0, 0.15) 10deg,
-    hsla(from var(--rarity-legendary) h s l / 0.75) 20deg,
-    rgba(255, 215, 0, 0.15) 30deg,
-    rgba(255, 215, 0, 0) 40deg
-  );
-  z-index: -1;
-  opacity: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  mask-image: radial-gradient(
-    circle at center,
-    black 0%,
-    black 35%,
-    transparent 70%
-  );
-}
-
-.revealed.rarity-legendary .god-rays {
-  animation:
-    god-rays-rotate 20s linear infinite,
-    god-rays-appear 1s ease-out forwards;
-  animation-delay: 0s, 0.2s;
-}
-
-@keyframes god-rays-rotate {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@keyframes god-rays-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 @keyframes particle-explode {

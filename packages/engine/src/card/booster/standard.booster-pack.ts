@@ -4,10 +4,10 @@ import { RARITIES, type Rarity } from '../card.enums';
 
 const DROP_RATES: Record<string, Record<string, number>> = {
   standard: {
-    [RARITIES.COMMON]: 0,
-    [RARITIES.RARE]: 0,
-    [RARITIES.EPIC]: 0,
-    [RARITIES.LEGENDARY]: 100
+    [RARITIES.COMMON]: 80,
+    [RARITIES.RARE]: 15,
+    [RARITIES.EPIC]: 4,
+    [RARITIES.LEGENDARY]: 1
   },
   guaranteed_rare: {
     [RARITIES.COMMON]: 0,
