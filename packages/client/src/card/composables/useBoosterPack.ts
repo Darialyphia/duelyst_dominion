@@ -1,7 +1,4 @@
 import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
   provide,
   ref,
   watch,
@@ -9,11 +6,12 @@ import {
   type InjectionKey,
   type Ref
 } from 'vue';
-import gsap from 'gsap';
-import * as PIXI from 'pixi.js';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
-import { RARITIES } from '@game/engine/src/card/card.enums';
 import { useSafeInject } from '@/shared/composables/useSafeInject';
+import { useBoosterPixiEffects } from './useBoosterPixiEffects';
+import { useBoosterDealingState } from './useBoosterDealingState';
+import { useBoosterRevealState } from './useBoosterRevealState';
+import { useBoosterCardLayout } from './useBoosterCardLayout';
 
 export type DealingStatus = 'waiting' | 'dealing' | 'done';
 
@@ -53,217 +51,44 @@ export interface ProvideBoosterPackOptions {
   cards: ComputedRef<BoosterPackCardEntry[]>;
 }
 
-const asElement = (candidate: unknown): HTMLElement | null => {
-  if (!candidate) return null;
-  if (candidate instanceof HTMLElement) return candidate;
-  const possibleComponent = candidate as { $el?: unknown };
-  return possibleComponent && possibleComponent.$el instanceof HTMLElement
-    ? possibleComponent.$el
-    : null;
-};
-
-const MIN_SHAKE_TIME = 1500;
-
 export const provideBoosterPack = ({
   cards
 }: ProvideBoosterPackOptions): BoosterPackContext => {
-  const flippedCards = ref<Set<number>>(new Set());
   const wrapperRefs = ref<Array<HTMLElement | null>>([]);
   const containerRef = ref<HTMLElement | null>(null);
   const canvasContainerRef = ref<HTMLElement | null>(null);
 
-  let pixiApp: PIXI.Application | null = null;
+  // Initialize PixiJS effects
+  const { triggerPixiExplosion } = useBoosterPixiEffects(canvasContainerRef);
 
-  const initPixi = () => {
-    if (!canvasContainerRef.value || pixiApp) return;
+  // Initialize dealing state (shake/deal animations)
+  const { dealingStatus, isShaking, startShaking, stopShakingAndDeal } =
+    useBoosterDealingState(cards, wrapperRefs);
 
-    pixiApp = new PIXI.Application({
-      resizeTo: window,
-      backgroundAlpha: 0,
-      antialias: true
-    });
+  // Initialize reveal state (flipped cards, hover, reveal logic)
+  const {
+    flippedCards,
+    isSweeping,
+    boosterId,
+    isRevealed,
+    reveal,
+    onCardHover
+  } = useBoosterRevealState(
+    cards,
+    dealingStatus,
+    wrapperRefs,
+    containerRef,
+    triggerPixiExplosion
+  );
 
-    canvasContainerRef.value.appendChild(pixiApp.view as unknown as Node);
-  };
+  // Initialize card layout (positioning/styling)
+  const { cardStyles, allRevealed } = useBoosterCardLayout(
+    cards,
+    dealingStatus,
+    flippedCards
+  );
 
-  onMounted(initPixi);
-
-  onBeforeUnmount(() => {
-    if (pixiApp) {
-      pixiApp.destroy(true, {
-        children: true,
-        texture: true,
-        baseTexture: true
-      });
-      pixiApp = null;
-    }
-  });
-
-  const createParticleTexture = () => {
-    if (!pixiApp) return null;
-
-    const gfx = new PIXI.Graphics();
-    gfx.beginFill(0xffffff);
-    gfx.drawCircle(0, 0, 10);
-    gfx.endFill();
-    return pixiApp.renderer.generateTexture(gfx);
-  };
-
-  const triggerPixiExplosion = (x: number, y: number) => {
-    if (!pixiApp) return;
-
-    const container = new PIXI.Container();
-    pixiApp.stage.addChild(container);
-
-    const ring = new PIXI.Graphics();
-    ring.lineStyle(5, 0xffd700, 1);
-    ring.drawCircle(0, 0, 100);
-    ring.position.set(x, y);
-    ring.scale.set(0);
-    container.addChild(ring);
-
-    gsap.to(ring.scale, { x: 5, y: 5, duration: 1, ease: 'power2.out' });
-    gsap.to(ring, { alpha: 0, duration: 1, ease: 'power2.out' });
-
-    const texture = createParticleTexture();
-    if (texture) {
-      const particleCount = 200;
-      for (let i = 0; i < particleCount; i += 1) {
-        const sprite = new PIXI.Sprite(texture);
-        sprite.x = x;
-        sprite.y = y;
-        sprite.anchor.set(0.5);
-        sprite.tint = Math.random() < 0.5 ? 0xffd700 : 0xff4500;
-        sprite.scale.set(Math.random() * 0.5 + 0.2);
-
-        const angle = Math.random() * Math.PI * 2;
-        container.addChild(sprite);
-
-        gsap.to(sprite, {
-          x: x + Math.cos(angle) * (300 + Math.random() * 200),
-          y: y + Math.sin(angle) * (300 + Math.random() * 200),
-          alpha: 0,
-          duration: 1 + Math.random(),
-          ease: 'power2.out'
-        });
-      }
-    }
-
-    setTimeout(() => {
-      container.destroy({ children: true });
-    }, 2000);
-  };
-
-  const getWrapperElements = () =>
-    wrapperRefs.value
-      .map(asElement)
-      .filter((el): el is HTMLElement => Boolean(el));
-
-  const dealingStatus = ref<DealingStatus>('waiting');
-  const isSweeping = ref(false);
-  const shakeTween = ref<gsap.core.Tween | null>(null);
-  const shakeStartTime = ref(0);
-  const isShaking = ref(false);
-  const isDealScheduled = ref(false);
-
-  const startShaking = () => {
-    if (isDealScheduled.value) return;
-    shakeStartTime.value = Date.now();
-    let shakeCounter = 0;
-
-    const shake = () => {
-      shakeCounter += 0.5;
-      const targets = getWrapperElements();
-      if (!targets.length) return;
-      shakeTween.value = gsap.to(targets, {
-        x: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
-        y: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
-        duration: 0.05,
-        onComplete: shake
-      });
-    };
-
-    shakeTween.value?.kill();
-    isShaking.value = true;
-    shake();
-  };
-
-  const stopShakingAndDeal = () => {
-    if (isDealScheduled.value || !shakeTween.value) return;
-    isShaking.value = false;
-    isDealScheduled.value = true;
-
-    const elapsed = Date.now() - shakeStartTime.value;
-    const remaining = Math.max(0, MIN_SHAKE_TIME - elapsed);
-
-    setTimeout(() => {
-      shakeTween.value?.kill();
-      shakeTween.value = null;
-
-      dealingStatus.value = 'dealing';
-      setTimeout(
-        () => {
-          dealingStatus.value = 'done';
-          isDealScheduled.value = false;
-        },
-        (cards.value.length + 1) * 50
-      );
-
-      const targets = getWrapperElements();
-      if (targets.length) {
-        gsap.to(targets, {
-          x: 0,
-          y: 0,
-          rotation: 0,
-          duration: 0.05,
-          clearProps: 'all'
-        });
-      }
-    }, remaining);
-  };
-
-  const triggerLegendaryShake = () => {
-    if (!containerRef.value) return;
-    gsap.fromTo(
-      containerRef.value,
-      { x: 0, y: 0 },
-      {
-        x: () => (Math.random() - 0.5) * 30,
-        y: () => (Math.random() - 0.5) * 30,
-        duration: 0.05,
-        repeat: 10,
-        yoyo: true,
-        clearProps: 'x,y',
-        ease: 'power1.inOut',
-        onComplete: () => {
-          console.log('Legendary shake complete');
-        }
-      }
-    );
-  };
-
-  const isRevealed = (index: number) => flippedCards.value.has(index);
-
-  const reveal = (index: number) => {
-    if (dealingStatus.value !== 'done' || flippedCards.value.has(index)) return;
-
-    flippedCards.value.add(index);
-    const card = cards.value[index];
-
-    if (card?.blueprint.rarity === RARITIES.LEGENDARY) {
-      triggerLegendaryShake();
-
-      const target = asElement(wrapperRefs.value[index]);
-      if (target) {
-        const rect = target.getBoundingClientRect();
-        triggerPixiExplosion(
-          rect.left + rect.width / 2,
-          rect.top + rect.height / 2
-        );
-      }
-    }
-  };
-
+  // Sweep interaction handlers
   const startSweep = (index: number) => {
     if (dealingStatus.value === 'waiting') {
       startShaking();
@@ -282,55 +107,11 @@ export const provideBoosterPack = ({
     isSweeping.value = false;
   };
 
-  const onCardHover = (index: number) => {
-    if (
-      isSweeping.value &&
-      dealingStatus.value === 'done' &&
-      !flippedCards.value.has(index)
-    ) {
-      reveal(index);
-    }
-  };
-
-  const cardStyles = computed(() => {
-    const count = cards.value.length;
-    const radius = 1000;
-    const angleStep = 18;
-    const totalArc = (count - 1) * angleStep;
-    const startAngle = -90 - totalArc / 2;
-
-    return cards.value.map((_, index) => {
-      const angle = startAngle + index * angleStep;
-      const radian = (angle * Math.PI) / 180;
-      const x = Math.cos(radian) * radius;
-      const y = Math.sin(radian) * radius + 800;
-      const rotation = angle + 90;
-
-      return {
-        transform:
-          dealingStatus.value !== 'waiting'
-            ? `translate(${x}px, ${y}px) rotate(${rotation}deg)`
-            : `translate(0px, 80px rotate(0deg)`,
-        '--z-index': count - index
-      };
-    });
-  });
-
-  const allRevealed = computed(
-    () => flippedCards.value.size === cards.value.length
-  );
-
+  // Reset state when cards change
   watch(cards, () => {
-    flippedCards.value.clear();
     dealingStatus.value = 'waiting';
     isSweeping.value = false;
     isShaking.value = false;
-    isDealScheduled.value = false;
-  });
-
-  const boosterId = ref(0);
-  watch(cards, () => {
-    boosterId.value += 1;
   });
 
   const context: BoosterPackContext = {
@@ -349,7 +130,7 @@ export const provideBoosterPack = ({
     wrapperRefs,
     containerRef,
     canvasContainerRef,
-    triggerLegendaryShake,
+    triggerLegendaryShake: () => {}, // Exposed via useBoosterRevealState internally
     triggerPixiExplosion,
     cardStyles,
     allRevealed,

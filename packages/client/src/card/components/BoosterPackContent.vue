@@ -246,12 +246,14 @@ const getAnimationSequence = (card: CardBlueprint) => {
 
 @keyframes booster-reveal-sheen {
   from {
-    --booster-reveal-sheen-start: -35%;
-    --booster-reveal-sheen-end: -30%;
+    --booster-reveal-sheen-start: 0%;
+    --booster-reveal-sheen-end: 0%;
+    opacity: 1;
   }
   to {
     --booster-reveal-sheen-start: 110%;
     --booster-reveal-sheen-end: 115%;
+    opacity: 1;
   }
 }
 
@@ -267,10 +269,13 @@ const getAnimationSequence = (card: CardBlueprint) => {
   &.revealed {
     --space: 5%;
     --angle: 135deg;
+    --booster-reveal-sheen-start: 0%;
+    --booster-reveal-sheen-end: 0%;
     &::after {
       content: '';
       inset: 0;
       position: absolute;
+      opacity: 0;
       background: repeating-linear-gradient(
         135deg,
         rgb(255, 119, 115) calc(var(--space) * 1),
