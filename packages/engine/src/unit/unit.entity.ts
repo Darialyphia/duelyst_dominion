@@ -704,9 +704,7 @@ export class Unit
         .filter(cell => this.canAttackAt(cell.position))
         .map(cell => cell.id),
       modifiers: this.modifiers.list.map(modifier => modifier.id),
-      capturableShrines: this.game.boardSystem.shrines
-        .filter(shrine => shrine.canBeCapturedBy(this))
-        .map(shrine => shrine.id)
+      capturableShrines: []
     };
   }
 }

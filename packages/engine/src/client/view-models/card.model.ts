@@ -64,8 +64,8 @@ export class CardViewModel {
     return this.data.description;
   }
 
-  get imagePath() {
-    return `/assets/cards/${this.data.cardIconId}.png`;
+  get spriteId() {
+    return this.data.spriteId;
   }
 
   get kind() {

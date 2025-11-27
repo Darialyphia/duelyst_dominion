@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
-import HexPositioner from './HexPositioner.vue';
 import { useGameUi } from '../composables/useGameClient';
+import BoardPositioner from './BoardPositioner.vue';
 
 const { cell } = defineProps<{
   cell: BoardCellViewModel;
@@ -11,22 +11,21 @@ const ui = useGameUi();
 </script>
 
 <template>
-  <HexPositioner
-    :x="cell.x"
-    :y="cell.y"
+  <BoardPositioner
+    :x="cell.position.x"
+    :y="cell.position.y"
     @mouseenter="ui.hover(cell)"
     @mouseleave="ui.unhover()"
     @mouseup="ui.onBoardCellClick(cell, $event)"
   >
     <div class="cell" />
-  </HexPositioner>
+  </BoardPositioner>
 </template>
 
 <style scoped lang="postcss">
 .cell {
-  background: url('/assets/ui/card-hex.png');
+  background: url('/assets/ui/board-cell.png');
   background-size: cover;
-  clip-path: var(--hex-path);
   width: 100%;
   height: 100%;
   pointer-events: auto;

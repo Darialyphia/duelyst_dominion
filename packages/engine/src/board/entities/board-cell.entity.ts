@@ -67,9 +67,7 @@ export class BoardCell
   }
 
   get shrine() {
-    return this.game.boardSystem.shrines.find(shrine =>
-      shrine.position.equals(this.position)
-    );
+    return null;
   }
 
   get isOccupied() {
@@ -103,7 +101,7 @@ export class BoardCell
       position: this.position,
       player: this._player,
       unit: this.unit ? this.unit.id : null,
-      shrine: this.shrine ? this.shrine.id : null
+      shrine: null
     };
   }
 }

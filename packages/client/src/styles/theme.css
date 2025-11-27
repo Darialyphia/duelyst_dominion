@@ -160,6 +160,10 @@
   --faction-magmar: hsl(160 70% 50%);
   --faction-vanar: hsl(230 80% 70%);
   --faction-neutral: transparent;
+
+  --board-cell-width: 96px;
+  --board-cell-height: 96px;
+  --board-cell-ratio: var(--board-cell-width) / var(--board-cell-height);
 }
 
 html.dark {

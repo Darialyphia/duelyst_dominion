@@ -69,7 +69,6 @@ export class GeneralCard extends Card<
 
   async play() {
     await this.game.unitSystem.addUnit(this, this.spawnPosition);
-    await this.blueprint.onPlay(this.game, this);
     this.game.once(GAME_EVENTS.READY, async () => {});
   }
 

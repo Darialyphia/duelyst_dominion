@@ -5,6 +5,438 @@
       "assets": [
         {
           "alias": [
+            "undefinedf1_altgeneraltier2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_altgeneraltier2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_altgeneraltier2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_altgeneraltier2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_altgeneraltier2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_altgeneraltier2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_bromemk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_bromemk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_bromemk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_bromemk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_bromemk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_bromemk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf1_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f1_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_altgeneraltier2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_altgeneraltier2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_altgeneraltier2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_altgeneraltier2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_altgeneraltier2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_altgeneraltier2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_shidaimk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_shidaimk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_shidaimk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_shidaimk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_shidaimk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_shidaimk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf2_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f2_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_altgeneral"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_altgeneral.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_altgeneral.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_altgeneral.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_altgeneral.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_altgeneral.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_ciphyronmk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_ciphyronmk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_ciphyronmk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_ciphyronmk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_ciphyronmk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_ciphyronmk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf3_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f3_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_altgeneraltier2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_altgeneraltier2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_altgeneraltier2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_altgeneraltier2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_altgeneraltier2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_altgeneraltier2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_maehvmk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_maehvmk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_maehvmk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_maehvmk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_maehvmk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_maehvmk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf4_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f4_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_altgeneraltier2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_altgeneraltier2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_altgeneraltier2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_altgeneraltier2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_altgeneraltier2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_altgeneraltier2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_ragnoramk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_ragnoramk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_ragnoramk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_ragnoramk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_ragnoramk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_ragnoramk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf5_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f5_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_altgeneraltier2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_altgeneraltier2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_altgeneraltier2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_altgeneraltier2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_altgeneraltier2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_altgeneraltier2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_ilenamk2"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_ilenamk2.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_ilenamk2.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_ilenamk2.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_ilenamk2.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_ilenamk2.png"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_tier2general"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_tier2general.json"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_tier2general.plist"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_tier2general.plist"
+          ]
+        },
+        {
+          "alias": [
+            "undefinedf6_tier2general.png"
+          ],
+          "src": [
+            "/assets/duelyst/units/f6_tier2general.png"
+          ]
+        },
+        {
+          "alias": [
             "undefinedlogo.svg"
           ],
           "src": [
@@ -4264,6 +4696,19 @@
           ],
           "src": [
             "/assets/ui/board-card-slot-boarder.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "board-cell.png"
+          ],
+          "src": [
+            "/assets/ui/board-cell.png"
           ],
           "data": {
             "tags": {

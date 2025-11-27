@@ -7,8 +7,6 @@ import {
   useGameUi,
   useMyPlayer,
   useOpponentPlayer,
-  useShrines,
-  useTeleporters,
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
@@ -17,19 +15,15 @@ import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
 import BoardCell from './BoardCell.vue';
 import FPS from './FPS.vue';
-import Shrine from './Shrine.vue';
-import Teleporter from './Teleporter.vue';
 import GameCard from './GameCard.vue';
+import { config } from '@/utils/config';
 
 const state = useGameState();
 const { client } = useGameClient();
 const boardCells = useBoardCells();
 const units = useUnits();
-const shrines = useShrines();
-const teleporters = useTeleporters();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
-const dimensions = { height: 102, width: 144, x: 94, y: 51 };
 
 const ui = useGameUi();
 const hoveredCard = computed(() => {
@@ -46,18 +40,12 @@ const hoveredCard = computed(() => {
     <div
       class="board"
       :style="{
-        width: `${state.board.columns * dimensions.x + dimensions.width - dimensions.x}px`,
-        height: `${state.board.rows * dimensions.height + dimensions.y}px`
+        width: `${state.board.columns * config.CELL.width}px`,
+        height: `${state.board.rows * config.CELL.height}px`
       }"
     >
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
-      <Shrine v-for="shrine in shrines" :key="shrine.id" :shrine="shrine" />
-      <Teleporter
-        v-for="teleporter in teleporters"
-        :key="teleporter.id"
-        :teleporter="teleporter"
-      />
-      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
+      <!-- <Unit v-for="unit in units" :key="unit.id" :unit="unit" /> -->
     </div>
 
     <div class="hand">
@@ -66,14 +54,7 @@ const hoveredCard = computed(() => {
 
     <div class="my-infos">
       {{ myPlayer.name }}
-      <div class="flex gap-2">
-        <div
-          v-for="i in state.config.VICTORY_POINT_GOAL"
-          :key="i"
-          class="victory-point"
-          :class="{ filled: i <= myPlayer.victoryPoints }"
-        />
-      </div>
+
       <div class="flex gap-2">
         <div
           v-for="i in myPlayer.maxMana"
@@ -146,14 +127,7 @@ const hoveredCard = computed(() => {
 
     <div class="opponent-infos">
       {{ opponent.name }}
-      <div class="flex gap-2 flex-row-reverse">
-        <div
-          v-for="i in state.config.VICTORY_POINT_GOAL"
-          :key="i"
-          class="victory-point"
-          :class="{ filled: i <= opponent.victoryPoints }"
-        />
-      </div>
+
       <div class="flex gap-2 flex-row-reverse">
         <div
           v-for="i in opponent.maxMana"
@@ -196,6 +170,15 @@ const hoveredCard = computed(() => {
 </template>
 
 <style scoped lang="postcss">
+.game-board {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
 #dragged-card-container {
   perspective: 850px;
   position: fixed;
@@ -205,9 +188,9 @@ const hoveredCard = computed(() => {
 
 .board {
   position: absolute;
-  top: var(--size-6);
+  top: var(--size-11);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotateX(15deg);
 }
 
 .hand {
@@ -261,18 +244,6 @@ const hoveredCard = computed(() => {
   }
   &.overspent {
     --color: magenta;
-  }
-}
-
-.victory-point {
-  --color: gold;
-  width: var(--size-5);
-  aspect-ratio: 1;
-  border-radius: var(--radius-round);
-  border: solid var(--border-size-2) var(--color);
-  background-color: transparent;
-  &.filled {
-    background-color: var(--color);
   }
 }
 

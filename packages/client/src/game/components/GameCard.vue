@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCard, useGameUi, useMyPlayer } from '../composables/useGameClient';
 import Card from '@/card/components/Card.vue';
+import sprites from 'virtual:sprites';
 
 const {
   cardId,
@@ -86,6 +87,11 @@ const classes = computed(() => {
     }
   ];
 });
+
+const sprite = computed(() => {
+  console.log(sprites, card.value.spriteId);
+  return sprites[card.value.spriteId];
+});
 </script>
 
 <template>
@@ -95,6 +101,7 @@ const classes = computed(() => {
     :data-flip-id="`card_${card.id}`"
   >
     <Card
+      v-if="sprite"
       :has-backlighting="false"
       :isTiltable="true"
       :id="card.id"
@@ -104,7 +111,6 @@ const classes = computed(() => {
         id: card.id,
         name: card.name,
         description: card.description,
-        image: card.imagePath,
         kind: card.kind,
         rarity: card.rarity,
         manaCost: card.manaCost,
@@ -116,11 +122,15 @@ const classes = computed(() => {
         cmd: card.cmd,
         runeCost: card.runeCost ?? {}
       }"
+      :sprite="sprite"
       class="game-card big"
       :class="classes"
       @click="handleClick"
     />
 
+    <div v-else>
+      Missing sprite for card: {{ card.name }} ({{ card.spriteId }})
+    </div>
     <!-- <div class="damage" v-if="damageTaken > 0">
       {{ damageTaken }}
     </div> -->
