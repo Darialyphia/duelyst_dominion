@@ -1,288 +1,34 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import gsap from 'gsap';
-import * as PIXI from 'pixi.js';
-import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
+import { computed } from 'vue';
 import { CARD_KINDS, RARITIES } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
+import {
+  provideBoosterPack,
+  type BoosterPackCardEntry
+} from '../composables/useBoosterPack';
+import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 
 const props = defineProps<{
-  cards: Array<{
-    blueprint: CardBlueprint;
-    isFoil: boolean;
-  }>;
+  cards: BoosterPackCardEntry[];
 }>();
 
-const flippedCards = ref<Set<number>>(new Set());
-const wrapperRefs = ref<HTMLElement[]>([]);
-const containerRef = ref<HTMLElement | null>(null);
-const canvasContainerRef = ref<HTMLElement | null>(null);
-let pixiApp: PIXI.Application | null = null;
-
-const initPixi = () => {
-  if (!canvasContainerRef.value) return;
-
-  pixiApp = new PIXI.Application({
-    resizeTo: window,
-    backgroundAlpha: 0,
-    antialias: true
-  });
-
-  canvasContainerRef.value.appendChild(pixiApp.view as unknown as Node);
-};
-
-onMounted(() => {
-  initPixi();
+const {
+  isRevealed,
+  dealingStatus,
+  isShaking,
+  startSweep,
+  endSweep,
+  onCardHover,
+  reveal,
+  wrapperRefs,
+  containerRef,
+  canvasContainerRef,
+  cardStyles,
+  allRevealed,
+  boosterId
+} = provideBoosterPack({
+  cards: computed(() => props.cards)
 });
-
-onBeforeUnmount(() => {
-  if (pixiApp) {
-    pixiApp.destroy(true, { children: true, texture: true, baseTexture: true });
-  }
-});
-
-const createParticleTexture = () => {
-  const gfx = new PIXI.Graphics();
-  gfx.beginFill(0xffffff);
-  gfx.drawCircle(0, 0, 10);
-  gfx.endFill();
-  return pixiApp?.renderer.generateTexture(gfx);
-};
-
-const triggerPixiExplosion = (x: number, y: number) => {
-  if (!pixiApp) return;
-
-  const container = new PIXI.Container();
-  pixiApp.stage.addChild(container);
-
-  const ring = new PIXI.Graphics();
-  ring.lineStyle(5, 0xffd700, 1);
-  ring.drawCircle(0, 0, 100);
-  ring.position.set(x, y);
-  ring.scale.set(0);
-  container.addChild(ring);
-
-  gsap.to(ring.scale, { x: 5, y: 5, duration: 1, ease: 'power2.out' });
-  gsap.to(ring, { alpha: 0, duration: 1, ease: 'power2.out' });
-
-  // Particles
-  const texture = createParticleTexture();
-  if (!texture) return;
-
-  const particleCount = 200;
-  for (let i = 0; i < particleCount; i++) {
-    const sprite = new PIXI.Sprite(texture);
-    sprite.x = x;
-    sprite.y = y;
-    sprite.anchor.set(0.5);
-    sprite.tint = Math.random() < 0.5 ? 0xffd700 : 0xff4500;
-    sprite.scale.set(Math.random() * 0.5 + 0.2);
-
-    const angle = Math.random() * Math.PI * 2;
-
-    container.addChild(sprite);
-
-    gsap.to(sprite, {
-      x: x + Math.cos(angle) * (300 + Math.random() * 200),
-      y: y + Math.sin(angle) * (300 + Math.random() * 200),
-      alpha: 0,
-      duration: 1 + Math.random(),
-      ease: 'power2.out'
-    });
-  }
-
-  // Cleanup container
-  setTimeout(() => {
-    container.destroy({ children: true });
-  }, 2000);
-};
-
-const isRevealed = (index: number) => flippedCards.value.has(index);
-
-const dealingStatus = ref<'waiting' | 'dealing' | 'done'>('waiting');
-
-const isSweeping = ref(false);
-
-const shakeTween = ref<gsap.core.Tween | null>(null);
-const shakeStartTime = ref(0);
-const isShaking = ref(false);
-const MIN_SHAKE_TIME = 1500;
-const isDealScheduled = ref(false);
-
-const startShaking = () => {
-  if (isDealScheduled.value) return;
-  shakeStartTime.value = Date.now();
-  let shakeCounter = 0;
-  const shake = () => {
-    shakeCounter += 0.5;
-    shakeTween.value = gsap.to(wrapperRefs.value, {
-      x: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
-      y: `random(-${5 + shakeCounter}, ${5 + shakeCounter})`,
-      duration: 0.05,
-      onComplete: shake
-    });
-  };
-
-  if (shakeTween.value) shakeTween.value.kill();
-  isShaking.value = true;
-  shake();
-};
-
-const stopShakingAndDeal = () => {
-  if (isDealScheduled.value || !shakeTween.value) return;
-  isShaking.value = false;
-  isDealScheduled.value = true;
-
-  const elapsed = Date.now() - shakeStartTime.value;
-  const remaining = Math.max(0, MIN_SHAKE_TIME - elapsed);
-
-  setTimeout(() => {
-    if (shakeTween.value) {
-      shakeTween.value.kill();
-      shakeTween.value = null;
-    }
-
-    dealingStatus.value = 'dealing';
-    setTimeout(
-      () => {
-        dealingStatus.value = 'done';
-        isDealScheduled.value = false;
-      },
-      (props.cards.length + 1) * 50
-    );
-    gsap.to(wrapperRefs.value, {
-      x: 0,
-      y: 0,
-      rotation: 0,
-      duration: 0.05,
-      clearProps: 'all',
-      onComplete: () => {}
-    });
-  }, remaining);
-};
-
-const reveal = (index: number) => {
-  if (dealingStatus.value === 'done' && !flippedCards.value.has(index)) {
-    flippedCards.value.add(index);
-    if (props.cards[index].blueprint.rarity === RARITIES.LEGENDARY) {
-      triggerLegendaryShake();
-
-      // Get card position for explosion
-      const cardEl = wrapperRefs.value[index];
-      if (cardEl) {
-        const rect = cardEl.getBoundingClientRect();
-        triggerPixiExplosion(
-          rect.left + rect.width / 2,
-          rect.top + rect.height / 2
-        );
-      }
-    }
-  }
-};
-
-const triggerLegendaryShake = () => {
-  if (!containerRef.value) return;
-  gsap.fromTo(
-    containerRef.value,
-    { x: 0, y: 0 },
-    {
-      x: () => (Math.random() - 0.5) * 30,
-      y: () => (Math.random() - 0.5) * 30,
-      duration: 0.05,
-      repeat: 10,
-      yoyo: true,
-      clearProps: 'x,y',
-      ease: 'power1.inOut',
-      onComplete: () => {
-        console.log('Legendary shake complete');
-      }
-    }
-  );
-};
-
-const startSweep = (index: number) => {
-  if (dealingStatus.value === 'waiting') {
-    startShaking();
-  } else if (dealingStatus.value === 'done') {
-    isSweeping.value = true;
-    // Reveal the card where the sweep starts
-    if (!flippedCards.value.has(index)) {
-      reveal(index);
-    }
-  }
-};
-
-const endSweep = () => {
-  if (dealingStatus.value === 'waiting') {
-    stopShakingAndDeal();
-  }
-  isSweeping.value = false;
-};
-
-const onCardHover = (index: number) => {
-  if (
-    isSweeping.value &&
-    dealingStatus.value === 'done' &&
-    !flippedCards.value.has(index)
-  ) {
-    reveal(index);
-  }
-};
-
-const cardStyles = computed(() => {
-  const count = props.cards.length;
-  const radius = 1000;
-  const angleStep = 18;
-  const totalArc = (count - 1) * angleStep;
-  const startAngle = -90 - totalArc / 2;
-
-  return props.cards.map((_, index) => {
-    const angle = startAngle + index * angleStep;
-    const radian = (angle * Math.PI) / 180;
-    const x = Math.cos(radian) * radius;
-    const y = Math.sin(radian) * radius + 800;
-    const rotation = angle + 90;
-
-    return {
-      transform:
-        dealingStatus.value !== 'waiting'
-          ? `translate(${x}px, ${y}px) rotate(${rotation}deg)`
-          : `translate(0px, 80px rotate(0deg)`,
-      '--z-index': count - index
-    };
-  });
-});
-
-const getAnimationSequence = (card: CardBlueprint) => {
-  if (card.kind === CARD_KINDS.GENERAL || card.kind === CARD_KINDS.MINION) {
-    return ['breathing'];
-  }
-  return ['default'];
-};
-
-const allRevealed = computed(() => {
-  return flippedCards.value.size === props.cards.length;
-});
-
-watch(
-  () => props.cards,
-  () => {
-    // Reset state when cards change
-    flippedCards.value.clear();
-    dealingStatus.value = 'waiting';
-    isSweeping.value = false;
-    isShaking.value = false;
-    isDealScheduled.value = false;
-  }
-);
-
-const boosterId = ref(0);
-watch(
-  () => props.cards,
-  () => {
-    boosterId.value += 1;
-  }
-);
 
 const cardsWithParticles = computed(() => {
   return props.cards.map(card => {
@@ -307,6 +53,13 @@ const cardsWithParticles = computed(() => {
     };
   });
 });
+
+const getAnimationSequence = (card: CardBlueprint) => {
+  if (card.kind === CARD_KINDS.GENERAL || card.kind === CARD_KINDS.MINION) {
+    return ['breathing'];
+  }
+  return ['default'];
+};
 </script>
 
 <template>
@@ -479,6 +232,29 @@ const cardsWithParticles = computed(() => {
   }
 }
 
+@property --booster-reveal-sheen-start {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --booster-reveal-sheen-end {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@keyframes booster-reveal-sheen {
+  from {
+    --booster-reveal-sheen-start: -35%;
+    --booster-reveal-sheen-end: -30%;
+  }
+  to {
+    --booster-reveal-sheen-start: 110%;
+    --booster-reveal-sheen-end: 115%;
+  }
+}
+
 .card-wrapper {
   --pixel-scale: 1.5;
   width: calc(var(--card-width) * var(--pixel-scale));
@@ -489,9 +265,37 @@ const cardsWithParticles = computed(() => {
     transform: rotateY(180deg);
   }
   &.revealed {
-    animation: booster-reveal-bloom 0.6s;
-    animation-delay: 0.6s;
+    --space: 5%;
+    --angle: 135deg;
+    &::after {
+      content: '';
+      inset: 0;
+      position: absolute;
+      background: repeating-linear-gradient(
+        135deg,
+        rgb(255, 119, 115) calc(var(--space) * 1),
+        rgba(255, 237, 95, 1) calc(var(--space) * 2),
+        rgba(168, 255, 95, 1) calc(var(--space) * 3),
+        rgba(131, 255, 247, 1) calc(var(--space) * 4),
+        rgba(120, 148, 255, 1) calc(var(--space) * 5),
+        rgb(216, 117, 255) calc(var(--space) * 6),
+        rgb(255, 119, 115) calc(var(--space) * 7)
+      );
+      mask-image: linear-gradient(
+        135deg,
+        transparent,
+        transparent calc(var(--booster-reveal-sheen-start) - 10%),
+        black var(--booster-reveal-sheen-start),
+        black var(--booster-reveal-sheen-end),
+        transparent calc(var(--booster-reveal-sheen-end) + 10%)
+      );
+      animation: booster-reveal-sheen 1s forwards;
+      animation-delay: 0.25s;
+      mix-blend-mode: overlay;
+    }
     .booster-card {
+      animation: booster-reveal-bloom 0.6s;
+      animation-delay: 0.4s;
       transition: transform 0.4s var(--ease-out-2);
     }
   }
