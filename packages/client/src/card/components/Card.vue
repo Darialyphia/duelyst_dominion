@@ -120,9 +120,9 @@ const factionColor = computed(() => {
 const factionBgOpacity = computed(() => {
   switch (card.faction) {
     case FACTIONS.F1:
-      return 0.4;
-    case FACTIONS.F2:
       return 0.3;
+    case FACTIONS.F2:
+      return 0.2;
     case FACTIONS.F3:
       return 0.65;
     case FACTIONS.F4:

@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "foo": "node ./scripts/plist-to-aseprite.ts"
   },
   "dependencies": {
     "@convex-vue/core": "^0.0.4",
@@ -77,9 +78,11 @@
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^9.12.0",
     "eslint-plugin-vue": "^9.29.0",
-    "fs-extra": "^11.2.0",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.2",
     "gsap": "^3.12.5",
     "npm-run-all2": "^6.2.3",
+    "plist": "^3.1.0",
     "postcss-custom-media": "^11.0.5",
     "prettier": "^3.3.3",
     "typescript": "~5.5.4",

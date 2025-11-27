@@ -83,6 +83,19 @@
         },
         {
           "alias": [
+            "booster-opening.png"
+          ],
+          "src": [
+            "/assets/backgrounds/booster-opening.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "home_hero.jpg"
           ],
           "src": [
@@ -235,6 +248,32 @@
           ],
           "src": [
             "/assets/cards/generals/f1_argeon-highmane.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_kaleos-xaan"
+          ],
+          "src": [
+            "/assets/cards/generals/f2_kaleos-xaan.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_kaleos-xaan.png"
+          ],
+          "src": [
+            "/assets/cards/generals/f2_kaleos-xaan.png"
           ],
           "data": {
             "tags": {
@@ -725,6 +764,58 @@
         },
         {
           "alias": [
+            "f1_auryn-nexus"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_auryn-nexus.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_auryn-nexus.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_auryn-nexus.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_circle-of-life"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_circle-of-life.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_circle-of-life.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_circle-of-life.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_divine-bond"
           ],
           "src": [
@@ -833,6 +924,19 @@
           ],
           "src": [
             "/assets/cards/spells/f1_martyrdom.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f1_sundrop-elixir.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f1_sundrop-elixir.png"
           ],
           "data": {
             "tags": {

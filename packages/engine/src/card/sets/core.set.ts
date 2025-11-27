@@ -13,6 +13,7 @@ import { tempest } from './core/f1/tempest';
 import { trueStrike } from './core/f1/true-strike';
 import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
+import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
 import { emeraldRejuvinator } from './core/neutral/emerald-rejuvinator';
@@ -46,6 +47,7 @@ export const coreSet: CardSet = {
     warSurge,
     suntideMaiden,
     magnetize,
-    divineBond
+    divineBond,
+    kaleosXaan
   ]
 };

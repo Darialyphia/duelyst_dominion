@@ -55,7 +55,7 @@ const packOptions: BoosterPackOptions = {
     <BoosterPackContent
       v-if="isOpeningPacks && currentPackContent"
       :cards="currentPackContent"
-      class="pt-11"
+      class="h-screen"
     >
       <template #done>
         <FancyButton
