@@ -232,7 +232,7 @@ export class UiController {
     }
     this.hoverTimeout = setTimeout(() => {
       this._hoveredCell = cell;
-    }, 200);
+    }, 0);
   }
 
   unhover() {

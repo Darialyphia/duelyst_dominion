@@ -10,7 +10,7 @@ import {
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { clamp } from '@game/shared';
 import { OnClickOutside } from '@vueuse/components';
-import { useResizeObserver } from '@vueuse/core';
+import { useElementBounding, useResizeObserver } from '@vueuse/core';
 import type { ShallowRef } from 'vue';
 import HandCard from './HandCard.vue';
 import { GAME_PHASES } from '@game/engine/src/game/game.enums';
@@ -105,7 +105,7 @@ const pixelScale = computed(() => {
     scale = getComputedStyle(el).getPropertyValue('--pixel-scale');
   }
 
-  return parseInt(scale) || 1;
+  return parseFloat(scale) || 1;
 });
 
 const cardW = computed(() => {
@@ -132,17 +132,22 @@ const cards = computed(() => {
   const usedSpan = cardW.value + (handSize.value - 1) * step.value;
   const offset = (handContainerSize.value.w - usedSpan) / 2;
 
-  return player.value.hand.map((card, i) => ({
-    card,
-    x: offset + i * step.value,
-    y: 0,
-    z: i
-  }));
+  return player.value.hand.map((card, i) => {
+    return {
+      card,
+      x: i * step.value + offset,
+      y: 0,
+      z: i
+    };
+  });
 });
+
+const { width } = useElementBounding(() => ui.value.DOMSelectors.board.element);
 </script>
 
 <template>
   <OnClickOutside
+    class="hand-wrapper"
     :options="{ ignore: [`${ui.DOMSelectors.globalActionButtons.selector} *`] }"
     @trigger="isExpanded = false"
   >
@@ -177,12 +182,17 @@ const cards = computed(() => {
 </template>
 
 <style scoped lang="postcss">
+.hand-wrapper {
+  position: absolute;
+  width: calc(1px * v-bind(width));
+  left: 50%;
+  transform: translateX(-50%);
+  height: 50px;
+}
 .hand {
-  --pixel-scale: 2;
-  background-color: red;
+  --pixel-scale: 1.5;
   position: relative;
   z-index: 1;
-  height: 100%;
   width: 100%;
   transition: transform 0.15s var(--ease-in-2);
   &.opponent-hand:not(.expanded) {

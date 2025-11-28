@@ -86,6 +86,10 @@ export class UnitViewModel {
     return this.data.cmd;
   }
 
+  get dangerZone() {
+    return this.data.dangerZone;
+  }
+
   getCard() {
     return this.getEntities()[this.data.card] as CardViewModel;
   }

@@ -14,6 +14,7 @@ import BoardPositioner from './BoardPositioner.vue';
 import { useSprite } from '@/card/composables/useSprite';
 import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
+import { useIsInAoe } from '../composables/useIsInAoe';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -37,6 +38,8 @@ const { activeFrameRect, bgPosition, imageBg, ...spriteControls } = useSprite({
   kind: computed(() => unit.getCard().kind),
   scale: 1
 });
+
+const isInAoe = useIsInAoe();
 
 const positionOffset = ref({
   x: 0,
@@ -147,6 +150,7 @@ const displayedModifiers = computed(() => {
       :class="[
         isAlly ? 'ally' : 'enemy',
         {
+          'in-aoe': isInAoe({ x: unit.x, y: unit.y }),
           'is-exhausted': unit.isExhausted,
           'is-selected': ui.selectedUnit?.equals(unit),
           'is-flipped': isFlipped
@@ -285,6 +289,9 @@ const displayedModifiers = computed(() => {
   .is-flipped & {
     scale: -2 2;
   }
+  .is-selected & {
+    filter: drop-shadow(0 0 1px white);
+  }
   @starting-style {
     transform: translateY(-50px);
   }
@@ -298,7 +305,28 @@ const displayedModifiers = computed(() => {
   background-size: var(--background-width) var(--background-height);
   translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
   pointer-events: none;
+  position: absolute;
+
+  .in-aoe &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    mix-blend-mode: color;
+    mask-image: v-bind(imageBg);
+    mask-position: var(--bg-position);
+    mask-repeat: no-repeat;
+    mask-size: var(--background-width) var(--background-height);
+  }
+  .ally &::after {
+    background-color: #03ff79;
+  }
+  .enemy &::after {
+    background-color: #ae3030;
+    opacity: 1;
+  }
 }
+
 :is(.atk, .hp) {
   width: 35px;
   height: 30px;

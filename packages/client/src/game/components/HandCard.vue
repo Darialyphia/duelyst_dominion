@@ -164,7 +164,6 @@ const highlightColor = computed(() => {
         actions-side="top"
         :actions-offset="15"
         :is-interactive="isInteractive"
-        style="--pixel-scale: 1.5"
       />
     </component>
   </div>
@@ -174,7 +173,7 @@ const highlightColor = computed(() => {
 .hand-card {
   position: absolute;
   left: 0;
-  --hover-offset: 30px;
+  --hover-offset: 0px;
   --offset-y: var(--hover-offset);
   --_y: var(--offset-y);
   transform-origin: 50% 100%;

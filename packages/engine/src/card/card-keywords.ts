@@ -263,7 +263,7 @@ export const KEYWORDS = {
   SUMMONING_SICKNESS: {
     id: 'summoning_sickness',
     name: 'Summoning Sickness',
-    description: 'This unit has 0 commandment the turn it is summoned.',
+    description: 'This unit was summoned this turn and cannot act.',
     aliases: []
   },
   TIMELESS: {

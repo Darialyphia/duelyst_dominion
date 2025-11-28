@@ -38,6 +38,7 @@ const hoveredCard = computed(() => {
     <FPS />
 
     <div
+      :id="ui.DOMSelectors.board.id"
       class="board"
       :style="{
         width: `${state.board.columns * config.CELL.width}px`,
@@ -158,12 +159,15 @@ const hoveredCard = computed(() => {
       </div>
     </div>
 
-    <div class="fixed bottom-2 right-2">
-      <GameCard
-        v-if="hoveredCard"
-        :card-id="hoveredCard.id"
-        :is-interactive="false"
-      />
+    <div
+      class="hovered-card"
+      v-if="hoveredCard"
+      :class="{
+        ally: hoveredCard.getPlayer().equals(myPlayer),
+        enemy: hoveredCard.getPlayer().equals(opponent)
+      }"
+    >
+      <GameCard :card-id="hoveredCard.id" :is-interactive="false" />
     </div>
     <div id="dragged-card-container" />
   </div>
@@ -187,7 +191,7 @@ const hoveredCard = computed(() => {
 }
 
 .board {
-  --board-angle-X: 20deg;
+  --board-angle-X: 15deg;
   position: absolute;
   top: 40%;
   left: 50%;
@@ -197,9 +201,9 @@ const hoveredCard = computed(() => {
 
 .hand {
   position: fixed;
-  width: 60%;
+  width: 100%;
   bottom: 22%;
-  left: var(--size-8);
+  left: 0;
 }
 
 .my-infos,
@@ -287,6 +291,18 @@ const hoveredCard = computed(() => {
   img {
     width: calc(17px * var(--pixel-scale));
     height: calc(21px * var(--pixel-scale));
+  }
+}
+
+.hovered-card {
+  --pixel-scale: 1.5;
+  position: fixed;
+  bottom: var(--size-9);
+  &.ally {
+    left: var(--size-6);
+  }
+  &.enemy {
+    right: var(--size-6);
   }
 }
 </style>
