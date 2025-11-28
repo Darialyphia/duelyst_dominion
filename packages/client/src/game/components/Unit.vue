@@ -146,6 +146,22 @@ const displayedModifiers = computed(() => {
     }"
   >
     <div
+      class="shadow-wrapper"
+      :class="{
+        'is-flipped': isFlipped
+      }"
+      :style="{
+        '--parallax-factor': 0.5,
+        '--bg-position': bgPosition,
+        '--width': `${activeFrameRect.width}px`,
+        '--height': `${activeFrameRect.height}px`,
+        '--background-width': `calc( ${sprite.sheetSize.w}px * var(--pixel-scale))`,
+        '--background-height': `calc(${sprite.sheetSize.h}px * var(--pixel-scale))`
+      }"
+    >
+      <div class="shadow" />
+    </div>
+    <div
       class="unit"
       :class="[
         isAlly ? 'ally' : 'enemy',
@@ -296,14 +312,14 @@ const displayedModifiers = computed(() => {
     transform: translateY(-50px);
   }
 }
-.sprite {
+.sprite,
+.shadow {
   width: 100%;
   height: 100%;
   background: v-bind(imageBg);
   background-position: var(--bg-position);
   background-repeat: no-repeat;
   background-size: var(--background-width) var(--background-height);
-  translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
   pointer-events: none;
   position: absolute;
 
@@ -324,6 +340,30 @@ const displayedModifiers = computed(() => {
   .enemy &::after {
     background-color: #ae3030;
     opacity: 1;
+  }
+}
+
+.shadow-wrapper {
+  --pixel-scale: 1;
+  pointer-events: none;
+  width: calc(var(--pixel-scale) * var(--width));
+  height: calc(var(--pixel-scale) * var(--height));
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  scale: 2;
+  transform-origin: bottom center;
+  transform-style: preserve-3d;
+}
+
+.shadow {
+  transform: translateZ(1px) scaleY(-1) translateY(45%) skewX(15deg);
+  transform-origin: bottom center;
+  filter: brightness(0);
+  opacity: 0.25;
+  .is-flipped & {
+    translate: 12.5% 0;
   }
 }
 

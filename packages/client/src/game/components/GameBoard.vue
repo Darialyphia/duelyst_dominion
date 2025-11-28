@@ -17,6 +17,7 @@ import BoardCell from './BoardCell.vue';
 import FPS from './FPS.vue';
 import GameCard from './GameCard.vue';
 import { config } from '@/utils/config';
+// import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
 const { client } = useGameClient();
@@ -24,6 +25,16 @@ const boardCells = useBoardCells();
 const units = useUnits();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
+
+// const { x, y } = useMouse();
+// const { width, height } = useWindowSize();
+
+const boardStyle = computed(() => ({
+  width: `${state.value.board.columns * config.CELL.width}px`,
+  height: `${state.value.board.rows * config.CELL.height}px`
+  // '--board-angle-X': `${(y.value / height.value - 0.5) * -180}deg`,
+  // '--board-angle-Y': `${(x.value / width.value - 0.5) * 180}deg`
+}));
 
 const ui = useGameUi();
 const hoveredCard = computed(() => {
@@ -37,14 +48,7 @@ const hoveredCard = computed(() => {
     <DraggedCard />
     <FPS />
 
-    <div
-      :id="ui.DOMSelectors.board.id"
-      class="board"
-      :style="{
-        width: `${state.board.columns * config.CELL.width}px`,
-        height: `${state.board.rows * config.CELL.height}px`
-      }"
-    >
+    <div :id="ui.DOMSelectors.board.id" class="board" :style="boardStyle">
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </div>
@@ -191,11 +195,13 @@ const hoveredCard = computed(() => {
 }
 
 .board {
-  --board-angle-X: 15deg;
+  --board-angle-X: 20deg;
+  --board-angle-Y: 0deg;
   position: absolute;
   top: 40%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%) rotateX(var(--board-angle-X));
+  transform: translateX(-50%) translateY(-50%) rotateY(var(--board-angle-Y))
+    rotateX(var(--board-angle-X));
   transform-style: preserve-3d;
 }
 
