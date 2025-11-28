@@ -33,7 +33,11 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
 
   computeNeighbors(node: SerializedCoords) {
     const cell = this.game.boardSystem.getCellAt(node)!;
-    const edges = this.game.boardSystem.getNeighbors(cell.position);
+    const edges = this.game.boardSystem.getNeighbors(cell.position).filter(c => {
+      // return only axis aligned cells
+      const delta = Vec2.sub(cell.position, c);
+      return delta.x === 0 || delta.y === 0;
+    });
 
     const result: Array<{ node: SerializedCoords; weight: number }> = [];
 

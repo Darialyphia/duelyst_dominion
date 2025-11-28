@@ -1,23 +1,9 @@
-import { CompositeAOEShape } from '../../../../aoe/composite.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhere } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
-import type { Game } from '../../../../game/game';
-
-const getAOE = (game: Game) =>
-  new CompositeAOEShape(TARGETING_TYPE.UNIT, {
-    shapes: game.unitSystem.units
-      .filter(u => u.isAlive)
-      .map(unit => ({
-        type: 'point' as const,
-        params: {
-          override: unit.position.serialize()
-        },
-        pointIndices: [0]
-      }))
-  });
+import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
+import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 
 export const tempest: SpellBlueprint = {
   id: 'tempest',
@@ -36,7 +22,11 @@ export const tempest: SpellBlueprint = {
   runeCost: {
     red: 2
   },
-  getAoe: getAOE,
+  getAoe: game =>
+    new EverywhereAOEShape(TARGETING_TYPE.UNIT, {
+      width: game.boardSystem.map.cols,
+      height: game.boardSystem.map.rows
+    }),
   canPlay: () => true,
   getTargets(game, card) {
     return anywhere.getPreResponseTargets({
@@ -44,7 +34,11 @@ export const tempest: SpellBlueprint = {
       max: 1,
       allowRepeat: false
     })(game, card, {
-      getAoe: () => getAOE(game)
+      getAoe: () =>
+        new EverywhereAOEShape(TARGETING_TYPE.UNIT, {
+          width: game.boardSystem.map.cols,
+          height: game.boardSystem.map.rows
+        })
     });
   },
   async onInit() {},

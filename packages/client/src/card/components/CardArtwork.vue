@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useIntervalFn } from '@vueuse/core';
-import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
-import { isDefined } from '@game/shared';
+import { computed, toRef } from 'vue';
+import type { CardKind } from '@game/engine/src/card/card.enums';
+import { useSprite } from '../composables/useSprite';
 
 const props = defineProps<{
   sprite: {
@@ -21,89 +20,14 @@ const props = defineProps<{
   isHovered?: boolean;
 }>();
 
-const imageBg = computed(() => {
-  return `url(/assets/cards/${props.sprite.id}.png)`;
-});
-
 const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
 
-const shouldAnimate = computed(
-  () => isDefined(props.animationSequence) && props.animationSequence.length > 0
-);
-const FALLBACK_ANIMATION_BY_KIND: Record<CardKind, string> = {
-  [CARD_KINDS.MINION]: 'breathing',
-  [CARD_KINDS.GENERAL]: 'breathing',
-  [CARD_KINDS.SPELL]: 'default',
-  [CARD_KINDS.ARTIFACT]: 'default'
-};
-
-const sequenceToUse = computed(() => {
-  if (props.animationSequence && props.animationSequence.length > 0) {
-    return props.animationSequence;
-  }
-  return [FALLBACK_ANIMATION_BY_KIND[props.kind]];
-});
-
-const currentSequenceIndex = ref(0);
-watch(sequenceToUse, () => {
-  currentSequenceIndex.value = 0;
-});
-
-const currentAnimation = computed(() => {
-  const name = sequenceToUse.value[currentSequenceIndex.value];
-  return props.sprite.animations[name];
-});
-
-const currentFrame = ref(0);
-
-watch(
-  currentAnimation,
-  anim => {
-    if (anim) {
-      currentFrame.value = anim.startFrame;
-    } else {
-      currentFrame.value = 0;
-    }
-  },
-  { immediate: true }
-);
-
-useIntervalFn(
-  () => {
-    if (!currentAnimation.value || !shouldAnimate.value) return;
-    const { startFrame, endFrame } = currentAnimation.value;
-    if (currentFrame.value >= endFrame) {
-      if (currentSequenceIndex.value < sequenceToUse.value.length - 1) {
-        currentSequenceIndex.value++;
-        // Manually update frame to avoid glitch before watcher runs
-        const nextAnimName = sequenceToUse.value[currentSequenceIndex.value];
-        const nextAnim = props.sprite.animations[nextAnimName];
-        if (nextAnim) {
-          currentFrame.value = nextAnim.startFrame;
-        }
-      } else {
-        currentFrame.value = startFrame;
-      }
-    } else {
-      currentFrame.value++;
-    }
-  },
-  () => currentAnimation.value?.frameDuration ?? 100
-);
-
-const activeFrameRect = computed(() => {
-  return {
-    x: currentFrame.value * props.sprite.frameSize.w,
-    y: 0,
-    width: props.sprite.frameSize.w,
-    height: props.sprite.frameSize.h
-  };
-});
-
-const bgPosition = computed(() => {
-  const { x, y } = activeFrameRect.value;
-  return `calc(-2 * ${x}px * var(--pixel-scale)) calc(-2 * ${y}px * var(--pixel-scale))`;
+const { activeFrameRect, bgPosition, imageBg } = useSprite({
+  animationSequence: toRef(props, 'animationSequence'),
+  sprite: toRef(props, 'sprite'),
+  kind: toRef(props, 'kind'),
+  scale: 2
 });
 </script>
 
@@ -125,7 +49,7 @@ const bgPosition = computed(() => {
       '--background-height': `calc(2 * ${props.sprite.sheetSize.h}px * var(--pixel-scale))`
     }"
   >
-    <!-- <div class="image-shadow" /> -->
+    <div class="image-shadow" />
     <div class="image-sprite" />
   </div>
 </template>
@@ -152,9 +76,10 @@ const bgPosition = computed(() => {
     background: v-bind(imageBg);
     background-position: var(--bg-position);
     background-repeat: no-repeat;
-    translate: calc(-2 * var(--parallax-x))
-      calc(-2 * var(--parallax-y) - var(--pixel-scale) * 6px);
-    filter: contrast(0) brightness(0) blur(2px);
+    background-size: var(--background-width) var(--background-height);
+    translate: calc(-5 * var(--parallax-x))
+      calc(-5 * var(--parallax-y) - var(--pixel-scale) * 20px);
+    filter: contrast(0) brightness(0) blur(4px);
     transition: opacity 1s var(--ease-3);
     scale: 1.15;
   }

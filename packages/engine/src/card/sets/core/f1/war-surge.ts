@@ -1,31 +1,15 @@
-import { isDefined } from '@game/shared';
-import { CompositeAOEShape } from '../../../../aoe/composite.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhere } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import type { Game } from '../../../../game/game';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
-
-const getAOE = (game: Game) =>
-  new CompositeAOEShape(TARGETING_TYPE.ALLY_MINION, {
-    shapes: game.boardSystem.shrines
-      .map(shrine => shrine.neighborUnits)
-      .flat()
-      .flatMap(unit => ({
-        type: 'point' as const,
-        params: {
-          override: unit.position.serialize()
-        },
-        pointIndices: [0]
-      }))
-  });
+import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 
 export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
-  description: 'Give allied minions at a shrine +1 Attack and +1 Commandment.',
+  description: 'Give allied minions +1 / +1.',
   sprite: { id: 'spells/f1_war-surge' },
   kind: CARD_KINDS.SPELL,
   collectable: true,
@@ -37,7 +21,11 @@ export const warSurge: SpellBlueprint = {
   runeCost: {
     red: 1
   },
-  getAoe: getAOE,
+  getAoe: game =>
+    new EverywhereAOEShape(TARGETING_TYPE.ALLY_MINION, {
+      width: game.boardSystem.map.cols,
+      height: game.boardSystem.map.rows
+    }),
   canPlay: () => true,
   getTargets(game, card) {
     return anywhere.getPreResponseTargets({
@@ -45,13 +33,17 @@ export const warSurge: SpellBlueprint = {
       max: 1,
       allowRepeat: false
     })(game, card, {
-      getAoe: () => getAOE(game)
+      getAoe: () =>
+        new EverywhereAOEShape(TARGETING_TYPE.ALLY_MINION, {
+          width: game.boardSystem.map.cols,
+          height: game.boardSystem.map.rows
+        })
     });
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
     const unitsToBuff = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
-
+    console.log('Units to buff:', unitsToBuff);
     for (const unit of unitsToBuff) {
       await unit.modifiers.add(
         new UnitSimpleAttackBuffModifier('war-surge-atk-buff', game, card, {

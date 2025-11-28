@@ -5355,6 +5355,84 @@
         },
         {
           "alias": [
+            "cell-highlight-aoe.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-aoe.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-attackable.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-attackable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-move-reach.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-move-reach.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-targetable.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-targetable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-targeted.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-targeted.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-unit-selected.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-unit-selected.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "cmd-frame-textless.png"
           ],
           "src": [

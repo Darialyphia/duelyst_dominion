@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
-import HexPositioner from './HexPositioner.vue';
 import {
   useFxEvent,
   useGameUi,
@@ -11,17 +10,35 @@ import gsap from 'gsap';
 import { config } from '@/utils/config';
 import { isDefined, type Point } from '@game/shared';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
+import BoardPositioner from './BoardPositioner.vue';
+import { useSprite } from '@/card/composables/useSprite';
+import sprites from 'virtual:sprites';
+import { uniqBy } from 'lodash-es';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
 const ui = useGameUi();
 const myPlayer = useMyPlayer();
 const isAlly = computed(() => unit.getPlayer()?.equals(myPlayer.value));
-const unitBg = computed(() => {
-  return `url(${unit.getCard().imagePath})`;
+const isFlipped = computed(() => !unit.getPlayer()?.isPlayer1);
+const sprite = computed(() => {
+  return sprites[unit.getCard().spriteId];
+});
+const defaultAnimation = computed(() =>
+  ui.value.selectedUnit?.equals(unit) ? 'idle' : 'breathing'
+);
+const animationSequence = ref([defaultAnimation.value]);
+watchEffect(() => {
+  animationSequence.value = [defaultAnimation.value];
+});
+const { activeFrameRect, bgPosition, imageBg, ...spriteControls } = useSprite({
+  animationSequence: animationSequence,
+  sprite,
+  kind: computed(() => unit.getCard().kind),
+  scale: 1
 });
 
-const hexOffset = ref({
+const positionOffset = ref({
   x: 0,
   y: 0
 });
@@ -30,79 +47,48 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
   if (event.unit !== unit.id) return;
   const { path, previousPosition } = event;
 
-  const stepDuration = 0.4;
-  const hopHeight = 30;
+  const stepDuration = 0.5;
 
+  animationSequence.value = ['run'];
   const timeline = gsap.timeline();
 
   path.forEach((point, index) => {
     const prev = index === 0 ? previousPosition : path[index - 1];
-    const prevScaled = config.HEXES.toScreenPosition(prev);
-    const destinationScaled = config.HEXES.toScreenPosition(point);
+    const prevScaled = config.CELL.toScreenPosition(prev);
+    const destinationScaled = config.CELL.toScreenPosition(point);
     const deltaX = destinationScaled.x - prevScaled.x;
     const deltaY = destinationScaled.y - prevScaled.y;
 
     // First half: move forward and up
-    timeline.to(hexOffset.value, {
+    timeline.to(positionOffset.value, {
       x: `+=${deltaX}`,
-      y: `+=${deltaY - hopHeight}`,
-      duration: stepDuration / 2,
-      ease: 'power1.out'
-    });
-
-    // Second half: come back down
-    timeline.to(hexOffset.value, {
-      y: `+=${hopHeight}`,
-      duration: stepDuration / 2,
-      ease: 'power1.in'
+      y: `+=${deltaY}`,
+      duration: stepDuration,
+      ease: Power0.easeNone
     });
   });
 
-  timeline.set(hexOffset.value, { x: 0, y: 0 });
+  timeline.set(positionOffset.value, { x: 0, y: 0 });
 
   await timeline.play();
+  animationSequence.value = [defaultAnimation.value];
 });
 
 const isAttacking = ref(false);
 const onAttack = async (event: { unit: string; target: Point }) => {
   if (event.unit !== unit.id) return;
-
-  const timeline = gsap.timeline();
-
-  const position = config.HEXES.toScreenPosition(unit.position);
-  const targetPosition = config.HEXES.toScreenPosition(event.target);
-  const delta = {
-    x: targetPosition.x - position.x,
-    y: targetPosition.y - position.y
-  };
-  isAttacking.value = true;
-  // anticipation
-  timeline.to(hexOffset.value, {
-    x: `-=${delta.x / 4}`,
-    y: `-=${delta.y / 4 - 15}`,
-    duration: 0.15,
-    ease: Power1.easeIn
-  });
-
-  // attack
-  timeline.to(hexOffset.value, {
-    x: delta.x * 0.75,
-    y: delta.y * 0.75,
-    duration: 0.1
-  });
-
-  // recover
-  timeline.to(hexOffset.value, {
-    x: 0,
-    y: 0,
-    duration: 0.2,
-    ease: Power1.easeOut,
-    onComplete: () => {
+  return new Promise<void>(resolve => {
+    isAttacking.value = true;
+    animationSequence.value = ['attack'];
+    const unsub = spriteControls.on('frame', ({ index, total }) => {
+      const percentage = (index + 1) / total;
+      if (percentage < 0.75) return; // Wait until halfway through the animation
+      animationSequence.value = [defaultAnimation.value];
       isAttacking.value = false;
-    }
+      unsub();
+      resolve();
+    });
   });
-
-  await timeline.play();
 };
 useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, onAttack);
 useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, onAttack);
@@ -110,57 +96,50 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, onAttack);
 useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
   if (event.unit !== unit.id) return;
 
-  const timeline = gsap.timeline();
-  const shakeIntensity = 10;
-
-  // Shake left and right multiple times
-  timeline.to(hexOffset.value, {
-    x: shakeIntensity,
-    duration: 0.05,
-    ease: 'power1.inOut'
+  return new Promise<void>(resolve => {
+    isAttacking.value = true;
+    animationSequence.value = ['hit'];
+    const unsub = spriteControls.on('sequenceEnd', () => {
+      animationSequence.value = [defaultAnimation.value];
+      isAttacking.value = false;
+      unsub();
+      resolve();
+    });
   });
+});
 
-  timeline.to(hexOffset.value, {
-    x: -shakeIntensity,
-    duration: 0.05,
-    ease: 'power1.inOut'
+useFxEvent(FX_EVENTS.UNIT_BEFORE_DESTROY, async event => {
+  if (event.unit !== unit.id) return;
+
+  return new Promise<void>(resolve => {
+    isAttacking.value = true;
+    animationSequence.value = ['death'];
+    const unsub = spriteControls.on('sequenceEnd', () => {
+      animationSequence.value = [defaultAnimation.value];
+      isAttacking.value = false;
+      unsub();
+      resolve();
+    });
   });
-
-  timeline.to(hexOffset.value, {
-    x: shakeIntensity / 2,
-    duration: 0.05,
-    ease: 'power1.inOut'
-  });
-
-  timeline.to(hexOffset.value, {
-    x: -shakeIntensity / 2,
-    duration: 0.05,
-    ease: 'power1.inOut'
-  });
-
-  timeline.to(hexOffset.value, {
-    x: 0,
-    duration: 0.05,
-    ease: 'power1.inOut'
-  });
-
-  await timeline.play();
 });
 
 const displayedModifiers = computed(() => {
-  return [...unit.modifiers, ...unit.getCard().modifiers].filter(
-    mod => isDefined(mod.icon) && mod.stacks > 0
+  return uniqBy(
+    [...unit.modifiers, ...unit.getCard().modifiers].filter(
+      mod => isDefined(mod.icon) && mod.stacks > 0
+    ),
+    'modifierType'
   );
 });
 </script>
 
 <template>
-  <HexPositioner
+  <BoardPositioner
     :x="unit.x"
     :y="unit.y"
     :class="{ 'is-attacking': isAttacking }"
     :style="{
-      translate: `${hexOffset.x}px ${hexOffset.y}px`
+      translate: `${positionOffset.x}px ${positionOffset.y}px`
     }"
   >
     <div
@@ -169,12 +148,24 @@ const displayedModifiers = computed(() => {
         isAlly ? 'ally' : 'enemy',
         {
           'is-exhausted': unit.isExhausted,
-          'is-selected': ui.selectedUnit?.equals(unit)
+          'is-selected': ui.selectedUnit?.equals(unit),
+          'is-flipped': isFlipped
         }
       ]"
     >
-      <div class="uni-sprite" />
-      <div class="unit-border" />
+      <div
+        class="sprite-wrapper"
+        :style="{
+          '--parallax-factor': 0.5,
+          '--bg-position': bgPosition,
+          '--width': `${activeFrameRect.width}px`,
+          '--height': `${activeFrameRect.height}px`,
+          '--background-width': `calc( ${sprite.sheetSize.w}px * var(--pixel-scale))`,
+          '--background-height': `calc(${sprite.sheetSize.h}px * var(--pixel-scale))`
+        }"
+      >
+        <div class="sprite" />
+      </div>
       <div class="atk">
         <span
           class="dual-text"
@@ -199,18 +190,7 @@ const displayedModifiers = computed(() => {
           {{ unit.hp }}
         </span>
       </div>
-      <div class="cmd">
-        <span
-          class="dual-text"
-          :class="{
-            buff: unit.cmd > unit.baseCmd,
-            debuff: unit.cmd < unit.baseCmd
-          }"
-          :data-text="unit.cmd"
-        >
-          {{ unit.cmd }}
-        </span>
-      </div>
+
       <div class="modifiers">
         <UiSimpleTooltip
           v-for="modifier in displayedModifiers"
@@ -230,7 +210,7 @@ const displayedModifiers = computed(() => {
             />
           </template>
 
-          <div class="flex gap-2 items-start">
+          <div class="flex items-start">
             <img :src="`/assets/${modifier.icon}.png`" class="modifier" />
             <div>
               <div class="font-7">{{ modifier.name }}</div>
@@ -239,9 +219,8 @@ const displayedModifiers = computed(() => {
           </div>
         </UiSimpleTooltip>
       </div>
-      <div class="debug">{{ unit.x }}, {{ unit.y }}</div>
     </div>
-  </HexPositioner>
+  </BoardPositioner>
 </template>
 
 <style scoped lang="postcss">
@@ -281,65 +260,52 @@ const displayedModifiers = computed(() => {
 }
 .unit {
   --pixel-scale: 2;
-  clip-path: var(--hex-path);
   position: relative;
-  background: url('/assets/ui/unit-hex-base.png');
-  background-size: cover;
-  transition: transform 1s var(--ease-bounce-2);
   pointer-events: none;
   width: 100%;
   height: 100%;
-
-  @starting-style {
-    transform: translateY(-100px);
-  }
+  transform: translateZ(30px) rotateX(calc(var(--board-angle-X) * -1));
 
   &.is-selected {
     filter: brightness(1.15);
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url('/assets/ui/hex-highlight-unit-selected.png');
-    }
   }
 }
 
-.uni-sprite {
+.sprite-wrapper {
+  --pixel-scale: 1;
+  width: calc(var(--pixel-scale) * var(--width));
+  height: calc(var(--pixel-scale) * var(--height));
   position: absolute;
-  inset: 0;
-  background: v-bind(unitBg);
-  background-size: calc(96px * 2) calc(96px * 2);
-  background-position: center calc(100%);
-  .unit.enemy & {
-    transform: scaleX(-1);
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  scale: 2;
+  transform-origin: bottom center;
+  transition: transform 0.8s var(--ease-bounce-2);
+  .is-flipped & {
+    scale: -2 2;
   }
-
-  .unit.is-exhausted & {
-    filter: grayscale(1) brightness(0.6);
-  }
-}
-
-.unit-border {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  .unit.ally & {
-    background: url('/assets/ui/unit-hex-border-ally.png');
-  }
-
-  .unit.enemy & {
-    background: url('/assets/ui/unit-hex-border-enemy.png');
+  @starting-style {
+    transform: translateY(-50px);
   }
 }
-
-:is(.atk, .hp, .cmd) {
+.sprite {
+  width: 100%;
+  height: 100%;
+  background: v-bind(imageBg);
+  background-position: var(--bg-position);
+  background-repeat: no-repeat;
+  background-size: var(--background-width) var(--background-height);
+  translate: calc(var(--parallax-x, 0)) var(--parallax-y, 0) !important;
+  pointer-events: none;
+}
+:is(.atk, .hp) {
   width: 35px;
   height: 30px;
   display: grid;
   place-items: center;
   font-weight: var(--font-weight-7);
-  font-size: 16px;
+  font-size: 17px;
   position: absolute;
 
   .buff {
@@ -355,41 +321,24 @@ const displayedModifiers = computed(() => {
 
 .atk {
   background-image: url('/assets/ui/atk-frame-textless.png');
-  left: calc(var(--pixel-scale) * 4px);
-  top: 50%;
-  translate: 0 -50%;
+  background-size: cover;
+  left: 0;
+  bottom: 0;
 }
 
 .hp {
   background-image: url('/assets/ui/hp-frame-textless.png');
-  right: calc(var(--pixel-scale) * 4px);
-  top: 50%;
-  translate: 0 -50%;
-}
-
-.cmd {
-  background-image: url('/assets/ui/cmd-frame-textless.png');
-  left: 50%;
-  bottom: calc(var(--pixel-scale) * 1px);
-  translate: -50% 0;
-}
-
-.debug {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  opacity: 0;
+  background-size: cover;
+  right: 0;
+  bottom: 0;
 }
 
 .modifiers {
   position: absolute;
   top: var(--size-2);
-  left: 50%;
-  transform: translateX(-50%);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--size-2);
+  right: 0;
+  display: flex;
+  flex-direction: column;
   --pixel-scale: 2;
 }
 

@@ -6,13 +6,15 @@ import { CompositeAOEShape } from './composite.aoe-shape';
 import { RingAOEShape } from './ring.aoe-shape';
 import { RectangleAOEShape } from './rectangle.aoe-shape';
 import { NoAOEShape } from './no-aoe.aoe-shape';
+import { EverywhereAOEShape } from './everywhere.aoe-shape';
 
 const dict = {
   point: () => PointAOEShape,
   composite: () => CompositeAOEShape,
   ring: () => RingAOEShape,
   rectangle: () => RectangleAOEShape,
-  noAOE: () => NoAOEShape
+  noAOE: () => NoAOEShape,
+  everywhere: () => EverywhereAOEShape
 } as const;
 
 export type AOEType = keyof typeof dict;

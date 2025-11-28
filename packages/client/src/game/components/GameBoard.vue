@@ -45,7 +45,7 @@ const hoveredCard = computed(() => {
       }"
     >
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
-      <!-- <Unit v-for="unit in units" :key="unit.id" :unit="unit" /> -->
+      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </div>
 
     <div class="hand">
@@ -177,7 +177,7 @@ const hoveredCard = computed(() => {
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
-  perspective: 1000px;
+  perspective: 1500px;
 }
 #dragged-card-container {
   perspective: 850px;
@@ -187,10 +187,12 @@ const hoveredCard = computed(() => {
 }
 
 .board {
+  --board-angle-X: 20deg;
   position: absolute;
-  top: var(--size-11);
+  top: 40%;
   left: 50%;
-  transform: translateX(-50%) rotateX(15deg);
+  transform: translateX(-50%) translateY(-50%) rotateX(var(--board-angle-X));
+  transform-style: preserve-3d;
 }
 
 .hand {

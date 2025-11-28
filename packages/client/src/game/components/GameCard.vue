@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useCard, useGameUi, useMyPlayer } from '../composables/useGameClient';
 import Card from '@/card/components/Card.vue';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { match } from 'ts-pattern';
 import sprites from 'virtual:sprites';
 
 const {
@@ -89,8 +91,18 @@ const classes = computed(() => {
 });
 
 const sprite = computed(() => {
-  console.log(sprites, card.value.spriteId);
   return sprites[card.value.spriteId];
+});
+
+const animationSequence = computed(() => {
+  return match(card.value.kind)
+    .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
+      ui.value.selectedCard?.equals(card.value) ? ['idle'] : ['breathing']
+    )
+    .with(CARD_KINDS.SPELL, CARD_KINDS.ARTIFACT, () =>
+      ui.value.selectedCard?.equals(card.value) ? ['active'] : ['default']
+    )
+    .exhaustive();
 });
 </script>
 
@@ -107,6 +119,7 @@ const sprite = computed(() => {
       :id="card.id"
       :max-angle="15"
       :parallax-multiplier="0.35"
+      :animation-sequence="animationSequence"
       :card="{
         id: card.id,
         name: card.name,
