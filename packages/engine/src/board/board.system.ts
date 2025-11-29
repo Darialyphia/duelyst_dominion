@@ -138,6 +138,16 @@ export class BoardSystem
     ].filter(isDefined);
   }
 
+  getAdjacent(point: Point) {
+    // get adjacent positions (non-diagonal)
+    return [
+      this.getCellAt({ x: point.x, y: point.y - 1 }), // top
+      this.getCellAt({ x: point.x + 1, y: point.y }), // right
+      this.getCellAt({ x: point.x, y: point.y + 1 }), // bottom
+      this.getCellAt({ x: point.x - 1, y: point.y }) // left
+    ].filter(isDefined);
+  }
+
   getNearbyShrines({ x, y }: Point) {
     return this.game.boardSystem
       .getNeighbors({ x, y })

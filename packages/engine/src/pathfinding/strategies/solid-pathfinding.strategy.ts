@@ -43,6 +43,7 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
 
     for (let i = 0; i <= edges.length; i++) {
       const edge = edges[i];
+
       if (isDefined(edge) && this.isEdgeValid(edge)) {
         result.push({ node: pointToCellId(edge), weight: 1 });
       }
@@ -53,7 +54,8 @@ export class SolidBodyPathfindingStrategy implements PathfindingStrategy {
 
   isEdgeValid(cell: BoardCell) {
     if (this.origin.equals(cell)) return false;
-    return cell.isOccupied;
+    if (!cell.isOccupied) return true;
+    return cell.unit?.player.equals(this.unit.player) ?? false;
   }
 
   getEdges(node: SerializedCoords): Array<Edge<SerializedCoords>> {

@@ -15,15 +15,15 @@ import type { BuilderContext } from '../schema';
 
 export type CardFilter =
   | { type: 'any_card' }
-  | { type: 'self' }
-  | { type: 'minion' }
-  | { type: 'spell' }
-  | { type: 'artifact' }
-  | { type: 'index_in_hand'; params: { index: number } }
-  | { type: 'in_hand'; params: { player: Filter<PlayerFilter> } }
-  | { type: 'in_deck'; params: { player: Filter<PlayerFilter> } }
-  | { type: 'in_discard_pile'; params: { player: Filter<PlayerFilter> } }
-  | { type: 'from_player'; params: { player: Filter<PlayerFilter> } }
+  | { type: 'card_self'; params: { not: boolean } }
+  | { type: 'minion'; params: { not: boolean } }
+  | { type: 'spell'; params: { not: boolean } }
+  | { type: 'artifact'; params: { not: boolean } }
+  | { type: 'index_in_hand'; params: { index: number; not: boolean } }
+  | { type: 'in_hand'; params: { player: Filter<PlayerFilter>; not: boolean } }
+  | { type: 'in_deck'; params: { player: Filter<PlayerFilter>; not: boolean } }
+  | { type: 'in_discard_pile'; params: { player: Filter<PlayerFilter>; not: boolean } }
+  | { type: 'from_player'; params: { player: Filter<PlayerFilter>; not: boolean } }
   | { type: 'modifier_source' }
   | { type: 'modifier_target' }
   | {
@@ -47,7 +47,7 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
     ctx.game.cardSystem.cards.filter(c => {
       return filter.groups.some(group => {
         return group.every(condition => {
-          return match(condition)
+          const isMatch = match(condition)
             .with({ type: 'any_card' }, () => true)
             .with({ type: 'artifact' }, () => c.kind === CARD_KINDS.ARTIFACT)
             .with({ type: 'spell' }, () => c.kind === CARD_KINDS.SPELL)
@@ -76,7 +76,7 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
             .with({ type: 'in_discard_pile' }, () => {
               return c.location === 'discardPile';
             })
-            .with({ type: 'self' }, () => c.equals(ctx.card))
+            .with({ type: 'card_self' }, () => c.equals(ctx.card))
             .with({ type: 'drawn_card' }, () => {
               if (ctx.event instanceof PlayerAfterDrawEvent) {
                 return ctx.event.data.cards.some((drawnCard: AnyCard) =>
@@ -138,6 +138,12 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
               return selectedCard.equals(c);
             })
             .exhaustive();
+
+          return 'params' in condition &&
+            'not' in condition.params &&
+            condition.params.not === true
+            ? !isMatch
+            : isMatch;
         });
       });
     })

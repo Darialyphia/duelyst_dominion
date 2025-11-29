@@ -180,12 +180,14 @@ const hoveredCard = computed(() => {
 <style scoped lang="postcss">
 .game-board {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-size: cover;
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
   perspective: 1500px;
+  background: url(/assets/backgrounds/booster-opening.png) center/cover
+    no-repeat;
 }
 #dragged-card-container {
   perspective: 850px;

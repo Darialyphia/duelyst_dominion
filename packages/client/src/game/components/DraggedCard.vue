@@ -98,6 +98,7 @@ watch(isPinned, pinned => {
         'is-pinning': isPinning
       }"
       :style="{
+        '--pixel-scale': 1.5,
         '--x': `${x}px`,
         '--y': `${y}px`
       }"

@@ -1,5 +1,4 @@
 import type { Nullable, Point } from '@game/shared';
-import type { GenericAOEShape } from '../../aoe/aoe-shape';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { Game } from '../../game/game';
@@ -408,4 +407,10 @@ export const parseCardBlueprintSchema = (schema: CardBlueprintSchema): CardBluep
     case CARD_KINDS.ARTIFACT:
       return parseArtifactBlueprintSchema(schema);
   }
+};
+
+export const defineCardblueprintSchema = <T extends CardBlueprintSchema>(
+  schema: T
+): T => {
+  return schema;
 };

@@ -245,6 +245,7 @@ export class UiController {
 
   selectCard(card: CardViewModel) {
     this._selectedCard = card;
+    this._selectedUnit = null;
   }
 
   unselectCard() {

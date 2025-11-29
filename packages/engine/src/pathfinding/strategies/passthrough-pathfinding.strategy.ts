@@ -33,7 +33,7 @@ export class PassThroughPathfindingStrategy implements PathfindingStrategy {
 
   computeNeighbors(node: SerializedCoords) {
     const cell = this.game.boardSystem.getCellAt(node)!;
-    const edges = this.game.boardSystem.getNeighbors(cell.position);
+    const edges = this.game.boardSystem.getAdjacent(cell.position);
 
     const result: Array<{ node: SerializedCoords; weight: number }> = [];
 

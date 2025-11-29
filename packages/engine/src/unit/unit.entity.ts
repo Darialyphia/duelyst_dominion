@@ -382,9 +382,10 @@ export class Unit
 
   getPossibleMoves(max?: number, force = false) {
     if (!this.canMove && !force) return [];
+
     return this.movement.getAllPossibleMoves(max ?? this.sprintReach).filter(point => {
       const cell = this.game.boardSystem.getCellAt(point)!;
-      return cell.isOccupied && !cell.unit;
+      return !cell.isOccupied;
     });
   }
 
@@ -661,9 +662,10 @@ export class Unit
   serialize() {
     // calculate this upfront as this can be an expensive operation if we call it many times
     // moves the unit could make provided it was able to move fully
-    const potentialMoves = this.getPossibleMoves(this.sprintReach, true).map(
-      point => this.game.boardSystem.getCellAt(point)!
-    );
+    const potentialMoves = this.getPossibleMoves(
+      this.sprintReach * this.maxMovementsPerTurn,
+      true
+    ).map(point => this.game.boardSystem.getCellAt(point)!);
 
     // moves the unit can actually make
     const possibleSprintMoves = this.getPossibleMoves(this.sprintReach).map(

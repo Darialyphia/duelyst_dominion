@@ -115,11 +115,12 @@ const animationSequence = computed(() => {
     <Card
       v-if="sprite"
       :has-backlighting="false"
-      :isTiltable="true"
+      :isTiltable="false"
       :id="card.id"
       :max-angle="15"
       :parallax-multiplier="0.35"
       :animation-sequence="animationSequence"
+      is-foil
       :card="{
         id: card.id,
         name: card.name,

@@ -1,4 +1,4 @@
-import { Vec2, type Point, type Serializable } from '@game/shared';
+import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
 import type { Game } from '../../game/game';
 import { pointToCellId } from '../board-utils';
 import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
@@ -71,7 +71,11 @@ export class BoardCell
   }
 
   get isOccupied() {
-    return !this.unit && !this.shrine;
+    return isDefined(this.unit);
+  }
+
+  get isEmpty() {
+    return !this.isOccupied;
   }
 
   isNearby(point: Point) {

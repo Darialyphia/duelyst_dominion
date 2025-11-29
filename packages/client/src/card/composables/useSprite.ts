@@ -26,7 +26,7 @@ export function useSprite({
   kind,
   scale = 1
 }: {
-  sprite: MaybeRefOrGetter<SpriteData>;
+  sprite: MaybeRefOrGetter<SpriteData | null>;
   animationSequence: MaybeRefOrGetter<string[] | undefined>;
   kind: MaybeRefOrGetter<CardKind>;
   scale?: number;
@@ -55,6 +55,7 @@ export function useSprite({
   });
 
   const currentAnimation = computed(() => {
+    if (!spriteRef.value) return null;
     const name = sequenceToUse.value[currentSequenceIndex.value];
     return spriteRef.value.animations[name];
   });
@@ -75,6 +76,7 @@ export function useSprite({
 
   useIntervalFn(
     () => {
+      if (!spriteRef.value) return;
       if (!currentAnimation.value || !shouldAnimate.value) return;
       const { startFrame, endFrame } = currentAnimation.value;
       const totalFrames = endFrame - startFrame + 1;
@@ -105,6 +107,9 @@ export function useSprite({
   );
 
   const activeFrameRect = computed(() => {
+    if (!spriteRef.value) {
+      return { x: 0, y: 0, width: 0, height: 0 };
+    }
     return {
       x: currentFrame.value * spriteRef.value.frameSize.w,
       y: 0,
@@ -119,7 +124,7 @@ export function useSprite({
   });
 
   const imageBg = computed(() => {
-    return `url(/assets/cards/${spriteRef.value.id}.png)`;
+    return `url(/assets/cards/${spriteRef.value?.id}.png)`;
   });
 
   return {

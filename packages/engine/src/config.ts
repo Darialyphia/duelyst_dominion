@@ -1,4 +1,8 @@
 export type Config = {
+  FEATURES: {
+    RUNES: boolean;
+  };
+
   MAX_MAIN_DECK_SIZE: number;
   MAX_MAIN_DECK_CARD_COPIES: number;
 
@@ -38,6 +42,9 @@ export type Config = {
 };
 
 export const defaultConfig: Config = {
+  FEATURES: {
+    RUNES: true
+  },
   MAX_MAIN_DECK_SIZE: 40,
   MAX_MAIN_DECK_CARD_COPIES: 3,
   INITIAL_HAND_SIZE: 3,

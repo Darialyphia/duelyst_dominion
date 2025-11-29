@@ -1,15 +1,6 @@
 import type { Game } from '../../..';
 
-export type FilterCandidateSelectionType =
-  | {
-      type: 'all';
-    }
-  | {
-      type: 'random';
-      count: number;
-    };
-
-export type Filter<T> = FilterCandidateSelectionType & { groups: T[][] };
+export type Filter<T> = { groups: T[][]; type: 'all' | 'random'; count?: number };
 
 export const resolveFilter = <TFilter, TResult>(
   game: Game,
@@ -20,7 +11,8 @@ export const resolveFilter = <TFilter, TResult>(
   if (filter.type === 'random' && results.length) {
     const selected: TResult[] = [];
     const usedIndices = new Set<number>();
-    while (selected.length < filter.count && usedIndices.size < results.length) {
+    const count = filter.count ?? 1;
+    while (selected.length < count && usedIndices.size < results.length) {
       const index = game.rngSystem.nextInt(results.length - 1);
       if (usedIndices.has(index)) continue;
       usedIndices.add(index);

@@ -10,6 +10,7 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
+  @Consume@ @[rune:blue]@
   Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
   sprite: { id: 'spells/f1_martyrdom' },
   kind: CARD_KINDS.SPELL,

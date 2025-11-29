@@ -15,6 +15,7 @@ export const archonSpellbinder: MinionBlueprint = {
   name: 'Archon Spellbinder',
   description: dedent`
   Enemy spells cost 1 more to play.
+  @[rune:blue]@ @[rune:blue]@ @[rune:blue]@: +0 / +2
   `,
   sprite: { id: 'minions/neutral_archon-spellbinder' },
   kind: CARD_KINDS.MINION,
@@ -30,7 +31,7 @@ export const archonSpellbinder: MinionBlueprint = {
   },
   atk: 6,
   cmd: 2,
-  maxHp: 9,
+  maxHp: 7,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

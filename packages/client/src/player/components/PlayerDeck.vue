@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS, type Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import {
@@ -7,6 +8,7 @@ import {
   HoverCardRoot,
   HoverCardTrigger
 } from 'reka-ui';
+import sprites from 'virtual:sprites';
 
 export type DisplayedDeck = {
   name: string;
@@ -61,23 +63,37 @@ const highestRuneCost = computed<Record<Rune, number>>(() => {
 
   return runeCosts;
 });
+
+const sprite = computed(() =>
+  general.value ? sprites[general.value.sprite.id] : null
+);
+const { activeFrameRect, bgPosition, imageBg } = useSprite({
+  kind: CARD_KINDS.GENERAL,
+  sprite: sprite,
+  animationSequence: undefined
+});
 </script>
 
 <template>
   <div>
     <HoverCardRoot>
       <HoverCardTrigger as-child>
-        <button
-          class="player-deck"
-          :style="{
-            '--bg': `url(/assets/cards/${general?.cardIconId}.png)`
-          }"
-        >
+        <button class="player-deck">
+          <div
+            class="general"
+            :style="{
+              '--bg-position': bgPosition,
+              '--width': `${activeFrameRect.width}px`,
+              '--height': `${activeFrameRect.height}px`,
+              '--background-width': `calc( ${sprite?.sheetSize.w}px * var(--pixel-scale))`,
+              '--background-height': `calc(${sprite?.sheetSize.h}px * var(--pixel-scale))`
+            }"
+          />
           <div class="deck-name">
             {{ deck.name }}
           </div>
 
-          <div class="flex gap-2">
+          <div class="flex gap-1">
             <div class="rune-count">
               <img src="/assets/ui/rune-red.png" />
               {{ highestRuneCost.red }}
@@ -127,25 +143,44 @@ const highestRuneCost = computed<Record<Rune, number>>(() => {
 
 <style scoped lang="postcss">
 .player-deck {
+  --pixel-scale: 1;
   display: flex;
   width: 100%;
   gap: var(--size-2);
   align-items: center;
-  background-image:
+  position: relative;
+  overflow: hidden;
+
+  /* background-image:
     linear-gradient(to right, hsl(0deg 0% 20% / 0.5), hsl(0deg 0% 0% / 0.5)),
     var(--bg);
   background-repeat: no-repeat;
   background-position:
     center center,
     right calc(100% + 50px);
-  background-size: 200%, calc(2px * 96);
+  background-size: 200%, calc(2px * 96); */
   padding: var(--size-2) var(--size-4);
   border: solid 1px hsl(var(--color-primary-hsl) / 0.5);
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
 }
 
+.general {
+  --pixel-scale: 1;
+  position: absolute;
+  bottom: -1rem;
+  scale: -2 2;
+  right: 0;
+  width: var(--width);
+  height: var(--height);
+  background: v-bind(imageBg);
+  background-position: var(--bg-position);
+  background-repeat: no-repeat;
+  background-size: var(--background-width) var(--background-height);
+}
+
 .deck-name {
+  position: relative;
   flex: 1 1 0%;
   text-align: left;
   align-self: stretch;
@@ -190,7 +225,7 @@ const highestRuneCost = computed<Record<Rune, number>>(() => {
   font-size: var(--font-size-4);
   --pixel-scale: 1;
   font-weight: var(--font-weight-5);
-
+  box-shadow: var(--shadow-4);
   filter: drop-shadow(0 0 0.5rem black);
   img {
     width: calc(17px * var(--pixel-scale));

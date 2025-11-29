@@ -7,11 +7,6 @@ import { getKeywordById, type KeywordId } from '../card-keywords';
 import { resolveCellFilter, type CellFilter } from './filters/cell.filters';
 import { resolveUnitFilter, type UnitFilter } from './filters/unit.filters';
 import { matchNumericOperator, type NumericOperator } from './values/numeric';
-import { type Nullable } from '@game/shared';
-import type { BoardCell } from '../../board/entities/board-cell.entity';
-import type { Game } from '../..';
-import type { AnyCard } from '../entities/card.entity';
-import type { GameEvent } from '../../game/game.events';
 import type { Unit } from '../../unit/unit.entity';
 import type { BuilderContext } from './schema';
 

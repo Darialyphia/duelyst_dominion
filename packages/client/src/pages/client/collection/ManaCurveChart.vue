@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
+import { type Rune } from '@game/engine/src/card/card.enums';
 import { useCollectionPage } from './useCollectionPage';
 import CardText from '@/card/components/CardText.vue';
 const { deckBuilder } = useCollectionPage();
@@ -29,14 +29,25 @@ const getCountForCostAndUp = (minCost: number) =>
     })
   );
 
-const getAverageRuneCost = (rune: Rune) => {
-  return deckBuilder.value.cards.reduce((acc, card) => {
-    if (!('runeCost' in card.blueprint)) return acc;
-    const runeCost = card.blueprint.runeCost[rune];
-    if (!runeCost) return acc;
-    return acc + runeCost * (card.copies ?? 1);
-  }, 0);
-};
+const highestRuneCost = computed<Record<Rune, number>>(() => {
+  const runeCosts: Record<Rune, number> = {
+    red: 0,
+    yellow: 0,
+    blue: 0
+  };
+
+  for (const item of deckBuilder.value.cards) {
+    if (!('runeCost' in item.blueprint)) continue;
+    for (const [rune, cost] of Object.entries(item.blueprint.runeCost)) {
+      const runeKey = rune as Rune;
+      if (cost > runeCosts[runeKey]) {
+        runeCosts[runeKey] = cost;
+      }
+    }
+  }
+
+  return runeCosts;
+});
 
 const bars = computed(() => {
   const result: Array<{ label: string; count: number }> = [];
@@ -44,14 +55,14 @@ const bars = computed(() => {
     result.push({ label: i.toString(), count: getCountForCost(i) });
   }
   result.push({ label: '6+', count: getCountForCostAndUp(6) });
-  result.push({ label: '@[rune:red]@', count: getAverageRuneCost(RUNES.RED) });
+  result.push({ label: '@[rune:red]@', count: highestRuneCost.value.red });
   result.push({
     label: '@[rune:yellow]@',
-    count: getAverageRuneCost(RUNES.YELLOW)
+    count: highestRuneCost.value.yellow
   });
   result.push({
     label: '@[rune:blue]@',
-    count: getAverageRuneCost(RUNES.BLUE)
+    count: highestRuneCost.value.blue
   });
   return result;
 });

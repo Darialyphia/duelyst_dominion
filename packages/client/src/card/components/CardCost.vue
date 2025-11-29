@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { isDefined } from '@game/shared';
 import type { RuneCost } from '@game/engine/src/card/card-blueprint';
+import { defaultConfig } from '@game/engine/src/config';
 
 const props = defineProps<{
   manaCost?: number | null;
@@ -29,7 +30,7 @@ const costStatus = computed(() => {
       </span>
     </div>
 
-    <template v-if="runeCost">
+    <template v-if="defaultConfig.FEATURES.RUNES && runeCost">
       <div class="rune red">
         <span
           v-if="isDefined(runeCost.red)"

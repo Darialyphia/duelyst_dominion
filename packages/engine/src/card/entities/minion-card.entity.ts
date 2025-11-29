@@ -76,6 +76,7 @@ export class MinionCard extends Card<
   }
 
   get hasRunes() {
+    if (!this.game.config.FEATURES.RUNES) return true;
     return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
       return this.player.runes[rune as Rune] >= cost;
     });

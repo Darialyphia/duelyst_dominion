@@ -13,7 +13,7 @@ export class MinionSummonTargetingStrategy implements TargetingStrategy {
     return (
       this.card.player.units.some(
         unit => this.game.boardSystem.getDistance(unit.position, point) === 1
-      ) && !!this.game.boardSystem.getCellAt(point)?.isOccupied
+      ) && !this.game.boardSystem.getCellAt(point)?.isOccupied
     );
   }
 

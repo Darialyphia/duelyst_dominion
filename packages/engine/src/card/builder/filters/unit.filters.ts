@@ -24,7 +24,7 @@ import type { BuilderContext } from '../schema';
 
 export type UnitFilter =
   | { type: 'any_unit' }
-  | { type: 'is_self'; params: { not: boolean } }
+  | { type: 'unit_self'; params: { not: boolean } }
   | { type: 'is_general'; params: { not: boolean } }
   | { type: 'is_minion'; params: { not: boolean } }
   | { type: 'is_ally'; params: { not: boolean } }
@@ -124,7 +124,7 @@ export const resolveUnitFilter = ({ filter, ...ctx }: UnitFilterContext): Unit[]
             })
             .with({ type: 'is_general' }, () => u.isGeneral)
             .with({ type: 'is_minion' }, () => !u.isGeneral)
-            .with({ type: 'is_self' }, () => {
+            .with({ type: 'unit_self' }, () => {
               if (!isMinion(ctx.card)) return false;
               return ctx.card.unit?.equals(u);
             })
