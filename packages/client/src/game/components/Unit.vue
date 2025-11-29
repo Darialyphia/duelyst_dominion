@@ -284,8 +284,9 @@ const displayedModifiers = computed(() => {
   pointer-events: none;
   width: 100%;
   height: 100%;
-  transform: translateZ(30px) rotateX(calc(var(--board-angle-X) * -1));
-
+  bottom: 0;
+  transform: translateY(-30px) rotateX(calc(var(--board-angle-X) * -1));
+  transform-origin: bottom center;
   &.is-selected {
     filter: brightness(1.15);
   }
@@ -341,6 +342,10 @@ const displayedModifiers = computed(() => {
     background-color: #ae3030;
     opacity: 1;
   }
+}
+
+.sprite {
+  transform: translateY(10px);
 }
 
 .shadow-wrapper {

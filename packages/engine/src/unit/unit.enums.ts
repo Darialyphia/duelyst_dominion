@@ -5,6 +5,7 @@ export const UNIT_EVENTS = {
   UNIT_AFTER_MOVE: 'unit.after_move',
   UNIT_BEFORE_ATTACK: 'unit.before_attack',
   UNIT_AFTER_ATTACK: 'unit.after_attack',
+  UNIT_AFTER_COMBAT: 'unit.after_combat',
   UNIT_BEFORE_COUNTERATTACK: 'unit.before_counterattack',
   UNIT_AFTER_COUNTERATTACK: 'unit.after_counterattack',
   UNIT_BEFORE_DEAL_DAMAGE: 'unit.before_deal_damage',

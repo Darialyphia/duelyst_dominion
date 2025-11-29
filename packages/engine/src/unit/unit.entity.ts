@@ -26,6 +26,7 @@ import { CombatComponent } from './components/combat.component';
 import { UNIT_EVENTS } from './unit.enums';
 import {
   UnitAfterBounceEvent,
+  UnitAfterCombatEvent,
   UnitAfterDestroyEvent,
   UnitAfterHealEvent,
   UnitAfterMoveEvent,
@@ -540,6 +541,7 @@ export class Unit
     if (this.attacksPerformedThisTurn >= this.maxAttacksPerTurn) {
       this.exhaust();
     }
+    await this.game.emit(UNIT_EVENTS.UNIT_AFTER_COMBAT, new UnitAfterCombatEvent({}));
   }
 
   async counterAttack(unit: Unit) {

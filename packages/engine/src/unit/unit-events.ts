@@ -1,4 +1,4 @@
-import type { Point, Vec2 } from '@game/shared';
+import type { EmptyObject, Point, Vec2 } from '@game/shared';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { Unit } from './unit.entity';
 import type { UNIT_EVENTS } from './unit.enums';
@@ -149,6 +149,15 @@ export class UnitAfterBounceEvent extends TypedSerializableEvent<
   }
 }
 
+export class UnitAfterCombatEvent extends TypedSerializableEvent<
+  EmptyObject,
+  EmptyObject
+> {
+  serialize() {
+    return {};
+  }
+}
+
 export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_BEFORE_MOVE]: UnitBeforeMoveEvent;
   [UNIT_EVENTS.UNIT_AFTER_MOVE]: UnitAfterMoveEvent;
@@ -168,4 +177,5 @@ export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_AFTER_HEAL]: UnitAfterHealEvent;
   [UNIT_EVENTS.UNIT_BEFORE_BOUNCE]: UnitBeforeBounceEvent;
   [UNIT_EVENTS.UNIT_AFTER_BOUNCE]: UnitAfterBounceEvent;
+  [UNIT_EVENTS.UNIT_AFTER_COMBAT]: UnitAfterCombatEvent;
 };

@@ -2,6 +2,7 @@
 import UiButton from '@/ui/components/UiButton.vue';
 import {
   useBoardCells,
+  useFxEvent,
   useGameClient,
   useGameState,
   useGameUi,
@@ -17,6 +18,7 @@ import BoardCell from './BoardCell.vue';
 import FPS from './FPS.vue';
 import GameCard from './GameCard.vue';
 import { config } from '@/utils/config';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 // import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
@@ -29,9 +31,67 @@ const opponent = useOpponentPlayer();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 
+const camera = ref({
+  origin: { x: 0, y: 0, z: 0 },
+  scale: 1,
+  angle: { x: 20, y: 0 }
+});
+useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
+  const unit = units.value.find(u => u.id === event.unit)!;
+  const origin = config.CELL.toScreenPosition(unit);
+  const proxy = {
+    originX: camera.value.origin.x,
+    originY: camera.value.origin.y,
+    scale: camera.value.scale,
+    angleX: camera.value.angle.x,
+    angleY: camera.value.angle.y
+  };
+  await gsap.to(proxy, {
+    duration: 0.3,
+    ease: Power2.easeOut,
+    originX: origin.x,
+    originY: origin.y,
+    scale: 2,
+    angleX: 45,
+    onUpdate: () => {
+      camera.value.origin.x = proxy.originX;
+      camera.value.origin.y = proxy.originY;
+      camera.value.scale = proxy.scale;
+      camera.value.angle.x = proxy.angleX;
+      camera.value.angle.y = proxy.angleY;
+    }
+  });
+});
+useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
+  const proxy = {
+    originX: camera.value.origin.x,
+    originY: camera.value.origin.y,
+    scale: camera.value.scale,
+    angleX: camera.value.angle.x,
+    angleY: camera.value.angle.y
+  };
+  await gsap.to(proxy, {
+    duration: 0.3,
+    ease: Power2.easeOut,
+    originX: 0,
+    originY: 0,
+    scale: 1,
+    angleX: 20,
+    angleY: 0,
+    onUpdate: () => {
+      // camera.value.origin.x = proxy.originX;
+      // camera.value.origin.y = proxy.originY;
+      camera.value.scale = proxy.scale;
+      camera.value.angle.x = proxy.angleX;
+      camera.value.angle.y = proxy.angleY;
+    }
+  });
+});
 const boardStyle = computed(() => ({
   width: `${state.value.board.columns * config.CELL.width}px`,
-  height: `${state.value.board.rows * config.CELL.height}px`
+  height: `${state.value.board.rows * config.CELL.height}px`,
+  '--board-angle-X': `${camera.value.angle.x}deg`,
+  '--board-angle-Y': `${camera.value.angle.y}deg  `
   // '--board-angle-X': `${(y.value / height.value - 0.5) * -180}deg`,
   // '--board-angle-Y': `${(x.value / width.value - 0.5) * 180}deg`
 }));
@@ -48,9 +108,17 @@ const hoveredCard = computed(() => {
     <DraggedCard />
     <FPS />
 
-    <div :id="ui.DOMSelectors.board.id" class="board" :style="boardStyle">
-      <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
-      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
+    <div
+      class="camera"
+      :style="{
+        transform: ` scale(${camera.scale})`,
+        transformOrigin: `${camera.origin.x}px ${camera.origin.y}px`
+      }"
+    >
+      <div :id="ui.DOMSelectors.board.id" class="board" :style="boardStyle">
+        <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
+        <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
+      </div>
     </div>
 
     <div class="hand">
@@ -196,14 +264,20 @@ const hoveredCard = computed(() => {
   pointer-events: none;
 }
 
-.board {
-  --board-angle-X: 20deg;
-  --board-angle-Y: 0deg;
+.camera {
   position: absolute;
   top: 40%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%) rotateY(var(--board-angle-Y))
-    rotateX(var(--board-angle-X));
+  translate: -50% -50%;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-2);
+}
+
+.board {
+  --board-angle-Y: 0deg;
+  pointer-events: auto;
+  transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X));
   transform-style: preserve-3d;
 }
 
