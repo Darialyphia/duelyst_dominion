@@ -15,6 +15,7 @@ import { useSprite } from '@/card/composables/useSprite';
 import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
 import { useIsInAoe } from '../composables/useIsInAoe';
+import SpriteFX from './SpriteFX.vue';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -96,10 +97,13 @@ const onAttack = async (event: { unit: string; target: Point }) => {
 useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, onAttack);
 useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, onAttack);
 
+const latestDamageReceived = ref<number>();
+const damageIndicatorEl = useTemplateRef('damageIndicator');
 useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
   if (event.unit !== unit.id) return;
+  latestDamageReceived.value = event.damage;
 
-  return new Promise<void>(resolve => {
+  const animation = new Promise<void>(resolve => {
     isAttacking.value = true;
     animationSequence.value = ['hit'];
     const unsub = spriteControls.on('sequenceEnd', () => {
@@ -109,6 +113,37 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
       resolve();
     });
   });
+
+  const damageIndicator = async () => {
+    await nextTick();
+    if (!damageIndicatorEl.value) return;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        latestDamageReceived.value = undefined;
+      }
+    });
+
+    tl.fromTo(
+      damageIndicatorEl.value,
+      { y: 0, scale: 0.5, opacity: 0 },
+      {
+        y: -75,
+        scale: 1.5,
+        opacity: 1,
+        duration: 0.3,
+        ease: 'back.out(2.5)'
+      }
+    ).to(damageIndicatorEl.value, {
+      y: -80,
+      opacity: 0,
+      duration: 0.3,
+      delay: 0.2,
+      ease: Power2.easeIn
+    });
+  };
+
+  await Promise.all([animation, damageIndicator()]);
 });
 
 useFxEvent(FX_EVENTS.UNIT_BEFORE_DESTROY, async event => {
@@ -134,6 +169,14 @@ const displayedModifiers = computed(() => {
     'modifierType'
   );
 });
+
+const isBeingSummoned = ref(false);
+setTimeout(() => {
+  isBeingSummoned.value = true;
+  setTimeout(() => {
+    isBeingSummoned.value = false;
+  }, 650);
+}, 300);
 </script>
 
 <template>
@@ -210,6 +253,68 @@ const displayedModifiers = computed(() => {
           {{ unit.hp }}
         </span>
       </div>
+      <div
+        ref="damageIndicator"
+        v-if="latestDamageReceived"
+        class="damage-indicator"
+      >
+        {{ latestDamageReceived }}
+      </div>
+      <SpriteFX
+        v-if="latestDamageReceived"
+        class="fx-container"
+        :class="{
+          'is-flipped': isFlipped
+        }"
+        :sprites="[
+          {
+            spriteId: 'impact',
+            animationSequence: ['impactorangemedium'],
+            scale: 1,
+            offset: {
+              x: activeFrameRect.width / 3 - 10,
+              y: -40
+            }
+          },
+          {
+            spriteId: 'collision',
+            animationSequence: ['collisionsparks'],
+            scale: 1,
+            offset: {
+              x: 0,
+              y: 0
+            }
+          },
+          {
+            spriteId: 'bloodground',
+            animationSequence: ['bloodground2'],
+            scale: 1,
+            offset: {
+              x: -activeFrameRect.width / 3,
+              y: 40
+            }
+          }
+        ]"
+      />
+
+      <SpriteFX
+        v-if="isBeingSummoned"
+        class="fx-container"
+        :class="{
+          'is-flipped': isFlipped
+        }"
+        :sprites="[
+          {
+            spriteId: 'smokeground',
+            animationSequence: ['smokeground'],
+            scale: 1,
+            offset: {
+              x: 0,
+              y: 40
+            }
+          }
+        ]"
+      />
 
       <div class="modifiers">
         <UiSimpleTooltip
@@ -217,6 +322,7 @@ const displayedModifiers = computed(() => {
           :key="modifier.id"
           use-portal
           side="left"
+          :side-offset="8"
         >
           <template #trigger>
             <div
@@ -230,7 +336,7 @@ const displayedModifiers = computed(() => {
             />
           </template>
 
-          <div class="flex items-start">
+          <div class="flex gap-2 items-start">
             <img :src="`/assets/${modifier.icon}.png`" class="modifier" />
             <div>
               <div class="font-7">{{ modifier.name }}</div>
@@ -285,7 +391,8 @@ const displayedModifiers = computed(() => {
   width: 100%;
   height: 100%;
   bottom: 0;
-  transform: translateY(-30px) rotateX(calc(var(--board-angle-X) * -1));
+  transform: translateZ(10px) translateY(-15px)
+    rotateX(calc(var(--board-angle-X) * -1));
   transform-origin: bottom center;
   &.is-selected {
     filter: brightness(1.15);
@@ -396,14 +503,14 @@ const displayedModifiers = computed(() => {
   background-image: url('/assets/ui/atk-frame-textless.png');
   background-size: cover;
   left: 0;
-  bottom: 0;
+  bottom: -5px;
 }
 
 .hp {
   background-image: url('/assets/ui/hp-frame-textless.png');
   background-size: cover;
   right: 0;
-  bottom: 0;
+  bottom: -5px;
 }
 
 .modifiers {
@@ -421,6 +528,7 @@ const displayedModifiers = computed(() => {
   background: var(--bg) no-repeat center center;
   background-size: cover;
   pointer-events: auto;
+  margin-block-start: var(--size-1);
   position: relative;
   &::after {
     content: attr(data-stacks);
@@ -432,6 +540,27 @@ const displayedModifiers = computed(() => {
     paint-order: stroke fill;
     font-weight: var(--font-weight-7);
     -webkit-text-stroke: 2px black;
+  }
+}
+
+.damage-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-8);
+  color: var(--red-7);
+  pointer-events: none;
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
+}
+
+.fx-container {
+  position: absolute;
+  inset: 0;
+  &.is-flipped {
+    scale: -1 1;
   }
 }
 </style>

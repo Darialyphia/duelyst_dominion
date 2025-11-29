@@ -32,30 +32,27 @@ const opponent = useOpponentPlayer();
 // const { width, height } = useWindowSize();
 
 const camera = ref({
-  origin: { x: 0, y: 0, z: 0 },
+  origin: { x: 0, y: 0 },
   scale: 1,
   angle: { x: 20, y: 0 }
 });
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;
   const origin = config.CELL.toScreenPosition(unit);
+  camera.value.origin = origin;
+
   const proxy = {
-    originX: camera.value.origin.x,
-    originY: camera.value.origin.y,
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
     angleY: camera.value.angle.y
   };
-  await gsap.to(proxy, {
-    duration: 0.3,
+
+  gsap.to(proxy, {
+    duration: 0.4,
     ease: Power2.easeOut,
-    originX: origin.x,
-    originY: origin.y,
     scale: 2,
     angleX: 45,
     onUpdate: () => {
-      camera.value.origin.x = proxy.originX;
-      camera.value.origin.y = proxy.originY;
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
       camera.value.angle.y = proxy.angleY;
@@ -64,28 +61,24 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
 });
 useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
   const proxy = {
-    originX: camera.value.origin.x,
-    originY: camera.value.origin.y,
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
     angleY: camera.value.angle.y
   };
   await gsap.to(proxy, {
-    duration: 0.3,
+    duration: 0.6,
     ease: Power2.easeOut,
-    originX: 0,
-    originY: 0,
     scale: 1,
     angleX: 20,
     angleY: 0,
     onUpdate: () => {
-      // camera.value.origin.x = proxy.originX;
-      // camera.value.origin.y = proxy.originY;
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
       camera.value.angle.y = proxy.angleY;
     }
   });
+
+  camera.value.origin = { x: 0, y: 0 };
 });
 const boardStyle = computed(() => ({
   width: `${state.value.board.columns * config.CELL.width}px`,
@@ -271,11 +264,9 @@ const hoveredCard = computed(() => {
   translate: -50% -50%;
   pointer-events: none;
   transform-style: preserve-3d;
-  transition: transform 0.5s var(--ease-2);
 }
 
 .board {
-  --board-angle-Y: 0deg;
   pointer-events: auto;
   transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X));
   transform-style: preserve-3d;

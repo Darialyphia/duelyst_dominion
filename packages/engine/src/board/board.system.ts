@@ -1,6 +1,7 @@
 import {
   indexToPoint,
   isDefined,
+  isNumber,
   isString,
   Vec2,
   type Point,
@@ -120,8 +121,8 @@ export class BoardSystem
     return this.cellsMap.get(pointToCellId(posOrKey)) ?? null;
   }
 
-  getDistance(from: Point, to: Point) {
-    return Vec2.fromPoint(from).dist(to);
+  getDistance(origin: Point, point: Point): number {
+    return Math.max(Math.abs(point.x - origin.x), Math.abs(point.y - origin.y));
   }
 
   getNeighbors(point: Point) {

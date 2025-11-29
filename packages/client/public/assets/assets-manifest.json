@@ -1461,10 +1461,10 @@
       "assets": [
         {
           "alias": [
-            "fx-frozen"
+            "fx-bloodground"
           ],
           "src": [
-            "/assets/fx/frozen.json"
+            "/assets/fx/bloodground.json"
           ],
           "loadParser": "aseprite_loader",
           "data": {
@@ -1475,10 +1475,10 @@
         },
         {
           "alias": [
-            "fx-frozen.png"
+            "fx-bloodground.png"
           ],
           "src": [
-            "/assets/fx/frozen.png"
+            "/assets/fx/bloodground.png"
           ],
           "data": {
             "tags": {
@@ -1488,10 +1488,10 @@
         },
         {
           "alias": [
-            "fx-light-mask"
+            "fx-collision"
           ],
           "src": [
-            "/assets/fx/light-mask.json"
+            "/assets/fx/collision.json"
           ],
           "loadParser": "aseprite_loader",
           "data": {
@@ -1502,10 +1502,10 @@
         },
         {
           "alias": [
-            "fx-light-mask.png"
+            "fx-collision.png"
           ],
           "src": [
-            "/assets/fx/light-mask.png"
+            "/assets/fx/collision.png"
           ],
           "data": {
             "tags": {
@@ -1515,23 +1515,10 @@
         },
         {
           "alias": [
-            "fx-shadow.png"
+            "fx-impact"
           ],
           "src": [
-            "/assets/fx/shadow.png"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "fx-slash"
-          ],
-          "src": [
-            "/assets/fx/slash.json"
+            "/assets/fx/impact.json"
           ],
           "loadParser": "aseprite_loader",
           "data": {
@@ -1542,10 +1529,10 @@
         },
         {
           "alias": [
-            "fx-slash.png"
+            "fx-impact.png"
           ],
           "src": [
-            "/assets/fx/slash.png"
+            "/assets/fx/impact.png"
           ],
           "data": {
             "tags": {
@@ -1555,10 +1542,10 @@
         },
         {
           "alias": [
-            "fx-stasis"
+            "fx-smokeground"
           ],
           "src": [
-            "/assets/fx/stasis.json"
+            "/assets/fx/smokeground.json"
           ],
           "loadParser": "aseprite_loader",
           "data": {
@@ -1569,10 +1556,10 @@
         },
         {
           "alias": [
-            "fx-stasis.png"
+            "fx-smokeground.png"
           ],
           "src": [
-            "/assets/fx/stasis.png"
+            "/assets/fx/smokeground.png"
           ],
           "data": {
             "tags": {
@@ -5368,10 +5355,49 @@
         },
         {
           "alias": [
+            "cell-highlight-aoee.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-aoee.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "cell-highlight-attackable.png"
           ],
           "src": [
             "/assets/ui/cell-highlight-attackable.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-move-aoe.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-move-aoe.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "cell-highlight-move-attackable.png"
+          ],
+          "src": [
+            "/assets/ui/cell-highlight-move-attackable.png"
           ],
           "data": {
             "tags": {

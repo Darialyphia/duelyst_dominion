@@ -143,6 +143,11 @@ const cards = computed(() => {
 });
 
 const { width } = useElementBounding(() => ui.value.DOMSelectors.board.element);
+const handWidth = ref(width.value);
+watch(width, v => {
+  if (client.value.isPlayingFx) return;
+  handWidth.value = v;
+});
 </script>
 
 <template>
@@ -184,7 +189,7 @@ const { width } = useElementBounding(() => ui.value.DOMSelectors.board.element);
 <style scoped lang="postcss">
 .hand-wrapper {
   position: absolute;
-  width: calc(1px * v-bind(width));
+  width: calc(1px * v-bind(handWidth));
   left: 50%;
   transform: translateX(-50%);
   height: 50px;

@@ -24,8 +24,10 @@ export function useSprite({
   sprite,
   animationSequence,
   kind,
-  scale = 1
+  scale = 1,
+  pathPrefix = '/cards'
 }: {
+  pathPrefix?: string;
   sprite: MaybeRefOrGetter<SpriteData | null>;
   animationSequence: MaybeRefOrGetter<string[] | undefined>;
   kind: MaybeRefOrGetter<CardKind>;
@@ -124,7 +126,7 @@ export function useSprite({
   });
 
   const imageBg = computed(() => {
-    return `url(/assets/cards/${spriteRef.value?.id}.png)`;
+    return `url(/assets${pathPrefix}/${spriteRef.value?.id}.png)`;
   });
 
   return {
