@@ -227,7 +227,9 @@ setTimeout(() => {
           '--background-height': `calc(${sprite.sheetSize.h}px * var(--pixel-scale))`
         }"
       >
-        <div class="sprite" />
+        <div class="sprite">
+          <div class="foil" v-if="unit" />
+        </div>
       </div>
       <div class="atk">
         <span
@@ -386,6 +388,8 @@ setTimeout(() => {
 }
 .unit {
   --pixel-scale: 2;
+  --foil-animated-toggle: ;
+
   position: relative;
   pointer-events: none;
   width: 100%;
@@ -394,7 +398,7 @@ setTimeout(() => {
   transform: translateZ(10px) translateY(-15px)
     rotateX(calc(var(--board-angle-X) * -1));
   transform-origin: bottom center;
-  &.is-selected {
+  & .sprite {
     filter: brightness(1.15);
   }
 }
@@ -413,9 +417,7 @@ setTimeout(() => {
   .is-flipped & {
     scale: -2 2;
   }
-  .is-selected & {
-    filter: drop-shadow(0 0 1px white);
-  }
+
   @starting-style {
     transform: translateY(-50px);
   }
@@ -562,5 +564,84 @@ setTimeout(() => {
   &.is-flipped {
     scale: -1 1;
   }
+}
+
+@property --unit-foil-center-x {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --unit-foil-center-y {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --unit-foil-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes unit-foil-rotate {
+  from {
+    --unit-foil-angle: 0deg;
+  }
+  to {
+    --unit-foil-angle: 360deg;
+  }
+}
+@keyframes unit-foil-move {
+  from,
+  to {
+    --unit-foil-center-x: 50%;
+    --unit-foil-center-y: 25%;
+  }
+  50% {
+    --unit-foil-center-x: 50%;
+    --unit-foil-center-y: 75%;
+  }
+}
+
+@keyframes unit-foil-brightness {
+  from {
+    --unit-foil-brightness: 0.2;
+  }
+  50% {
+    --unit-foil-brightness: 0.5;
+  }
+  to {
+    --unit-foil-brightness: 0.2;
+  }
+}
+
+.foil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: red;
+  mask-image: v-bind(imageBg);
+  mask-position: var(--bg-position);
+  mask-repeat: no-repeat;
+  mask-size: var(--background-width) var(--background-height);
+  transform-origin: center center;
+  background: conic-gradient(
+    from var(--unit-foil-angle) at var(--unit-foil-center-x)
+      var(--unit-foil-center-y),
+    #ff7 0deg,
+    #a8ff5f 60deg,
+    #83fff7 120deg,
+    #7894ff 180deg,
+    #d875ff 240deg,
+    #ff7773 300deg,
+    #ff7 360deg
+  );
+  mix-blend-mode: darken;
+  animation:
+    unit-foil-rotate 8s linear infinite,
+    unit-foil-move 5s ease-in-out infinite,
+    unit-foil-brightness 10s ease-in-out infinite;
+  opacity: 0.25;
+  filter: brightness(calc((var(--unit-foil-brightness) * 0.3) + 0.5))
+    contrast(5) saturate(1.5) blur(5px);
 }
 </style>

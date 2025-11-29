@@ -120,7 +120,6 @@ const animationSequence = computed(() => {
       :max-angle="15"
       :parallax-multiplier="0.35"
       :animation-sequence="animationSequence"
-      is-foil
       :card="{
         id: card.id,
         name: card.name,

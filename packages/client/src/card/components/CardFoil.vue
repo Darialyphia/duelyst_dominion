@@ -142,4 +142,9 @@
   opacity: 0.12;
   transition-delay: 0.3s;
 }
+
+:global(.unit .foil-oil) {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
 </style>
