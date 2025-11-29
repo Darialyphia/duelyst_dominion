@@ -94,9 +94,9 @@ export class CardSystem extends System<CardSystemOptions> {
           } as CardOptions<GeneralBlueprint>)
       )
       .exhaustive();
+    this.cardMap.set(card.id, card);
     await card.init();
 
-    this.cardMap.set(card.id, card);
     return card as any;
   }
 

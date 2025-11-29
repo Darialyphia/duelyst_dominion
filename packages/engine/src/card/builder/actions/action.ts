@@ -219,17 +219,3 @@ export type ActionData =
 export const defineAction = <T extends ActionData>(action: T): T => {
   return action;
 };
-
-type Foo =
-  | {
-      type: 'add_modifier_to_units';
-      params: {
-        targets: Filter<UnitFilter>;
-      };
-    }
-  | {
-      type: 'add_modifier_to_cards';
-      params: {
-        targets: Filter<CardFilter>;
-      };
-    };

@@ -12,10 +12,12 @@ import {
   PlayerBeforeReplaceCardEvent
 } from '../../../player/player.events';
 import type { BuilderContext } from '../schema';
+import { MinionSummonedEvent } from '../../events/minion.events';
 
 export type CardFilter =
   | { type: 'any_card' }
   | { type: 'card_self'; params: { not: boolean } }
+  | { type: 'current_played_card_from_hand'; params: { not: boolean } }
   | { type: 'minion'; params: { not: boolean } }
   | { type: 'spell'; params: { not: boolean } }
   | { type: 'artifact'; params: { not: boolean } }
@@ -38,7 +40,8 @@ export type CardFilter =
   | { type: 'drawn_card' }
   | { type: 'replaced_card' }
   | { type: 'card_replacement' }
-  | { type: 'selected_card'; params: { index: number } };
+  | { type: 'selected_card'; params: { index: number } }
+  | { type: 'summoned_minion_card'; params: { not: boolean } };
 
 type CardFilterContext = BuilderContext & { filter: Filter<CardFilter> };
 
@@ -49,6 +52,12 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
         return group.every(condition => {
           const isMatch = match(condition)
             .with({ type: 'any_card' }, () => true)
+            .with(
+              { type: 'current_played_card_from_hand' },
+              () =>
+                ctx.game.gamePhaseSystem.turnPlayer.currentlyPlayedCard?.equals(c) ??
+                false
+            )
             .with({ type: 'artifact' }, () => c.kind === CARD_KINDS.ARTIFACT)
             .with({ type: 'spell' }, () => c.kind === CARD_KINDS.SPELL)
             .with({ type: 'minion' }, () => c.kind === CARD_KINDS.MINION)
@@ -136,6 +145,13 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
               const selectedCard = ctx.selectedCards[condition.params.index];
               if (!selectedCard) return false;
               return selectedCard.equals(c);
+            })
+            .with({ type: 'summoned_minion_card' }, () => {
+              if (ctx.event instanceof MinionSummonedEvent) {
+                return ctx.event.data.card.equals(c);
+              }
+
+              return false;
             })
             .exhaustive();
 

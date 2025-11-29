@@ -19,7 +19,6 @@ export class HealAction extends Action<'heal'> {
       event: this.event,
       filter: this.action.params.targets
     });
-
     for (const target of targets) {
       await target.heal(this.card, amount);
     }

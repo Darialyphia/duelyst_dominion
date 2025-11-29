@@ -10,7 +10,6 @@ export class AddModifierToCardsAction extends Action<'add_modifier_to_cards'> {
       ...this.ctx,
       filter: this.action.params.targets
     });
-
     const modifier = resolveModifier({
       ...this.ctx,
       modifierData: this.action.params.modifier

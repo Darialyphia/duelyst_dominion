@@ -21,6 +21,7 @@ import {
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
 import type { BuilderContext } from '../schema';
+import { MinionSummonedEvent } from '../../events/minion.events';
 
 export type UnitFilter =
   | { type: 'any_unit' }
@@ -109,9 +110,16 @@ export const resolveUnitFilter = ({ filter, ...ctx }: UnitFilterContext): Unit[]
             .with({ type: 'is_ally' }, () => ctx.card.player.equals(u.player))
             .with({ type: 'is_enemy' }, () => !ctx.card.player.equals(u.player))
             .with({ type: 'is_manual_target' }, condition => {
+              let unit: Unit | null;
               const point = ctx.targets[condition.params.index];
-              if (!point) return false;
-              const unit = ctx.game.unitSystem.getUnitAt(point);
+              if (point) {
+                unit = ctx.game.unitSystem.getUnitAt(point);
+              } else if (ctx.event instanceof MinionSummonedEvent) {
+                unit = ctx.event.data.targets[condition.params.index]?.unit;
+              } else {
+                unit = null;
+              }
+
               if (!unit) return false;
               return u.equals(unit);
             })

@@ -42,6 +42,7 @@ import {
 import type { Unit } from '../../../unit/unit.entity';
 import { UnitEffectModifierMixin } from '../../../modifier/mixins/unit-effect.mixin';
 import type { BuilderContext } from '../schema';
+import { KeywordModifierMixin } from '../../../modifier/mixins/keyword.mixin';
 
 export type ModifierMixinData =
   | {
@@ -57,6 +58,12 @@ export type ModifierMixinData =
       };
     }
   | {
+      type: 'keyword';
+      params: {
+        keyword: Keyword;
+      };
+    }
+  | {
       type: 'remove-on-destroyed';
       params: EmptyObject;
     }
@@ -68,11 +75,11 @@ export type ModifierMixinData =
         filter: Filter<Condition>;
         frequencyPerPlayerTurn: {
           enabled: boolean;
-          frequency: number;
+          frequency?: number;
         };
         frequencyPerGameTurn: {
           enabled: boolean;
-          frequency: number;
+          frequency?: number;
         };
       };
     }
@@ -171,6 +178,10 @@ export const resolveModifier = ({ modifierData, ...ctx }: ModifierContext) => {
             })
           )
       )
+      .with(
+        { type: 'keyword' },
+        ({ params }) => new KeywordModifierMixin(ctx.game, params.keyword)
+      )
       .with({ type: 'remove-on-destroyed' }, () => new RemoveOnDestroyedMixin(ctx.game))
       .with(
         { type: 'game-event' },
@@ -180,7 +191,9 @@ export const resolveModifier = ({ modifierData, ...ctx }: ModifierContext) => {
             handler: async event => {
               for (const action of params.actions) {
                 const ctor = ACTION_LOOKUP[action.type];
-                // @ts-expect-error
+                // ts-ignore to avoid complex typing issues
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 const instance: Action<any> = new ctor(action as any, {
                   ...ctx,
                   event,
@@ -192,12 +205,13 @@ export const resolveModifier = ({ modifierData, ...ctx }: ModifierContext) => {
             },
             filter: event => {
               if (!params.filter) return true;
-              return checkCondition({
+              const passesFilter = checkCondition({
                 ...ctx,
                 event,
                 conditions: params.filter,
                 modifier
               });
+              return passesFilter;
             },
             frequencyPerGameTurn: params.frequencyPerGameTurn.enabled
               ? params.frequencyPerGameTurn.frequency

@@ -88,16 +88,14 @@ export type Condition =
         operator: NumericOperator;
         amount: Amount;
       };
+    }
+  | {
+      type: 'card_equals';
+      params: { cardA: Filter<CardFilter>; cardB: Filter<CardFilter> };
     };
 
 type ConditionContext = BuilderContext & { conditions: Filter<Condition> | undefined };
-export const checkCondition = ({
-  conditions,
-  game,
-  card,
-  targets,
-  event
-}: ConditionContext): boolean => {
+export const checkCondition = ({ conditions, ...ctx }: ConditionContext): boolean => {
   if (!conditions) return true;
   if (!conditions.groups.length) return true;
 
@@ -106,10 +104,7 @@ export const checkCondition = ({
       return match(condition)
         .with({ type: 'active_player' }, condition => {
           const [player] = resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.player
           });
 
@@ -117,17 +112,11 @@ export const checkCondition = ({
         })
         .with({ type: 'player_mana' }, condition => {
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
           return resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.player
           }).every(player =>
             matchNumericOperator(player.mana, amount, condition.params.operator)
@@ -135,17 +124,11 @@ export const checkCondition = ({
         })
         .with({ type: 'player_hp' }, condition => {
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
           return resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.player
           }).every(player =>
             matchNumericOperator(
@@ -157,17 +140,11 @@ export const checkCondition = ({
         })
         .with({ type: 'unit_equals' }, condition => {
           const unitsA = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unitA
           });
           const unitsB = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unitB
           });
 
@@ -175,17 +152,11 @@ export const checkCondition = ({
         })
         .with({ type: 'unit_attack' }, condition => {
           const units = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unit
           });
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
 
@@ -200,17 +171,11 @@ export const checkCondition = ({
         })
         .with({ type: 'unit_hp' }, condition => {
           const units = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unit
           });
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
 
@@ -225,17 +190,11 @@ export const checkCondition = ({
         })
         .with({ type: 'unit_position' }, condition => {
           const units = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unit
           });
           const cells = resolveCellFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.cells
           });
 
@@ -251,10 +210,7 @@ export const checkCondition = ({
         })
         .with({ type: 'unit_keyword' }, condition => {
           const units = resolveUnitFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.unit
           });
 
@@ -267,14 +223,11 @@ export const checkCondition = ({
             .exhaustive();
         })
         .with({ type: 'target_exists' }, condition => {
-          return !!targets[condition.params.index];
+          return !!ctx.targets[condition.params.index];
         })
         .with({ type: 'player_has_more_minions' }, condition => {
           const [player] = resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.player
           });
 
@@ -282,18 +235,12 @@ export const checkCondition = ({
         })
         .with({ type: 'cards_played_this_turn' }, condition => {
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
 
           const cards = resolveCardFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.card
           }).filter(card =>
             card.player.cardTracker.cardsPlayedThisTurn.some(c => c.equals(card))
@@ -303,17 +250,11 @@ export const checkCondition = ({
         })
         .with({ type: 'player_cards_in_hand' }, condition => {
           const amount = getAmount({
-            game,
-            card,
-            targets,
-            event,
+            ...ctx,
             amount: condition.params.amount
           });
           return resolvePlayerFilter({
-            game,
-            card,
-            event,
-            targets,
+            ...ctx,
             filter: condition.params.player
           }).every(player =>
             matchNumericOperator(
@@ -322,6 +263,18 @@ export const checkCondition = ({
               condition.params.operator
             )
           );
+        })
+        .with({ type: 'card_equals' }, condition => {
+          const cardsA = resolveCardFilter({
+            ...ctx,
+            filter: condition.params.cardA
+          });
+          const cardsB = resolveCardFilter({
+            ...ctx,
+            filter: condition.params.cardB
+          });
+
+          return cardsA.some(cardA => cardsB.some(cardB => cardA.equals(cardB)));
         })
         .exhaustive();
     });
