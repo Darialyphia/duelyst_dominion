@@ -9,6 +9,7 @@ export const saberspineTiger: MinionBlueprint = {
   name: 'Saberspine Tiger',
   description: '@Rush@.',
   sprite: { id: 'minions/neutral_saberspine-tiger' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

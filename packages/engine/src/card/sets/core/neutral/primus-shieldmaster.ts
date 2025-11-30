@@ -9,6 +9,7 @@ export const primusShieldmaster: MinionBlueprint = {
   name: 'Primus Shieldmaster',
   description: '@Provoke@.',
   sprite: { id: 'minions/neutral_primus-shieldmaster' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

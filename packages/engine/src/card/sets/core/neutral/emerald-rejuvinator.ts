@@ -9,6 +9,7 @@ export const emeraldRejuvinator: MinionBlueprint = {
   name: 'Emerald Rejuvinator',
   description: '@On Enter@: Heal your general for 4.',
   sprite: { id: 'minions/neutral_emerald-rejuvinator' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

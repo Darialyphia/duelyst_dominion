@@ -84,6 +84,10 @@ export class CardViewModel {
     return this.data.keywords;
   }
 
+  get sounds() {
+    return this.data.sounds;
+  }
+
   get player() {
     return this.getEntities()[this.data.player] as PlayerViewModel;
   }

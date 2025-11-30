@@ -9,6 +9,7 @@ export const azuriteLion: MinionBlueprint = {
   name: 'Azurite Lion',
   description: '@Celerity@.',
   sprite: { id: 'minions/f1_azurite-lion' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

@@ -8,6 +8,7 @@ export const kaleosXaan: GeneralBlueprint = {
   sprite: {
     id: 'generals/f2_kaleos-xaan'
   },
+  sounds: {},
   kind: CARD_KINDS.GENERAL,
   collectable: true,
   setId: CARD_SETS.CORE,

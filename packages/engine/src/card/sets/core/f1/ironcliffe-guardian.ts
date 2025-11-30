@@ -12,6 +12,7 @@ export const ironcliffeGuardian: MinionBlueprint = {
   description: dedent`
   @Airdrop@, @Provoke@.`,
   sprite: { id: 'minions/f1_ironcliffe-guardian' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

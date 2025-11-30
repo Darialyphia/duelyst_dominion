@@ -10,6 +10,7 @@ export const frostboneNaga: MinionBlueprint = {
   name: 'Frostbone Naga',
   description: '@On Enter@: Deal 2 damage to nearby units.',
   sprite: { id: 'minions/neutral_frostbone-naga' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

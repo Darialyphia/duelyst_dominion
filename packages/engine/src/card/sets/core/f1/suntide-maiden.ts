@@ -11,6 +11,7 @@ export const suntideMaiden: MinionBlueprint = {
   name: 'Suntide Maiden',
   description: '@Zeal@ : fully heal this unit at the end of your turn.',
   sprite: { id: 'minions/f1_suntide-maiden' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

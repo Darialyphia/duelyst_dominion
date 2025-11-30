@@ -11,6 +11,7 @@ export const warSurge: SpellBlueprint = {
   name: 'War Surge',
   description: 'Give allied minions +1 / +1.',
   sprite: { id: 'spells/f1_war-surge' },
+  sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

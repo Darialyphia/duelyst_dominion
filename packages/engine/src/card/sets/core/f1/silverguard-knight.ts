@@ -17,6 +17,7 @@ export const silverguardKnight: MinionBlueprint = {
   sprite: {
     id: 'minions/f1_silverguard-knight'
   },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

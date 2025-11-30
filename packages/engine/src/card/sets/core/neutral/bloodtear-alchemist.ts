@@ -11,6 +11,7 @@ export const bloodtearAlchemist: MinionBlueprint = {
   name: 'Bloodtear Alchemist',
   description: '@On Enter@: Deal 1 damage to an enemy minion.',
   sprite: { id: 'minions/neutral_bloodtear-alchemist' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

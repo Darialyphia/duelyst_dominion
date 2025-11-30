@@ -12,6 +12,7 @@ export const windbladeAdept: MinionBlueprint = {
   sprite: {
     id: 'minions/f1_windblade-adept'
   },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

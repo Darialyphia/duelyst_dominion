@@ -14,6 +14,7 @@ export const divineBond: SpellBlueprint = {
   Set an allied minion's attack equal to its health.
   `,
   sprite: { id: 'spells/f1_divine-bond' },
+  sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

@@ -18,6 +18,7 @@ export const archonSpellbinder: MinionBlueprint = {
   @[rune:blue]@ @[rune:blue]@ @[rune:blue]@: +0 / +2
   `,
   sprite: { id: 'minions/neutral_archon-spellbinder' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

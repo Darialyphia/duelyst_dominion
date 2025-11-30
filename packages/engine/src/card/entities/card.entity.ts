@@ -42,6 +42,7 @@ export type SerializedCard = {
   entityType: 'card';
   isFoil: boolean;
   spriteId: string;
+  sounds: CardBlueprint['sounds'];
   kind: CardKind;
   rarity: Rarity;
   player: string;
@@ -203,6 +204,7 @@ export abstract class Card<
       id: this.id,
       isFoil: this.isFoil,
       spriteId: this.blueprint.sprite.id,
+      sounds: this.blueprint.sounds,
       entityType: 'card',
       rarity: this.blueprint.rarity,
       player: this.player.id,

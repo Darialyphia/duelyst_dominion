@@ -8,6 +8,7 @@ export const argeonHighmane: GeneralBlueprint = {
   sprite: {
     id: 'generals/f1_argeon-highmane'
   },
+  sounds: {},
   kind: CARD_KINDS.GENERAL,
   collectable: true,
   setId: CARD_SETS.CORE,

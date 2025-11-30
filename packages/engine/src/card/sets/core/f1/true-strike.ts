@@ -10,6 +10,7 @@ export const trueStrike: SpellBlueprint = {
   name: 'True Strike',
   description: 'Deal 2 damage to an  enemy minion.',
   sprite: { id: 'spells/f1_true-strike' },
+  sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

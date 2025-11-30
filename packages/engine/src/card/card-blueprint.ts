@@ -30,6 +30,14 @@ export type CardBlueprintBase = {
   sprite: {
     id: string;
   };
+  sounds: {
+    play?: string;
+    walk?: string;
+    attack?: string;
+    dealDamage?: string;
+    takeDamage?: string;
+    death?: string;
+  };
 };
 
 export type RuneCost = Partial<Record<Rune, number>>;

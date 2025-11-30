@@ -11,6 +11,7 @@ export const magnetize: SpellBlueprint = {
   name: 'Magnetize',
   description: dedent`Move an minion to the space @in front@ of your general.`,
   sprite: { id: 'spells/f1_magnetize' },
+  sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

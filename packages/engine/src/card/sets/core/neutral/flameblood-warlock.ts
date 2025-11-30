@@ -10,6 +10,7 @@ export const flamebloodWarlock: MinionBlueprint = {
   name: 'Flameblood Warlock',
   description: '@On Enter@: Deal 3 damage to all generals.',
   sprite: { id: 'minions/neutral_flameblood-warlock' },
+  sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
