@@ -190,17 +190,6 @@ const highlightColor = computed(() => {
     z-index: var(--hand-size);
   }
 
-  /* &:not(.disabled)::after {
-    content: '';
-    position: absolute;
-    inset: -5px;
-    transform: translate(0, 0);
-    z-index: -1;
-    background: conic-gradient(yellow, orange, magenta, yellow);
-    filter: blur(25px);
-    animation: selectable-card-hue-rotate 3s linear infinite;
-  } */
-
   &:not(.disabled) {
     &::before {
       content: '';

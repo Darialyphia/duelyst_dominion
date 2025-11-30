@@ -8,7 +8,14 @@ export const argeonHighmane: GeneralBlueprint = {
   sprite: {
     id: 'generals/f1_argeon-highmane'
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy.m4a',
+    walk: 'sfx_unit_run_charge_4.m4a',
+    attack: 'sfx_f1_general_attack_swing.m4a',
+    dealDamage: 'sfx_f6_draugarlord_attack_impact_.m4a',
+    takeDamage: 'sfx_f1_general_hit.m4a',
+    death: 'sfx_f1general_death.m4a'
+  },
   kind: CARD_KINDS.GENERAL,
   collectable: true,
   setId: CARD_SETS.CORE,

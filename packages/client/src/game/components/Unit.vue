@@ -11,6 +11,7 @@ import UnitStats from './UnitStats.vue';
 import UnitModifiers from './UnitModifiers.vue';
 import UnitSprite from './UnitSprite.vue';
 import UnitShadow from './UnitShadow.vue';
+import { useUnitSounds } from '../composables/useUnitSounds';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -29,6 +30,7 @@ const {
   myPlayerId: computed(() => myPlayer.value?.id)
 });
 
+useUnitSounds(computed(() => unit));
 const isSelected = computed(() => ui.value.selectedUnit?.equals(unit) ?? false);
 
 const damageIndicatorEl = useTemplateRef('damageIndicator');

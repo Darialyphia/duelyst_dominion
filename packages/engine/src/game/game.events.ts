@@ -152,3 +152,7 @@ export const GAME_EVENTS = {
   ...FX_EVENTS,
   ...SHRINE_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
+
+export type SerializedEvent<T extends keyof typeof GAME_EVENTS> = ReturnType<
+  GameEventMap[(typeof GAME_EVENTS)[T]]['serialize']
+>;

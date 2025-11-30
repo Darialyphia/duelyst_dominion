@@ -12,9 +12,14 @@ export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
   watchEffect(() => {
     const id = unref(sound);
     if (!isDefined(id)) return;
+
     howl.value = new Howl({
       src: `/assets/sfx/${id}`,
       volume: (userSettings.value.sound.sfxVolume[0] / 100) * SCALE_FACTOR
+    });
+
+    howl.value.on('loaderror', (_, err) => {
+      console.error(`Failed to load sound: ${id}`, err);
     });
   });
 

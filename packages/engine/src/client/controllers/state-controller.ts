@@ -22,7 +22,11 @@ import type { SerializedUnit } from '../../unit/unit.entity';
 import { UnitViewModel } from '../view-models/unit.model';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { TileViewModel } from '../view-models/tile.model';
-import type { SerializedStarEvent } from '../../game/game.events';
+import {
+  GAME_EVENTS,
+  type SerializedEvent,
+  type SerializedStarEvent
+} from '../../game/game.events';
 import type { SerializedShrine } from '../../board/entities/shrine.entity';
 import type { SerializedTeleporter } from '../../board/entities/two-way-teleporter';
 import { TeleporterViewModel } from '../view-models/teleporter.model';
@@ -141,10 +145,27 @@ export class ClientStateController {
     };
   }
 
+  private async onBeforePlayCard(
+    event: {
+      event: SerializedEvent<'CARD_BEFORE_PLAY'>;
+    },
+    flush: (postUpdateCallback?: () => Promise<void>) => Promise<void>
+  ) {
+    if (!this.state.entities[event.event.card.id]) {
+      return;
+    }
+    const card = this.buildViewModel(event.event.card as any) as CardViewModel;
+    this.state.entities[card.id] = card;
+    return await flush();
+  }
+
   async onEvent(
     event: SerializedStarEvent,
     flush: (postUpdateCallback?: () => Promise<void>) => Promise<void>
   ) {
+    if (event.eventName === GAME_EVENTS.CARD_BEFORE_PLAY) {
+      return this.onBeforePlayCard(event, flush);
+    }
     return await flush();
     // if (event.eventName === GAME_EVENTS.MINION_SUMMONED) {
     //   return this.onMinionSummoned(event, flush);

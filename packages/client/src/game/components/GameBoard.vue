@@ -19,6 +19,7 @@ import FPS from './FPS.vue';
 import GameCard from './GameCard.vue';
 import { config } from '@/utils/config';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import PlayedCard from './PlayedCard.vue';
 // import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
@@ -117,6 +118,7 @@ const hoveredCard = computed(() => {
   <div class="game-board">
     <DraggedCard />
     <FPS />
+    <PlayedCard />
 
     <div
       class="camera"
@@ -252,6 +254,7 @@ const hoveredCard = computed(() => {
       <GameCard :card-id="hoveredCard.id" :is-interactive="false" />
     </div>
     <div id="dragged-card-container" />
+    <div id="card-portal"></div>
   </div>
 </template>
 
@@ -394,5 +397,12 @@ const hoveredCard = computed(() => {
   &.enemy {
     right: var(--size-6);
   }
+}
+
+#card-portal {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
 }
 </style>

@@ -1,11 +1,13 @@
 import { ref, computed, watchEffect, nextTick, type Ref } from 'vue';
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
-import { useFxEvent } from './useGameClient';
+import { useFxEvent, useGameState } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import gsap, { Power0, Power2 } from 'gsap';
 import { config } from '@/utils/config';
 import type { Point } from '@game/shared';
 import { useSprite, type SpriteData } from '@/card/composables/useSprite';
+import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 
 interface UseUnitAnimationsOptions {
   unit: UnitViewModel;
@@ -153,6 +155,26 @@ export function useUnitAnimations({
     return new Promise<void>(resolve => {
       isAttacking.value = true;
       animationSequence.value = ['death'];
+      const unsub = spriteControls.on('sequenceEnd', () => {
+        animationSequence.value = [defaultAnimation.value];
+        isAttacking.value = false;
+        unsub();
+        resolve();
+      });
+    });
+  });
+
+  const state = useGameState();
+  useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
+    const card = state.value.entities[event.card.id] as CardViewModel;
+    if (!card) return;
+    if (card.kind !== CARD_KINDS.SPELL && card.kind !== CARD_KINDS.ARTIFACT) {
+      return;
+    }
+    if (!unit.isGeneral) return;
+
+    return new Promise<void>(resolve => {
+      animationSequence.value = ['caststart', 'castloop', 'cast', 'castend'];
       const unsub = spriteControls.on('sequenceEnd', () => {
         animationSequence.value = [defaultAnimation.value];
         isAttacking.value = false;
