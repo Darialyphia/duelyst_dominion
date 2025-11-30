@@ -124,7 +124,7 @@ export function useSprite({
       x: currentFrame.value * spriteRef.value.frameSize.w,
       y: 0,
       width: spriteRef.value.frameSize.w * scale,
-      height: spriteRef.value.frameSize.h
+      height: spriteRef.value.frameSize.h * scale
     };
   });
 

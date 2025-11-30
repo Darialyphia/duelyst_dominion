@@ -42,7 +42,7 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const origin = config.CELL.toScreenPosition(unit);
   camera.value.origin = {
     x: origin.x + config.CELL.width / 2,
-    y: origin.y + config.CELL.height / 2
+    y: origin.y + config.CELL.height / 2 - 150
   };
 
   const proxy = {
