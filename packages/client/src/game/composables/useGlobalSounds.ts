@@ -12,6 +12,7 @@ export const useGlobalSounds = () => {
     const card = state.value.entities[event.card.id] as CardViewModel;
     cardSoundId.value = card.sounds.play;
     await nextTick();
+
     cardSound.value?.once('load', () => {
       cardSound.value?.play();
     });

@@ -4,11 +4,16 @@ import { useMouse, useRafFn } from '@vueuse/core';
 import {
   useGameUi,
   useGameState,
-  useGameClient
+  useGameClient,
+  useFxEvent
 } from '../composables/useGameClient';
-import { GAME_PHASES } from '@game/engine/src/game/game.enums';
+import {
+  GAME_PHASES,
+  INTERACTION_STATES
+} from '@game/engine/src/game/game.enums';
 import { Flip } from 'gsap/Flip';
 import UiButton from '@/ui/components/UiButton.vue';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 const cardRotation = ref({ x: 0, y: 0 });
 const { x, y } = useMouse();
 let prev = { x: x.value, y: y.value };
@@ -85,11 +90,36 @@ watch(isPinned, pinned => {
     rotationAnimation.resume();
   }
 });
+
+const confirmButtonLabel = computed(() => {
+  if (state.value.phase.state !== GAME_PHASES.PLAYING_CARD) return 'Confirm';
+
+  if (
+    state.value.interaction.state !==
+    INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
+  ) {
+    return 'Confirm';
+  }
+  return state.value.interaction.ctx.selectedSpaces.length ? 'Confirm' : 'Skip';
+});
+
+const isHidden = ref(false);
+useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, () => {
+  console.log('hide');
+  isHidden.value = true;
+});
+const unsub = client.value.onUpdateCompleted(() => {
+  isHidden.value = false;
+});
+onBeforeUnmount(() => {
+  unsub();
+});
 </script>
 
 <template>
   <Teleport to="#dragged-card-container" defer>
     <div
+      v-if="!isHidden"
       ref="container"
       id="dragged-card"
       data-flip-id="dragged-card"
@@ -118,7 +148,7 @@ watch(isPinned, pinned => {
             class="primary-button w-full pointer-events-auto"
             @click="client.commitSpaceSelection()"
           >
-            Confirm
+            {{ confirmButtonLabel }}
           </UiButton>
           <UiButton
             class="error-button w-full pointer-events-auto"

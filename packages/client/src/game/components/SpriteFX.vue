@@ -33,6 +33,7 @@ const buildSprites = () => {
   return parts;
 };
 const _sprites = buildSprites();
+console.log(_sprites);
 </script>
 
 <template>
@@ -45,8 +46,8 @@ const _sprites = buildSprites();
           '--bg-position': sprite.bgPosition.value,
           '--width': `${sprite.activeFrameRect.value.width}px`,
           '--height': `${sprite.activeFrameRect.value.height}px`,
-          '--background-width': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.w}px * var(--pixel-scale))`,
-          '--background-height': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.h}px * var(--pixel-scale))`,
+          '--background-width': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.w}px)`,
+          '--background-height': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.h}px)`,
           '--offset-x': `${sprite.offset.x}px`,
           '--offset-y': `${sprite.offset.y}px`,
           '--scale': sprite.scale,
@@ -65,7 +66,7 @@ const _sprites = buildSprites();
 .sprite-fx {
   --pixel-scale: var(--scale);
   position: absolute;
-  scale: var(--scale) var(--scale);
+  /* scale: var(--scale) var(--scale); */
   top: 50%;
   left: 50%;
   translate: calc(-50% + var(--offset-x)) calc(-50% + var(--offset-y));

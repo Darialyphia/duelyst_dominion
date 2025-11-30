@@ -9,7 +9,10 @@ import {
 import GameCard from './GameCard.vue';
 import { usePageLeave } from '@vueuse/core';
 import { Flip } from 'gsap/Flip';
-import { GAME_PHASES } from '@game/engine/src/game/game.enums';
+import {
+  GAME_PHASES,
+  INTERACTION_STATES
+} from '@game/engine/src/game/game.enums';
 
 const { card, isInteractive } = defineProps<{
   card: CardViewModel;
@@ -119,6 +122,7 @@ const isDetachedFromHand = computed(() => {
   return (
     state.value.phase.state === GAME_PHASES.PLAYING_CARD &&
     state.value.phase.ctx.card === card.id &&
+    state.value.interaction.state !== INTERACTION_STATES.IDLE &&
     !card.isSelected
   );
 });

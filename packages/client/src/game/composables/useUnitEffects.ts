@@ -17,13 +17,11 @@ export function useUnitEffects({
   activeFrameRect
 }: UseUnitEffectsOptions) {
   const damageEffects = computed(() => {
-    if (!latestDamageReceived.value) return [];
-
     return [
       {
         spriteId: 'impact',
         animationSequence: ['impactorangebig'],
-        scale: 1,
+        scale: 1.25,
         offset: {
           x: 0,
           y: 0
@@ -32,7 +30,7 @@ export function useUnitEffects({
       {
         spriteId: 'collision',
         animationSequence: ['collisionsparksblue'],
-        scale: 1,
+        scale: 1.25,
         offset: {
           x: -10,
           y: 10

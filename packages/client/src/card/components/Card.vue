@@ -316,6 +316,7 @@ const factionBgOpacity = computed(() => {
   color: #dbc4a4;
   font-size: calc(9px * var(--pixel-scale));
   padding-inline-end: calc(8px * var(--pixel-scale));
+  pointer-events: none;
   img {
     width: calc(16px * var(--pixel-scale));
     aspect-ratio: 1;

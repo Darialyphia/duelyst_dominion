@@ -26,7 +26,8 @@ export function useSprite({
   kind,
   scale = 1,
   pathPrefix = '/cards',
-  repeat = true
+  repeat = true,
+  scalePositionByPixelScale = false
 }: {
   pathPrefix?: string;
   sprite: MaybeRefOrGetter<SpriteData | null>;
@@ -34,6 +35,7 @@ export function useSprite({
   kind: MaybeRefOrGetter<CardKind>;
   scale?: number;
   repeat?: boolean;
+  scalePositionByPixelScale?: boolean;
 }) {
   const emitter = new TypedEventEmitter<{
     sequenceEnd: EmptyObject;
@@ -86,7 +88,6 @@ export function useSprite({
       if (!currentAnimation.value || !shouldAnimate.value) return;
       const { startFrame, endFrame } = currentAnimation.value;
       const totalFrames = endFrame - startFrame + 1;
-
       if (currentFrame.value >= endFrame) {
         if (currentSequenceIndex.value < sequenceToUse.value.length - 1) {
           currentSequenceIndex.value++;
@@ -107,7 +108,6 @@ export function useSprite({
       } else {
         currentFrame.value++;
       }
-
       emitter.emit('frame', {
         index: currentFrame.value - startFrame,
         total: totalFrames
@@ -129,8 +129,8 @@ export function useSprite({
   });
 
   const bgPosition = computed(() => {
-    const { x, y } = activeFrameRect.value;
-    return `calc(-${scale} * ${x}px * var(--pixel-scale)) calc(-${scale} * ${y}px * var(--pixel-scale))`;
+    const { y } = activeFrameRect.value;
+    return `calc(-${scale} * ${currentFrame.value} * ${spriteRef.value?.frameSize.w ?? 0} ${scalePositionByPixelScale ? '* var(--pixel-scale)' : ''} * 1px) calc(-${scale} ${scalePositionByPixelScale ? '* var(--pixel-scale)' : ''} * ${y}px)`;
   });
 
   const imageBg = computed(() => {

@@ -10,7 +10,8 @@ export const config = {
         y: y * config.CELL.height
       };
     }
-  }
+  },
+  PLAYED_CARD_PREVIEW_TIME: 1000
   // HEXES: {
   //   height: 102,
   //   width: 144,

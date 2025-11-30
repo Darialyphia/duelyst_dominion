@@ -27,7 +27,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   animationSequence: toRef(props, 'animationSequence'),
   sprite: toRef(props, 'sprite'),
   kind: toRef(props, 'kind'),
-  scale: 2
+  scale: 2,
+  scalePositionByPixelScale: true
 });
 </script>
 

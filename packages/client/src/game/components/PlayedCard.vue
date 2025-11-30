@@ -4,13 +4,14 @@ import { useFxEvent, useGameState } from '../composables/useGameClient';
 import { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { waitFor } from '@game/shared';
 import GameCard from './GameCard.vue';
+import { config } from '@/utils/config';
 
 const card = ref<CardViewModel | null>(null);
 const state = useGameState();
 
-useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
+useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
   card.value = state.value.entities[event.card.id] as CardViewModel;
-  await waitFor(1000);
+  await waitFor(config.PLAYED_CARD_PREVIEW_TIME);
   card.value = null;
 });
 </script>

@@ -13,7 +13,6 @@ export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
     const id = unref(sound);
     if (!isDefined(id)) return;
 
-    console.log(`/assets/sfx/${id}`);
     howl.value = new Howl({
       src: `/assets/sfx/${id}`,
       volume: (userSettings.value.sound.sfxVolume[0] / 100) * SCALE_FACTOR
