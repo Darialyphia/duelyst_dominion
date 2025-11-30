@@ -4,8 +4,9 @@ import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
 import { isDefined } from '@game/shared';
 import type { SpriteData } from '@/card/composables/useSprite';
-import { useFxEvent, useUnits } from './useGameClient';
+import { useFxEvent, useGameState, useUnits } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 
 interface UseUnitDisplayOptions {
   unit: UnitViewModel;
@@ -51,9 +52,14 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     () => sprites[unit.getCard().spriteId]
   );
 
+  const state = useGameState();
+  // reactivity doesnt seem to trigger for modifiers when calling unit.getCard()
+  const card = computed(
+    () => state.value.entities[unit.cardId] as CardViewModel
+  );
   const displayedModifiers = computed(() => {
     return uniqBy(
-      [...unit.modifiers, ...unit.getCard().modifiers].filter(
+      [...unit.modifiers, ...card.value.modifiers].filter(
         mod => isDefined(mod.icon) && mod.stacks > 0
       ),
       'modifierType'

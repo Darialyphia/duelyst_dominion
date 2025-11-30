@@ -133,12 +133,6 @@ const isDisabled = computed(() => {
   }
   return !card.canPlay;
 });
-const highlightColor = computed(() => {
-  if (ui.value.isReplacingCard) {
-    return 'var(--blue-2)';
-  }
-  return 'var(--lime-4)';
-});
 </script>
 
 <template>
@@ -199,15 +193,22 @@ const highlightColor = computed(() => {
       content: '';
       position: absolute;
       inset: 0;
-      box-shadow:
-        inset 0 0 0.5rem v-bind(highlightColor),
-        0 0 1rem v-bind(highlightColor);
-      z-index: 2;
-      transition: opacity 0.3s var(--ease-2);
-      pointer-events: none;
-      @starting-style {
-        opacity: 0;
-      }
+      z-index: -1;
+      filter: blur(4px);
+      background:
+        conic-gradient(
+          from var(--hand-card-conic-gradient-angle) at center,
+          cyan 0deg,
+          orange 40deg,
+          transparent 40deg
+        ),
+        conic-gradient(
+          from var(--hand-card-conic-gradient-angle-2) at center,
+          magenta 0deg,
+          yellow 40deg,
+          transparent 40deg
+        );
+      animation: booster-border-gradient-rotate 4s linear infinite;
     }
   }
   &.disabled {
@@ -231,5 +232,27 @@ const highlightColor = computed(() => {
   width: 100%;
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
+}
+
+@property --hand-card-conic-gradient-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@property --hand-card-conic-gradient-angle-2 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes booster-border-gradient-rotate {
+  from {
+    --hand-card-conic-gradient-angle: 0deg;
+    --hand-card-conic-gradient-angle-2: 0deg;
+  }
+  to {
+    --hand-card-conic-gradient-angle: 360deg;
+    --hand-card-conic-gradient-angle-2: -360deg;
+  }
 }
 </style>

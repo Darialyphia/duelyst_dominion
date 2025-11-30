@@ -1,4 +1,3 @@
-import type { AnyCard } from '../../card/entities/card.entity';
 import { Game } from '../../game/game';
 import { GAME_EVENTS } from '../../game/game.events';
 import { ModifierMixin } from '../modifier-mixin';
@@ -15,6 +14,7 @@ export class UntilEndOfTurnModifierMixin<
   }
 
   async onTurnEnd() {
+    console.log('Removing until end of turn modifier:', this.modifier.id);
     await this.modifier.target.modifiers.remove(this.modifier.id, {
       force: true
     });
