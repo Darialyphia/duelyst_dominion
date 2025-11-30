@@ -1,21 +1,14 @@
 <script setup lang="ts">
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
-import {
-  useFxEvent,
-  useGameUi,
-  useMyPlayer
-} from '../composables/useGameClient';
-import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
-import gsap from 'gsap';
-import { config } from '@/utils/config';
-import { isDefined, type Point } from '@game/shared';
+import { useGameUi, useMyPlayer } from '../composables/useGameClient';
+import { isDefined } from '@game/shared';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import BoardPositioner from './BoardPositioner.vue';
-import { useSprite } from '@/card/composables/useSprite';
 import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
 import { useIsInAoe } from '../composables/useIsInAoe';
 import SpriteFX from './SpriteFX.vue';
+import { useUnitAnimations } from '../composables/useUnitAnimations';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -23,143 +16,30 @@ const ui = useGameUi();
 const myPlayer = useMyPlayer();
 const isAlly = computed(() => unit.getPlayer()?.equals(myPlayer.value));
 const isFlipped = computed(() => !unit.getPlayer()?.isPlayer1);
-const sprite = computed(() => {
+const spriteData = computed(() => {
   return sprites[unit.getCard().spriteId];
 });
-const defaultAnimation = computed(() =>
-  ui.value.selectedUnit?.equals(unit) ? 'idle' : 'breathing'
-);
-const animationSequence = ref([defaultAnimation.value]);
-watchEffect(() => {
-  animationSequence.value = [defaultAnimation.value];
-});
-const { activeFrameRect, bgPosition, imageBg, ...spriteControls } = useSprite({
-  animationSequence: animationSequence,
-  sprite,
-  kind: computed(() => unit.getCard().kind),
-  scale: 1
+
+const isSelected = computed(() => ui.value.selectedUnit?.equals(unit) ?? false);
+
+const damageIndicatorEl = useTemplateRef('damageIndicator');
+
+const {
+  activeFrameRect,
+  bgPosition,
+  imageBg,
+  positionOffset,
+  isAttacking,
+  latestDamageReceived,
+  isBeingSummoned
+} = useUnitAnimations({
+  unit,
+  isSelected,
+  spriteData,
+  damageIndicatorEl
 });
 
 const isInAoe = useIsInAoe();
-
-const positionOffset = ref({
-  x: 0,
-  y: 0
-});
-
-useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
-  if (event.unit !== unit.id) return;
-  const { path, previousPosition } = event;
-
-  const stepDuration = 0.5;
-
-  animationSequence.value = ['run'];
-  const timeline = gsap.timeline();
-
-  path.forEach((point, index) => {
-    const prev = index === 0 ? previousPosition : path[index - 1];
-    const prevScaled = config.CELL.toScreenPosition(prev);
-    const destinationScaled = config.CELL.toScreenPosition(point);
-    const deltaX = destinationScaled.x - prevScaled.x;
-    const deltaY = destinationScaled.y - prevScaled.y;
-
-    // First half: move forward and up
-    timeline.to(positionOffset.value, {
-      x: `+=${deltaX}`,
-      y: `+=${deltaY}`,
-      duration: stepDuration,
-      ease: Power0.easeNone
-    });
-  });
-
-  timeline.set(positionOffset.value, { x: 0, y: 0 });
-
-  await timeline.play();
-  animationSequence.value = [defaultAnimation.value];
-});
-
-const isAttacking = ref(false);
-const onAttack = async (event: { unit: string; target: Point }) => {
-  if (event.unit !== unit.id) return;
-  return new Promise<void>(resolve => {
-    isAttacking.value = true;
-    animationSequence.value = ['attack'];
-    const unsub = spriteControls.on('frame', ({ index, total }) => {
-      const percentage = (index + 1) / total;
-      if (percentage < 0.75) return; // Wait until halfway through the animation
-      animationSequence.value = [defaultAnimation.value];
-      isAttacking.value = false;
-      unsub();
-      resolve();
-    });
-  });
-};
-useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, onAttack);
-useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, onAttack);
-
-const latestDamageReceived = ref<number>();
-const damageIndicatorEl = useTemplateRef('damageIndicator');
-useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
-  if (event.unit !== unit.id) return;
-  latestDamageReceived.value = event.damage;
-
-  const animation = new Promise<void>(resolve => {
-    isAttacking.value = true;
-    animationSequence.value = ['hit'];
-    const unsub = spriteControls.on('sequenceEnd', () => {
-      animationSequence.value = [defaultAnimation.value];
-      isAttacking.value = false;
-      unsub();
-      resolve();
-    });
-  });
-
-  const damageIndicator = async () => {
-    await nextTick();
-    if (!damageIndicatorEl.value) return;
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        latestDamageReceived.value = undefined;
-      }
-    });
-
-    tl.fromTo(
-      damageIndicatorEl.value,
-      { y: 0, scale: 0.5, opacity: 0 },
-      {
-        y: -75,
-        scale: 1.5,
-        opacity: 1,
-        duration: 0.3,
-        ease: 'back.out(2.5)'
-      }
-    ).to(damageIndicatorEl.value, {
-      y: -80,
-      opacity: 0,
-      duration: 0.3,
-      delay: 0.2,
-      ease: Power2.easeIn
-    });
-  };
-
-  await Promise.all([animation, damageIndicator()]);
-});
-
-useFxEvent(FX_EVENTS.UNIT_BEFORE_DESTROY, async event => {
-  if (event.unit !== unit.id) return;
-
-  return new Promise<void>(resolve => {
-    isAttacking.value = true;
-    animationSequence.value = ['death'];
-    const unsub = spriteControls.on('sequenceEnd', () => {
-      animationSequence.value = [defaultAnimation.value];
-      isAttacking.value = false;
-      unsub();
-      resolve();
-    });
-  });
-});
 
 const displayedModifiers = computed(() => {
   return uniqBy(
@@ -169,14 +49,6 @@ const displayedModifiers = computed(() => {
     'modifierType'
   );
 });
-
-const isBeingSummoned = ref(false);
-setTimeout(() => {
-  isBeingSummoned.value = true;
-  setTimeout(() => {
-    isBeingSummoned.value = false;
-  }, 650);
-}, 300);
 </script>
 
 <template>
@@ -198,8 +70,8 @@ setTimeout(() => {
         '--bg-position': bgPosition,
         '--width': `${activeFrameRect.width}px`,
         '--height': `${activeFrameRect.height}px`,
-        '--background-width': `calc( ${sprite.sheetSize.w}px * var(--pixel-scale))`,
-        '--background-height': `calc(${sprite.sheetSize.h}px * var(--pixel-scale))`
+        '--background-width': `calc( ${spriteData.sheetSize.w}px * var(--pixel-scale))`,
+        '--background-height': `calc(${spriteData.sheetSize.h}px * var(--pixel-scale))`
       }"
     >
       <div class="shadow" />
@@ -223,8 +95,8 @@ setTimeout(() => {
           '--bg-position': bgPosition,
           '--width': `${activeFrameRect.width}px`,
           '--height': `${activeFrameRect.height}px`,
-          '--background-width': `calc( ${sprite.sheetSize.w}px * var(--pixel-scale))`,
-          '--background-height': `calc(${sprite.sheetSize.h}px * var(--pixel-scale))`
+          '--background-width': `calc( ${spriteData.sheetSize.w}px * var(--pixel-scale))`,
+          '--background-height': `calc(${spriteData.sheetSize.h}px * var(--pixel-scale))`
         }"
       >
         <div class="sprite">
