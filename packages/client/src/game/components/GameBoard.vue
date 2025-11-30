@@ -157,7 +157,10 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
           :class="{ spent: i <= opponent.overspentMana }"
         />
       </div>
-      <div class="flex gap-5 flex-1 flex-row-reverse">
+      <div
+        v-if="state.config.FEATURES.RUNES"
+        class="flex gap-5 flex-1 flex-row-reverse"
+      >
         <div class="rune-count">
           <img src="/assets/ui/rune-red.png" />
           {{ opponent.runes.red }}

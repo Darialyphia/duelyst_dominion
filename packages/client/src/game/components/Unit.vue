@@ -84,7 +84,8 @@ const isInAoe = useIsInAoe();
         isAlly ? 'ally' : 'enemy',
         {
           'in-aoe': isInAoe({ x: unit.x, y: unit.y }),
-          'is-exhausted': unit.isExhausted,
+          'is-exhausted':
+            unit.isExhausted && myPlayer.equals(unit.getPlayer()!),
           'is-selected': ui.selectedUnit?.equals(unit),
           'is-flipped': isFlipped
         }

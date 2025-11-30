@@ -135,9 +135,9 @@ const ui = useGameUi();
 
 .board {
   position: absolute;
-  top: 0;
+  top: 40%;
   left: 50%;
-  translate: -50% 0;
+  translate: -50% -50%;
   transform-style: preserve-3d;
 }
 
