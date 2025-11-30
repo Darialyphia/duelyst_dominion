@@ -1,5 +1,6 @@
 import type { CardId } from '@game/api';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import type {
   DeckValidator,
   ValidatableCard,
@@ -101,6 +102,19 @@ export class DeckBuilderViewModel {
         };
       })
       .sort((a, b) => {
+        // put Generals at the top
+        if (
+          a.blueprint.kind === CARD_KINDS.GENERAL &&
+          b.blueprint.kind !== CARD_KINDS.GENERAL
+        ) {
+          return -1;
+        }
+        if (
+          a.blueprint.kind !== CARD_KINDS.GENERAL &&
+          b.blueprint.kind === CARD_KINDS.GENERAL
+        ) {
+          return 1;
+        }
         if ('manaCost' in a.blueprint && 'manaCost' in b.blueprint) {
           if (a.blueprint.manaCost === b.blueprint.manaCost) {
             return a.blueprint.name.localeCompare(b.blueprint.name);

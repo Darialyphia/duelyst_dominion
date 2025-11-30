@@ -57,8 +57,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
 <style scoped lang="postcss">
 .image {
   position: absolute;
-  width: calc(2 * var(--pixel-scale) * var(--width));
-  height: calc(2 * var(--pixel-scale) * var(--height));
+  width: calc(var(--pixel-scale) * var(--width));
+  height: calc(var(--pixel-scale) * var(--height));
   /* pointer-events: none; */
   bottom: calc(105px * var(--pixel-scale));
   left: 50%;

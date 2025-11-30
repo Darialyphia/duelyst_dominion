@@ -10,7 +10,7 @@ import { SpellCard } from '../entities/spell-card.entity';
 import { ArtifactCard } from '../entities/artifact-card.entity';
 
 export type CardManagerComponentOptions = {
-  deck: string[];
+  deck: { blueprintId: string; isFoil: boolean }[];
   maxHandSize: number;
   shouldShuffleDeck: boolean;
 };
@@ -45,10 +45,14 @@ export class CardManagerComponent {
     }
   }
 
-  private async buildCards<T extends AnyCard>(cards: string[]) {
+  private async buildCards<T extends AnyCard>(
+    cards: { blueprintId: string; isFoil: boolean }[]
+  ) {
     const result: T[] = [];
     for (const card of cards) {
-      result.push(await this.game.cardSystem.addCard<T>(this.player, card));
+      result.push(
+        await this.game.cardSystem.addCard<T>(this.player, card.blueprintId, card.isFoil)
+      );
     }
     return result;
   }

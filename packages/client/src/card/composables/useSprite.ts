@@ -25,13 +25,15 @@ export function useSprite({
   animationSequence,
   kind,
   scale = 1,
-  pathPrefix = '/cards'
+  pathPrefix = '/cards',
+  repeat = true
 }: {
   pathPrefix?: string;
   sprite: MaybeRefOrGetter<SpriteData | null>;
   animationSequence: MaybeRefOrGetter<string[] | undefined>;
   kind: MaybeRefOrGetter<CardKind>;
   scale?: number;
+  repeat?: boolean;
 }) {
   const emitter = new TypedEventEmitter<{
     sequenceEnd: EmptyObject;
@@ -43,6 +45,7 @@ export function useSprite({
   const shouldAnimate = computed(
     () => isDefined(sequenceRef.value) && sequenceRef.value.length > 0
   );
+  const isDone = ref(false);
 
   const sequenceToUse = computed(() => {
     if (sequenceRef.value && sequenceRef.value.length > 0) {
@@ -54,6 +57,7 @@ export function useSprite({
   const currentSequenceIndex = ref(0);
   watch(sequenceToUse, () => {
     currentSequenceIndex.value = 0;
+    isDone.value = false;
   });
 
   const currentAnimation = computed(() => {
@@ -94,6 +98,10 @@ export function useSprite({
           }
         } else {
           currentFrame.value = startFrame;
+          if (!repeat) {
+            isDone.value = true;
+            return;
+          }
           emitter.emit('sequenceEnd', {});
         }
       } else {
@@ -115,7 +123,7 @@ export function useSprite({
     return {
       x: currentFrame.value * spriteRef.value.frameSize.w,
       y: 0,
-      width: spriteRef.value.frameSize.w,
+      width: spriteRef.value.frameSize.w * scale,
       height: spriteRef.value.frameSize.h
     };
   });
@@ -136,6 +144,7 @@ export function useSprite({
     bgPosition,
     imageBg,
     shouldAnimate,
+    isDone,
     on: emitter.on.bind(emitter),
     off: emitter.off.bind(emitter),
     once: emitter.once.bind(emitter)

@@ -21,6 +21,7 @@ import { IllegalGameStateError } from '../../game/game-error';
 export type CardOptions<T extends CardBlueprint = CardBlueprint> = {
   id: string;
   blueprint: T;
+  isFoil: boolean;
 };
 
 export type AnyCard = Card<any, any, any>;
@@ -39,6 +40,7 @@ export const makeCardInterceptors = (): CardInterceptors => ({
 export type SerializedCard = {
   id: string;
   entityType: 'card';
+  isFoil: boolean;
   spriteId: string;
   kind: CardKind;
   rarity: Rarity;
@@ -81,6 +83,8 @@ export abstract class Card<
 
   protected spacesToHighlight: Point[] = [];
 
+  readonly isFoil: boolean;
+
   constructor(
     game: Game,
     player: Player,
@@ -91,6 +95,7 @@ export abstract class Card<
     this.game = game;
     this.originalPlayer = player;
     this.blueprint = options.blueprint as any;
+    this.isFoil = options.isFoil;
     this.modifiers = new ModifierManager(this);
   }
 
@@ -196,6 +201,7 @@ export abstract class Card<
   protected serializeBase(): SerializedCard {
     return {
       id: this.id,
+      isFoil: this.isFoil,
       spriteId: this.blueprint.sprite.id,
       entityType: 'card',
       rarity: this.blueprint.rarity,

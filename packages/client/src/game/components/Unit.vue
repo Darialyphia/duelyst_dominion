@@ -228,7 +228,8 @@ setTimeout(() => {
         }"
       >
         <div class="sprite">
-          <div class="foil" v-if="unit" />
+          <div class="foil" v-if="unit.getCard().isFoil" />
+          <div class="foil-glare" v-if="unit.getCard().isFoil" />
         </div>
       </div>
       <div class="atk">
@@ -271,20 +272,20 @@ setTimeout(() => {
         :sprites="[
           {
             spriteId: 'impact',
-            animationSequence: ['impactorangemedium'],
-            scale: 1,
-            offset: {
-              x: activeFrameRect.width / 3 - 10,
-              y: -40
-            }
-          },
-          {
-            spriteId: 'collision',
-            animationSequence: ['collisionsparks'],
+            animationSequence: ['impactorangebig'],
             scale: 1,
             offset: {
               x: 0,
               y: 0
+            }
+          },
+          {
+            spriteId: 'collision',
+            animationSequence: ['collisionsparksblue'],
+            scale: 1,
+            offset: {
+              x: -10,
+              y: 10
             }
           },
           {
@@ -293,7 +294,7 @@ setTimeout(() => {
             scale: 1,
             offset: {
               x: -activeFrameRect.width / 3,
-              y: 40
+              y: 45
             }
           }
         ]"
@@ -618,7 +619,6 @@ setTimeout(() => {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-color: red;
   mask-image: v-bind(imageBg);
   mask-position: var(--bg-position);
   mask-repeat: no-repeat;
@@ -640,8 +640,29 @@ setTimeout(() => {
     unit-foil-rotate 8s linear infinite,
     unit-foil-move 5s ease-in-out infinite,
     unit-foil-brightness 10s ease-in-out infinite;
-  opacity: 0.25;
+  opacity: 0.5;
   filter: brightness(calc((var(--unit-foil-brightness) * 0.3) + 0.5))
     contrast(5) saturate(1.5) blur(5px);
+}
+
+.foil-glare {
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+  --glare-x: 50%;
+  --glare-y: 50%;
+  background-image: radial-gradient(
+    farthest-corner circle at var(--glare-x) var(--glare-y),
+    hsla(0, 0%, 100%, 0.8) 10%,
+    hsla(0, 70%, 100%, 0.65) 20%,
+    hsla(0, 0%, 0%, 0.5) 90%
+  );
+  mix-blend-mode: overlay;
+  mask-image: v-bind(imageBg);
+  mask-position: var(--bg-position);
+  mask-repeat: no-repeat;
+  mask-size: var(--background-width) var(--background-height);
 }
 </style>

@@ -62,7 +62,12 @@ const isStarted = ref(false);
         name: 'Player 1',
         deck: {
           cards: p1Deck.cards
-            .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
+            .map(c =>
+              Array.from({ length: c.copies }, () => ({
+                blueprintId: c.blueprintId,
+                isFoil: c.isFoil
+              }))
+            )
             .flat()
         }
       },
@@ -71,7 +76,12 @@ const isStarted = ref(false);
         name: 'Player 2',
         deck: {
           cards: p2Deck.cards
-            .map(c => Array.from({ length: c.copies }, () => c.blueprintId))
+            .map(c =>
+              Array.from({ length: c.copies }, () => ({
+                blueprintId: c.blueprintId,
+                isFoil: c.isFoil
+              }))
+            )
             .flat()
         }
       }

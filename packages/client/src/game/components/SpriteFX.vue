@@ -20,22 +20,16 @@ const buildSprites = () => {
         animationSequence: s.animationSequence,
         scale: s.scale,
         kind: CARD_KINDS.SPELL,
-        pathPrefix: '/fx'
+        pathPrefix: '/fx',
+        repeat: false
       }),
       spriteData: spritesData[s.spriteId],
       id: s.spriteId,
       scale: s.scale,
-      offset: s.offset,
-      isDisplayed: ref(true)
+      offset: s.offset
     };
   });
-  parts.forEach(part => {
-    part.once('frame', ({ index, total }) => {
-      if (index === total - 1) {
-        part.isDisplayed.value = false;
-      }
-    });
-  });
+
   return parts;
 };
 const _sprites = buildSprites();
@@ -45,14 +39,14 @@ const _sprites = buildSprites();
   <div ref="spriteContainer" class="sprite-fx-container">
     <template v-for="sprite in _sprites" :key="sprite.id">
       <div
-        v-if="sprite.isDisplayed"
+        v-if="!sprite.isDone.value"
         class="sprite-fx"
         :style="{
           '--bg-position': sprite.bgPosition.value,
           '--width': `${sprite.activeFrameRect.value.width}px`,
           '--height': `${sprite.activeFrameRect.value.height}px`,
-          '--background-width': `calc( ${sprite.spriteData.sheetSize.w}px * var(--pixel-scale))`,
-          '--background-height': `calc(${sprite.spriteData.sheetSize.h}px * var(--pixel-scale))`,
+          '--background-width': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.w}px * var(--pixel-scale))`,
+          '--background-height': `calc(${sprite.scale} * ${sprite.spriteData.sheetSize.h}px * var(--pixel-scale))`,
           '--offset-x': `${sprite.offset.x}px`,
           '--offset-y': `${sprite.offset.y}px`,
           '--scale': sprite.scale,

@@ -55,7 +55,8 @@ export class CardSystem extends System<CardSystemOptions> {
 
   async addCard<T extends AnyCard = AnyCard>(
     player: Player,
-    blueprintId: string
+    blueprintId: string,
+    isFoil: boolean
   ): Promise<T> {
     const blueprint = this.getBlueprint(blueprintId);
     const id = `${blueprintId}-${this.nextId++}`;
@@ -66,7 +67,8 @@ export class CardSystem extends System<CardSystemOptions> {
         () =>
           new SpellCard(this.game, player, {
             id,
-            blueprint
+            blueprint,
+            isFoil
           } as CardOptions<SpellBlueprint>)
       )
       .with(
@@ -74,7 +76,8 @@ export class CardSystem extends System<CardSystemOptions> {
         () =>
           new ArtifactCard(this.game, player, {
             id,
-            blueprint
+            blueprint,
+            isFoil
           } as CardOptions<ArtifactBlueprint>)
       )
       .with(
@@ -82,7 +85,8 @@ export class CardSystem extends System<CardSystemOptions> {
         () =>
           new MinionCard(this.game, player, {
             id,
-            blueprint
+            blueprint,
+            isFoil
           } as CardOptions<MinionBlueprint>)
       )
       .with(
@@ -90,7 +94,8 @@ export class CardSystem extends System<CardSystemOptions> {
         () =>
           new GeneralCard(this.game, player, {
             id,
-            blueprint
+            blueprint,
+            isFoil
           } as CardOptions<GeneralBlueprint>)
       )
       .exhaustive();

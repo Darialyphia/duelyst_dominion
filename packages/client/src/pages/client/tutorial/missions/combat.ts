@@ -10,14 +10,14 @@ export const combatTutorial: TutorialMission = {
         id: 'p1',
         name: 'You',
         deck: {
-          cards: Array.from({ length: 30 }, () => 'courageous-footsoldier')
+          cards: []
         }
       },
       {
         id: 'p2',
         name: 'Opponent',
         deck: {
-          cards: Array.from({ length: 30 }, () => 'courageous-footsoldier')
+          cards: []
         }
       }
     ],

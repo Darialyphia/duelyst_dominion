@@ -24,10 +24,14 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
           eventName: GAME_EVENTS.MINION_BEFORE_SUMMON,
           filter: event => {
             if (!event) return false;
-            return event.data.card.equals(this.target);
+
+            return (
+              event.data.card.equals(this.target) &&
+              !!this.target.player.currentlyPlayedCard?.equals(this.target)
+            );
           },
           handler: event => {
-            if (!event) return; // dont trigger when event it triggered manually
+            if (!event) return; // dont trigger when event is triggered manually
             return handler(event);
           }
         })

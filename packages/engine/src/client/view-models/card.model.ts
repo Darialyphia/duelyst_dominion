@@ -56,6 +56,10 @@ export class CardViewModel {
     return this.data.id;
   }
 
+  get isFoil() {
+    return this.data.isFoil;
+  }
+
   get name() {
     return this.data.name;
   }

@@ -36,6 +36,7 @@ export class SelectCardsFromPoolAction extends Action<'select_cards_from_pool'> 
 
     for (const action of this.action.params.actions) {
       const ctor = ACTION_LOOKUP[action.type];
+      // @ts-ignore it procudes a type too complex to represent
       const instance = new ctor(action, {
         ...this.ctx,
         selectedCards: selectedcards

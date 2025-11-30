@@ -19,7 +19,10 @@ export class GenerateCardsAction extends Action<'generate_cards'> {
 
     for (const player of players) {
       for (const blueprint of blueprints) {
-        const card = (await player.generateCard(blueprint.id)) as DeckCard;
+        const card = (await player.generateCard(
+          blueprint.id,
+          this.ctx.card.isFoil
+        )) as DeckCard;
         await match(this.action.params.location)
           .with('hand', async () => {
             await player.cardManager.addToHand(card);

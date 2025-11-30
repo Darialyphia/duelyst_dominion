@@ -3,7 +3,6 @@ import { ShockwaveFilter } from '@pixi/filter-shockwave';
 import { DisplayObject, Point } from 'pixi.js';
 import { onTick, useApplication } from 'vue3-pixi';
 import { waitFor } from '@game/shared';
-import { config } from '@/utils/config';
 
 export const useShockwave = (
   displayObject: Ref<DisplayObject | undefined>,
@@ -39,7 +38,7 @@ export const useShockwave = (
       getCenter?.(offset ?? { x: 0, y: 0 }) ??
       new Point(offset?.x ?? 0, offset?.y ?? 0);
     shockwave.wavelength = wavelength;
-    shockwave.radius = radius * config.INITIAL_ZOOM;
+    shockwave.radius = radius;
     shockwave.speed = speed;
     shockwave.time = 0;
 

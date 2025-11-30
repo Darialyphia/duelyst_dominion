@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
-import BlueprintSmallCard from './BlueprintSmallCard.vue';
 import { domToPng } from 'modern-screenshot';
 import BlueprintCard from './BlueprintCard.vue';
 import UiButton from '@/ui/components/UiButton.vue';
@@ -50,9 +49,7 @@ const saveImage = async () => {
 
 const mode = ref('condensed' as 'full' | 'condensed');
 
-const cardComponent = computed(() =>
-  mode.value === 'full' ? BlueprintCard : BlueprintSmallCard
-);
+const cardComponent = computed(() => BlueprintCard);
 </script>
 
 <template>

@@ -30,7 +30,7 @@ import { match } from 'ts-pattern';
 export type PlayerOptions = {
   id: string;
   name: string;
-  deck: { cards: string[] };
+  deck: { cards: { blueprintId: string; isFoil: boolean }[] };
 };
 
 export type SerializedPlayer = {
@@ -124,8 +124,8 @@ export class Player
     this.game = game;
     this.cardTracker = new CardTrackerComponent(game, this);
     this.cardManager = new CardManagerComponent(game, this, {
-      deck: this.options.deck.cards.filter(id => {
-        const blueprint = this.game.cardSystem.getBlueprint(id);
+      deck: this.options.deck.cards.filter(card => {
+        const blueprint = this.game.cardSystem.getBlueprint(card.blueprintId);
         return blueprint.kind !== CARD_KINDS.GENERAL;
       }),
       maxHandSize: this.game.config.MAX_HAND_SIZE,
@@ -141,14 +141,17 @@ export class Player
       : this.game.config.PLAYER_2_INITIAL_MANA;
     this._mana = this._baseMaxMana;
 
-    const generalId = this.options.deck.cards.find(cardId => {
-      const blueprint = this.game.cardSystem.getBlueprint(cardId);
+    const generalId = this.options.deck.cards.find(card => {
+      const blueprint = this.game.cardSystem.getBlueprint(card.blueprintId);
       return blueprint.kind === CARD_KINDS.GENERAL;
     });
     if (!generalId) {
       throw new Error(`General card not found in player's deck`);
     }
-    const generalCard = await this.generateCard<GeneralCard>(generalId);
+    const generalCard = await this.generateCard<GeneralCard>(
+      generalId.blueprintId,
+      generalId.isFoil
+    );
     await generalCard.play();
 
     this._general = this.game.unitSystem.getUnitByCard(generalCard)!;
@@ -451,8 +454,11 @@ export class Player
     );
   }
 
-  generateCard<T extends AnyCard = AnyCard>(blueprintId: string) {
-    const card = this.game.cardSystem.addCard<T>(this, blueprintId);
+  generateCard<T extends AnyCard = AnyCard>(
+    blueprintId: string,
+    isFoil: boolean
+  ): Promise<T> {
+    const card = this.game.cardSystem.addCard<T>(this, blueprintId, isFoil);
 
     return card;
   }

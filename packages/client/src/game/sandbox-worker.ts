@@ -103,7 +103,7 @@ self.addEventListener('message', ({ data }) => {
     })
     .with({ type: 'addCardtoHand' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
-      const card = await player.generateCard(payload.blueprintId);
+      const card = await player.generateCard(payload.blueprintId, false);
       await card.addToHand();
       game.snapshotSystem.takeSnapshot();
     })

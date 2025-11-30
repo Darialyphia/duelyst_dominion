@@ -36,10 +36,14 @@ const camera = ref({
   scale: 1,
   angle: { x: 20, y: 0 }
 });
+
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;
   const origin = config.CELL.toScreenPosition(unit);
-  camera.value.origin = origin;
+  camera.value.origin = {
+    x: origin.x + config.CELL.width / 2,
+    y: origin.y + config.CELL.height / 2
+  };
 
   const proxy = {
     scale: camera.value.scale,
@@ -59,6 +63,19 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
     }
   });
 });
+
+useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
+  const unit = units.value.find(u => u.id === event.unit)!;
+  const origin = config.CELL.toScreenPosition(unit);
+
+  gsap.to(camera.value.origin, {
+    duration: 0.3,
+    ease: Power2.easeOut,
+    x: origin.x + config.CELL.width / 2,
+    y: origin.y + config.CELL.height / 2
+  });
+});
+
 useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
   const proxy = {
     scale: camera.value.scale,
