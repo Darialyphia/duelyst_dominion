@@ -19,7 +19,7 @@ import { GameInteractionSystem } from './systems/game-interaction.system';
 import { UnitSystem } from '../unit/unit-system';
 import { defaultMap, type MapBlueprint } from '../board/map-blueprint';
 import { BoardSystem } from '../board/board.system';
-import { FxSystem } from './systems/fx.system';
+import { VFXSystem } from './systems/vfx.system';
 import type { TileBlueprint } from '../tile/tile-blueprint';
 import { TileSystem } from '../tile/tile.system';
 
@@ -67,7 +67,7 @@ export class Game implements Serializable<SerializedGame> {
 
   readonly boardSystem = new BoardSystem(this);
 
-  readonly fxSystem = new FxSystem(this);
+  readonly vfxSystem = new VFXSystem(this);
 
   readonly tileSystem = new TileSystem(this);
 
@@ -147,7 +147,7 @@ export class Game implements Serializable<SerializedGame> {
     console.log(`Input system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 
-    await this.fxSystem.initialize();
+    await this.vfxSystem.initialize();
     console.log(`FX system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 

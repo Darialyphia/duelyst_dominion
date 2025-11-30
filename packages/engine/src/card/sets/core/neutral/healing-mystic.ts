@@ -37,7 +37,7 @@ export const healingMystic: MinionBlueprint = {
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, { required: false });
   },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

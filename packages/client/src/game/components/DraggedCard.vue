@@ -105,7 +105,6 @@ const confirmButtonLabel = computed(() => {
 
 const isHidden = ref(false);
 useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, () => {
-  console.log('hide');
   isHidden.value = true;
 });
 const unsub = client.value.onUpdateCompleted(() => {

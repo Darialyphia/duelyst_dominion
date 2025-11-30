@@ -10,7 +10,12 @@ export const azuriteLion: MinionBlueprint = {
   description: '@Celerity@.',
   sprite: { id: 'minions/f1_azurite-lion' },
   sounds: {
-    play: 'sfx_spell_diretidefrenzy.m4a'
+    play: 'sfx_spell_diretidefrenzy.m4a',
+    walk: 'sfx_neutral_arakiheadhunter_hit.m4a',
+    attack: 'sfx_neutral_beastsaberspinetiger_attack_swing.m4a',
+    dealDamage: 'sfx_neutral_beastsaberspinetiger_hit.m4a',
+    takeDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact.m4a',
+    death: 'sfx_neutral_beastphasehound_death.m4a'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

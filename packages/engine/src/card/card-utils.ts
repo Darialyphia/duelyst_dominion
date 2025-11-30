@@ -205,3 +205,48 @@ export const anywhere = {
       });
     }
 };
+
+export const singleUnitTargetRules = {
+  canPlay(game: Game, card: AnyCard, predicate: (c: Unit) => boolean = () => true) {
+    return (
+      [...card.player.units, ...card.player.enemyUnits].filter(
+        unit => unit.canBeTargetedBy(card) && predicate(unit)
+      ).length > 0
+    );
+  },
+  async getPreResponseTargets(
+    game: Game,
+    card: AnyCard,
+    {
+      required = true,
+      predicate = () => true,
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {})
+    }: {
+      required?: boolean;
+      predicate?: (unit: Unit) => boolean;
+      getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+    } = {}
+  ) {
+    return await game.interaction.selectSpacesOnBoard({
+      player: card.player,
+      getAoe,
+      isElligible(candidate, selectedCells) {
+        if (!candidate.unit || !isMinion(candidate.unit.card)) {
+          return false;
+        }
+
+        return (
+          candidate.unit.canBeTargetedBy(card) &&
+          !selectedCells.some(selected => selected.equals(candidate)) &&
+          predicate(candidate.unit)
+        );
+      },
+      canCommit(selectedCards) {
+        return required ? selectedCards.length === 1 : true;
+      },
+      isDone(selectedCards) {
+        return selectedCards.length === 1;
+      }
+    });
+  }
+};

@@ -2,7 +2,9 @@
 import UiButton from '@/ui/components/UiButton.vue';
 import {
   useBoardCells,
+  useFxEvent,
   useGameClient,
+  useGameState,
   useGameUi,
   useMyPlayer,
   useOpponentPlayer,
@@ -18,18 +20,28 @@ import GameCard from './GameCard.vue';
 import PlayedCard from './PlayedCard.vue';
 import { useGlobalSounds } from '../composables/useGlobalSounds';
 import Camera from './Camera.vue';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
 const units = useUnits();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
+const state = useGameState();
 useGlobalSounds();
 
 const ui = useGameUi();
 const hoveredCard = computed(() => {
   if (!ui.value.hoveredCell) return null;
   return ui.value.hoveredCell.unit?.getCard();
+});
+
+const isVfxOverlayDisplayed = ref(false);
+useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, () => {
+  isVfxOverlayDisplayed.value = true;
+});
+useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
+  isVfxOverlayDisplayed.value = false;
 });
 </script>
 
@@ -43,6 +55,9 @@ const hoveredCard = computed(() => {
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </Camera>
+    <Transition appear>
+      <div class="vfx-overlay" v-if="isVfxOverlayDisplayed" />
+    </Transition>
 
     <div class="hand">
       <Hand :player-id="myPlayer.id" :key="myPlayer.id" />
@@ -66,7 +81,7 @@ const hoveredCard = computed(() => {
         />
       </div>
 
-      <div class="flex gap-5">
+      <div v-if="state.config.FEATURES.RUNES" class="flex gap-5">
         <div class="rune-count">
           <img src="/assets/ui/rune-red.png" />
           {{ myPlayer.runes.red }}
@@ -81,6 +96,7 @@ const hoveredCard = computed(() => {
         </div>
       </div>
       <UiButton
+        v-if="state.config.FEATURES.RUNES"
         v-show="myPlayer.canUseResourceAction"
         class="action-button red"
         @click="client.gainRune(RUNES.RED)"
@@ -88,6 +104,7 @@ const hoveredCard = computed(() => {
         Gain Red Rune
       </UiButton>
       <UiButton
+        v-if="state.config.FEATURES.RUNES"
         v-show="myPlayer.canUseResourceAction"
         class="action-button yellow"
         @click="client.gainRune(RUNES.YELLOW)"
@@ -95,6 +112,7 @@ const hoveredCard = computed(() => {
         Gain Yellow Rune
       </UiButton>
       <UiButton
+        v-if="state.config.FEATURES.RUNES"
         v-show="myPlayer.canUseResourceAction"
         class="action-button blue"
         @click="client.gainRune(RUNES.BLUE)"
@@ -102,6 +120,7 @@ const hoveredCard = computed(() => {
         Gain Blue Rune
       </UiButton>
       <UiButton
+        v-if="state.config.FEATURES.RUNES"
         v-show="myPlayer.canUseResourceAction"
         class="action-button"
         @click="client.drawCard()"
@@ -178,8 +197,6 @@ const hoveredCard = computed(() => {
   position: relative;
   transform-style: preserve-3d;
   perspective: 1500px;
-  background: url(/assets/backgrounds/booster-opening.png) center/cover
-    no-repeat;
 }
 #dragged-card-container {
   perspective: 850px;
@@ -193,6 +210,20 @@ const hoveredCard = computed(() => {
   width: 100%;
   bottom: 22%;
   left: 0;
+}
+
+.vfx-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent, black 75%);
+  opacity: 0.7;
+  pointer-events: none;
+  &:is(.v-enter-active, .v-leave-active) {
+    transition: opacity 0.5s;
+  }
+  &:is(.v-enter-from, .v-leave-to) {
+    opacity: 0;
+  }
 }
 
 .my-infos,

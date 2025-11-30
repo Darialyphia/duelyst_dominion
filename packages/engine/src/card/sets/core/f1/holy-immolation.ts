@@ -29,8 +29,8 @@ export const holyImmolation: SpellBlueprint = {
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isAlly(card.player),
-      getAoe() {
-        return new RingAOEShape(TARGETING_TYPE.ENEMY_MINION, { size: 1 });
+      getAoe(spaces) {
+        return card.blueprint.getAoe(game, card, spaces);
       }
     });
   },

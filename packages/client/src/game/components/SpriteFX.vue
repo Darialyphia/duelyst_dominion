@@ -33,7 +33,6 @@ const buildSprites = () => {
   return parts;
 };
 const _sprites = buildSprites();
-console.log(_sprites);
 </script>
 
 <template>

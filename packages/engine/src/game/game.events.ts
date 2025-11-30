@@ -19,7 +19,7 @@ import type { PlayerEventMap } from '../player/player.events';
 import type { UnitEventMap } from '../unit/unit-events';
 import { UNIT_EVENTS } from '../unit/unit.enums';
 import type { ArtifactEventMap } from '../player/player-artifact.events';
-import { FX_EVENTS, type FxEventMap } from './systems/fx.system';
+import { VFX_EVENTS, type FxEventMap } from './systems/vfx.system';
 import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
 import { SHRINE_EVENTS, type ShrineEventMap } from '../board/entities/shrine.entity';
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
@@ -149,7 +149,7 @@ export const GAME_EVENTS = {
   ...ARTIFACT_EVENTS,
   ...MINION_EVENTS,
   ...GENERAL_EVENTS,
-  ...FX_EVENTS,
+  ...VFX_EVENTS,
   ...SHRINE_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
 

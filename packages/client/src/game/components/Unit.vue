@@ -156,6 +156,9 @@ const isInAoe = useIsInAoe();
   }
 }
 
+.unit.is-exhausted :deep(.sprite) {
+  filter: grayscale(100%) brightness(70%);
+}
 .unit :deep(.sprite) {
   &::after {
     content: '';

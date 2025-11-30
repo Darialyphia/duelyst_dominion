@@ -43,7 +43,7 @@ export type Config = {
 
 export const defaultConfig: Config = {
   FEATURES: {
-    RUNES: true
+    RUNES: false
   },
   MAX_MAIN_DECK_SIZE: 40,
   MAX_MAIN_DECK_CARD_COPIES: 3,

@@ -8,6 +8,7 @@ import type { Point } from '@game/shared';
 import { useSprite, type SpriteData } from '@/card/composables/useSprite';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
 
 interface UseUnitAnimationsOptions {
   unit: UnitViewModel;
@@ -57,7 +58,7 @@ export function useUnitAnimations({
 
     const stepDuration = 0.5;
 
-    animationSequence.value = ['run'];
+    animationSequence.value = [ANIMATIONS_NAMES.RUN];
     const timeline = gsap.timeline();
 
     path.forEach((point, index) => {
@@ -86,7 +87,7 @@ export function useUnitAnimations({
     if (event.unit !== unit.id) return;
     return new Promise<void>(resolve => {
       isAttacking.value = true;
-      animationSequence.value = ['attack'];
+      animationSequence.value = [ANIMATIONS_NAMES.ATTACK];
       const unsub = spriteControls.on('frame', ({ index, total }) => {
         const percentage = (index + 1) / total;
         if (percentage < 0.75) return;
@@ -107,7 +108,7 @@ export function useUnitAnimations({
 
     const animation = new Promise<void>(resolve => {
       isAttacking.value = true;
-      animationSequence.value = ['hit'];
+      animationSequence.value = [ANIMATIONS_NAMES.HIT];
       const unsub = spriteControls.on('sequenceEnd', () => {
         animationSequence.value = [defaultAnimation.value];
         isAttacking.value = false;
@@ -154,7 +155,7 @@ export function useUnitAnimations({
 
     return new Promise<void>(resolve => {
       isAttacking.value = true;
-      animationSequence.value = ['death'];
+      animationSequence.value = [ANIMATIONS_NAMES.DEATH];
       const unsub = spriteControls.on('sequenceEnd', () => {
         animationSequence.value = [defaultAnimation.value];
         isAttacking.value = false;
@@ -172,9 +173,15 @@ export function useUnitAnimations({
       return;
     }
     if (!unit.isGeneral) return;
+    if (!card.getPlayer().equals(unit.getPlayer()!)) return;
 
     return new Promise<void>(resolve => {
-      animationSequence.value = ['caststart', 'castloop', 'cast', 'castend'];
+      animationSequence.value = [
+        ANIMATIONS_NAMES.CAST_START,
+        ANIMATIONS_NAMES.CAST_LOOP,
+        ANIMATIONS_NAMES.CAST,
+        ANIMATIONS_NAMES.CAST_END
+      ];
       const unsub = spriteControls.on('sequenceEnd', () => {
         animationSequence.value = [defaultAnimation.value];
         isAttacking.value = false;

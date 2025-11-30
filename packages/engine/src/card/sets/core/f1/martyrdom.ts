@@ -10,7 +10,6 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  @Consume@ @[rune:blue]@
   Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
   sprite: { id: 'spells/f1_martyrdom' },
   sounds: {},
@@ -37,7 +36,6 @@ export const martyrdom: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets }) {
-    await consume(card, { blue: 1 });
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 

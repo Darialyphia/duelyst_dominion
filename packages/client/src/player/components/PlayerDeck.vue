@@ -2,6 +2,7 @@
 import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS, type Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
+import { defaultConfig } from '@game/engine/src/config';
 import {
   HoverCardContent,
   HoverCardPortal,
@@ -93,7 +94,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
             {{ deck.name }}
           </div>
 
-          <div class="flex gap-1">
+          <div class="flex gap-1" v-if="defaultConfig.FEATURES.RUNES">
             <div class="rune-count">
               <img src="/assets/ui/rune-red.png" />
               {{ highestRuneCost.red }}

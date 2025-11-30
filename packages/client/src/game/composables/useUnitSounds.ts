@@ -5,7 +5,6 @@ import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
 export const useUnitSounds = (unit: Ref<UnitViewModel>) => {
   const sounds = {
-    play: useSoundEffect(computed(() => unit.value.getCard().sounds?.play)),
     walk: useSoundEffect(computed(() => unit.value.getCard().sounds?.walk)),
     attack: useSoundEffect(computed(() => unit.value.getCard().sounds?.attack)),
     dealDamage: useSoundEffect(
@@ -16,16 +15,6 @@ export const useUnitSounds = (unit: Ref<UnitViewModel>) => {
     ),
     death: useSoundEffect(computed(() => unit.value.getCard().sounds?.death))
   };
-
-  watch(
-    () => unit.value.getCard().sounds.play,
-    newSound => {
-      if (!newSound) return;
-      if (unit.value.isGeneral) return;
-      sounds.play.value?.play();
-    },
-    { immediate: true }
-  );
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, async event => {
     if (event.unit !== unit.value.id) return;

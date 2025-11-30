@@ -3,6 +3,7 @@ import { useIntervalFn } from '@vueuse/core';
 import { isDefined, type EmptyObject } from '@game/shared';
 import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
 import { TypedEventEmitter } from '@game/engine/src/utils/typed-emitter';
+import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
 
 export interface SpriteData {
   id: string;
@@ -15,10 +16,10 @@ export interface SpriteData {
 }
 
 const FALLBACK_ANIMATION_BY_KIND: Record<CardKind, string> = {
-  [CARD_KINDS.MINION]: 'breathing',
-  [CARD_KINDS.GENERAL]: 'breathing',
-  [CARD_KINDS.SPELL]: 'default',
-  [CARD_KINDS.ARTIFACT]: 'default'
+  [CARD_KINDS.MINION]: ANIMATIONS_NAMES.BREATHING,
+  [CARD_KINDS.GENERAL]: ANIMATIONS_NAMES.BREATHING,
+  [CARD_KINDS.SPELL]: ANIMATIONS_NAMES.DEFAULT,
+  [CARD_KINDS.ARTIFACT]: ANIMATIONS_NAMES.DEFAULT
 };
 export function useSprite({
   sprite,

@@ -182,9 +182,9 @@ export class MinionCard extends Card<
       })
     );
     this.game.unitSystem.addUnit(this, position);
-    this.unit.exhaust();
     if (this.hasSummoningSickness) {
       await this.unit.modifiers.add(new SummoningSicknessModifier(this.game, this));
+      this.unit.exhaust();
     }
 
     await this.game.emit(

@@ -19,6 +19,7 @@ import CardStats from './CardStats.vue';
 import CardCost from './CardCost.vue';
 import CardArtwork from './CardArtwork.vue';
 import { match } from 'ts-pattern';
+import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
 
 const {
   card,
@@ -102,10 +103,12 @@ const _animationSequence = computed(() => {
 
   return match(card.kind)
     .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
-      isHovered.value ? ['attack', 'idle'] : ['breathing']
+      isHovered.value
+        ? [ANIMATIONS_NAMES.ATTACK, ANIMATIONS_NAMES.IDLE]
+        : [ANIMATIONS_NAMES.BREATHING]
     )
     .with(CARD_KINDS.SPELL, CARD_KINDS.ARTIFACT, () =>
-      isHovered.value ? ['active'] : ['default']
+      isHovered.value ? [ANIMATIONS_NAMES.ACTIVE] : [ANIMATIONS_NAMES.DEFAULT]
     )
     .exhaustive();
 });

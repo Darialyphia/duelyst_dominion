@@ -85,9 +85,8 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
 
 const boardStyle = computed(() => ({
   width: `${state.value.board.columns * config.CELL.width}px`,
-  height: `${state.value.board.rows * config.CELL.height}px`,
-  '--board-angle-X': `${camera.value.angle.x}deg`,
-  '--board-angle-Y': `${camera.value.angle.y}deg  `
+  height: `${state.value.board.rows * config.CELL.height}px`
+
   // '--board-angle-X': `${(y.value / height.value - 0.5) * -180}deg`,
   // '--board-angle-Y': `${(x.value / width.value - 0.5) * 180}deg`
 }));
@@ -104,11 +103,16 @@ const ui = useGameUi();
     }"
   >
     <div
-      :id="ui.DOMSelectors.board.id"
       class="camera-rotate"
-      :style="boardStyle"
+      :style="{
+        '--board-angle-X': `${camera.angle.x}deg`,
+        '--board-angle-Y': `${camera.angle.y}deg `
+      }"
     >
-      <slot />
+      <div class="bg" />
+      <div class="board" :id="ui.DOMSelectors.board.id" :style="boardStyle">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -116,16 +120,33 @@ const ui = useGameUi();
 <style scoped lang="postcss">
 .camera-zoom {
   position: absolute;
-  top: 40%;
-  left: 50%;
-  translate: -50% -50%;
   pointer-events: none;
   transform-style: preserve-3d;
 }
 
 .camera-rotate {
+  width: 100vw;
+  height: 100dvh;
+  position: absolute;
   pointer-events: auto;
   transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X));
   transform-style: preserve-3d;
+}
+
+.board {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  transform-style: preserve-3d;
+}
+
+.bg {
+  position: absolute;
+  width: 125vw;
+  height: 125dvh;
+  background: url(/assets/backgrounds/booster-opening.png) center/cover
+    no-repeat;
+  translate: -9.9% -10%;
 }
 </style>
