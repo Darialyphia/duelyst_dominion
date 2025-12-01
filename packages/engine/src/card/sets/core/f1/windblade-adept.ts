@@ -12,7 +12,14 @@ export const windbladeAdept: MinionBlueprint = {
   sprite: {
     id: 'minions/f1_windblade-adept'
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_immolation_b.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_f2melee_attack_swing_2.m4a',
+    takeDamage: 'sfx_f2melee_hit_2.m4a',
+    dealDamage: 'sfx_f2melee_attack_impact_1.m4a',
+    death: 'sfx_f2melee_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
