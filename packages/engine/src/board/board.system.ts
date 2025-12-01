@@ -91,6 +91,10 @@ export class BoardSystem
     );
   }
 
+  getCellById(cellId: string) {
+    return this.cellsMap.get(cellId) ?? null;
+  }
+
   getCellAt(posOrKey: string | Point) {
     if (isString(posOrKey)) {
       return this.cellsMap.get(posOrKey) ?? null;

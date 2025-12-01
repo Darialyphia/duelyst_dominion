@@ -10,6 +10,7 @@ export class ZoneCalculator {
 
   calculateZones() {
     // Calculate potential moves upfront as this can be an expensive operation
+
     // These are moves the unit could make provided it was able to move fully
     const potentialMoves = this.unit
       .getPossibleMoves(this.unit.sprintReach * this.unit.maxMovementsPerTurn, true)
@@ -31,7 +32,7 @@ export class ZoneCalculator {
     };
   }
 
-  private calculateDangerZone(potentialMoves: BoardCell[]): string[] {
+  calculateDangerZone(potentialMoves: BoardCell[]): string[] {
     return this.game.boardSystem.cells
       .filter(cell =>
         potentialMoves
@@ -41,7 +42,7 @@ export class ZoneCalculator {
       .map(cell => cell.id);
   }
 
-  private getAttackableCells(): string[] {
+  getAttackableCells(): string[] {
     return this.game.boardSystem.cells
       .filter(cell => this.unit.canAttackAt(cell.position))
       .map(cell => cell.id);

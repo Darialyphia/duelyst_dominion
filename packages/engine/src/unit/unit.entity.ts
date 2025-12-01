@@ -33,6 +33,7 @@ import { HealthComponent } from './components/health.component';
 import { StateComponent } from './components/state.component';
 import { StatsComponent } from './components/stats.component';
 import { TargetingComponent } from './components/targeting.component';
+import { BehaviorComponent } from './components/behavior.component';
 
 export type UnitOptions = {
   id: string;
@@ -128,6 +129,8 @@ export class Unit
 
   positionSensor: PositionSensorComponent;
 
+  behavior: BehaviorComponent;
+
   constructor(
     private game: Game,
     readonly card: MinionCard | GeneralCard,
@@ -188,6 +191,7 @@ export class Unit
     this.health = new HealthComponent(game, this, () =>
       this.interceptors.maxHp.getValue(this.card.maxHp, {})
     );
+    this.behavior = new BehaviorComponent(game, this);
   }
 
   protected async onInterceptorAdded(key: string) {
@@ -347,6 +351,10 @@ export class Unit
 
   get canBeAttackedBy() {
     return this.targeting.canBeAttackedBy.bind(this.targeting);
+  }
+
+  get canCounterattack() {
+    return this.targeting.canCounterAttack.bind(this.targeting);
   }
 
   get canBeCounterattackedBy() {
