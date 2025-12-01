@@ -59,10 +59,12 @@ export class MovementComponent {
       .map(([cellId]) => cellIdToPoint(cellId as SerializedCoords));
   }
 
-  canMoveTo(point: Point, maxDistance: number) {
+  canMoveTo(point: Point) {
+    if (!this.unit.canMove) return false;
+
     const path = this.pathfinding.getPathTo(this.position, point);
     if (!path) return false;
-    return path.distance <= maxDistance;
+    return path.distance <= this.unit.sprintReach;
   }
 
   getPathTo(point: Point, maxDistance?: number) {
@@ -70,6 +72,8 @@ export class MovementComponent {
   }
 
   async move(to: Point) {
+    const distance = this.game.boardSystem.getDistance(this.position, to);
+
     const path = this.pathfinding.getPathTo(this, to);
     if (!path) return;
 
@@ -99,6 +103,43 @@ export class MovementComponent {
       })
     );
 
-    return path;
+    if (
+      distance > this.unit.movementReach &&
+      this.unit.movementsMadeThisTurn >= this.unit.maxMovementsPerTurn
+    ) {
+      this.unit.exhaust();
+    }
+  }
+
+  async teleport(to: Point) {
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
+      new UnitBeforeMoveEvent({
+        unit: this.unit,
+        position: this.position,
+        path: [this.position, Vec2.fromPoint(to)]
+      })
+    );
+    const prevPosition = this.position.clone();
+    this.position.x = to.x;
+    this.position.y = to.y;
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_AFTER_TELEPORT,
+      new UnitAfterMoveEvent({
+        unit: this.unit,
+        position: this.position,
+        previousPosition: prevPosition,
+        path: [this.position, Vec2.fromPoint(to)]
+      })
+    );
+  }
+
+  getPossibleMoves(max?: number, force = false) {
+    if (!this.unit.canMove && !force) return [];
+
+    return this.getAllPossibleMoves(max ?? this.unit.sprintReach).filter(point => {
+      const cell = this.game.boardSystem.getCellAt(point)!;
+      return !cell.isOccupied;
+    });
   }
 }

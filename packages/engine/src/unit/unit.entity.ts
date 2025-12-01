@@ -1,4 +1,4 @@
-import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
+import { Vec2, type Point, type Serializable } from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
@@ -10,34 +10,29 @@ import { Interceptable } from '../utils/interceptable';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { Modifier } from '../modifier/modifier.entity';
 import { CARD_KINDS } from '../card/card.enums';
-import {
-  TARGETING_TYPE,
-  type TargetingStrategy,
-  type TargetingType
-} from '../targeting/targeting-strategy';
+import type { TargetingStrategy, TargetingType } from '../targeting/targeting-strategy';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { Player } from '../player/player.entity';
 import type { Damage } from '../utils/damage';
-import {
-  SingleCounterAttackParticipantStrategy,
-  type CounterAttackParticipantStrategy
-} from './counterattack-participants';
+import type { CounterAttackParticipantStrategy } from './counterattack-participants';
 import { CombatComponent } from './components/combat.component';
 import { UNIT_EVENTS } from './unit.enums';
 import {
   UnitAfterBounceEvent,
   UnitAfterCombatEvent,
-  UnitAfterDestroyEvent,
-  UnitAfterHealEvent,
   UnitAfterMoveEvent,
   UnitBeforeBounceEvent,
-  UnitBeforeDestroyEvent,
-  UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
+import { UnitSerializer } from './unit.serializer';
+import { PositionSensorComponent } from './components/position-sensor.component';
+import { HealthComponent } from './components/health.component';
+import { StateComponent } from './components/state.component';
+import { StatsComponent } from './components/stats.component';
+import { TargetingComponent } from './components/targeting.component';
 
 export type UnitOptions = {
   id: string;
@@ -121,9 +116,17 @@ export class Unit
 
   combat: CombatComponent;
 
-  private damageTaken = 0;
+  health: HealthComponent;
 
-  _isExhausted = false;
+  state: StateComponent;
+
+  stats: StatsComponent;
+
+  targeting: TargetingComponent;
+
+  serializer: UnitSerializer;
+
+  positionSensor: PositionSensorComponent;
 
   constructor(
     private game: Game,
@@ -172,17 +175,24 @@ export class Unit
 
       pathfindingStrategy: new Interceptable<PathfindingStrategy>()
     });
+    this.serializer = new UnitSerializer(game);
     this.movement = new MovementComponent(game, this, {
       position: options.position,
       pathfinding: new PathfinderComponent(game, () => this.pathfindingStrategy)
     });
-
     this.combat = new CombatComponent(game, this);
+    this.state = new StateComponent(this.combat, this.movement);
+    this.stats = new StatsComponent(game, this);
+    this.targeting = new TargetingComponent(game, this);
+    this.positionSensor = new PositionSensorComponent(game, this);
+    this.health = new HealthComponent(game, this, () =>
+      this.interceptors.maxHp.getValue(this.card.maxHp, {})
+    );
   }
 
   protected async onInterceptorAdded(key: string) {
     if (key === 'maxHp') {
-      await this.checkHp({ source: this.card });
+      await this.health.checkHp({ source: this.card });
     }
   }
 
@@ -226,31 +236,19 @@ export class Unit
   }
 
   get inFront(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.player.isPlayer1 ? this.x + 1 : this.x - 1,
-      y: this.y
-    });
+    return this.positionSensor.inFront;
   }
 
   get behind(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.player.isPlayer1 ? this.x - 1 : this.x + 1,
-      y: this.y
-    });
+    return this.positionSensor.behind;
   }
 
   get above(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.x,
-      y: this.y - 1
-    });
+    return this.positionSensor.above;
   }
 
   get below(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.x,
-      y: this.y + 1
-    });
+    return this.positionSensor.below;
   }
 
   isEnemy(entity: Unit | Player) {
@@ -265,39 +263,27 @@ export class Unit
   }
 
   get speed() {
-    return this.interceptors.speed.getValue(this.card.speed, {});
+    return this.stats.speed;
   }
 
   get movementReach() {
-    return this.interceptors.movementReach.getValue(
-      this.game.config.UNIT_MOVEMENT_REACH,
-      {}
-    );
+    return this.stats.movementReach;
   }
 
   get sprintReach() {
-    return this.interceptors.sprintReach.getValue(this.game.config.UNIT_SPRINT_REACH, {});
+    return this.stats.sprintReach;
   }
 
   get maxMovementsPerTurn() {
-    return this.interceptors.maxMovementsPerTurn.getValue(
-      this.game.config.MAX_MOVEMENT_PER_TURN,
-      {}
-    );
+    return this.stats.maxMovementsPerTurn;
   }
 
   get maxAttacksPerTurn() {
-    return this.interceptors.maxAttacksPerTurn.getValue(
-      this.game.config.MAX_ATTACKS_PER_TURN,
-      {}
-    );
+    return this.stats.maxAttacksPerTurn;
   }
 
   get maxCounterattacksPerTurn() {
-    return this.interceptors.maxCounterattacksPerTurn.getValue(
-      this.game.config.MAX_COUNTERATTACKS_PER_TURN,
-      {}
-    );
+    return this.stats.maxCounterattacksPerTurn;
   }
 
   get attacksPerformedThisTurn() {
@@ -323,179 +309,100 @@ export class Unit
     );
   }
 
-  canMoveTo(point: Point) {
-    if (!this.canMove) return false;
-    return this.movement.canMoveTo(point, this.sprintReach);
+  get canMoveTo() {
+    return this.movement.canMoveTo.bind(this.movement);
   }
 
-  async move(to: Point) {
-    const distance = this.game.boardSystem.getDistance(this.position, to);
-
-    await this.movement.move(to);
-    if (
-      distance > this.movementReach &&
-      this.movementsMadeThisTurn >= this.maxMovementsPerTurn
-    ) {
-      this.exhaust();
-    }
+  get move() {
+    return this.movement.move.bind(this.movement);
   }
 
-  async teleport(to: Point) {
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
-      new UnitBeforeMoveEvent({
-        unit: this,
-        position: this.position,
-        path: [this.position, Vec2.fromPoint(to)]
-      })
-    );
-    const prevPosition = this.movement.position.clone();
-    this.movement.position.x = to.x;
-    this.movement.position.y = to.y;
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_TELEPORT,
-      new UnitAfterMoveEvent({
-        unit: this,
-        position: this.position,
-        previousPosition: prevPosition,
-        path: [this.position, Vec2.fromPoint(to)]
-      })
-    );
+  get teleport() {
+    return this.movement.teleport.bind(this.movement);
   }
 
   get getPathTo() {
     return this.movement.getPathTo.bind(this.movement);
   }
 
-  getPossibleMoves(max?: number, force = false) {
-    if (!this.canMove && !force) return [];
-
-    return this.movement.getAllPossibleMoves(max ?? this.sprintReach).filter(point => {
-      const cell = this.game.boardSystem.getCellAt(point)!;
-      return !cell.isOccupied;
-    });
+  get getPossibleMoves() {
+    return this.movement.getPossibleMoves.bind(this.movement);
   }
 
   get canBeDestroyed(): boolean {
     return this.interceptors.canBeDestroyed.getValue(true, {});
   }
 
-  canAttack(unit: Unit): boolean {
-    return this.interceptors.canAttack.getValue(
-      this.attacksPerformedThisTurn < this.maxAttacksPerTurn && !this.isExhausted,
-      { target: unit }
-    );
+  get canAttack() {
+    return this.targeting.canAttack.bind(this.targeting);
   }
 
-  canAttackAt(point: Point) {
-    if (this.position.equals(point)) {
-      return false;
-    }
-    const target = this.game.unitSystem.getUnitAt(point);
-    if (!target) return false;
-
-    if (!this.canAttack(target) || !target.canBeAttackedBy(this)) {
-      return false;
-    }
-
-    return this.attackTargettingPattern.canTargetAt(point);
+  get canAttackAt() {
+    return this.targeting.canAttackAt.bind(this.targeting);
   }
 
   get isExhausted() {
-    return this._isExhausted;
+    return this.state.isExhausted;
   }
 
-  canBeAttackedBy(unit: Unit): boolean {
-    return this.interceptors.canBeAttackTarget.getValue(this.isAlive, { attacker: unit });
+  get canBeAttackedBy() {
+    return this.targeting.canBeAttackedBy.bind(this.targeting);
   }
 
-  canBeCounterattackedBy(unit: Unit): boolean {
-    return this.interceptors.canBeCounterattackTarget.getValue(this.isAlive, {
-      attacker: unit
-    });
+  get canBeCounterattackedBy() {
+    return this.targeting.canBeCounterattackedBy.bind(this.targeting);
   }
 
-  canBeTargetedBy(card: AnyCard): boolean {
-    return this.interceptors.canBeCardTarget.getValue(this.isAlive, { card });
+  get canBeTargetedBy() {
+    return this.targeting.canBeTargetedBy.bind(this.targeting);
   }
 
-  get attackTargettingPattern(): TargetingStrategy {
-    return this.interceptors.attackTargetingPattern.getValue(this.card.attackPattern, {});
+  get attackTargettingPattern() {
+    return this.targeting.attackTargettingPattern;
   }
 
-  get attackTargetType(): TargetingType {
-    return this.interceptors.attackTargetType.getValue(TARGETING_TYPE.ENEMY_UNIT, {});
+  get attackTargetType() {
+    return this.targeting.attackTargetType;
   }
 
-  get attackAOEShape(): GenericAOEShape {
-    return this.interceptors.attackAOEShape.getValue(this.card.attackAOEShape, {});
+  get attackAOEShape() {
+    return this.targeting.attackAOEShape;
   }
 
-  get counterattackTargetingPattern(): TargetingStrategy {
-    return this.interceptors.counterattackTargetingPattern.getValue(
-      this.card.counterattackPattern,
-      {}
-    );
+  get counterattackTargetingPattern() {
+    return this.targeting.counterattackTargetingPattern;
   }
 
-  get counterattackTargetType(): TargetingType {
-    return this.interceptors.counterattackTargetType.getValue(
-      TARGETING_TYPE.ENEMY_UNIT,
-      {}
-    );
+  get counterattackTargetType() {
+    return this.targeting.counterattackTargetType;
   }
 
-  get counterattackAOEShape(): GenericAOEShape {
-    return this.interceptors.counterattackAOEShape.getValue(
-      this.card.counterattackAOEShape,
-      {}
-    );
+  get counterattackAOEShape() {
+    return this.targeting.counterattackAOEShape;
   }
 
-  getCounterattackParticipants(initialTarget: Unit) {
-    return this.interceptors.attackCounterattackParticipants
-      .getValue(new SingleCounterAttackParticipantStrategy(), {})
-      .getCounterattackParticipants({
-        attacker: this,
-        initialTarget,
-        affectedUnits: this.attackAOEShape
-          .getArea([initialTarget])
-          .map(point => this.game.unitSystem.getUnitAt(point))
-          .filter(isDefined)
-      });
+  get getCounterattackParticipants() {
+    return this.targeting.getCounterattackParticipants.bind(this.targeting);
   }
 
-  canCounterAttack(unit: Unit): boolean {
-    return this.interceptors.canCounterAttack.getValue(
-      this.combat.counterAttacksCount < this.maxCounterattacksPerTurn,
-      { attacker: unit }
-    );
+  get canCounterAttack() {
+    return this.targeting.canCounterAttack.bind(this.targeting);
   }
 
   canCounterAttackAt(point: Point) {
-    if (this.position.equals(point)) {
-      return false;
-    }
-
-    const target = this.game.unitSystem.getUnitAt(point);
-    if (!target) return false;
-
-    return (
-      this.canCounterAttack(target) &&
-      this.counterattackTargetingPattern.canTargetAt(point)
-    );
+    return this.targeting.canCounterAttackAt(point);
   }
 
   get remainingHp() {
-    return Math.max(this.maxHp - this.damageTaken, 0);
+    return this.health.remainingHp;
   }
 
   get isAlive() {
-    return this.remainingHp > 0;
+    return this.health.isAlive;
   }
 
   get nearbyUnits(): Unit[] {
-    return this.game.unitSystem.getNearbyUnits(this.position);
+    return this.positionSensor.nearbyUnits;
   }
 
   getReceivedDamage(damage: Damage, source: AnyCard) {
@@ -511,11 +418,11 @@ export class Unit
   }
 
   get maxHp() {
-    return this.interceptors.maxHp.getValue(this.card.maxHp, {});
+    return this.health.maxHp;
   }
 
   get atk() {
-    return this.interceptors.atk.getValue(this.card.atk, {});
+    return this.stats.atk;
   }
 
   async attack(point: Point) {
@@ -538,84 +445,41 @@ export class Unit
     return this.combat.takeDamage.bind(this.combat);
   }
 
-  async heal(source: AnyCard, amount: number) {
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_HEAL,
-      new UnitBeforeHealEvent({ unit: this, amount, source })
-    );
-
-    this.addHp(amount);
-
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_HEAL,
-      new UnitAfterHealEvent({ unit: this, amount, source })
-    );
+  get heal() {
+    return this.health.heal.bind(this.health);
   }
 
-  addHp(amount: number) {
-    this.damageTaken = Math.max(this.damageTaken - amount, 0);
+  get addHp() {
+    return this.health.addHp.bind(this.health);
   }
 
-  async removeHp(amount: number) {
-    this.damageTaken = Math.min(this.damageTaken + amount, this.maxHp);
-
-    await this.checkHp({ source: this.card });
+  get removeHp() {
+    return this.health.removeHp.bind(this.health);
   }
 
-  private async checkHp({ source }: { source: AnyCard }) {
-    if (!this.isAlive) {
-      await this.game.inputSystem.schedule(() => this.destroy(source));
-    }
+  get removeFromBoard() {
+    return this.health.removeFromBoard.bind(this.health);
   }
 
-  async removeFromBoard() {
-    for (const modifier of this.modifiers.list) {
-      await this.modifiers.remove(modifier.id);
-    }
-    this.game.unitSystem.removeUnit(this);
-  }
-
-  async destroy(source: AnyCard) {
-    if (!this.canBeDestroyed) return;
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_DESTROY,
-      new UnitBeforeDestroyEvent({ source, unit: this })
-    );
-    const position = this.position;
-
-    await this.removeFromBoard();
-    this.modifiers.list.forEach(async modifier => {
-      await this.modifiers.remove(modifier.id);
-    });
-
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_DESTROY,
-      new UnitAfterDestroyEvent({ source, destroyedAt: position, unit: this })
-    );
+  get destroy() {
+    return this.health.destroy.bind(this.health);
   }
 
   exhaust() {
-    this._isExhausted = true;
+    this.state.exhaust();
   }
 
   wakeUp() {
-    this._isExhausted = false;
+    this.state.wakeUp();
   }
 
   activate() {
-    this.combat.resetAttackCount();
-    this.movement.resetMovementsCount();
-    this.wakeUp();
+    this.state.activate();
   }
 
   // Check if the unit can attack a point if it were in a given position
   isWithinDangerZone(point: Point, position: Point) {
-    const original = this.position.clone();
-    this.movement.position.x = position.x;
-    this.movement.position.y = position.y;
-    const canAttack = this.attackTargettingPattern.isWithinRange(point);
-    this.movement.position = original;
-    return canAttack;
+    return this.targeting.isWithinDangerZone(point, position);
   }
 
   async bounce() {
@@ -644,53 +508,6 @@ export class Unit
   }
 
   serialize() {
-    // calculate this upfront as this can be an expensive operation if we call it many times
-    // moves the unit could make provided it was able to move fully
-    const potentialMoves = this.getPossibleMoves(
-      this.sprintReach * this.maxMovementsPerTurn,
-      true
-    ).map(point => this.game.boardSystem.getCellAt(point)!);
-
-    // moves the unit can actually make
-    const possibleSprintMoves = this.getPossibleMoves(this.sprintReach).map(
-      point => this.game.boardSystem.getCellAt(point)!
-    );
-    const possibleMoves = this.getPossibleMoves(this.movementReach).map(
-      point => this.game.boardSystem.getCellAt(point)!
-    );
-
-    return {
-      id: this.id,
-      entityType: 'unit' as const,
-      card: this.card.id,
-      position: this.position.serialize(),
-      baseAtk: this.card.blueprint.atk,
-      atk: this.atk,
-      basespeed: this.card.blueprint.speed,
-      speed: this.speed,
-      baseMaxHp: this.card.blueprint.maxHp,
-      maxHp: this.maxHp,
-      currentHp: this.remainingHp,
-      isFullHp: this.remainingHp === this.maxHp,
-      isGeneral: this.isGeneral,
-      player: this.player.id,
-      keywords: [],
-      isExhausted: this.isExhausted,
-      isDead: !this.isAlive,
-      moveZone: possibleMoves.map(point => point.id),
-      sprintZone: possibleSprintMoves.map(point => point.id),
-      dangerZone: this.game.boardSystem.cells
-        .filter(cell =>
-          potentialMoves
-            .filter(move => cell.isNearby(move))
-            .some(point => this.isWithinDangerZone(cell.position, point))
-        )
-        .map(cell => cell.id),
-      attackableCells: this.game.boardSystem.cells
-        .filter(cell => this.canAttackAt(cell.position))
-        .map(cell => cell.id),
-      modifiers: this.modifiers.list.map(modifier => modifier.id),
-      capturableShrines: []
-    };
+    return this.serializer.serialize(this);
   }
 }

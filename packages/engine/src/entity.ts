@@ -7,7 +7,7 @@ export type AnyEntity = Entity<AnyObject>;
 export abstract class Entity<TI extends Record<string, Interceptable<any, any>>> {
   readonly id: string;
 
-  protected interceptors: TI;
+  readonly interceptors: TI;
 
   constructor(id: string, interceptables: TI) {
     this.id = id;
