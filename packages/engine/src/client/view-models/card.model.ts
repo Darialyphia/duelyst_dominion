@@ -160,16 +160,16 @@ export class CardViewModel {
     return null;
   }
 
-  get baseCmd() {
-    if ('baseCmd' in this.data) {
-      return this.data.baseCmd as number;
+  get basespeed() {
+    if ('basespeed' in this.data) {
+      return this.data.basespeed as number;
     }
     return null;
   }
 
-  get cmd() {
-    if ('cmd' in this.data) {
-      return this.data.cmd as number;
+  get speed() {
+    if ('speed' in this.data) {
+      return this.data.speed as number;
     }
 
     return null;

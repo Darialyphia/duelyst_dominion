@@ -59,7 +59,7 @@ export type MinionBlueprint = CardBlueprintBase & {
   ) => Promise<void>;
   atk: number;
   maxHp: number;
-  cmd: number;
+  speed: number;
   getTargets: (game: Game, card: MinionCard) => Promise<BoardCell[]>;
   getAoe: (
     game: Game,
@@ -110,7 +110,7 @@ export type GeneralBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.GENERAL>;
   atk: number;
   maxHp: number;
-  cmd: number;
+  speed: number;
   abilities: AbilityBlueprint<GeneralCard>[];
   onInit: (game: Game, card: GeneralCard) => Promise<void>;
 };

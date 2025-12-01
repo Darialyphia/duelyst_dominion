@@ -22,8 +22,6 @@ import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
 import { GAME_PHASES } from '../game/game.enums';
-import type { TeleporterViewModel } from './view-models/teleporter.model';
-import type { ShrineViewModel } from './view-models/shrine.model';
 import type { Rune } from '../card/card.enums';
 
 export const GAME_TYPES = {
@@ -41,8 +39,6 @@ export type GameStateEntities = Record<
   | BoardCellViewModel
   | UnitViewModel
   | TileViewModel
-  | ShrineViewModel
-  | TeleporterViewModel
 >;
 
 export type OnSnapshotUpdateCallback = (

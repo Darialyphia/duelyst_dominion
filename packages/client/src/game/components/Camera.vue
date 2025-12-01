@@ -33,8 +33,8 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
     y: rect.top + rect.height / 2
   };
   camera.value.origin = {
-    x: origin.x + config.CELL.width / 2,
-    y: origin.y + config.CELL.height / 2 - 150
+    x: origin.x,
+    y: origin.y - 150
   };
 
   const proxy = {
@@ -62,15 +62,13 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
   if (!unitEl) return;
   const rect = unitEl.getBoundingClientRect();
   const origin = {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2
+    x: rect.left + rect.width / 2
   };
 
   gsap.to(camera.value.origin, {
     duration: 0.3,
     ease: Power2.easeOut,
-    x: origin.x + config.CELL.width / 2,
-    y: origin.y + config.CELL.height / 2
+    x: origin.x
   });
 });
 

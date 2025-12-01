@@ -11,12 +11,6 @@ export type MapBlueprint = {
     }>
   >;
   generalPositions: Point[];
-  shrinePositions: Point[];
-  teleporters: Array<{
-    id: string;
-    color: string;
-    gates: [Point, Point];
-  }>;
   corners: {
     topLeft: Point;
     topRight: Point;
@@ -52,12 +46,6 @@ export const defaultMap: MapBlueprint = {
     p1(), p1(), p1(), p1(), neutral(), p1(), p2(), p2(), p2(),
   ],
   generalPositions: [new Vec2(0, 2), new Vec2(8, 2)],
-  shrinePositions: [],
-  teleporters: [
-    // { id: 'green', color: 'green', gates: [new Vec2(0, 3), new Vec2(12, 3)] },
-    // { id: 'purple', color: 'purple', gates: [new Vec2(2, 1), new Vec2(4, 6)] },
-    // { id: 'yellow', color: 'yellow', gates: [new Vec2(8, 0), new Vec2(10, 5)] }
-  ],
   corners: {
     topLeft: new Vec2(0, 0),
     topRight: new Vec2(8, 0),

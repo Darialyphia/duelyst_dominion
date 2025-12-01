@@ -29,7 +29,7 @@ export const silverguardKnight: MinionBlueprint = {
     red: 1
   },
   atk: 1,
-  cmd: 1,
+  speed: 1,
   maxHp: 5,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

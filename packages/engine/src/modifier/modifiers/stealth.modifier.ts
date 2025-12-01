@@ -10,10 +10,6 @@ import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
 import type { UnitAttackEvent } from '../../unit/unit-events';
-import {
-  SHRINE_EVENTS,
-  type ShrineCaptureEvent
-} from '../../board/entities/shrine.entity';
 
 export class StealthModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -49,15 +45,6 @@ export class StealthModifier extends Modifier<MinionCard> {
     await this.removeStealthFromUnit(unit);
   };
 
-  private onAfterCapture = async (event?: ShrineCaptureEvent) => {
-    if (!this.unitModifier) return;
-    if (!event) return;
-    const unit = event.data.unit;
-    if (!unit.equals(this.unitModifier.target)) return;
-
-    await this.removeStealthFromUnit(unit);
-  };
-
   private async applyStealthToUnit(unit: Unit): Promise<void> {
     this.unitModifier = new Modifier(KEYWORDS.STEALTH.id, this.game, unit.card, {
       name: KEYWORDS.STEALTH.name,
@@ -75,10 +62,6 @@ export class StealthModifier extends Modifier<MinionCard> {
         new GameEventModifierMixin(this.game, {
           eventName: UNIT_EVENTS.UNIT_AFTER_ATTACK,
           handler: this.onAfterAttack.bind(this)
-        }),
-        new GameEventModifierMixin(this.game, {
-          eventName: SHRINE_EVENTS.SHRINE_AFTER_CAPTURE,
-          handler: this.onAfterCapture.bind(this)
         })
       ]
     });

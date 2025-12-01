@@ -27,7 +27,7 @@ import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-si
 export type SerializedMinionCard = SerializedCard & {
   atk: number;
   maxHp: number;
-  cmd: number;
+  speed: number;
   manaCost: number;
   runeCost: RuneCost;
   unplayableReason: string | null;
@@ -37,7 +37,7 @@ export type SerializedMinionCard = SerializedCard & {
 export type MinionCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
-  cmd: Interceptable<number>;
+  speed: Interceptable<number>;
   summonTargetingStrategy: Interceptable<TargetingStrategy>;
   canPlay: Interceptable<boolean, MinionCard>;
   hasSummoningSickness: Interceptable<boolean, MinionCard>;
@@ -56,7 +56,7 @@ export class MinionCard extends Card<
         ...makeCardInterceptors(),
         maxHp: new Interceptable(),
         atk: new Interceptable(),
-        cmd: new Interceptable(),
+        speed: new Interceptable(),
         summonTargetingStrategy: new Interceptable(),
         canPlay: new Interceptable(),
         hasSummoningSickness: new Interceptable()
@@ -215,7 +215,7 @@ export class MinionCard extends Card<
       ...this.serializeBase(),
       atk: this.atk,
       maxHp: this.maxHp,
-      cmd: this.cmd,
+      speed: this.speed,
       manaCost: this.manaCost,
       runeCost: this.blueprint.runeCost,
       unplayableReason: this.unplayableReason
@@ -230,8 +230,8 @@ export class MinionCard extends Card<
     return this.interceptors.atk.getValue(this.blueprint.atk, {});
   }
 
-  get cmd() {
-    return this.interceptors.cmd.getValue(this.blueprint.cmd, {});
+  get speed() {
+    return this.interceptors.speed.getValue(this.blueprint.speed, {});
   }
 
   get unit() {

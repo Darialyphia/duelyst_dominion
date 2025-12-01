@@ -78,12 +78,12 @@ export class UnitViewModel {
     return this.data.atk;
   }
 
-  get baseCmd() {
-    return this.data.baseCmd;
+  get basespeed() {
+    return this.data.basespeed;
   }
 
-  get cmd() {
-    return this.data.cmd;
+  get speed() {
+    return this.data.speed;
   }
 
   get dangerZone() {

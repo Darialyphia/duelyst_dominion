@@ -9,7 +9,7 @@ import {
 import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 
-export class UnitSimpleCmdBuffModifier<T extends Unit> extends Modifier<T> {
+export class UnitSimplespeedBuffModifier<T extends Unit> extends Modifier<T> {
   constructor(
     modifierType: string,
     game: Game,
@@ -21,13 +21,13 @@ export class UnitSimpleCmdBuffModifier<T extends Unit> extends Modifier<T> {
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-cmd-buff' : 'keyword-cmd-debuff',
+      icon: options.amount > 0 ? 'keyword-speed-buff' : 'keyword-speed-debuff',
       name:
         (options.name ?? options.amount > 0) ? 'Commandment Buff' : 'Commandment Debuff',
       description: `${options.amount > 0 ? '+' : '-'}${options.amount} Commandment`,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
-          key: 'cmd',
+          key: 'speed',
           interceptor: value => {
             return value + options.amount * this.stacks;
           }
@@ -38,7 +38,7 @@ export class UnitSimpleCmdBuffModifier<T extends Unit> extends Modifier<T> {
   }
 }
 
-export class MinionSimpleCmdBuffModifier<T extends MinionCard> extends Modifier<T> {
+export class MinionSimplespeedBuffModifier<T extends MinionCard> extends Modifier<T> {
   constructor(
     modifierType: string,
     game: Game,
@@ -50,13 +50,13 @@ export class MinionSimpleCmdBuffModifier<T extends MinionCard> extends Modifier<
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-cmd-buff' : 'keyword-cmd-debuff',
+      icon: options.amount > 0 ? 'keyword-speed-buff' : 'keyword-speed-debuff',
       name:
         (options.name ?? options.amount > 0) ? 'Commandment Buff' : 'Commandment Debuff',
       description: `${options.amount > 0 ? '+' : '-'}${options.amount} Commandment`,
       mixins: [
         new MinionInterceptorModifierMixin(game, {
-          key: 'cmd',
+          key: 'speed',
           interceptor: value => {
             return value + options.amount * this.stacks;
           }

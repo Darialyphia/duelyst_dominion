@@ -23,7 +23,7 @@ export const bloodtearAlchemist: MinionBlueprint = {
     blue: 1
   },
   atk: 2,
-  cmd: 1,
+  speed: 1,
   maxHp: 1,
   getTargets(game, card) {
     return singleEnemyTargetRules.getPreResponseTargets(game, card, { required: false });

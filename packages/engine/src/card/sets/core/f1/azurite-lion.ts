@@ -28,7 +28,7 @@ export const azuriteLion: MinionBlueprint = {
     red: 1
   },
   atk: 2,
-  cmd: 1,
+  speed: 1,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

@@ -133,7 +133,7 @@ const animationSequence = computed(() => {
         hp: card.maxHp,
         durability: card.durability,
         faction: card.faction,
-        cmd: card.cmd,
+        speed: card.speed,
         runeCost: card.runeCost ?? {}
       }"
       :sprite="sprite"

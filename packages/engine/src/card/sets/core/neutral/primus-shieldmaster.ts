@@ -22,7 +22,7 @@ export const primusShieldmaster: MinionBlueprint = {
     yellow: 1
   },
   atk: 3,
-  cmd: 1,
+  speed: 1,
   maxHp: 6,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

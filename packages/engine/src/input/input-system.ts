@@ -24,14 +24,11 @@ import { ChooseCardsInput } from './inputs/choose-cards.input';
 import { PlayCardInput } from './inputs/play-card.input';
 import { CancelPlayCardInput } from './inputs/cancel-play-card.input';
 import { SelectSpaceOnBoardInput } from './inputs/select-space-on-board.input';
-import { MoveInput } from './inputs/move.input';
-import { AttackInput } from './inputs/attack.input';
 import { EndTurnInput } from './inputs/end-turn.input';
 import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
 import { UseGeneralAbilityInput } from './inputs/use-general-ability';
 import { UseResourceActionInput } from './inputs/use-resource-action';
-import { CaptureShrineInput } from './inputs/capture-shrine';
 
 type GenericInputMap = Record<string, Constructor<Input<ZodType>>>;
 
@@ -51,14 +48,11 @@ const inputMap = validateinputMap({
   selectSpaceOnBoard: SelectSpaceOnBoardInput,
   commitSpaceSelection: CommitSpaceSelectionInput,
   chooseCards: ChooseCardsInput,
-  move: MoveInput,
-  attack: AttackInput,
   endTurn: EndTurnInput,
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,
   useGeneralAbility: UseGeneralAbilityInput,
-  useResourceAction: UseResourceActionInput,
-  captureShrine: CaptureShrineInput
+  useResourceAction: UseResourceActionInput
 });
 
 type InputMap = typeof inputMap;

@@ -4,15 +4,15 @@ import { isDefined } from '@game/shared';
 defineProps<{
   atk?: number | null;
   hp?: number | null;
-  cmd?: number | null;
+  speed?: number | null;
 }>();
 </script>
 
 <template>
   <div class="bottom-left parallax">
-    <!-- <div class="stat cmd" :style="{ opacity: isDefined(cmd) ? 1 : 0 }">
-      <span class="dual-text" :data-text="cmd">
-        {{ cmd }}
+    <!-- <div class="stat speed" :style="{ opacity: isDefined(speed) ? 1 : 0 }">
+      <span class="dual-text" :data-text="speed">
+        {{ speed }}
       </span>
     </div> -->
 
@@ -52,8 +52,8 @@ defineProps<{
   place-items: center;
   padding-right: calc(2px * var(--pixel-scale));
   padding-top: calc(1px * var(--pixel-scale));
-  &.cmd {
-    background-image: url('/assets/ui/cmd-frame.png');
+  &.speed {
+    background-image: url('/assets/ui/speed-frame.png');
   }
   &.atk {
     background-image: url('/assets/ui/atk-frame.png');

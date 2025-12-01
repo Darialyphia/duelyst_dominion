@@ -27,10 +27,6 @@ import {
   type SerializedEvent,
   type SerializedStarEvent
 } from '../../game/game.events';
-import type { SerializedShrine } from '../../board/entities/shrine.entity';
-import type { SerializedTeleporter } from '../../board/entities/two-way-teleporter';
-import { TeleporterViewModel } from '../view-models/teleporter.model';
-import { ShrineViewModel } from '../view-models/shrine.model';
 
 export type GameClientState = Override<
   SerializedOmniscientState | SerializedPlayerState,
@@ -48,9 +44,7 @@ export type SerializedEntity =
   | SerializedModifier
   | SerializedCell
   | SerializedUnit
-  | SerializedTile
-  | SerializedShrine
-  | SerializedTeleporter;
+  | SerializedTile;
 export class ClientStateController {
   state!: GameClientState;
 
@@ -91,14 +85,6 @@ export class ClientStateController {
       .with(
         { entityType: 'tile' },
         entity => new TileViewModel(entity, dict, this.client)
-      )
-      .with(
-        { entityType: 'shrine' },
-        entity => new ShrineViewModel(entity, dict, this.client)
-      )
-      .with(
-        { entityType: 'teleporter' },
-        entity => new TeleporterViewModel(entity, dict, this.client)
       )
       .exhaustive();
   }

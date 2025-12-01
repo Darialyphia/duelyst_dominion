@@ -23,7 +23,7 @@ export const argeonHighmane: GeneralBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   atk: 2,
-  cmd: 1,
+  speed: 1,
   maxHp: 25,
   abilities: [],
   async onInit() {}
