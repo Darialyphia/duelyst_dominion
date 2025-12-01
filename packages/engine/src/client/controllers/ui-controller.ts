@@ -90,6 +90,8 @@ export class UiController {
     discardPile: (playerId: string) => new DOMSelector(`discard-pile-${playerId}`),
     banishPile: (playerId: string) => new DOMSelector(`banish-pile-${playerId}`),
     destinyDeck: (playerId: string) => new DOMSelector(`destiny-deck-${playerId}`),
+    unit: (unitId: string) =>
+      new DOMSelector(`unit-${unitId}`, this.DOMSelectors.board.selector),
     cardOnBoard: (cardId: string) =>
       new DOMSelector(cardId, this.DOMSelectors.board.selector),
     cardInHand: (cardId: string, playerId: string) =>

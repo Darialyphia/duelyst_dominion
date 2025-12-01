@@ -62,6 +62,7 @@ const isInAoe = useIsInAoe();
 
 <template>
   <BoardPositioner
+    :id="ui.DOMSelectors.unit(unit.id).id"
     :x="unit.x"
     :y="unit.y"
     :class="{ 'is-attacking': isAttacking }"

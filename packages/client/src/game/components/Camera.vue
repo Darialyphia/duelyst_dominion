@@ -11,6 +11,7 @@ import { useGlobalSounds } from '../composables/useGlobalSounds';
 // import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
+const ui = useGameUi();
 const units = useUnits();
 useGlobalSounds();
 // const { x, y } = useMouse();
@@ -24,7 +25,13 @@ const camera = ref({
 
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
+  const unitEl = ui.value.DOMSelectors.unit(unit.id).element;
+  if (!unitEl) return;
+  const rect = unitEl.getBoundingClientRect();
+  const origin = {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
   camera.value.origin = {
     x: origin.x + config.CELL.width / 2,
     y: origin.y + config.CELL.height / 2 - 150
@@ -51,7 +58,13 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
 
 useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
   const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
+  const unitEl = ui.value.DOMSelectors.unit(unit.id).element;
+  if (!unitEl) return;
+  const rect = unitEl.getBoundingClientRect();
+  const origin = {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
 
   gsap.to(camera.value.origin, {
     duration: 0.3,
@@ -90,8 +103,6 @@ const boardStyle = computed(() => ({
   // '--board-angle-X': `${(y.value / height.value - 0.5) * -180}deg`,
   // '--board-angle-Y': `${(x.value / width.value - 0.5) * 180}deg`
 }));
-
-const ui = useGameUi();
 </script>
 
 <template>
