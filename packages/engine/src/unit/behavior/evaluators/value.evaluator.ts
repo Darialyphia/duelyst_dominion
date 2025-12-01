@@ -1,10 +1,6 @@
 import type { Unit } from '../../unit.entity';
 import type { ThreatEvaluator } from './threat-evaluator';
 
-/**
- * TIER 3-4: Evaluates the overall value of a target.
- * Considers stats, general status, and vulnerability.
- */
 export class ValueEvaluator implements ThreatEvaluator {
   readonly weight = 4.0;
 
@@ -22,12 +18,11 @@ export class ValueEvaluator implements ThreatEvaluator {
   }
 
   private calculateStatValue(target: Unit): number {
-    // Combine attack, health, and mobility into a value score
-    const atkValue = target.atk * 2; // Attack is valuable
-    const hpValue = target.maxHp; // Health represents durability
-    const speedValue = target.speed * 3; // Speed is very valuable
+    const atkValue = target.atk * 2;
+    const hpValue = target.maxHp;
+    const speedValue = target.speed;
 
-    return (atkValue + hpValue + speedValue) / 10; // Normalize
+    return (atkValue + hpValue + speedValue) / 10;
   }
 
   private calculateVulnerabilityBonus(target: Unit): number {

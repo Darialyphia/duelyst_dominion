@@ -13,22 +13,18 @@ export class TradeEvaluator implements ThreatEvaluator {
     const canKillTarget = this.canKill(attacker, target);
     const willDieToCounter = this.wouldDieToCounterattack(attacker, target);
 
-    // BEST: Kill them, survive counterattack
     if (canKillTarget && !willDieToCounter) {
       return 60;
     }
 
-    // SUICIDE TRADE: Both die - evaluate if it's worth it
     if (canKillTarget && willDieToCounter) {
       return this.evaluateSuicideTrade(attacker, target);
     }
 
-    // BAD: Die without killing them
     if (!canKillTarget && willDieToCounter) {
-      return -80; // Strongly discourage
+      return -80;
     }
 
-    // CHIP DAMAGE: Neither dies
     if (!canKillTarget && !willDieToCounter) {
       return this.evaluateChipDamage(attacker, target);
     }

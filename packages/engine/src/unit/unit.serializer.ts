@@ -1,6 +1,36 @@
-import type { Unit, SerializedUnit } from './unit.entity';
+import type { Unit } from './unit.entity';
 import type { Game } from '../game/game';
 import { ZoneCalculator } from './zone-calculator';
+import type { Point } from '@game/shared';
+
+export type SerializedUnit = {
+  id: string;
+  entityType: 'unit';
+  card: string;
+  isGeneral: boolean;
+  position: Point;
+  baseAtk: number;
+  atk: number;
+  baseMaxHp: number;
+  speed: number;
+  basespeed: number;
+  maxHp: number;
+  currentHp: number;
+  isFullHp: boolean;
+  player: string;
+  keywords: Array<{ id: string; name: string; description: string }>;
+  isExhausted: boolean;
+  isDead: boolean;
+  moveZone: string[];
+  sprintZone: string[];
+  dangerZone: string[];
+  attackableCells: string[];
+  modifiers: string[];
+  intent: {
+    target: string | null;
+    path: Point[];
+  } | null;
+};
 
 export class UnitSerializer {
   constructor(private game: Game) {}
@@ -8,6 +38,7 @@ export class UnitSerializer {
   serialize(unit: Unit): SerializedUnit {
     const zoneCalculator = new ZoneCalculator(this.game, unit);
     const zones = zoneCalculator.calculateZones();
+    const intent = unit.behavior.getIntent();
 
     return {
       id: unit.id,
@@ -32,7 +63,12 @@ export class UnitSerializer {
       dangerZone: zones.dangerZone,
       attackableCells: zones.attackableCells,
       modifiers: unit.modifiers.list.map(modifier => modifier.id),
-      capturableShrines: []
+      intent: intent
+        ? {
+            target: intent.target?.id ?? null,
+            path: intent.path
+          }
+        : null
     };
   }
 }

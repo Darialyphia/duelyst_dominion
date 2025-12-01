@@ -21,19 +21,13 @@ export class LethalThreatEvaluator implements ThreatEvaluator {
       return 100; // Game-winning move
     }
 
-    // CRITICAL: Can this target kill my general next turn?
-    if (this.canKillGeneralNextTurn(target, attacker.player.general)) {
+    // CRITICAL: Can this target kill my general this turn?
+    if (this.canKillThisTurn(target, attacker.player.general)) {
       score += 95; // Must eliminate this threat
     }
 
-    // CRITICAL: Can this target kill me next turn?
-    if (this.canKillNextTurn(target, attacker)) {
-      score += 90; // High priority to eliminate before they can
-    }
-
-    // WARNING: Would I die to counterattack if I attack them?
     if (this.wouldDieToCounterattack(attacker, target)) {
-      score -= 50; // Negative score = bad idea (unless other factors outweigh)
+      score -= 25; // Negative score = bad idea (unless other factors outweigh)
     }
 
     return score;
@@ -44,11 +38,9 @@ export class LethalThreatEvaluator implements ThreatEvaluator {
     return damage >= target.remainingHp;
   }
 
-  private canKillNextTurn(threat: Unit, victim: Unit): boolean {
-    // Exhausted units can't attack next turn
+  private canKillThisTurn(threat: Unit, victim: Unit): boolean {
     if (threat.isExhausted) return false;
 
-    // Check if threat can reach victim
     const zones = new ZoneCalculator(this.game, threat).calculateZones();
     const canReach = zones.dangerZone.some(cellId => {
       const cell = this.game.boardSystem.getCellById(cellId);
@@ -57,21 +49,13 @@ export class LethalThreatEvaluator implements ThreatEvaluator {
 
     if (!canReach) return false;
 
-    // Check if threat would deal lethal damage
-    const damage = new CombatDamage(threat).getFinalAmount(victim);
-    return damage >= victim.remainingHp;
-  }
-
-  private canKillGeneralNextTurn(threat: Unit, general: Unit): boolean {
-    return this.canKillNextTurn(threat, general);
+    return this.canKillTarget(threat, victim);
   }
 
   private wouldDieToCounterattack(attacker: Unit, target: Unit): boolean {
-    // Check if target can counterattack
     if (!target.canCounterAttack(attacker)) return false;
     if (!attacker.canBeCounterattackedBy(target)) return false;
 
-    // Check if counterattack would be lethal
     const counterDamage = new CombatDamage(target).getFinalAmount(attacker);
     return counterDamage >= attacker.remainingHp;
   }

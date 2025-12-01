@@ -18,8 +18,6 @@ export type SerializedBoard = {
   rows: number;
   columns: number;
   cells: string[];
-  shrines: string[];
-  teleporters: string[];
 };
 
 export class BoardSystem
@@ -130,13 +128,6 @@ export class BoardSystem
     ].filter(isDefined);
   }
 
-  getNearbyShrines({ x, y }: Point) {
-    return this.game.boardSystem
-      .getNeighbors({ x, y })
-      .map(cell => cell.shrine)
-      .filter(isDefined);
-  }
-
   getCellsWithin(topLeft: Point, bottomRight: Point) {
     return [...this.cellsMap.values()].filter(
       cell =>
@@ -155,9 +146,7 @@ export class BoardSystem
     return {
       rows: this.height,
       columns: this.width,
-      cells: this.cells.map(cell => cell.id),
-      shrines: [],
-      teleporters: []
+      cells: this.cells.map(cell => cell.id)
     };
   }
 }

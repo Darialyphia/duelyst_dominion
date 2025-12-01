@@ -27,43 +27,18 @@ import {
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
-import { UnitSerializer } from './unit.serializer';
+import { UnitSerializer, type SerializedUnit } from './unit.serializer';
 import { PositionSensorComponent } from './components/position-sensor.component';
 import { HealthComponent } from './components/health.component';
 import { StateComponent } from './components/state.component';
 import { StatsComponent } from './components/stats.component';
 import { TargetingComponent } from './components/targeting.component';
 import { BehaviorComponent } from './components/behavior.component';
+import { DefaultBehaviorStrategy } from './behavior/default-behavior.strategy';
 
 export type UnitOptions = {
   id: string;
   position: Point;
-};
-
-export type SerializedUnit = {
-  id: string;
-  entityType: 'unit';
-  card: string;
-  isGeneral: boolean;
-  position: Point;
-  baseAtk: number;
-  atk: number;
-  baseMaxHp: number;
-  speed: number;
-  basespeed: number;
-  maxHp: number;
-  currentHp: number;
-  isFullHp: boolean;
-  player: string;
-  keywords: Array<{ id: string; name: string; description: string }>;
-  isExhausted: boolean;
-  isDead: boolean;
-  moveZone: string[];
-  sprintZone: string[];
-  dangerZone: string[];
-  attackableCells: string[];
-  modifiers: string[];
-  capturableShrines: string[];
 };
 
 export type UnitInterceptors = {
@@ -191,7 +166,11 @@ export class Unit
     this.health = new HealthComponent(game, this, () =>
       this.interceptors.maxHp.getValue(this.card.maxHp, {})
     );
-    this.behavior = new BehaviorComponent(game, this);
+    this.behavior = new BehaviorComponent(
+      game,
+      this,
+      new DefaultBehaviorStrategy(game, this)
+    );
   }
 
   protected async onInterceptorAdded(key: string) {
