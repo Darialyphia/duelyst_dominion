@@ -2,75 +2,78 @@ import type { Nullable, Vec2 } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { Unit } from '../unit.entity';
 import type { BehaviorStrategy } from './behavior.strategy';
-import { ZoneCalculator } from '../zone-calculator';
-import { CombatDamage } from '../../utils/damage';
+import { CompositeThreatEvaluator } from './evaluators/composite-threat.evaluator';
+import { LethalThreatEvaluator } from './evaluators/lethal-threat.evaluator';
+import { DamageOutputEvaluator } from './evaluators/damage-output.evaluator';
+import { ValueEvaluator } from './evaluators/value.evaluator';
+import { TradeEvaluator } from './evaluators/trade.evaluator';
+import { MobilityThreatEvaluator } from './evaluators/mobility-threat.evaluator';
+import { PositionalThreatEvaluator } from './evaluators/positional-threat.evaluator';
 
 export class DefaultBehaviorStrategy implements BehaviorStrategy {
-  private zoneCalculator: ZoneCalculator;
+  private threatEvaluator: CompositeThreatEvaluator;
 
   constructor(
     private game: Game,
     private unit: Unit
   ) {
-    this.zoneCalculator = new ZoneCalculator(this.game, unit);
+    // Compose all evaluators with their weights
+    this.threatEvaluator = new CompositeThreatEvaluator([
+      new LethalThreatEvaluator(game), // weight: 10.0 - Critical threats
+      new TradeEvaluator(), // weight: 6.0 - Trade efficiency
+      new DamageOutputEvaluator(), // weight: 5.0 - Raw damage
+      new ValueEvaluator(), // weight: 4.0 - Target value
+      new MobilityThreatEvaluator(game), // weight: 3.0 - Mobility threats
+      new PositionalThreatEvaluator(game) // weight: 2.0 - Position threats
+    ]);
   }
 
-  private canKill(target: Unit): boolean {
-    return new CombatDamage(this.unit).getFinalAmount(target) >= target.remainingHp;
+  /**
+   * Calculate threat score for a potential target.
+   * Higher score = higher priority target.
+   */
+  private getWeightForAttackableUnit(target: Unit): number {
+    return this.threatEvaluator.evaluate(this.unit, target);
   }
 
-  private canBeKilledBy(target: Unit): boolean {
-    return new CombatDamage(target).getFinalAmount(this.unit) >= this.unit.remainingHp;
-  }
-
-  private canKillOwnGeneral(target: Unit) {
-    if (target.isExhausted) return false;
-    const dangerZone = new ZoneCalculator(this.game, target).calculateZones().dangerZone;
-    const isWithinGeneralRange = dangerZone.some(cellId =>
-      this.game.boardSystem.getCellById(cellId)?.position.equals(this.unit.player.general)
-    );
-    if (!isWithinGeneralRange) return false;
-
-    return (
-      new CombatDamage(target).getFinalAmount(this.unit.player.general) >=
-      this.unit.player.general.remainingHp
-    );
-  }
-
-  private getWeightForAttackableUnit(target: Unit) {
-    if (target.isGeneral && this.canKill(target)) {
-      return 1000;
-    }
-    if (this.canKillOwnGeneral(target)) {
-      return 999;
-    }
-    const canKill = this.canKill(target);
-    const canBeKilled = this.canBeKilledBy(target);
-    const canAttack = target.canAttack(this.unit) && this.unit.canBeAttackedBy(target);
-    const canCounterattack =
-      target.canCounterattack(this.unit) && this.unit.canBeCounterattackedBy(target);
-
-    /* Priority rules:
-      
-
-    */
-  }
-
+  /**
+   * Get all potential targets ranked by threat/value.
+   * Returns targets in descending order of priority.
+   */
   private getAttackTargetsRanking(): Unit[] {
-    return this.unit.player.opponent.units.sort(
-      (a, b) => this.getWeightForAttackableUnit(b) - this.getWeightForAttackableUnit(a)
-    );
+    return this.unit.player.opponent.units
+      .filter(target => this.isValidTarget(target))
+      .sort(
+        (a, b) => this.getWeightForAttackableUnit(b) - this.getWeightForAttackableUnit(a)
+      );
+  }
+
+  /**
+   * Check if a target is valid for attack consideration.
+   */
+  private isValidTarget(target: Unit): boolean {
+    // Target must be alive
+    if (!target.isAlive) return false;
+
+    // For now, all alive enemy units are valid targets
+    // Can add more sophisticated filtering here
+    return true;
   }
 
   findBestTarget(): Unit {
-    return this.unit.player.opponent.general;
+    const rankedTargets = this.getAttackTargetsRanking();
+    return rankedTargets[0] || this.unit.player.opponent.general;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findBestPositionToAttack(target: Unit): Nullable<Vec2> {
+    // TODO: Implement position finding logic
     return this.unit.position;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findBestPathToTarget(target: Unit): Nullable<Vec2[]> {
+    // TODO: Implement pathfinding logic
     return [];
   }
 }
