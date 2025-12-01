@@ -12,7 +12,7 @@ import {
 } from '../../../builder/schema';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { KEYWORDS } from '../../../card-keywords';
-import { singleMinionTargetRules } from '../../../card-utils';
+import { singleMinionTargetRules, singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const healingMystic: MinionBlueprint = {
@@ -35,7 +35,7 @@ export const healingMystic: MinionBlueprint = {
   cmd: 1,
   maxHp: 3,
   getTargets(game, card) {
-    return singleMinionTargetRules.getPreResponseTargets(game, card, { required: false });
+    return singleUnitTargetRules.getPreResponseTargets(game, card, { required: false });
   },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: () => true,
