@@ -7,6 +7,7 @@ import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
+import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 
 export class CelerityModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -21,6 +22,7 @@ export class CelerityModifier extends Modifier<MinionCard> {
       description: KEYWORDS.CELERITY.description,
       icon: 'icons/keyword-celerity',
       mixins: [
+        new KeywordModifierMixin(game, KEYWORDS.CELERITY),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
             await this.applyCelerityToUnit(unit);

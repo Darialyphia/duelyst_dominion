@@ -14,6 +14,7 @@ import {
   SHRINE_EVENTS,
   type ShrineCaptureEvent
 } from '../../board/entities/shrine.entity';
+import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 
 export class StealthModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -25,6 +26,7 @@ export class StealthModifier extends Modifier<MinionCard> {
   ) {
     super(KEYWORDS.STEALTH.id, game, source, {
       mixins: [
+        new KeywordModifierMixin(game, KEYWORDS.STEALTH),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
             await this.applyStealthToUnit(unit);

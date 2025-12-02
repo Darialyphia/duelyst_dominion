@@ -7,6 +7,7 @@ import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
+import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -21,6 +22,7 @@ export class BackstabModifier extends Modifier<MinionCard> {
       description: KEYWORDS.BACKSTAB.description,
       icon: 'icons/keyword-backstab',
       mixins: [
+        new KeywordModifierMixin(game, KEYWORDS.BACKSTAB),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
             await this.applyBackstabToUnit(unit, options.damageBonus);
@@ -45,12 +47,14 @@ export class BackstabModifier extends Modifier<MinionCard> {
         new UnitInterceptorModifierMixin(this.game, {
           key: 'damageDealt',
           interceptor: (value, ctx) =>
-            ctx.target.behind?.unit?.equals(this.target) ? value + damageBonus : value
+            ctx.target.behind?.unit?.equals(this.target.unit)
+              ? value + damageBonus
+              : value
         }),
         new UnitInterceptorModifierMixin(this.game, {
           key: 'canBeCounterattackTarget',
           interceptor: (value, ctx) =>
-            ctx.attacker.behind?.unit?.equals(this.target) ? false : true
+            ctx.attacker.behind?.unit?.equals(this.target.unit) ? false : true
         })
       ]
     });

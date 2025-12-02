@@ -9,6 +9,7 @@ import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { PassThroughPathfindingStrategy } from '../../pathfinding/strategies/passthrough-pathfinding.strategy';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 
 export class FlyingModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -16,6 +17,7 @@ export class FlyingModifier<T extends MinionCard | GeneralCard> extends Modifier
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.FLYING.id, game, source, {
       mixins: [
+        new KeywordModifierMixin(game, KEYWORDS.FLYING),
         new UnitEffectModifierMixin<T>(game, {
           onApplied: async unit => {
             await this.applyFlyToUnit(unit);

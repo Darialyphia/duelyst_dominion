@@ -7,6 +7,7 @@ import { TogglableModifierMixin } from '../mixins/togglable.mixin';
 import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
+import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 
 export class ZealModifier extends Modifier<MinionCard> {
   constructor(
@@ -19,6 +20,7 @@ export class ZealModifier extends Modifier<MinionCard> {
   ) {
     super(modifierType, game, source, {
       mixins: [
+        new KeywordModifierMixin(game, KEYWORDS.ZEAL),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
             await this.applyZeal(unit, game, options.mixins);
