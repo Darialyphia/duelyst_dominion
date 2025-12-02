@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isDefined, lerp } from '@game/shared';
-import { useEventListener, useMouse, useRafFn } from '@vueuse/core';
+import { useEventListener, useRafFn } from '@vueuse/core';
 import {
   useGameUi,
   useGameState,

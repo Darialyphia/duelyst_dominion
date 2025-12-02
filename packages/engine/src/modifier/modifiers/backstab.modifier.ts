@@ -8,22 +8,22 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 
-export class CelerityModifier extends Modifier<MinionCard> {
+export class BackstabModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
 
   constructor(
     game: Game,
     source: AnyCard,
-    options?: { mixins: ModifierMixin<MinionCard>[] }
+    options: { mixins?: ModifierMixin<MinionCard>[]; damageBonus: number }
   ) {
-    super(KEYWORDS.CELERITY.id, game, source, {
-      name: KEYWORDS.CELERITY.name,
-      description: KEYWORDS.CELERITY.description,
-      icon: 'icons/keyword-celerity',
+    super(KEYWORDS.BACKSTAB.id, game, source, {
+      name: KEYWORDS.BACKSTAB.name,
+      description: KEYWORDS.BACKSTAB.description,
+      icon: 'icons/keyword-backstab',
       mixins: [
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
-            await this.applyCelerityToUnit(unit);
+            await this.applyBackstabToUnit(unit, options.damageBonus);
           },
           onRemoved: async unit => {
             if (this.unitModifier) {
@@ -36,19 +36,21 @@ export class CelerityModifier extends Modifier<MinionCard> {
     });
   }
 
-  private async applyCelerityToUnit(unit: Unit): Promise<void> {
-    this.unitModifier = new Modifier(KEYWORDS.CELERITY.id, this.game, unit.card, {
-      name: KEYWORDS.CELERITY.name,
-      description: KEYWORDS.CELERITY.description,
-      icon: 'icons/keyword-celerity',
+  private async applyBackstabToUnit(unit: Unit, damageBonus: number): Promise<void> {
+    this.unitModifier = new Modifier(KEYWORDS.BACKSTAB.id, this.game, unit.card, {
+      name: KEYWORDS.BACKSTAB.name,
+      description: KEYWORDS.BACKSTAB.description,
+      icon: 'icons/keyword-backstab',
       mixins: [
         new UnitInterceptorModifierMixin(this.game, {
-          key: 'maxAttacksPerTurn',
-          interceptor: value => value + 1
+          key: 'damageDealt',
+          interceptor: (value, ctx) =>
+            ctx.target.behind?.unit?.equals(this.target) ? value + damageBonus : value
         }),
         new UnitInterceptorModifierMixin(this.game, {
-          key: 'maxMovementsPerTurn',
-          interceptor: value => value + 1
+          key: 'canBeCounterattackTarget',
+          interceptor: (value, ctx) =>
+            ctx.attacker.behind?.unit?.equals(this.target) ? false : true
         })
       ]
     });
