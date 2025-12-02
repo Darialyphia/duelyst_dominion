@@ -1,5 +1,5 @@
 import type { SerializedModifier } from '../../modifier/modifier.entity';
-import type { SerializedUnit } from '../../unit/unit.entity';
+import type { SerializedUnit } from '../../unit/unit.serializer';
 import type { GameClient, GameStateEntities } from '../client';
 import type { BoardCellViewModel } from './board-cell.model';
 import type { CardViewModel } from './card.model';

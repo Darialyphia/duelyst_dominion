@@ -18,7 +18,7 @@ import type { SerializedMinionCard } from '../../card/entities/minion-card.entit
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import { BoardCellViewModel } from '../view-models/board-cell.model';
-import type { SerializedUnit } from '../../unit/unit.entity';
+import type { SerializedUnit } from '../../unit/unit.serializer';
 import { UnitViewModel } from '../view-models/unit.model';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { TileViewModel } from '../view-models/tile.model';

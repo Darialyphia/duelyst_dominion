@@ -18,7 +18,7 @@ import type { SerializedBoard } from '../../board/board.system';
 import type { SerializedArtifactCard } from '../../card/entities/artifact-card.entity';
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import type { SerializedSpellCard } from '../../card/entities/spell-card.entity';
-import type { SerializedUnit } from '../../unit/unit.entity';
+import type { SerializedUnit } from '../../unit/unit.serializer';
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { areArraysIdentical } from '../../utils/helpers';

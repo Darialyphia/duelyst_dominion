@@ -257,14 +257,6 @@ export class GameClient {
     this.queue.push(...snapshots);
   }
 
-  endTurn() {
-    this.networkAdapter.dispatch({
-      type: 'endTurn',
-      payload: { playerId: this.playerId }
-    });
-    this.ui.unselectUnit();
-  }
-
   cancelPlayCard() {
     if (this.state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
 

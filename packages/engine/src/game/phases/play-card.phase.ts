@@ -4,7 +4,7 @@ import type { Game } from '../game';
 import { InvalidPlayerError } from '../game-error';
 import { GAME_PHASE_TRANSITIONS } from '../systems/game-phase.system';
 import type { GamePhaseController } from './game-phase';
-import { assert, type EmptyObject, type Serializable } from '@game/shared';
+import { assert, type Serializable } from '@game/shared';
 
 export class PlayCardPhase
   implements GamePhaseController, Serializable<{ card: string }>
