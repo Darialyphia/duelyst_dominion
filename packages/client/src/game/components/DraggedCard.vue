@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isDefined, lerp } from '@game/shared';
-import { useMouse, useRafFn } from '@vueuse/core';
+import { useEventListener, useMouse, useRafFn } from '@vueuse/core';
 import {
   useGameUi,
   useGameState,
@@ -14,8 +14,20 @@ import {
 import { Flip } from 'gsap/Flip';
 import UiButton from '@/ui/components/UiButton.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+
+const ui = useGameUi();
 const cardRotation = ref({ x: 0, y: 0 });
-const { x, y } = useMouse();
+const x = ref(0);
+const y = ref(0);
+
+useEventListener(
+  'mousemove',
+  (e: MouseEvent) => {
+    x.value = e.clientX;
+    y.value = e.clientY;
+  },
+  { passive: true, capture: true }
+);
 let prev = { x: x.value, y: y.value };
 let delta = { x: 0, y: 0 };
 const MAX_ANGLE = 45;
@@ -48,7 +60,6 @@ const rotationAnimation = useRafFn(() => {
   };
 });
 
-const ui = useGameUi();
 const state = useGameState();
 const isPinned = ref(false);
 const isPinning = ref(false);

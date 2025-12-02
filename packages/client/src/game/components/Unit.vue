@@ -150,7 +150,8 @@ const isInAoe = useIsInAoe();
   height: 100%;
   bottom: 0;
   transform: translateZ(10px) translateY(-15px)
-    rotateX(calc(var(--board-angle-X) * -1));
+    rotateX(calc(var(--board-angle-X) * -1))
+    rotateY(calc(var(--board-angle-Y) * -1));
   transform-origin: bottom center;
 
   &.is-flipped :deep(.sprite-wrapper) {

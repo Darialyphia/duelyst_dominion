@@ -20,27 +20,21 @@ useGlobalSounds();
 const camera = ref({
   origin: { x: 0, y: 0 },
   scale: 1,
-  angle: { x: 20, y: 0 }
+  angle: { x: 20, y: 0, z: 0 }
 });
 
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;
-  const unitEl = ui.value.DOMSelectors.unit(unit.id).element;
-  if (!unitEl) return;
-  const rect = unitEl.getBoundingClientRect();
-  const origin = {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2
-  };
+  const origin = config.CELL.toScreenPosition(unit);
   camera.value.origin = {
-    x: origin.x + config.CELL.width / 2,
-    y: origin.y + config.CELL.height / 2 - 150
+    x: origin.x + config.CELL.width * 3,
+    y: origin.y
   };
-
   const proxy = {
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
-    angleY: camera.value.angle.y
+    angleY: camera.value.angle.y,
+    angleZ: camera.value.angle.z
   };
 
   gsap.to(proxy, {
@@ -48,29 +42,24 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
     ease: Power2.easeOut,
     scale: 2,
     angleX: 45,
+    angleZ: 0,
     onUpdate: () => {
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
       camera.value.angle.y = proxy.angleY;
+      camera.value.angle.z = proxy.angleZ;
     }
   });
 });
 
 useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
   const unit = units.value.find(u => u.id === event.unit)!;
-  const unitEl = ui.value.DOMSelectors.unit(unit.id).element;
-  if (!unitEl) return;
-  const rect = unitEl.getBoundingClientRect();
-  const origin = {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2
-  };
-
+  const origin = config.CELL.toScreenPosition(unit);
   gsap.to(camera.value.origin, {
     duration: 0.3,
     ease: Power2.easeOut,
-    x: origin.x + config.CELL.width / 2,
-    y: origin.y + config.CELL.height / 2
+    x: origin.x + config.CELL.width * 3,
+    y: origin.y
   });
 });
 
@@ -78,7 +67,8 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
   const proxy = {
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
-    angleY: camera.value.angle.y
+    angleY: camera.value.angle.y,
+    angleZ: camera.value.angle.z
   };
   await gsap.to(proxy, {
     duration: 0.6,
@@ -90,9 +80,10 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
       camera.value.angle.y = proxy.angleY;
+      camera.value.angle.z = proxy.angleZ;
     }
   });
-
+  camera.value.angle.z = 0;
   camera.value.origin = { x: 0, y: 0 };
 });
 
@@ -117,7 +108,8 @@ const boardStyle = computed(() => ({
       class="camera-rotate"
       :style="{
         '--board-angle-X': `${camera.angle.x}deg`,
-        '--board-angle-Y': `${camera.angle.y}deg `
+        '--board-angle-Y': `${camera.angle.y}deg`,
+        '--board-angle-Z': `${camera.angle.z}deg`
       }"
     >
       <div class="bg" />
@@ -140,7 +132,8 @@ const boardStyle = computed(() => ({
   height: 100dvh;
   position: absolute;
   pointer-events: auto;
-  transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X));
+  transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X))
+    rotateZ(var(--board-angle-Z));
   transform-style: preserve-3d;
 }
 

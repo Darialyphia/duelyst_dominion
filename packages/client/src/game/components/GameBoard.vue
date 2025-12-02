@@ -15,7 +15,6 @@ import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
 import BoardCell from './BoardCell.vue';
-import FPS from './FPS.vue';
 import GameCard from './GameCard.vue';
 import PlayedCard from './PlayedCard.vue';
 import { useGlobalSounds } from '../composables/useGlobalSounds';
@@ -48,7 +47,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 <template>
   <div class="game-board">
     <DraggedCard />
-    <FPS />
+    <!-- <FPS /> -->
     <PlayedCard />
 
     <Camera>
