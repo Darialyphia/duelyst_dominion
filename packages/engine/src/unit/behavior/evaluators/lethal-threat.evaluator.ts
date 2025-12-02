@@ -18,16 +18,20 @@ export class LethalThreatEvaluator implements ThreatEvaluator {
 
     // CRITICAL: Can I kill their general?
     if (target.isGeneral && this.canKillTarget(attacker, target)) {
-      return 100; // Game-winning move
+      return 100;
     }
 
     // CRITICAL: Can this target kill my general this turn?
     if (this.canKillThisTurn(target, attacker.player.general)) {
-      score += 95; // Must eliminate this threat
+      score += 95;
     }
 
-    if (this.wouldDieToCounterattack(attacker, target)) {
-      score -= 25; // Negative score = bad idea (unless other factors outweigh)
+    // AVOID: suicide into lethal threat without killing it in return
+    if (
+      this.wouldDieToCounterattack(attacker, target) &&
+      !this.canKillTarget(attacker, target)
+    ) {
+      score -= 25;
     }
 
     return score;

@@ -1,4 +1,4 @@
-import type { Point, Vec2 } from '@game/shared';
+import type { Vec2 } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { BehaviorStrategy } from '../behavior/behavior.strategy';
 import type { Unit } from '../unit.entity';
