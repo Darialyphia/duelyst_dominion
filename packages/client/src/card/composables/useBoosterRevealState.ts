@@ -2,15 +2,7 @@ import { ref, watch, type ComputedRef, type Ref } from 'vue';
 import gsap from 'gsap';
 import { RARITIES } from '@game/engine/src/card/card.enums';
 import type { BoosterPackCardEntry, DealingStatus } from './useBoosterPack';
-
-const asElement = (candidate: unknown): HTMLElement | null => {
-  if (!candidate) return null;
-  if (candidate instanceof HTMLElement) return candidate;
-  const possibleComponent = candidate as { $el?: unknown };
-  return possibleComponent && possibleComponent.$el instanceof HTMLElement
-    ? possibleComponent.$el
-    : null;
-};
+import { unrefElement } from '@vueuse/core';
 
 export function useBoosterRevealState(
   cards: ComputedRef<BoosterPackCardEntry[]>,
@@ -53,8 +45,8 @@ export function useBoosterRevealState(
 
     if (card?.blueprint.rarity === RARITIES.LEGENDARY) {
       triggerLegendaryShake();
-
-      const target = asElement(wrapperRefs.value[index]);
+      const elements = wrapperRefs.value.map(el => unrefElement(el));
+      const target = elements.find(el => el?.id === `booster-card-${index}`);
       if (target) {
         const rect = target.getBoundingClientRect();
         triggerPixiExplosion(

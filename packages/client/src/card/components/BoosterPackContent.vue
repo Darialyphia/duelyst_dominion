@@ -86,6 +86,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
           <div
             class="card-wrapper"
             ref="wrapperRefs"
+            :id="`booster-card-${index}`"
             :class="{
               revealed: isRevealed(index),
               [`rarity-${card.blueprint.rarity.toLowerCase()}`]: true
