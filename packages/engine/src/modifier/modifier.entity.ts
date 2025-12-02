@@ -20,14 +20,12 @@ export type ModifierInfos<TCustomEvents extends Record<string, any>> =
         description?: string | (() => string);
         icon?: string;
         isUnique?: boolean;
-        customEventNames?: never;
       }
     : {
         name?: string;
         description?: string;
         isUnique?: boolean;
         icon?: string;
-        customEventNames: TCustomEvents;
       };
 
 export type ModifierOptions<
