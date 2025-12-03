@@ -184,7 +184,7 @@ export const KEYWORDS = {
     id: 'on_destroyed',
     name: 'On Destroyed',
     description: 'Triggers when the unit is destroyed.',
-    aliases: []
+    aliases: ['dying wish']
   },
   ON_CAPTURE: {
     id: 'on_capture',

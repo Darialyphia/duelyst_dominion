@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
-import type { CardKind } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
 import { useSprite } from '../composables/useSprite';
 
 const props = defineProps<{
@@ -20,7 +20,8 @@ const props = defineProps<{
   isHovered?: boolean;
 }>();
 
-const isSpell = computed(() => props.kind.toLowerCase() === 'spell');
+const isSpell = computed(() => props.kind === CARD_KINDS.SPELL);
+const isArtifact = computed(() => props.kind === CARD_KINDS.ARTIFACT);
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
 
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
@@ -37,6 +38,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
     class="image parallax"
     :class="{
       'is-spell': isSpell,
+      'is-artifact': isArtifact,
       'disable-parallax': disableParallax,
       'is-hovered': isHovered,
       'is-foil': isFoil
@@ -64,7 +66,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   bottom: calc(105px * var(--pixel-scale));
   left: 50%;
   transform: translateX(-50%);
-  &.is-spell {
+  &:is(.is-spell, .is-artifact) {
     bottom: calc(140px * var(--pixel-scale));
   }
 

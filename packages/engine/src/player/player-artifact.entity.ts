@@ -106,6 +106,9 @@ export class PlayerArtifact
       this.onGeneralDamageTaken.bind(this)
     );
     await this.player.artifactManager.unequip(this.card);
+    this.modifiers.list.forEach(async modifier => {
+      await this.modifiers.remove(modifier.id);
+    });
 
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_AFTER_DESTROY,

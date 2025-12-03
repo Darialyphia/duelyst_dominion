@@ -4,6 +4,7 @@ import type { Game } from '../../game/game';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MaybePromise } from '@game/shared';
 import type { Unit } from '../../unit/unit.entity';
+import type { PlayerArtifact } from '../../player/player-artifact.entity';
 
 export type CardAuraOptions<TCandidate extends AnyCard> = {
   isElligible(candidate: AnyCard): boolean;
@@ -89,8 +90,10 @@ export type UnitAuraOptions = {
   onLoseAura(candidate: Unit): MaybePromise<void>;
 };
 
-export class UnitAuraModifierMixin extends ModifierMixin<Unit> {
-  protected modifier!: Modifier<Unit>;
+export class UnitAuraModifierMixin<
+  T extends Unit | PlayerArtifact
+> extends ModifierMixin<T> {
+  protected modifier!: Modifier<T>;
 
   private affectedUnitIds = new Set<string>();
 
@@ -143,7 +146,7 @@ export class UnitAuraModifierMixin extends ModifierMixin<Unit> {
     }
   }
 
-  onApplied(unit: Unit, modifier: Modifier<Unit>): void {
+  onApplied(unit: T, modifier: Modifier<T>): void {
     this.modifier = modifier;
     this.isApplied = true;
 
