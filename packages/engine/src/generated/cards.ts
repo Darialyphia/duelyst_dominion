@@ -29,7 +29,10 @@ export const cards = {
 "kaleos-xaan": "kaleos-xaan",
 "circlet-of-inhibition": "circlet-of-inhibition",
 "scions-crown": "scions-crown",
-"mask-of-the-mantis": "mask-of-the-mantis"
+"mask-of-the-mantis": "mask-of-the-mantis",
+"kaido_assassin": "kaido_assassin",
+"keshrai_fanblade": "keshrai_fanblade",
+"chakri_avatar": "chakri_avatar"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -57,5 +60,8 @@ export const collectableCards = {
 "kaleos-xaan": "kaleos-xaan",
 "circlet-of-inhibition": "circlet-of-inhibition",
 "scions-crown": "scions-crown",
-"mask-of-the-mantis": "mask-of-the-mantis"
+"mask-of-the-mantis": "mask-of-the-mantis",
+"kaido_assassin": "kaido_assassin",
+"keshrai_fanblade": "keshrai_fanblade",
+"chakri_avatar": "chakri_avatar"
 } as const satisfies Record<string, string>;

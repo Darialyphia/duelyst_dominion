@@ -231,7 +231,7 @@ export const singleUnitTargetRules = {
       player: card.player,
       getAoe,
       isElligible(candidate, selectedCells) {
-        if (!candidate.unit || !isMinion(candidate.unit.card)) {
+        if (!candidate.unit) {
           return false;
         }
 

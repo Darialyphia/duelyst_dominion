@@ -9,13 +9,13 @@ export const kaidoAssassin: MinionBlueprint = {
   name: 'Kaido Assassin',
   description: '@Backstab (1)@.',
   sprite: {
-    id: 'minions/f1_kaido-assassin'
+    id: 'minions/f2_kaido-assasin'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
-  faction: FACTIONS.F1,
+  faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,

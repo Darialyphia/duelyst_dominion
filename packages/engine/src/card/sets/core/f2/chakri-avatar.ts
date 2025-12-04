@@ -1,10 +1,14 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
-import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
-import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { Modifier } from '../../../../modifier/modifier.entity';
+import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../../../game/game.events';
+import { isSpell } from '../../../card-utils';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
+import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 
 export const chakriAvatar: MinionBlueprint = {
   id: 'chakri_avatar',
@@ -17,7 +21,7 @@ export const chakriAvatar: MinionBlueprint = {
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
-  faction: FACTIONS.F1,
+  faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
@@ -28,6 +32,33 @@ export const chakriAvatar: MinionBlueprint = {
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
-  async onInit(game, card) {},
+  async onInit(game, card) {
+    const BUFF_ID = 'chakri-avatar-buff';
+
+    await card.modifiers.add(
+      new Modifier('chakri-avatar', game, card, {
+        mixins: [
+          new TogglableModifierMixin(game, () => card.location === 'board'),
+          new GameEventModifierMixin(game, {
+            eventName: GAME_EVENTS.CARD_AFTER_PLAY,
+            filter: event => {
+              if (!event) return false;
+              return (
+                isSpell(event.data.card) && event.data.card.player.equals(card.player)
+              );
+            },
+            async handler() {
+              await card.unit.modifiers.add(
+                new UnitSimpleAttackBuffModifier(BUFF_ID, game, card, { amount: 1 })
+              );
+              await card.unit.modifiers.add(
+                new UnitSimpleHealthBuffModifier(BUFF_ID, game, card, { amount: 1 })
+              );
+            }
+          })
+        ]
+      })
+    );
+  },
   async onPlay() {}
 };

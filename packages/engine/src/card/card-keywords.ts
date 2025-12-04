@@ -22,10 +22,10 @@ export const KEYWORDS = {
   },
   BACKSTAB: {
     id: 'backstab',
-    name: 'Backstab',
+    name: 'Backstab (x)',
     description:
       'When attacking from behind, this deals extra damaged and cannot be counterattacked.',
-    aliases: []
+    aliases: [/backstab \([0-9]+\)/]
   },
   BATTLE_PET: {
     id: 'battlepet',
@@ -51,7 +51,7 @@ export const KEYWORDS = {
     id: 'burn',
     name: 'Burn (x)',
     description: 'This unit x receives damage at the beginning of its turn.',
-    aliases: [/burn\([0-9]+\)/]
+    aliases: [/burn \([0-9]+\)/]
   },
   CELERITY: {
     id: 'celerity',

@@ -20,7 +20,7 @@ export class BackstabModifier extends Modifier<MinionCard> {
     super(KEYWORDS.BACKSTAB.id, game, source, {
       name: KEYWORDS.BACKSTAB.name,
       description: KEYWORDS.BACKSTAB.description,
-      icon: 'icons/keyword-backstab',
+      icon: 'icons/keyword-on-attack',
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.BACKSTAB),
         new UnitEffectModifierMixin(game, {

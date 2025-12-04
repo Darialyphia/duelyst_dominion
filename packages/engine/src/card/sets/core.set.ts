@@ -13,7 +13,10 @@ import { tempest } from './core/f1/tempest';
 import { trueStrike } from './core/f1/true-strike';
 import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
+import { chakriAvatar } from './core/f2/chakri-avatar';
+import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
+import { keshraiFanblade } from './core/f2/keshrai-fanblade';
 import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
@@ -54,6 +57,9 @@ export const coreSet: CardSet = {
     kaleosXaan,
     circletOfInhibition,
     scionsCrown,
-    maskOfTheMantis
+    maskOfTheMantis,
+    kaidoAssassin,
+    keshraiFanblade,
+    chakriAvatar
   ]
 };

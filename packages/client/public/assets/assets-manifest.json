@@ -949,6 +949,84 @@
         },
         {
           "alias": [
+            "f2_chakri-avatar"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_chakri-avatar.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_chakri-avatar.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_chakri-avatar.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_kaido-assasin"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_kaido-assasin.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_kaido-assasin.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_kaido-assasin.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_keshrai-fanblade"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_keshrai-fanblade.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_keshrai-fanblade.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_keshrai-fanblade.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder"
           ],
           "src": [
