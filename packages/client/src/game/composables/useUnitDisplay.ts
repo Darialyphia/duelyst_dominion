@@ -1,23 +1,24 @@
-import { computed, type ComputedRef } from 'vue';
+import { computed, type ComputedRef, type Ref } from 'vue';
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
 import { isDefined } from '@game/shared';
 import type { SpriteData } from '@/card/composables/useSprite';
-import { useFxEvent, useGameState, useUnits } from './useGameClient';
+import { useFxEvent, useUnits } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
-import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 
 interface UseUnitDisplayOptions {
-  unit: UnitViewModel;
+  unit: Ref<UnitViewModel>;
   myPlayerId: ComputedRef<string | undefined>;
 }
 
 export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
   const units = useUnits();
-  const isAlly = computed(() => unit.getPlayer()?.id === myPlayerId.value);
+  const isAlly = computed(
+    () => unit.value.getPlayer()?.id === myPlayerId.value
+  );
 
-  const isP2 = computed(() => !unit.getPlayer()?.isPlayer1);
+  const isP2 = computed(() => !unit.value.getPlayer()?.isPlayer1);
 
   const flipOverride = ref<boolean>();
   useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, event => {
@@ -26,14 +27,14 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
       u => u.x === event.target.x && u.y === event.target.y
     );
     if (!attacker || !defender) return;
-    if (!attacker.equals(unit) && !defender.equals(unit)) return;
+    if (!attacker.equals(unit.value) && !defender.equals(unit.value)) return;
 
     if (attacker.getPlayer()?.isPlayer1 && defender.x < attacker.x) {
-      flipOverride.value = attacker.equals(unit);
+      flipOverride.value = attacker.equals(unit.value);
     }
 
     if (!attacker.getPlayer()?.isPlayer1 && defender.x > attacker.x) {
-      flipOverride.value = !attacker.equals(unit);
+      flipOverride.value = !attacker.equals(unit.value);
     }
   });
 
@@ -49,17 +50,12 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
   });
 
   const spriteData = computed<SpriteData>(
-    () => sprites[unit.getCard().spriteId]
+    () => sprites[unit.value.getCard().spriteId]
   );
 
-  const state = useGameState();
-  // reactivity doesnt seem to trigger for modifiers when calling unit.getCard()
-  const card = computed(
-    () => state.value.entities[unit.cardId] as CardViewModel
-  );
   const displayedModifiers = computed(() => {
     return uniqBy(
-      [...unit.modifiers, ...card.value.modifiers].filter(
+      [...unit.value.modifiers, ...unit.value.getCard().modifiers].filter(
         mod => isDefined(mod.icon) && mod.stacks > 0
       ),
       'modifierType'
@@ -67,15 +63,19 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
   });
 
   const atkBuffState = computed(() => {
-    if (unit.atk > unit.baseAtk) return 'buff';
-    if (unit.atk < unit.baseAtk) return 'debuff';
+    if (unit.value.atk > unit.value.baseAtk) return 'buff';
+    if (unit.value.atk < unit.value.baseAtk) return 'debuff';
     return 'normal';
   });
 
   const hpBuffState = computed(() => {
-    if (unit.hp > unit.baseMaxHp) return 'buff';
-    if (unit.hp < unit.maxHp) return 'debuff';
+    if (unit.value.hp < unit.value.maxHp) return 'debuff';
+    if (unit.value.hp > unit.value.baseMaxHp) return 'buff';
     return 'normal';
+  });
+
+  watchEffect(() => {
+    console.log(hpBuffState.value);
   });
 
   return {

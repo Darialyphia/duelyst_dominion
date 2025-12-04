@@ -26,7 +26,7 @@ const {
   atkBuffState,
   hpBuffState
 } = useUnitDisplay({
-  unit,
+  unit: computed(() => unit),
   myPlayerId: computed(() => myPlayer.value?.id)
 });
 
@@ -108,6 +108,7 @@ const isInAoe = useIsInAoe();
         :hp="unit.hp"
         :atk-state="atkBuffState"
         :hp-state="hpBuffState"
+        :max-hp="unit.maxHp"
       />
 
       <div

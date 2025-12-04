@@ -2,6 +2,7 @@
 const { atk, hp, atkState, hpState } = defineProps<{
   atk: number;
   hp: number;
+  maxHp: number;
   atkState: 'normal' | 'buff' | 'debuff';
   hpState: 'normal' | 'buff' | 'debuff';
 }>();

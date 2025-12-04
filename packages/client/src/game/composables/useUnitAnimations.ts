@@ -91,9 +91,13 @@ export function useUnitAnimations({
       const unsub = spriteControls.on('frame', ({ index, total }) => {
         const percentage = (index + 1) / total;
         if (percentage < 0.75) return;
-        animationSequence.value = [defaultAnimation.value];
+
+        if (percentage === 1) {
+          animationSequence.value = [defaultAnimation.value];
+          unsub();
+        }
+
         isAttacking.value = false;
-        unsub();
         resolve();
       });
     });
