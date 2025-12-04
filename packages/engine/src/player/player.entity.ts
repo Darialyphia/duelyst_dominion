@@ -26,6 +26,7 @@ import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
 import { CARD_EVENTS, CARD_KINDS, RUNES, type Rune } from '../card/card.enums';
 import { match } from 'ts-pattern';
+import type { SerializedPlayerArtifact } from './player-artifact.entity';
 
 export type PlayerOptions = {
   id: string;
@@ -56,6 +57,7 @@ export type SerializedPlayer = {
   canUseResourceAction: boolean;
   maxOverspentMana: number;
   runes: Record<Rune, number>;
+  artifacts: SerializedPlayerArtifact[];
 };
 
 type PlayerInterceptors = {
@@ -190,7 +192,8 @@ export class Player
       victoryPoints: this._victoryPoints,
       canUseResourceAction: this.canPerformResourceAction,
       maxOverspentMana: this.maxOverspendsPerTurn,
-      runes: { ...this._runes }
+      runes: { ...this._runes },
+      artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize())
     };
   }
 

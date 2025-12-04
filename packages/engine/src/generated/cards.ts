@@ -28,7 +28,8 @@ export const cards = {
 "divine-bond": "divine-bond",
 "kaleos-xaan": "kaleos-xaan",
 "circlet-of-inhibition": "circlet-of-inhibition",
-"scions-crown": "scions-crown"
+"scions-crown": "scions-crown",
+"mask-of-the-mantis": "mask-of-the-mantis"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -55,5 +56,6 @@ export const collectableCards = {
 "divine-bond": "divine-bond",
 "kaleos-xaan": "kaleos-xaan",
 "circlet-of-inhibition": "circlet-of-inhibition",
-"scions-crown": "scions-crown"
+"scions-crown": "scions-crown",
+"mask-of-the-mantis": "mask-of-the-mantis"
 } as const satisfies Record<string, string>;

@@ -14,6 +14,7 @@ import { trueStrike } from './core/f1/true-strike';
 import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
+import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
@@ -52,6 +53,7 @@ export const coreSet: CardSet = {
     divineBond,
     kaleosXaan,
     circletOfInhibition,
-    scionsCrown
+    scionsCrown,
+    maskOfTheMantis
   ]
 };

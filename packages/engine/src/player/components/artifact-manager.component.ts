@@ -33,6 +33,7 @@ export class ArtifactManagerComponent {
       card: artifact,
       playerId: this.player.id
     });
+    await playerArtifact.equip();
     this._artifacts.push(playerArtifact);
 
     return playerArtifact;
