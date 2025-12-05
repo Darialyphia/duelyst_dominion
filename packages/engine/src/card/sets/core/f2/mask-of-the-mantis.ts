@@ -49,6 +49,7 @@ export const maskOfTheMantis: ArtifactBlueprint = {
             },
             async handler() {
               const enemyMinions = card.player.enemyMinions;
+              console.log(enemyMinions.length);
               if (!enemyMinions.length) return;
 
               const [target] = await singleMinionTargetRules.getPreResponseTargets(

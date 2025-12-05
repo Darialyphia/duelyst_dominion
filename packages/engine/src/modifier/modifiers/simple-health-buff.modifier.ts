@@ -21,7 +21,8 @@ export class UnitSimpleHealthBuffModifier<T extends Unit> extends Modifier<T> {
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-hp-buff' : 'keyword-hp-debuff',
+      isUnique: true,
+      icon: options.amount > 0 ? 'icons/keyword-hp-buff' : 'icons/keyword-hp-debuff',
       name: (options.name ?? options.amount > 0) ? 'Health Buff' : 'Health Debuff',
       description: `${options.amount > 0 ? '+' : '-'}${options.amount} Health`,
       mixins: [

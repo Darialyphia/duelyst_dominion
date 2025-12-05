@@ -66,7 +66,6 @@ const {
   pointer-events: none;
   position: absolute;
   transform: translateY(10px);
-  filter: brightness(1.15);
 }
 
 @property --unit-foil-center-x {

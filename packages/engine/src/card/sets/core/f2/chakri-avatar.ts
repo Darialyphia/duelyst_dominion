@@ -33,8 +33,6 @@ export const chakriAvatar: MinionBlueprint = {
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
-    const BUFF_ID = 'chakri-avatar-buff';
-
     await card.modifiers.add(
       new Modifier('chakri-avatar', game, card, {
         mixins: [
@@ -49,10 +47,14 @@ export const chakriAvatar: MinionBlueprint = {
             },
             async handler() {
               await card.unit.modifiers.add(
-                new UnitSimpleAttackBuffModifier(BUFF_ID, game, card, { amount: 1 })
+                new UnitSimpleAttackBuffModifier('chakri-avatar-atk-buff', game, card, {
+                  amount: 1
+                })
               );
               await card.unit.modifiers.add(
-                new UnitSimpleHealthBuffModifier(BUFF_ID, game, card, { amount: 1 })
+                new UnitSimpleHealthBuffModifier('chakri-avatar-hp-buff', game, card, {
+                  amount: 1
+                })
               );
             }
           })

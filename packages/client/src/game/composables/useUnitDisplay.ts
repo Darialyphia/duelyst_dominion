@@ -74,10 +74,6 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     return 'normal';
   });
 
-  watchEffect(() => {
-    console.log(hpBuffState.value);
-  });
-
   return {
     isAlly,
     isFlipped,

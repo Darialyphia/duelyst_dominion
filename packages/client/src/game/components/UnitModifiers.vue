@@ -20,8 +20,8 @@ const { modifiers } = defineProps<{
       v-for="modifier in modifiers"
       :key="modifier.id"
       use-portal
-      side="left"
-      :side-offset="8"
+      side="right"
+      :side-offset="12"
     >
       <template #trigger>
         <div

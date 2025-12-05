@@ -87,6 +87,10 @@ export class PlayerViewModel {
     return isDefined(this.data.currentlyPlayedCard);
   }
 
+  get artifacts() {
+    return this.data.artifacts;
+  }
+
   getCurrentlyPlayedCard() {
     if (!this.data.currentlyPlayedCard) return null;
 

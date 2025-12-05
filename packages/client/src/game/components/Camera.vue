@@ -8,6 +8,8 @@ import {
 import { config } from '@/utils/config';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { useGlobalSounds } from '../composables/useGlobalSounds';
+import type { Point } from '@game/shared';
+import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
 // import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
@@ -23,9 +25,7 @@ const camera = ref({
   angle: { x: 20, y: 0, z: 0 }
 });
 
-useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
-  const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
+const zoomIn = (origin: Point, duration: number) => {
   camera.value.origin = {
     x: origin.x + config.CELL.width * 3,
     y: origin.y
@@ -38,7 +38,7 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   };
 
   gsap.to(proxy, {
-    duration: 0.4,
+    duration,
     ease: Power2.easeOut,
     scale: 2,
     angleX: 45,
@@ -50,20 +50,9 @@ useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
       camera.value.angle.z = proxy.angleZ;
     }
   });
-});
+};
 
-useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
-  const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
-  gsap.to(camera.value.origin, {
-    duration: 0.3,
-    ease: Power2.easeOut,
-    x: origin.x + config.CELL.width * 3,
-    y: origin.y
-  });
-});
-
-useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
+const zoomOut = async (duration: number) => {
   const proxy = {
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
@@ -71,7 +60,7 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
     angleZ: camera.value.angle.z
   };
   await gsap.to(proxy, {
-    duration: 0.6,
+    duration,
     ease: Power2.easeOut,
     scale: 1,
     angleX: 20,
@@ -85,7 +74,29 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => {
   });
   camera.value.angle.z = 0;
   camera.value.origin = { x: 0, y: 0 };
+};
+useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
+  const unit = units.value.find(u => u.id === event.unit)!;
+  const origin = config.CELL.toScreenPosition(unit);
+  return zoomIn(origin, 0.4);
 });
+
+useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
+  const unit = units.value.find(u => u.id === event.unit)!;
+  const origin = config.CELL.toScreenPosition(unit);
+  return zoomIn(origin, 0.3);
+});
+
+useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => zoomOut(0.6));
+
+watch(
+  () => state.value.interaction.state,
+  async newState => {
+    if (newState !== INTERACTION_STATES.IDLE) {
+      await zoomOut(0.6);
+    }
+  }
+);
 
 const boardStyle = computed(() => ({
   width: `${state.value.board.columns * config.CELL.width}px`,

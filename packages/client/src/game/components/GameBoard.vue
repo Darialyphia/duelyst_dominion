@@ -20,6 +20,8 @@ import PlayedCard from './PlayedCard.vue';
 import { useGlobalSounds } from '../composables/useGlobalSounds';
 import Camera from './Camera.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import ExplainerMessage from './ExplainerMessage.vue';
+import EquipedArtifact from './EquipedArtifact.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
@@ -94,6 +96,15 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
           {{ myPlayer.runes.blue }}
         </div>
       </div>
+
+      <div class="flex flex-col gap-2 mt-2">
+        <EquipedArtifact
+          v-for="artifact in myPlayer.artifacts"
+          :key="artifact.id"
+          :artifact="artifact"
+        />
+      </div>
+
       <UiButton
         v-if="state.config.FEATURES.RUNES"
         v-show="myPlayer.canUseResourceAction"
@@ -174,6 +185,8 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
         </div>
       </div>
     </div>
+
+    <ExplainerMessage class="explainer-message" />
 
     <div
       class="hovered-card"
@@ -333,5 +346,12 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   z-index: 10;
   top: 0;
   left: 0;
+}
+
+.explainer-message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
 }
 </style>

@@ -48,13 +48,14 @@ const {
 
 <style lang="postcss" scoped>
 .tooltip-content {
-  background-color: black;
+  background-color: hsl(0 0% 0% / 0.5);
   color: #efef9f;
-  padding: var(--size-1) var(--size-3);
+  padding: var(--size-2) var(--size-3);
   font-family: var(--font-system-ui);
   font-size: 14px;
-  border: solid 1px #bb8225;
   max-width: 40ch;
+  border-radius: var(--radius-2);
+  backdrop-filter: blur(4px);
 }
 
 :is(.v-enter-active, .v-leave-active) {

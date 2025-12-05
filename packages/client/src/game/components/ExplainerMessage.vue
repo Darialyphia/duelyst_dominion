@@ -11,14 +11,14 @@ const ui = useGameUi();
       displayed: !!ui.explainerMessage
     }"
   >
-    {{ ui.explainerMessage || 'a' }}
+    {{ ui.explainerMessage || '' }}
   </p>
 </template>
 
 <style scoped lang="postcss">
 .explainer-message {
-  font-size: var(--font-size-3);
-  color: #ffb270;
+  font-size: var(--font-size-5);
+  color: #dec6a6;
   letter-spacing: 0.25ch;
   opacity: 0;
   text-align: center;

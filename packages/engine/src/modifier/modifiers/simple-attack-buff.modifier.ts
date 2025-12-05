@@ -21,9 +21,11 @@ export class UnitSimpleAttackBuffModifier<T extends Unit> extends Modifier<T> {
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-attack-buff' : 'keyword-attack-debuff',
+      icon:
+        options.amount > 0 ? 'icons/keyword-attack-buff' : 'icons/keyword-attack-debuff',
       name: (options.name ?? options.amount > 0) ? 'Attack Buff' : 'Attack Debuff',
       description: `${options.amount > 0 ? '+' : '-'}${options.amount} Attack`,
+      isUnique: true,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'atk',
