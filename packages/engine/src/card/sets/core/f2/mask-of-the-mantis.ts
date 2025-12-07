@@ -5,10 +5,6 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
 import { Modifier } from '../../../../modifier/modifier.entity';
-import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
-import { CelerityUnitModifier } from '../../../../modifier/modifiers/celerity.modifier';
-import { PlayerArtifact } from '../../../../player/player-artifact.entity';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { AbilityDamage } from '../../../../utils/damage';
@@ -49,7 +45,6 @@ export const maskOfTheMantis: ArtifactBlueprint = {
             },
             async handler() {
               const enemyMinions = card.player.enemyMinions;
-              console.log(enemyMinions.length);
               if (!enemyMinions.length) return;
 
               const [target] = await singleMinionTargetRules.getPreResponseTargets(
@@ -57,7 +52,6 @@ export const maskOfTheMantis: ArtifactBlueprint = {
                 card,
                 { required: true }
               );
-
               if (!target) return;
 
               await target.unit!.takeDamage(card, new AbilityDamage(card, 2));

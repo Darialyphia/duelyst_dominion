@@ -58,7 +58,7 @@ export class GameEventModifierMixin<
     this.occurencesThisPlayerTurn++;
     this.occurencesThisGameTurn++;
 
-    this.options.handler(event);
+    return this.options.handler(event);
   }
 
   private onPlayerTurnEnd() {
