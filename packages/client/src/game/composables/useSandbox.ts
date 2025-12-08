@@ -111,6 +111,18 @@ export const useSandbox = (
         type: 'setMaxMana',
         payload: { amount, playerId: client.value.getActivePlayerId() }
       });
+    },
+    moveUnit(unitId: string, position: { x: number; y: number }) {
+      worker.postMessage({
+        type: 'moveUnit',
+        payload: { unitId, position }
+      });
+    },
+    activateUnit(unitId: string) {
+      worker.postMessage({
+        type: 'activateUnit',
+        payload: { unitId }
+      });
     }
   };
 };

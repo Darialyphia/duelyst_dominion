@@ -44,6 +44,8 @@ const sandbox = useSandbox({
     @addRune="sandbox.addRune"
     @addToHand="sandbox.addCardToHand"
     @setMaxMana="sandbox.setMaxMana"
+    @move="sandbox.moveUnit"
+    @activate-unit="sandbox.activateUnit"
   />
 </template>
 

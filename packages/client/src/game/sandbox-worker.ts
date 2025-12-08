@@ -23,7 +23,8 @@ type SandboxWorkerEvent =
   | { type: 'refillMana'; payload: { playerId: string } }
   | { type: 'addRune'; payload: { playerId: string; rune: Rune } }
   | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
-  | { type: 'moveUnit'; payload: { unitId: string; position: Point } };
+  | { type: 'moveUnit'; payload: { unitId: string; position: Point } }
+  | { type: 'activateUnit'; payload: { unitId: string } };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -130,6 +131,14 @@ self.addEventListener('message', ({ data }) => {
         return;
       }
       await unit.teleport(payload.position, true);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'activateUnit' }, async ({ payload }) => {
+      const unit = game.unitSystem.getUnitById(payload.unitId);
+      if (!unit) {
+        return;
+      }
+      await unit.activate();
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();
