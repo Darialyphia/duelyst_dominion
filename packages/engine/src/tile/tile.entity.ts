@@ -10,6 +10,12 @@ import { GAME_EVENTS } from '../game/game.events';
 import type { Game } from '../game/game';
 import type { TileBlueprint } from './tile-blueprint';
 import { Entity } from '../entity';
+import {
+  TileAfterDestroyEvent,
+  TileBeforeDestroyEvent,
+  TileEnterEvent,
+  TileLeaveEvent
+} from './tile-events';
 
 export type TileOptions = {
   id: string;
@@ -23,7 +29,7 @@ export type SerializedTile = {
   entityType: 'tile';
   position: Point;
   playerId?: string;
-  cardIconId: string;
+  spriteId: string;
 };
 
 export class Tile extends Entity<EmptyObject> implements Serializable<SerializedTile> {
@@ -45,9 +51,6 @@ export class Tile extends Entity<EmptyObject> implements Serializable<Serialized
     this.game.on(GAME_EVENTS.UNIT_AFTER_DESTROY, this.checkOccupation);
     this.game.on(GAME_EVENTS.UNIT_AFTER_MOVE, this.checkOccupation);
     this.game.on(GAME_EVENTS.UNIT_AFTER_TELEPORT, this.checkOccupation);
-    void this.checkOccupation().then(() => {
-      this.blueprint.onCreated?.(this.game, this.occupant, this);
-    });
   }
 
   get player() {
@@ -55,23 +58,33 @@ export class Tile extends Entity<EmptyObject> implements Serializable<Serialized
     return this.game.playerSystem.getPlayerById(this.playerId);
   }
 
-  private async checkOccupation() {
+  async checkOccupation() {
     const previous = this.occupant;
 
     this.occupant = this.game.unitSystem.getUnitAt(this.position);
     if (!previous && this.occupant) {
-      await this.blueprint.onEnter?.(this.game, this.occupant, this);
+      await this.game.emit(
+        GAME_EVENTS.TILE_ENTER,
+        new TileEnterEvent({ tile: this, unit: this.occupant })
+      );
     } else if (previous && !this.occupant) {
-      await this.blueprint.onLeave?.(this.game, previous, this);
+      await this.game.emit(GAME_EVENTS.TILE_LEAVE, new TileLeaveEvent({ tile: this }));
     }
   }
 
-  destroy() {
-    this.blueprint.onDestroyed?.(this.game, this.occupant, this);
+  async destroy() {
+    await this.game.emit(
+      GAME_EVENTS.TILE_BEFORE_DESTROY,
+      new TileBeforeDestroyEvent({ tile: this })
+    );
     this.game.off(GAME_EVENTS.MINION_AFTER_SUMMON, this.checkOccupation);
     this.game.off(GAME_EVENTS.UNIT_AFTER_DESTROY, this.checkOccupation);
     this.game.off(GAME_EVENTS.UNIT_AFTER_MOVE, this.checkOccupation);
     this.game.off(GAME_EVENTS.UNIT_AFTER_TELEPORT, this.checkOccupation);
+    await this.game.emit(
+      GAME_EVENTS.TILE_AFTER_DESTROY,
+      new TileAfterDestroyEvent({ tile: this })
+    );
   }
 
   serialize(): SerializedTile {
@@ -80,7 +93,7 @@ export class Tile extends Entity<EmptyObject> implements Serializable<Serialized
       entityType: 'tile',
       position: this.position.serialize(),
       playerId: this.playerId,
-      cardIconId: this.blueprint.cardIconId
+      spriteId: this.blueprint.sprite.id
     };
   }
 }

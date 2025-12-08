@@ -33,7 +33,7 @@ export class TileSystem extends System<never> {
     return blueprint;
   }
 
-  addTile(blueprintId: string, position: Point, playerId?: string) {
+  async addTile(blueprintId: string, position: Point, playerId?: string) {
     const id = `tile_${++this.nextTileId}`;
     const tile = new Tile(this.game, {
       blueprint: this.getBlueprint(blueprintId),
@@ -42,6 +42,9 @@ export class TileSystem extends System<never> {
       playerId: playerId
     });
     this.tileMap.set(tile.id, tile);
+
+    await tile.checkOccupation();
+    await tile.blueprint.onCreated(this.game, tile.occupant, tile);
 
     return tile;
   }

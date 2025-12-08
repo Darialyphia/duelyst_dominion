@@ -23,6 +23,8 @@ import { VFX_EVENTS, type FxEventMap } from './systems/vfx.system';
 import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
 import { SHRINE_EVENTS, type ShrineEventMap } from '../board/entities/shrine.entity';
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
+import { TILE_EVENTS } from '../tile/tile-enums';
+import type { TileEventMap } from '../tile/tile-events';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },
@@ -127,7 +129,8 @@ export type GameEventMap = Prettify<
     MinionEventMap &
     GeneralEventMap &
     FxEventMap &
-    ShrineEventMap
+    ShrineEventMap &
+    TileEventMap
 >;
 export type GameEventName = keyof GameEventMap;
 export type GameEvent = Values<GameEventMap>;
@@ -150,7 +153,8 @@ export const GAME_EVENTS = {
   ...MINION_EVENTS,
   ...GENERAL_EVENTS,
   ...VFX_EVENTS,
-  ...SHRINE_EVENTS
+  ...SHRINE_EVENTS,
+  ...TILE_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
 
 export type SerializedEvent<T extends keyof typeof GAME_EVENTS> = ReturnType<
