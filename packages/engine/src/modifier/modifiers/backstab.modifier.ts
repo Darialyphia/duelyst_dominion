@@ -55,7 +55,7 @@ export class BackstabUnitModifier extends Modifier<Unit> {
     super(options.modifierType ?? KEYWORDS.BACKSTAB.id, game, source, {
       name: KEYWORDS.BACKSTAB.name,
       description: KEYWORDS.BACKSTAB.description,
-      icon: 'icons/keyword-backstab',
+      icon: 'icons/keyword-on-attack',
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',

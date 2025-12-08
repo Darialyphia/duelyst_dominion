@@ -31,12 +31,12 @@ const { modifiers } = defineProps<{
           }"
           :alt="modifier.name"
           :data-stacks="modifier.stacks > 1 ? modifier.stacks : undefined"
-          class="modifier"
+          class="modifier-image"
         />
       </template>
 
-      <div class="flex gap-2 items-start">
-        <img :src="`/assets/${modifier.icon}.png`" class="modifier" />
+      <div class="modifier">
+        <img :src="`/assets/${modifier.icon}.png`" class="modifier-image" />
         <div>
           <div class="font-7">{{ modifier.name }}</div>
           {{ modifier.description }}
@@ -53,11 +53,10 @@ const { modifiers } = defineProps<{
   right: 0;
   display: flex;
   flex-direction: column;
-  --pixel-scale: 2;
 }
 
-.modifier {
-  width: calc(24px * var(--pixel-scale));
+.modifier-image {
+  width: 24px;
   aspect-ratio: 1;
   background: var(--bg) no-repeat center center;
   background-size: cover;
@@ -74,6 +73,16 @@ const { modifiers } = defineProps<{
     paint-order: stroke fill;
     font-weight: var(--font-weight-7);
     -webkit-text-stroke: 2px black;
+  }
+}
+
+.modifier {
+  display: grid;
+  align-items: start;
+  gap: var(--size-3);
+  grid-template-columns: auto 1fr;
+  .modifier-image {
+    width: calc(24px * 2);
   }
 }
 </style>
