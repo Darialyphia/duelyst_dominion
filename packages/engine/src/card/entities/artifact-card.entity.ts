@@ -57,6 +57,10 @@ export class ArtifactCard extends Card<
     });
   }
 
+  get artifact() {
+    return this.player.artifactManager.artifacts.find(a => a.card.equals(this));
+  }
+
   getAOE(targets: BoardCell[]) {
     return this.blueprint.getAoe(this.game, this, targets);
   }

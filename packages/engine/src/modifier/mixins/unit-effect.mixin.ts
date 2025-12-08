@@ -4,7 +4,7 @@ import { MINION_EVENTS, MinionSummonedEvent } from '../../card/events/minion.eve
 import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { ModifierMixin } from '../modifier-mixin';
-import type { Modifier, ModifierEventMap } from '../modifier.entity';
+import type { Modifier } from '../modifier.entity';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
 
 export class UnitEffectModifierMixin<

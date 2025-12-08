@@ -81,6 +81,7 @@ export class Tile extends Entity<EmptyObject> implements Serializable<Serialized
     this.game.off(GAME_EVENTS.UNIT_AFTER_DESTROY, this.checkOccupation);
     this.game.off(GAME_EVENTS.UNIT_AFTER_MOVE, this.checkOccupation);
     this.game.off(GAME_EVENTS.UNIT_AFTER_TELEPORT, this.checkOccupation);
+    this.game.tileSystem.removeTile(this);
     await this.game.emit(
       GAME_EVENTS.TILE_AFTER_DESTROY,
       new TileAfterDestroyEvent({ tile: this })

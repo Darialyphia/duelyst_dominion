@@ -8,7 +8,7 @@ export const shadowCreep: TileBlueprint = {
   name: 'Shadow Creep',
   description:
     'Deal 2 damage to enemy units that stands on this tile at the end of its turn.',
-  sprite: { id: 'tiles/shadow-creep' },
+  sprite: { id: 'shadow-creep' },
   async onCreated(game, occupant, tile) {
     const cleanups = [
       await game.on(GAME_EVENTS.PLAYER_END_TURN, async event => {

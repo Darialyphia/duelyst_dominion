@@ -1,5 +1,6 @@
 import type { SerializedTile } from '../../tile/tile.entity';
 import type { GameClient, GameStateEntities } from '../client';
+import type { PlayerViewModel } from './player.model';
 
 export class TileViewModel {
   private getEntities: () => GameStateEntities;
@@ -31,5 +32,26 @@ export class TileViewModel {
 
   get id() {
     return this.data.id;
+  }
+
+  get spriteId() {
+    return this.data.spriteId;
+  }
+
+  get player() {
+    if (!this.data.playerId) return null;
+    return this.getEntities()[this.data.playerId] as PlayerViewModel;
+  }
+
+  get position() {
+    return this.data.position;
+  }
+
+  get x() {
+    return this.data.position.x;
+  }
+
+  get y() {
+    return this.data.position.y;
   }
 }

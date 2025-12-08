@@ -37,7 +37,11 @@ export default function spritesPlugin(): Plugin {
     async load(id) {
       if (id === resolvedVirtualModuleId) {
         const __dirname = path.dirname(fileURLToPath(import.meta.url));
-        const assetDirs = ['src/assets/cards{m}', 'src/assets/fx{m}'];
+        const assetDirs = [
+          'src/assets/cards{m}',
+          'src/assets/fx{m}',
+          'src/assets/tiles{m}'
+        ];
         const sprites: Record<string, any> = {};
 
         for (const dir of assetDirs) {

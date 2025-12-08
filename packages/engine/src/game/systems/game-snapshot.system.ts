@@ -356,17 +356,14 @@ export class GameSnapshotSystem extends System<{ enabled: boolean }> {
     this.game.boardSystem.cells.forEach(cell => {
       entities[cell.id] = cell.serialize();
     });
-    // this.game.boardSystem.shrines.forEach(shrine => {
-    //   entities[shrine.id] = shrine.serialize();
-    // });
-    // this.game.boardSystem.teleporters.forEach(teleporter => {
-    //   entities[teleporter.id] = teleporter.serialize();
-    // });
     this.game.unitSystem.units.forEach(unit => {
       entities[unit.id] = unit.serialize();
       unit.modifiers.list.forEach(modifier => {
         entities[modifier.id] = modifier.serialize();
       });
+    });
+    this.game.tileSystem.tiles.forEach(tile => {
+      entities[tile.id] = tile.serialize();
     });
     return entities;
   }

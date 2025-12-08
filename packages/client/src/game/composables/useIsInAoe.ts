@@ -93,7 +93,6 @@ export const useIsInAoe = () => {
           unitOnPosition?.getCard().kind === CARD_KINDS.MINION
         );
       })
-      .with(TARGETING_TYPE.ALLY_SHRINE, () => false)
       .with(TARGETING_TYPE.ENEMY_GENERAL, () => {
         return (
           !unitOnPosition?.getPlayer()?.equals(myPlayer.value) &&
@@ -106,14 +105,12 @@ export const useIsInAoe = () => {
           unitOnPosition?.getCard().kind === CARD_KINDS.MINION
         );
       })
-      .with(TARGETING_TYPE.ENEMY_SHRINE, () => false)
       .with(TARGETING_TYPE.GENERAL, () => {
         return unitOnPosition?.getCard().kind === CARD_KINDS.GENERAL;
       })
       .with(TARGETING_TYPE.MINION, () => {
         return unitOnPosition?.getCard().kind === CARD_KINDS.MINION;
       })
-      .with(TARGETING_TYPE.SHRINE, () => false)
       .exhaustive();
 
     return isValidTargetingType;

@@ -8,9 +8,11 @@ import {
   useGameUi,
   useMyPlayer,
   useOpponentPlayer,
+  useTiles,
   useUnits
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
+import Tile from './Tile.vue';
 import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
@@ -25,6 +27,7 @@ import EquipedArtifact from './EquipedArtifact.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
+const tiles = useTiles();
 const units = useUnits();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
@@ -54,6 +57,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 
     <Camera>
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
+      <Tile v-for="tile in tiles" :key="tile.id" :tile="tile" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </Camera>
     <Transition appear>
@@ -69,16 +73,10 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 
       <div class="flex gap-2">
         <div
-          v-for="i in myPlayer.maxMana"
+          v-for="i in Math.max(myPlayer.maxMana, myPlayer.mana)"
           :key="i"
           class="mana"
           :class="{ spent: i <= myPlayer.spentMana }"
-        />
-        <div
-          v-for="i in myPlayer.maxOverspentMana"
-          :key="i"
-          class="mana overspent"
-          :class="{ spent: i <= myPlayer.overspentMana }"
         />
       </div>
 
@@ -155,16 +153,10 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 
       <div class="flex gap-2 flex-row-reverse">
         <div
-          v-for="i in opponent.maxMana"
+          v-for="i in Math.max(opponent.maxMana, opponent.mana)"
           :key="i"
           class="mana"
           :class="{ spent: i <= opponent.spentMana }"
-        />
-        <div
-          v-for="i in opponent.maxOverspentMana"
-          :key="i"
-          class="mana overspent"
-          :class="{ spent: i <= opponent.overspentMana }"
         />
       </div>
       <div
@@ -280,11 +272,8 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   border-radius: var(--radius-round);
   border: solid var(--border-size-2) var(--color);
   background-color: transparent;
-  &.spent {
+  &:not(.spent) {
     background-color: var(--color);
-  }
-  &.overspent {
-    --color: magenta;
   }
 }
 

@@ -22,6 +22,7 @@ import { BoardSystem } from '../board/board.system';
 import { VFXSystem } from './systems/vfx.system';
 import type { TileBlueprint } from '../tile/tile-blueprint';
 import { TileSystem } from '../tile/tile.system';
+import { TILES_DICTIONARY } from '../tile/tiles';
 
 export type GameOptions = {
   id: string;
@@ -90,7 +91,7 @@ export class Game implements Serializable<SerializedGame> {
     this.config = Object.assign({}, defaultConfig, options.overrides.config);
     this.isSimulation = options.isSimulation ?? false;
     this.cardPool = options.overrides.cardPool ?? {};
-    this.tilesPool = options.overrides.tilesPool ?? {};
+    this.tilesPool = options.overrides.tilesPool ?? TILES_DICTIONARY;
   }
 
   async initialize() {

@@ -92,13 +92,20 @@ export class PlayerArtifact
       UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
       this.onGeneralDamageTaken.bind(this)
     );
-    await this.game.emit(ARTIFACT_EVENTS.ARTIFACT_EQUIPED, new ArtifactEquipedEvent({}));
+    await this.game.emit(
+      ARTIFACT_EVENTS.ARTIFACT_EQUIPED,
+      new ArtifactEquipedEvent({
+        artifact: this
+      })
+    );
   }
 
   async destroy() {
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_BEFORE_DESTROY,
-      new ArtifactDestroyEvent({})
+      new ArtifactDestroyEvent({
+        artifact: this
+      })
     );
 
     this.game.off(
@@ -112,20 +119,21 @@ export class PlayerArtifact
 
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_AFTER_DESTROY,
-      new ArtifactDestroyEvent({})
+      new ArtifactDestroyEvent({ artifact: this })
     );
   }
 
   async loseDurability(amount = 1) {
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_BEFORE_DURABILITY_CHANGE,
-      new ArtifactBeforeDurabilityChangeEvent({})
+      new ArtifactBeforeDurabilityChangeEvent({ artifact: this })
     );
     const current = this.durability;
     this.durability -= amount;
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_AFTER_DURABILITY_CHANGE,
       new ArtifactAfterDurabilityChangeEvent({
+        artifact: this,
         oldDurability: current,
         newDurability: this.durability
       })
@@ -139,13 +147,16 @@ export class PlayerArtifact
   async gainDurability(amount = 1) {
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_BEFORE_DURABILITY_CHANGE,
-      new ArtifactBeforeDurabilityChangeEvent({})
+      new ArtifactBeforeDurabilityChangeEvent({
+        artifact: this
+      })
     );
     const current = this.durability;
     this.durability = Math.min(this.durability + amount, this.maxDurability);
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_AFTER_DURABILITY_CHANGE,
       new ArtifactAfterDurabilityChangeEvent({
+        artifact: this,
         oldDurability: current,
         newDurability: this.durability
       })

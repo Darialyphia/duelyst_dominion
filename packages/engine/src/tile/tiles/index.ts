@@ -5,6 +5,6 @@ import { manaTile } from './mana-tile';
 import { manaTileDepleted } from './mana-tile-depleted';
 import { shadowCreep } from './shadow-creep';
 
-export const CARDS_DICTIONARY = {
+export const TILES_DICTIONARY = {
   ...keyBy([manaTile, manaTileDepleted, shadowCreep], 'id')
 } as const satisfies IndexedRecord<TileBlueprint, 'id'>;

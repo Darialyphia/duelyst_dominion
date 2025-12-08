@@ -1,31 +1,37 @@
 import type { EmptyObject } from '@game/shared';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { ARTIFACT_EVENTS } from './player.enums';
+import type { PlayerArtifact } from './player-artifact.entity';
 
 export class ArtifactEquipedEvent extends TypedSerializableEvent<
-  EmptyObject,
-  EmptyObject
+  { artifact: PlayerArtifact },
+  { artifact: string }
 > {
   serialize() {
-    return {};
+    return {
+      artifact: this.data.artifact.id
+    };
   }
 }
 
 export class ArtifactBeforeDurabilityChangeEvent extends TypedSerializableEvent<
-  EmptyObject,
-  EmptyObject
+  { artifact: PlayerArtifact },
+  { artifact: string }
 > {
   serialize() {
-    return {};
+    return {
+      artifact: this.data.artifact.id
+    };
   }
 }
 
 export class ArtifactAfterDurabilityChangeEvent extends TypedSerializableEvent<
-  { oldDurability: number; newDurability: number },
-  { oldDurability: number; newDurability: number }
+  { artifact: PlayerArtifact; oldDurability: number; newDurability: number },
+  { artifact: string; oldDurability: number; newDurability: number }
 > {
   serialize() {
     return {
+      artifact: this.data.artifact.id,
       oldDurability: this.data.oldDurability,
       newDurability: this.data.newDurability
     };
@@ -33,11 +39,13 @@ export class ArtifactAfterDurabilityChangeEvent extends TypedSerializableEvent<
 }
 
 export class ArtifactDestroyEvent extends TypedSerializableEvent<
-  EmptyObject,
-  EmptyObject
+  { artifact: PlayerArtifact },
+  { artifact: string }
 > {
   serialize() {
-    return {};
+    return {
+      artifact: this.data.artifact.id
+    };
   }
 }
 

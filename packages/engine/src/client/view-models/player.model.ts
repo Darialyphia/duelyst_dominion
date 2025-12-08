@@ -111,10 +111,6 @@ export class PlayerViewModel {
     return this.data.canReplace;
   }
 
-  get maxOverspentMana() {
-    return this.data.maxOverspentMana;
-  }
-
   getDiscardPile() {
     return this.data.discardPile.map(cardId => {
       return this.getEntities()[cardId] as CardViewModel;

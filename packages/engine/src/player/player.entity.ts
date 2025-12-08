@@ -55,22 +55,21 @@ export type SerializedPlayer = {
   currentlyPlayedCard: string | null;
   victoryPoints: number;
   canUseResourceAction: boolean;
-  maxOverspentMana: number;
   runes: Record<Rune, number>;
   artifacts: SerializedPlayerArtifact[];
 };
 
-type PlayerInterceptors = {
+export type PlayerInterceptor = {
   cardsDrawnForTurn: Interceptable<number>;
   maxReplacesPerTurn: Interceptable<number>;
-  maxOverspendsPerTurn: Interceptable<number>;
   maxManathreshold: Interceptable<number>;
+  maxMana: Interceptable<number>;
 };
-const makeInterceptors = (): PlayerInterceptors => {
+const makeInterceptors = (): PlayerInterceptor => {
   return {
     cardsDrawnForTurn: new Interceptable<number>(),
     maxReplacesPerTurn: new Interceptable<number>(),
-    maxOverspendsPerTurn: new Interceptable<number>(),
+    maxMana: new Interceptable<number>(),
     maxManathreshold: new Interceptable<number>()
   };
 };
@@ -83,7 +82,7 @@ export type PlayerResourceAction =
       type: 'draw-card';
     };
 export class Player
-  extends Entity<PlayerInterceptors>
+  extends Entity<PlayerInterceptor>
   implements Serializable<SerializedPlayer>
 {
   private game: Game;
@@ -191,7 +190,6 @@ export class Player
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
       victoryPoints: this._victoryPoints,
       canUseResourceAction: this.canPerformResourceAction,
-      maxOverspentMana: this.maxOverspendsPerTurn,
       runes: { ...this._runes },
       artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize())
     };
@@ -367,14 +365,8 @@ export class Player
     return this._mana;
   }
 
-  get overspentMana() {
-    return Math.max(0, -this._mana);
-  }
-
   get maxMana() {
-    return this.isTurnPlayer
-      ? this._baseMaxMana + this.opponent.overspentMana
-      : this._baseMaxMana;
+    return this.interceptors.maxMana.getValue(this._baseMaxMana, {});
   }
 
   async spendMana(amount: number) {
@@ -383,7 +375,7 @@ export class Player
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this._mana = Math.max(this._mana - amount, this.maxOverspendsPerTurn * -1);
+    this._mana = Math.max(this._mana - amount, 0);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
@@ -396,7 +388,8 @@ export class Player
       PLAYER_EVENTS.PLAYER_BEFORE_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
     );
-    this._mana = Math.min(this._mana + amount, this.maxMana);
+    this._mana = this._mana + amount; // dont clamp to max mana because of effects that go over max mana (ex: mana tile)
+    console.log(this._mana);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })
@@ -415,15 +408,7 @@ export class Player
   }
 
   canSpendMana(amount: number) {
-    if (this.mana < 0) return false;
-    return this.mana >= amount - this.maxOverspendsPerTurn;
-  }
-
-  get maxOverspendsPerTurn() {
-    return this.interceptors.maxOverspendsPerTurn.getValue(
-      this.game.config.MAX_OVERSPENT_MANA,
-      {}
-    );
+    return this.mana >= amount;
   }
 
   get maxReplacesPerTurn() {
