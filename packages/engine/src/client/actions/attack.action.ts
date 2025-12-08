@@ -19,7 +19,7 @@ export class AttackAction implements BoardCellClickRule {
   }
 
   handler(cell: BoardCellViewModel) {
-    this.client.networkAdapter.dispatch({
+    this.client.dispatch({
       type: 'attack',
       payload: {
         playerId: this.client.playerId,

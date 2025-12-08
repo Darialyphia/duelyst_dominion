@@ -129,7 +129,7 @@ export class PlayerViewModel {
     if (!card) return;
     if (!card.canPlay) return;
 
-    this.getClient().networkAdapter.dispatch({
+    this.getClient().dispatch({
       type: 'playCard',
       payload: {
         playerId: this.data.id,

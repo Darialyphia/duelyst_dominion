@@ -27,7 +27,7 @@ export class MoveUnitAction implements BoardCellClickRule {
   }
 
   handler(cell: BoardCellViewModel) {
-    this.client.networkAdapter.dispatch({
+    this.client.dispatch({
       type: 'move',
       payload: {
         playerId: this.client.playerId,

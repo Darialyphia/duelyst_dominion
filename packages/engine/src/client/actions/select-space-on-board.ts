@@ -21,7 +21,7 @@ export class SelectSpaceOnBoardAction implements BoardCellClickRule {
       this.client.ui.unselectCard();
     }
 
-    this.client.networkAdapter.dispatch({
+    this.client.dispatch({
       type: 'selectSpaceOnBoard',
       payload: {
         playerId: this.client.playerId,

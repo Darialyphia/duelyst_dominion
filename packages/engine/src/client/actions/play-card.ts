@@ -17,7 +17,7 @@ export class PlayCardAction implements CardActionRule {
   handler(card: CardViewModel) {
     this.client.ui.optimisticState.playedCardId = card.id;
 
-    this.client.networkAdapter.dispatch({
+    this.client.dispatch({
       type: 'playCard',
       payload: {
         index: card.getPlayer().hand.findIndex(c => c.equals(card)),

@@ -158,3 +158,24 @@ export const useOpponentPlayer = () => {
     return state.value.entities[opponentId] as PlayerViewModel;
   });
 };
+
+export const usePlayers = () => {
+  const state = useGameState();
+  return computed(() => {
+    return state.value.players.map(
+      id => state.value.entities[id] as PlayerViewModel
+    );
+  });
+};
+
+export const usePlayer1 = () => {
+  const players = usePlayers();
+
+  return computed(() => players.value.find(p => p.isPlayer1)!);
+};
+
+export const usePlayer2 = () => {
+  const players = usePlayers();
+
+  return computed(() => players.value.find(p => !p.isPlayer1)!);
+};

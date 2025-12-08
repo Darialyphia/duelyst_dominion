@@ -20,6 +20,7 @@ import type { SerializedInput } from '@game/engine/src/input/input-system';
 import {
   useGameState,
   useGameUi,
+  usePlayer1,
   useUnits
 } from '../composables/useGameClient';
 import { isDefined, type Point } from '@game/shared';
@@ -68,287 +69,470 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
 const units = useUnits();
 
 const maxMana = ref<number>();
+
+const p1 = usePlayer1();
 </script>
 
 <template>
   <PopoverRoot v-model:open="isSandboxPopoverOpened">
-    <PopoverTrigger
-      class="fixed top-3 left-3 bg-gray-10 px-4 py-2 shadow-md rounded-br-lg font-medium text-sm hover:bg-gray-11 transition-colors"
-    >
-      Sandbox Tools
-    </PopoverTrigger>
+    <PopoverTrigger class="sandbox-trigger">Sandbox Tools</PopoverTrigger>
 
-    <PopoverContent
-      class="flex flex-col gap-4 p-5 bg-gray-9 rounded-lg shadow-lg w-80 max-h-[80vh] overflow-y-auto"
-      @keyup.stop
-    >
-      <!-- Player Controls Section -->
-      <section class="flex flex-col gap-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-          Player Controls
-        </h3>
-        <div class="flex flex-col gap-1.5">
-          <button
-            v-for="(player, index) in players"
-            :key="player.id"
-            @click="playerId = player.id"
-            class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-          >
-            Switch to Player {{ index + 1 }}
-          </button>
-        </div>
-        <label
-          class="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-gray-11 rounded transition-colors"
-        >
-          <input
-            type="checkbox"
-            v-model="autoSwitchPlayer"
-            class="cursor-pointer"
-          />
-          <span>Auto Switch to Active Player</span>
-        </label>
-      </section>
-
-      <div class="border-t border-gray-6"></div>
-
-      <!-- Game Controls Section -->
-      <section class="flex flex-col gap-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-          Game Controls
-        </h3>
-        <div class="flex flex-col gap-1.5">
-          <button
-            @click="emit('rewindOneStep')"
-            class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-          >
-            Rewind One Step
-          </button>
-          <button
-            @click="emit('restart')"
-            class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-          >
-            Restart Game
-          </button>
-        </div>
-      </section>
-
-      <div class="border-t border-gray-6"></div>
-
-      <!-- Mana Controls Section -->
-      <section class="flex flex-col gap-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-          Mana Controls
-        </h3>
-        <div class="flex gap-2">
-          <input
-            id="max-mana-input"
-            type="number"
-            min="0"
-            step="1"
-            placeholder="Max"
-            class="w-20 px-2 py-2 text-sm border border-gray-7 rounded bg-gray-9 focus:outline-none focus:border-gray-12"
-            v-model.number="maxMana"
-          />
-          <button
-            :disabled="!isDefined(maxMana)"
-            @click="emit('setMaxMana', maxMana!)"
-            class="flex-1 px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Set Max Mana
-          </button>
-        </div>
-        <button
-          @click="emit('refillMana')"
-          class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-        >
-          Refill Mana
-        </button>
-      </section>
-
-      <!-- Runes Section -->
-      <template v-if="state.config.FEATURES.RUNES">
-        <div class="border-t border-gray-6"></div>
-        <section class="flex flex-col gap-2">
-          <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-            Runes
-          </h3>
-          <div class="flex flex-col gap-1.5">
+    <PopoverContent as-child>
+      <div class="sandbox-content fancy-scrollbar" @keyup.stop>
+        <!-- Player Controls Section -->
+        <section class="section">
+          <h3 class="section-title">Player Controls</h3>
+          <div class="button-group">
             <button
-              @click="emit('addRune', RUNES.RED)"
-              class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
+              v-for="(player, index) in players"
+              :key="player.id"
+              class="btn"
+              :class="{ p1: player.id === p1.id, p2: player.id !== p1.id }"
+              @click="playerId = player.id"
             >
-              Add Power Rune
-            </button>
-            <button
-              @click="emit('addRune', RUNES.YELLOW)"
-              class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-            >
-              Add Vitality Rune
-            </button>
-            <button
-              @click="emit('addRune', RUNES.BLUE)"
-              class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors text-left"
-            >
-              Add Wisdom Rune
+              Switch to Player {{ index + 1 }}
             </button>
           </div>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              v-model="autoSwitchPlayer"
+              class="checkbox"
+            />
+            <span>Auto Switch to Active Player</span>
+          </label>
         </section>
-      </template>
 
-      <div class="border-t border-gray-6"></div>
+        <div class="divider"></div>
 
-      <!-- Cards Section -->
-      <section class="flex flex-col gap-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-          Cards
-        </h3>
-        <ComboboxRoot class="relative" v-model="card">
-          <ComboboxAnchor
-            class="w-full inline-flex items-center justify-between rounded border border-gray-7 px-3 text-sm leading-none h-[38px] gap-2 bg-gray-9 focus:shadow-[0_0_0_2px] focus:shadow-gray-12 outline-none"
+        <!-- Game Controls Section -->
+        <section class="section">
+          <h3 class="section-title">Game Controls</h3>
+          <div class="button-group">
+            <button @click="emit('restart')" class="btn">Restart Game</button>
+            <button @click="emit('rewindOneStep')" class="btn">
+              Rewind One Step
+            </button>
+          </div>
+          Rewind to :
+          <div class="history-list fancy-scrollbar">
+            <div
+              v-for="(input, index) in history.toReversed()"
+              :key="index"
+              class="history-item"
+              :class="{
+                p1: input.payload.playerId === p1.id,
+                p2: input.payload.playerId !== p1.id
+              }"
+              @click="emit('rewindTo', index)"
+            >
+              {{ input.type }}
+            </div>
+          </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Mana Controls Section -->
+        <section class="section">
+          <h3 class="section-title">Mana Controls</h3>
+          <div class="input-group">
+            <input
+              id="max-mana-input"
+              type="number"
+              min="0"
+              step="1"
+              placeholder="Max"
+              class="number-input"
+              v-model.number="maxMana"
+            />
+            <button
+              :disabled="!isDefined(maxMana)"
+              @click="emit('setMaxMana', maxMana!)"
+              class="btn btn-flex"
+            >
+              Set Max Mana
+            </button>
+          </div>
+          <button @click="emit('refillMana')" class="btn">Refill Mana</button>
+        </section>
+
+        <!-- Runes Section -->
+        <template v-if="state.config.FEATURES.RUNES">
+          <div class="divider"></div>
+          <section class="section">
+            <h3 class="section-title">Runes</h3>
+            <div class="button-group">
+              <button @click="emit('addRune', RUNES.RED)" class="btn">
+                Add Power Rune
+              </button>
+              <button @click="emit('addRune', RUNES.YELLOW)" class="btn">
+                Add Vitality Rune
+              </button>
+              <button @click="emit('addRune', RUNES.BLUE)" class="btn">
+                Add Wisdom Rune
+              </button>
+            </div>
+          </section>
+        </template>
+
+        <div class="divider"></div>
+
+        <!-- Cards Section -->
+        <section class="section">
+          <h3 class="section-title">Cards</h3>
+          <ComboboxRoot class="combobox-root" v-model="card">
+            <ComboboxAnchor class="combobox-anchor">
+              <ComboboxInput
+                class="combobox-input"
+                placeholder="Search cards..."
+              />
+              <ComboboxTrigger>
+                <Icon icon="radix-icons:chevron-down" class="chevron-icon" />
+              </ComboboxTrigger>
+            </ComboboxAnchor>
+
+            <ComboboxContent class="combobox-content">
+              <ComboboxViewport class="combobox-viewport">
+                <ComboboxEmpty class="combobox-empty" />
+
+                <ComboboxItem
+                  v-for="card in allCards"
+                  :key="card.id"
+                  :value="card.id"
+                  class="combobox-item"
+                >
+                  {{ card.name }}
+                </ComboboxItem>
+              </ComboboxViewport>
+            </ComboboxContent>
+          </ComboboxRoot>
+          <button
+            :disabled="!card"
+            @click="
+              () => {
+                emit('addToHand', card!);
+                card = null;
+              }
+            "
+            class="btn"
           >
+            Add to Hand
+          </button>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Unit section-->
+        <h3 class="section-title">Units</h3>
+
+        <ComboboxRoot class="combobox-root" v-model="unit">
+          <ComboboxAnchor class="combobox-anchor">
             <ComboboxInput
-              class="!bg-transparent outline-none h-full flex-1 placeholder-gray-9"
-              placeholder="Search cards..."
+              class="combobox-input"
+              placeholder="Search units..."
             />
             <ComboboxTrigger>
-              <Icon
-                icon="radix-icons:chevron-down"
-                class="h-4 w-4 text-gray-11"
-              />
+              <Icon icon="radix-icons:chevron-down" class="chevron-icon" />
             </ComboboxTrigger>
           </ComboboxAnchor>
 
-          <ComboboxContent
-            class="absolute z-10 w-full mt-1 bg-gray-9 border border-gray-7 overflow-auto max-h-60 rounded shadow-lg"
-          >
-            <ComboboxViewport class="p-1">
-              <ComboboxEmpty
-                class="text-xs font-medium text-center py-2 text-gray-11"
-              />
+          <ComboboxContent class="combobox-content">
+            <ComboboxViewport class="combobox-viewport">
+              <ComboboxEmpty class="combobox-empty" />
 
               <ComboboxItem
-                v-for="card in allCards"
-                :key="card.id"
-                :value="card.id"
-                class="text-sm leading-none px-3 py-2 relative select-none hover:bg-gray-10 rounded cursor-pointer"
+                v-for="unit in units"
+                :key="unit.id"
+                :value="unit.id"
+                class="combobox-item"
               >
-                {{ card.name }}
+                {{ unit.getCard().name }} ({{ unit.x + 1 }}, {{ unit.y + 1 }})
               </ComboboxItem>
             </ComboboxViewport>
           </ComboboxContent>
         </ComboboxRoot>
+
+        <div class="position-controls">
+          <label>X</label>
+          <select v-model="position.x" class="position-select">
+            <option v-for="i in state.board.columns" :key="i" :value="i - 1">
+              {{ i }}
+            </option>
+          </select>
+          <label>Y</label>
+          <select v-model="position.y" class="position-select">
+            <option v-for="i in state.board.rows" :key="i" :value="i - 1">
+              {{ i }}
+            </option>
+          </select>
+        </div>
         <button
-          :disabled="!card"
+          :disabled="!unit"
           @click="
             () => {
-              emit('addToHand', card!);
-              card = null;
+              emit('move', unit!, { x: position.x, y: position.y });
+              unit = null;
             }
           "
-          class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
+          class="btn"
         >
-          Add to Hand
+          Move Unit
         </button>
-      </section>
 
-      <div class="border-t border-gray-6"></div>
-
-      <!-- Unit section-->
-      <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">Units</h3>
-
-      <ComboboxRoot class="relative" v-model="unit">
-        <ComboboxAnchor
-          class="w-full inline-flex items-center justify-between rounded border border-gray-7 px-3 text-sm leading-none h-[38px] gap-2 bg-gray-9 focus:shadow-[0_0_0_2px] focus:shadow-gray-12 outline-none"
+        <button
+          :disabled="!unit"
+          @click="
+            () => {
+              emit('activateUnit', unit!);
+            }
+          "
+          class="btn"
         >
-          <ComboboxInput
-            class="!bg-transparent outline-none h-full flex-1 placeholder-gray-9"
-            placeholder="Search units..."
-          />
-          <ComboboxTrigger>
-            <Icon
-              icon="radix-icons:chevron-down"
-              class="h-4 w-4 text-gray-11"
-            />
-          </ComboboxTrigger>
-        </ComboboxAnchor>
-
-        <ComboboxContent
-          class="absolute z-10 w-full mt-1 bg-gray-9 border border-gray-7 overflow-auto max-h-60 rounded shadow-lg"
-        >
-          <ComboboxViewport class="p-1">
-            <ComboboxEmpty
-              class="text-xs font-medium text-center py-2 text-gray-11"
-            />
-
-            <ComboboxItem
-              v-for="unit in units"
-              :key="unit.id"
-              :value="unit.id"
-              class="text-sm leading-none px-3 py-2 relative select-none hover:bg-gray-10 rounded cursor-pointer"
-            >
-              {{ unit.getCard().name }} ({{ unit.x + 1 }}, {{ unit.y + 1 }})
-            </ComboboxItem>
-          </ComboboxViewport>
-        </ComboboxContent>
-      </ComboboxRoot>
-
-      <div class="flex gap-3 items-center">
-        <label>X</label>
-        <select v-model="position.x" class="py-1 px-2">
-          <option v-for="i in state.board.columns" :key="i" :value="i - 1">
-            {{ i }}
-          </option>
-        </select>
-        <label>Y</label>
-        <select v-model="position.y" class="py-1 px-2">
-          <option v-for="i in state.board.rows" :key="i" :value="i - 1">
-            {{ i }}
-          </option>
-        </select>
+          Activate Unit
+        </button>
       </div>
-      <button
-        :disabled="!unit"
-        @click="
-          () => {
-            emit('move', unit!, { x: position.x, y: position.y });
-            unit = null;
-          }
-        "
-        class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
-      >
-        Move Unit
-      </button>
-
-      <button
-        :disabled="!unit"
-        @click="
-          () => {
-            emit('activateUnit', unit!);
-          }
-        "
-        class="px-3 py-2 text-sm bg-gray-11 rounded hover:bg-gray-12 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
-      >
-        Activate Unit
-      </button>
-
-      <!-- History Section -->
-      <!-- <section class="flex flex-col gap-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wide mb-1">
-          History
-        </h3>
-        <div
-          class="max-h-40 overflow-y-auto bg-gray-9 rounded border border-gray-7 p-2"
-        >
-          <div
-            v-for="(input, index) in history"
-            :key="index"
-            class="text-sm px-2 py-1.5 cursor-pointer hover:bg-gray-10 rounded transition-colors"
-            @click="emit('rewindTo', index)"
-          >
-            {{ input.type }}
-          </div>
-        </div>
-      </section> -->
     </PopoverContent>
   </PopoverRoot>
 </template>
+
+<style scoped lang="postcss">
+.sandbox-trigger {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  background-color: var(--gray-10);
+  padding: 0.5rem 1rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 0 0 0.5rem 0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 150ms;
+}
+
+.sandbox-trigger:hover {
+  background-color: var(--gray-11);
+}
+
+.sandbox-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: var(--gray-9);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  width: 20rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.p1 {
+  color: var(--green-5);
+}
+
+.p2 {
+  color: var(--red-6);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.25rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: var(--gray-11);
+  border-radius: 0.25rem;
+  text-align: left;
+  transition: background-color 150ms;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--gray-12);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-flex {
+  flex: 1;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 150ms;
+}
+
+.checkbox-label:hover {
+  background-color: var(--gray-11);
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
+.divider {
+  border-top: 1px solid var(--gray-6);
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.number-input {
+  width: 5rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--gray-7);
+  border-radius: 0.25rem;
+  background-color: var(--gray-9);
+}
+
+.number-input:focus {
+  outline: none;
+  border-color: var(--gray-12);
+}
+
+.combobox-root {
+  position: relative;
+}
+
+.combobox-anchor {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.25rem;
+  border: 1px solid var(--gray-7);
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  height: 38px;
+  gap: 0.5rem;
+  background-color: var(--gray-9);
+  outline: none;
+}
+
+.combobox-anchor:focus-within {
+  box-shadow: 0 0 0 2px var(--gray-12);
+}
+
+.combobox-input {
+  background-color: transparent !important;
+  outline: none;
+  height: 100%;
+  flex: 1;
+}
+
+.combobox-input::placeholder {
+  color: var(--gray-9);
+}
+
+.chevron-icon {
+  height: 1rem;
+  width: 1rem;
+  color: var(--gray-11);
+}
+
+.combobox-content {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  margin-top: 0.25rem;
+  background-color: var(--gray-9);
+  border: 1px solid var(--gray-7);
+  overflow: auto;
+  max-height: 15rem;
+  border-radius: 0.25rem;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.combobox-viewport {
+  padding: 0.25rem;
+}
+
+.combobox-empty {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.5rem 0;
+  color: var(--gray-11);
+}
+
+.combobox-item {
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0.5rem 0.75rem;
+  position: relative;
+  user-select: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.combobox-item:hover {
+  background-color: var(--gray-10);
+}
+
+.position-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.position-select {
+  padding: 0.25rem 0.5rem;
+}
+
+.history-list {
+  max-height: 10rem;
+  overflow-y: auto;
+  background-color: var(--gray-9);
+  border-radius: 0.25rem;
+  border: 1px solid var(--gray-7);
+  padding: 0.5rem;
+}
+
+.history-item {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 150ms;
+}
+
+.history-item:hover {
+  background-color: var(--gray-10);
+}
+</style>

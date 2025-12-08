@@ -141,6 +141,11 @@ export class GameClient {
     return this.lastSnapshotId + 1;
   }
 
+  dispatch(input: SerializedInput) {
+    this.history.push(input);
+    this.networkAdapter.dispatch(input);
+  }
+
   private async processQueue() {
     if (this._processingUpdate || this.queue.length === 0) {
       console.warn('Already processing updates or queue is empty, skipping processing.');
@@ -258,7 +263,7 @@ export class GameClient {
   }
 
   endTurn() {
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'endTurn',
       payload: { playerId: this.playerId }
     });
@@ -268,7 +273,7 @@ export class GameClient {
   cancelPlayCard() {
     if (this.state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
 
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'cancelPlayCard',
       payload: { playerId: this.state.turnPlayer }
     });
@@ -278,7 +283,7 @@ export class GameClient {
   }
 
   commitSpaceSelection() {
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'commitSpaceSelection',
       payload: {
         playerId: this.playerId
@@ -287,7 +292,7 @@ export class GameClient {
   }
 
   chooseCards(indices: number[]) {
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'chooseCards',
       payload: {
         playerId: this.playerId,
@@ -297,7 +302,7 @@ export class GameClient {
   }
 
   gainRune(rune: Rune) {
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'useResourceAction',
       payload: {
         playerId: this.playerId,
@@ -308,7 +313,7 @@ export class GameClient {
   }
 
   drawCard() {
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'useResourceAction',
       payload: {
         playerId: this.playerId,
@@ -320,7 +325,7 @@ export class GameClient {
   replaceCard(card: CardViewModel) {
     if (!isDefined(card.indexInHand)) return;
 
-    this.networkAdapter.dispatch({
+    this.dispatch({
       type: 'replaceCard',
       payload: {
         playerId: this.playerId,
