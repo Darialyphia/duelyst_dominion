@@ -14,7 +14,7 @@
   --color-surface-3-hsl: var(--gray-9-hsl);
   --color-surface-4-hsl: var(--gray-8-hsl);
 
-  --color-primary-hsl: var(--yellow-4-hsl);
+  --color-primary-hsl: 35 46% 76%;
   --color-primary-dark-hsl: var(--yellow-6-hsl);
   --color-primary-darker-hsl: var(--yellow-11-hsl);
   --color-primary-hover-hsl: var(--yellow-5-hsl);

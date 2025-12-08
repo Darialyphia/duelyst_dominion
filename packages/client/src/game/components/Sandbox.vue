@@ -46,6 +46,7 @@ const sandbox = useSandbox({
     @setMaxMana="sandbox.setMaxMana"
     @move="sandbox.moveUnit"
     @activate-unit="sandbox.activateUnit"
+    @destroy-unit="sandbox.destroyUnit"
   />
 </template>
 

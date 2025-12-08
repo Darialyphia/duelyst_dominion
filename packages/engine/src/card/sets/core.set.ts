@@ -30,6 +30,7 @@ import { frostboneNaga } from './core/neutral/frostbone-naga';
 import { healingMystic } from './core/neutral/healing-mystic';
 import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
 import { saberspineTiger } from './core/neutral/saberspine-tiger';
+import { voidHunter } from './core/neutral/void-hunter';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -64,6 +65,7 @@ export const coreSet: CardSet = {
     keshraiFanblade,
     chakriAvatar,
     phoenixFire,
-    massacreArtist
+    massacreArtist,
+    voidHunter
   ]
 };

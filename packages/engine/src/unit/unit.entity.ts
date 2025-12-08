@@ -565,29 +565,33 @@ export class Unit
   }
 
   async removeFromBoard() {
-    for (const modifier of this.modifiers.list) {
-      await this.modifiers.remove(modifier.id);
-    }
     this.game.unitSystem.removeUnit(this);
   }
 
-  async destroy(source: AnyCard) {
-    if (!this.canBeDestroyed) return;
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_DESTROY,
-      new UnitBeforeDestroyEvent({ source, unit: this })
-    );
+  async destroy(source: AnyCard, silent = false) {
+    // we force the destruction if it is silent since this comes from sandbox tools
+    if (!this.canBeDestroyed && !silent) return;
+
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_BEFORE_DESTROY,
+        new UnitBeforeDestroyEvent({ source, unit: this })
+      );
+    }
     const position = this.position;
 
     await this.removeFromBoard();
+
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_AFTER_DESTROY,
+        new UnitAfterDestroyEvent({ source, destroyedAt: position, unit: this })
+      );
+    }
+    // remove modifiers after the events to avoid removing OnDestroy modifiers
     this.modifiers.list.forEach(async modifier => {
       await this.modifiers.remove(modifier.id);
     });
-
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_DESTROY,
-      new UnitAfterDestroyEvent({ source, destroyedAt: position, unit: this })
-    );
   }
 
   exhaust() {

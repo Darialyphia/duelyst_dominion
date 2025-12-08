@@ -1378,6 +1378,32 @@
         },
         {
           "alias": [
+            "neutral_void-hunter"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_void-hunter.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "neutral_void-hunter.png"
+          ],
+          "src": [
+            "/assets/cards/minions/neutral_void-hunter.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f1_auryn-nexus"
           ],
           "src": [

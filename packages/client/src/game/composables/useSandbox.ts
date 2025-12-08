@@ -123,6 +123,12 @@ export const useSandbox = (
         type: 'activateUnit',
         payload: { unitId }
       });
+    },
+    destroyUnit(unitId: string, silent: boolean) {
+      worker.postMessage({
+        type: 'destroyUnit',
+        payload: { unitId, silent }
+      });
     }
   };
 };

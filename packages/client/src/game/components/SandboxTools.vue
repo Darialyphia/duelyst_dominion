@@ -24,6 +24,7 @@ import {
   useUnits
 } from '../composables/useGameClient';
 import { isDefined, type Point } from '@game/shared';
+import UiSwitch from '@/ui/components/UiSwitch.vue';
 
 const { players } = defineProps<{
   players: Array<{ id: string }>;
@@ -40,6 +41,7 @@ const emit = defineEmits<{
   setMaxMana: [amount: number];
   move: [unitId: string, pos: Point];
   activateUnit: [unitId: string];
+  destroyUnit: [unitId: string, silent: boolean];
 }>();
 
 const state = useGameState();
@@ -71,6 +73,7 @@ const units = useUnits();
 const maxMana = ref<number>();
 
 const p1 = usePlayer1();
+const shouldTriggerDyingWish = ref(false);
 </script>
 
 <template>
@@ -114,8 +117,11 @@ const p1 = usePlayer1();
               Rewind One Step
             </button>
           </div>
-          Rewind to :
+          <h3 class="section-title">Rewind to :</h3>
           <div class="history-list fancy-scrollbar">
+            <span v-if="history.length === 0" class="history-item italic">
+              No history.
+            </span>
             <div
               v-for="(input, index) in history.toReversed()"
               :key="index"
@@ -181,7 +187,7 @@ const p1 = usePlayer1();
         <!-- Cards Section -->
         <section class="section">
           <h3 class="section-title">Cards</h3>
-          <ComboboxRoot class="combobox-root" v-model="card">
+          <ComboboxRoot class="relative" v-model="card">
             <ComboboxAnchor class="combobox-anchor">
               <ComboboxInput
                 class="combobox-input"
@@ -226,7 +232,7 @@ const p1 = usePlayer1();
         <!-- Unit section-->
         <h3 class="section-title">Units</h3>
 
-        <ComboboxRoot class="combobox-root" v-model="unit">
+        <ComboboxRoot class="relative" v-model="unit">
           <ComboboxAnchor class="combobox-anchor">
             <ComboboxInput
               class="combobox-input"
@@ -266,37 +272,50 @@ const p1 = usePlayer1();
               {{ i }}
             </option>
           </select>
+          <button
+            :disabled="!unit"
+            @click="
+              () => {
+                emit('move', unit!, { x: position.x, y: position.y });
+                unit = null;
+              }
+            "
+            class="btn flex-1 text-center"
+          >
+            Move
+          </button>
         </div>
-        <button
-          :disabled="!unit"
-          @click="
-            () => {
-              emit('move', unit!, { x: position.x, y: position.y });
-              unit = null;
-            }
-          "
-          class="btn"
-        >
-          Move Unit
-        </button>
 
         <button
           :disabled="!unit"
-          @click="
-            () => {
-              emit('activateUnit', unit!);
-            }
-          "
+          @click="emit('activateUnit', unit!)"
           class="btn"
         >
-          Activate Unit
+          Activate
         </button>
+
+        <div class="flex gap-2 items-center">
+          <button
+            :disabled="!unit"
+            @click="
+              () => {
+                emit('destroyUnit', unit!, !shouldTriggerDyingWish);
+                unit = null;
+              }
+            "
+            class="btn"
+          >
+            Destroy
+          </button>
+          <UiSwitch v-model="shouldTriggerDyingWish" />
+          <span class="option-title">Trigger dying wish</span>
+        </div>
       </div>
     </PopoverContent>
   </PopoverRoot>
 </template>
 
-<style scoped lang="postcss">
+<style lang="postcss" scoped>
 .sandbox-trigger {
   position: fixed;
   top: 0.75rem;
@@ -423,10 +442,6 @@ const p1 = usePlayer1();
   border-color: var(--gray-12);
 }
 
-.combobox-root {
-  position: relative;
-}
-
 .combobox-anchor {
   width: 100%;
   display: inline-flex;
@@ -461,7 +476,7 @@ const p1 = usePlayer1();
 .chevron-icon {
   height: 1rem;
   width: 1rem;
-  color: var(--gray-11);
+  color: currentColor;
 }
 
 .combobox-content {

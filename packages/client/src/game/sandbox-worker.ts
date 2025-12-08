@@ -24,7 +24,8 @@ type SandboxWorkerEvent =
   | { type: 'addRune'; payload: { playerId: string; rune: Rune } }
   | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
   | { type: 'moveUnit'; payload: { unitId: string; position: Point } }
-  | { type: 'activateUnit'; payload: { unitId: string } };
+  | { type: 'activateUnit'; payload: { unitId: string } }
+  | { type: 'destroyUnit'; payload: { unitId: string; silent: boolean } };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -139,6 +140,14 @@ self.addEventListener('message', ({ data }) => {
         return;
       }
       await unit.activate();
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'destroyUnit' }, async ({ payload }) => {
+      const unit = game.unitSystem.getUnitById(payload.unitId);
+      if (!unit) {
+        return;
+      }
+      await unit.destroy(unit.player.general.card, payload.silent);
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();
