@@ -101,7 +101,7 @@ export class Game implements Serializable<SerializedGame> {
     console.log(`RNG initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
 
-    this.boardSystem.initialize({
+    await this.boardSystem.initialize({
       map: this.options.overrides.map ?? defaultMap
     });
     console.log(`Board system initialized in ${(performance.now() - now).toFixed(0)}ms`);

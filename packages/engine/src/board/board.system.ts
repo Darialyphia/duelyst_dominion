@@ -11,8 +11,6 @@ import { BoardCell } from './entities/board-cell.entity';
 import { pointToCellId } from './board-utils';
 import { System } from '../system';
 import type { MapBlueprint } from './map-blueprint';
-import { Shrine } from './entities/shrine.entity';
-import { Teleporter } from './entities/two-way-teleporter';
 
 export type BoardSystemOptions = {
   map: MapBlueprint;
@@ -36,11 +34,7 @@ export class BoardSystem
 
   dimensions!: { width: number; height: number };
 
-  shrines!: Shrine[];
-
-  teleporters!: Teleporter[];
-
-  initialize(options: BoardSystemOptions) {
+  async initialize(options: BoardSystemOptions) {
     this.map = options.map;
 
     this.map.cells.forEach((cellBlueprint, index) => {
@@ -58,20 +52,7 @@ export class BoardSystem
       height: options.map.rows
     };
 
-    this.map.shrinePositions.forEach(pos => {
-      const shrine = new Shrine(this.game, Vec2.fromPoint(pos));
-      this.shrines = [...(this.shrines || []), shrine];
-    });
-
-    this.map.teleporters.forEach(teleporterData => {
-      const teleporter = new Teleporter(
-        this.game,
-        teleporterData.id,
-        teleporterData.gates,
-        teleporterData.color
-      );
-      this.teleporters = [...(this.teleporters || []), teleporter];
-    });
+    await this.map.onInit(this.game);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

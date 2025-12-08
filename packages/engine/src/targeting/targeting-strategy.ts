@@ -13,12 +13,9 @@ export const TARGETING_TYPE = {
   ALLY_UNIT: 'ally_unit',
   ALLY_GENERAL: 'ally_general',
   ALLY_MINION: 'ally_minion',
-  ALLY_SHRINE: 'ally_shrine',
   ENEMY_UNIT: 'enemy_unit',
   ENEMY_GENERAL: 'enemy_general',
   ENEMY_MINION: 'enemy_minion',
-  ENEMY_SHRINE: 'enemy_shrine',
-  SHRINE: 'shrine',
   UNIT: 'unit',
   GENERAL: 'general',
   MINION: 'minion',
@@ -63,18 +60,5 @@ export const isValidTargetingType = (
     .with(TARGETING_TYPE.UNIT, () => isDefined(unit))
     .with(TARGETING_TYPE.GENERAL, () => isDefined(unit) && unit?.isGeneral)
     .with(TARGETING_TYPE.MINION, () => isDefined(unit) && !unit.isGeneral)
-    .with(TARGETING_TYPE.SHRINE, () =>
-      game.boardSystem.shrines.some(s => s.position.equals(point))
-    )
-    .with(TARGETING_TYPE.ALLY_SHRINE, () =>
-      game.boardSystem.shrines.some(
-        s => s.position.equals(point) && s.player?.equals(player)
-      )
-    )
-    .with(TARGETING_TYPE.ENEMY_SHRINE, () =>
-      game.boardSystem.shrines.some(
-        s => s.position.equals(point) && !s.player?.equals(player)
-      )
-    )
     .exhaustive();
 };

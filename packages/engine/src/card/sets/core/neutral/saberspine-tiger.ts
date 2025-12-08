@@ -21,7 +21,6 @@ export const saberspineTiger: MinionBlueprint = {
     red: 2
   },
   atk: 3,
-  cmd: 1,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

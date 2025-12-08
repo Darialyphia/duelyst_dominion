@@ -35,7 +35,6 @@ import {
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
-import type { Shrine } from '../board/entities/shrine.entity';
 import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
@@ -54,8 +53,6 @@ export type SerializedUnit = {
   baseAtk: number;
   atk: number;
   baseMaxHp: number;
-  cmd: number;
-  baseCmd: number;
   maxHp: number;
   currentHp: number;
   isFullHp: boolean;
@@ -68,7 +65,6 @@ export type SerializedUnit = {
   dangerZone: string[];
   attackableCells: string[];
   modifiers: string[];
-  capturableShrines: string[];
 };
 
 export type UnitInterceptors = {
@@ -81,11 +77,9 @@ export type UnitInterceptors = {
   canBeCardTarget: Interceptable<boolean, { card: AnyCard }>;
   canBeDestroyed: Interceptable<boolean>;
   canReceiveModifier: Interceptable<boolean, { modifier: Modifier<Unit> }>;
-  canCapture: Interceptable<boolean, { shrine: Shrine }>;
 
   maxHp: Interceptable<number>;
   atk: Interceptable<number>;
-  cmd: Interceptable<number>;
   movementReach: Interceptable<number>;
   sprintReach: Interceptable<number>;
 
@@ -142,11 +136,9 @@ export class Unit
       canBeCardTarget: new Interceptable(),
       canBeDestroyed: new Interceptable(),
       canReceiveModifier: new Interceptable(),
-      canCapture: new Interceptable(),
 
       maxHp: new Interceptable(),
       atk: new Interceptable(),
-      cmd: new Interceptable(),
       movementReach: new Interceptable(),
       sprintReach: new Interceptable(),
 
@@ -265,21 +257,6 @@ export class Unit
 
   isAlly(entity: Unit | Player) {
     return !this.isEnemy(entity);
-  }
-
-  get cmd() {
-    return this.interceptors.cmd.getValue(this.card.cmd, {});
-  }
-
-  canCapture(shrine: Shrine) {
-    return this.interceptors.canCapture.getValue(shrine.canBeCapturedBy(this), {
-      shrine
-    });
-  }
-
-  async captureShrine(shrine: Shrine) {
-    await shrine.capture(this);
-    this.exhaust();
   }
 
   get movementReach() {
@@ -512,10 +489,6 @@ export class Unit
     return this.game.unitSystem.getNearbyUnits(this.position);
   }
 
-  get nearbyShrines(): Shrine[] {
-    return this.game.boardSystem.getNearbyShrines(this.position);
-  }
-
   getReceivedDamage(damage: Damage, source: AnyCard) {
     return this.interceptors.damageReceived.getValue(damage.baseAmount, {
       damage,
@@ -684,8 +657,6 @@ export class Unit
       position: this.position.serialize(),
       baseAtk: this.card.blueprint.atk,
       atk: this.atk,
-      baseCmd: this.card.blueprint.cmd,
-      cmd: this.cmd,
       baseMaxHp: this.card.blueprint.maxHp,
       maxHp: this.maxHp,
       currentHp: this.remainingHp,
@@ -707,8 +678,7 @@ export class Unit
       attackableCells: this.game.boardSystem.cells
         .filter(cell => this.canAttackAt(cell.position))
         .map(cell => cell.id),
-      modifiers: this.modifiers.list.map(modifier => modifier.id),
-      capturableShrines: []
+      modifiers: this.modifiers.list.map(modifier => modifier.id)
     };
   }
 }

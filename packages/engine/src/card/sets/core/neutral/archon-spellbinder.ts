@@ -31,7 +31,6 @@ export const archonSpellbinder: MinionBlueprint = {
     blue: 2
   },
   atk: 6,
-  cmd: 2,
   maxHp: 7,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

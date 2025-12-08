@@ -78,14 +78,6 @@ export class UnitViewModel {
     return this.data.atk;
   }
 
-  get baseCmd() {
-    return this.data.baseCmd;
-  }
-
-  get cmd() {
-    return this.data.cmd;
-  }
-
   get dangerZone() {
     return this.data.dangerZone;
   }

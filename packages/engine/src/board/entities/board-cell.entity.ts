@@ -17,7 +17,6 @@ export type SerializedCell = {
   position: Point;
   player: 'p1' | 'p2' | null;
   unit: string | null;
-  shrine: string | null;
 };
 
 export type BoardCellOptions = {
@@ -104,8 +103,7 @@ export class BoardCell
       entityType: 'cell',
       position: this.position,
       player: this._player,
-      unit: this.unit ? this.unit.id : null,
-      shrine: null
+      unit: this.unit ? this.unit.id : null
     };
   }
 }

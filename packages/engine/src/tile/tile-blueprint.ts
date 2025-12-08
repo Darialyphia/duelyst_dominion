@@ -10,5 +10,5 @@ export type TileBlueprint = {
   sprite: {
     id: string;
   };
-  onCreated: (session: Game, occupant: Nullable<Unit>, tile: Tile) => Promise<void>;
+  onCreated: (game: Game, occupant: Nullable<Unit>, tile: Tile) => Promise<void>;
 };

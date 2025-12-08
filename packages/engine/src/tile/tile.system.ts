@@ -33,7 +33,15 @@ export class TileSystem extends System<never> {
     return blueprint;
   }
 
+  isOccupied(position: Point) {
+    return this.getTileAt(position) !== null;
+  }
+
   async addTile(blueprintId: string, position: Point, playerId?: string) {
+    if (this.isOccupied(position)) {
+      await this.getTileAt(position)?.destroy();
+    }
+
     const id = `tile_${++this.nextTileId}`;
     const tile = new Tile(this.game, {
       blueprint: this.getBlueprint(blueprintId),

@@ -21,7 +21,6 @@ export const emeraldRejuvinator: MinionBlueprint = {
     yellow: 1
   },
   atk: 4,
-  cmd: 1,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

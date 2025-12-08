@@ -21,7 +21,6 @@ import { UNIT_EVENTS } from '../unit/unit.enums';
 import type { ArtifactEventMap } from '../player/player-artifact.events';
 import { VFX_EVENTS, type FxEventMap } from './systems/vfx.system';
 import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
-import { SHRINE_EVENTS, type ShrineEventMap } from '../board/entities/shrine.entity';
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
 import { TILE_EVENTS } from '../tile/tile-enums';
 import type { TileEventMap } from '../tile/tile-events';
@@ -129,7 +128,6 @@ export type GameEventMap = Prettify<
     MinionEventMap &
     GeneralEventMap &
     FxEventMap &
-    ShrineEventMap &
     TileEventMap
 >;
 export type GameEventName = keyof GameEventMap;
@@ -153,7 +151,6 @@ export const GAME_EVENTS = {
   ...MINION_EVENTS,
   ...GENERAL_EVENTS,
   ...VFX_EVENTS,
-  ...SHRINE_EVENTS,
   ...TILE_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
 

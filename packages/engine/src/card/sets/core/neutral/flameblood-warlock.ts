@@ -22,7 +22,6 @@ export const flamebloodWarlock: MinionBlueprint = {
     red: 1
   },
   atk: 3,
-  cmd: 1,
   maxHp: 1,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

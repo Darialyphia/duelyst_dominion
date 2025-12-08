@@ -23,8 +23,6 @@ import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedTile } from '../../tile/tile.entity';
 import { areArraysIdentical } from '../../utils/helpers';
 import { GAME_PHASES } from '../game.enums';
-import type { SerializedShrine } from '../../board/entities/shrine.entity';
-import type { SerializedTeleporter } from '../../board/entities/two-way-teleporter';
 
 export type GameStateSnapshot<T> =
   | {
@@ -50,8 +48,6 @@ export type EntityDictionary = Record<
   | SerializedCell
   | SerializedUnit
   | SerializedTile
-  | SerializedShrine
-  | SerializedTeleporter
 >;
 
 export type EntityDiffDictionary = Record<
@@ -65,8 +61,6 @@ export type EntityDiffDictionary = Record<
   | Partial<SerializedCell>
   | Partial<SerializedUnit>
   | Partial<SerializedTile>
-  | Partial<SerializedShrine>
-  | Partial<SerializedTeleporter>
 >;
 
 export type SerializedOmniscientState = {

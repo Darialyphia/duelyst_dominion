@@ -138,7 +138,6 @@ export const parseMinionBlueprintSchema = (
     runeCost: schema.runeCost,
     atk: schema.atk,
     maxHp: schema.maxHp,
-    cmd: schema.cmd,
     canPlay: (game, card) =>
       checkCondition({
         game,
@@ -222,7 +221,6 @@ export const parseGeneralBlueprintSchema = (
     kind: schema.kind,
     atk: schema.atk,
     maxHp: schema.maxHp,
-    cmd: schema.cmd,
     abilities: schema.abilities,
     async onInit(game, card) {
       for (const action of schema.onInit) {

@@ -25,7 +25,6 @@ export const keshraiFanblade: MinionBlueprint = {
   manaCost: 5,
   runeCost: {},
   atk: 5,
-  cmd: 1,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

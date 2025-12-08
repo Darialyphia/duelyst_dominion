@@ -22,7 +22,6 @@ export const frostboneNaga: MinionBlueprint = {
     red: 2
   },
   atk: 3,
-  cmd: 1,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new RingAOEShape(TARGETING_TYPE.UNIT, { size: 1 }),
