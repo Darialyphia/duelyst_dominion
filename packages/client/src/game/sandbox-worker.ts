@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-
+import type { Point } from '@game/shared';
 import type { Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Game, type GameOptions } from '@game/engine/src/game/game';
@@ -21,7 +21,9 @@ type SandboxWorkerEvent =
       payload: { blueprintId: string; playerId: string };
     }
   | { type: 'refillMana'; payload: { playerId: string } }
-  | { type: 'addRune'; payload: { playerId: string; rune: Rune } };
+  | { type: 'addRune'; payload: { playerId: string; rune: Rune } }
+  | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
+  | { type: 'moveUnit'; payload: { unitId: string; position: Point } };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -115,6 +117,19 @@ self.addEventListener('message', ({ data }) => {
     .with({ type: 'addRune' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       player.gainRune(payload.rune, 1);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'setMaxMana' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      player.gainMaxMana(payload.amount - player.maxMana);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'moveUnit' }, async ({ payload }) => {
+      const unit = game.unitSystem.getUnitById(payload.unitId);
+      if (!unit) {
+        return;
+      }
+      await unit.teleport(payload.position, true);
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();

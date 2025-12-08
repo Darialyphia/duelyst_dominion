@@ -1027,6 +1027,32 @@
         },
         {
           "alias": [
+            "f2_massacre-artist"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_massacre-artist.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_massacre-artist.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_massacre-artist.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder"
           ],
           "src": [
@@ -1603,6 +1629,32 @@
           ],
           "src": [
             "/assets/cards/spells/f1_war-surge.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_phoenix-fire"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_phoenix-fire.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_phoenix-fire.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_phoenix-fire.png"
           ],
           "data": {
             "tags": {

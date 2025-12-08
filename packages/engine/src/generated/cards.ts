@@ -32,7 +32,9 @@ export const cards = {
 "mask-of-the-mantis": "mask-of-the-mantis",
 "kaido_assassin": "kaido_assassin",
 "keshrai_fanblade": "keshrai_fanblade",
-"chakri_avatar": "chakri_avatar"
+"chakri_avatar": "chakri_avatar",
+"phoenix-fire": "phoenix-fire",
+"massacre_artist": "massacre_artist"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -63,5 +65,7 @@ export const collectableCards = {
 "mask-of-the-mantis": "mask-of-the-mantis",
 "kaido_assassin": "kaido_assassin",
 "keshrai_fanblade": "keshrai_fanblade",
-"chakri_avatar": "chakri_avatar"
+"chakri_avatar": "chakri_avatar",
+"phoenix-fire": "phoenix-fire",
+"massacre_artist": "massacre_artist"
 } as const satisfies Record<string, string>;

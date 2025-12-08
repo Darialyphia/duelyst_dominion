@@ -28,7 +28,7 @@ const { fontSize: descriptionFontSize } = useAutoResizeText(descriptionBox, {
 
 <style scoped lang="postcss">
 .description {
-  height: calc(60px * var(--pixel-scale));
+  height: calc(67px * var(--pixel-scale));
   position: absolute;
   top: calc(180px * var(--pixel-scale));
   left: calc(43px * var(--pixel-scale));

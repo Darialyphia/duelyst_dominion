@@ -17,6 +17,8 @@ import { Icon } from '@iconify/vue';
 import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
 import { ref } from 'vue';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
+import { useGameState } from '../composables/useGameClient';
+import { isDefined } from '@game/shared';
 
 const { players } = defineProps<{
   players: Array<{ id: string }>;
@@ -30,7 +32,10 @@ const emit = defineEmits<{
   refillMana: [];
   addRune: [rune: Rune];
   addToHand: [cardId: string];
+  setMaxMana: [amount: number];
 }>();
+
+const state = useGameState();
 
 const isSandboxPopoverOpened = ref(false);
 const card = ref(null);
@@ -43,6 +48,8 @@ const autoSwitchPlayer = defineModel<boolean>('autoSwitch', {
 const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
   a.name.localeCompare(b.name)
 );
+
+const maxMana = ref<number>();
 </script>
 
 <template>
@@ -65,10 +72,30 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
       </label>
       <button @click="emit('rewindOneStep')">Rewind one step</button>
       <button @click="emit('restart')">Restart Game</button>
+      <div class="flex gap-3 items-center">
+        <input
+          id="max-mana-input"
+          type="number"
+          min="0"
+          step="1"
+          class="w-16 p-1 border rounded"
+          v-model.number="maxMana"
+        />
+        <button
+          :disabled="!isDefined(maxMana)"
+          @click="emit('setMaxMana', maxMana!)"
+        >
+          Set Max Mana
+        </button>
+      </div>
       <button @click="emit('refillMana')">Refill Mana</button>
-      <button @click="emit('addRune', RUNES.RED)">Add Power Rune</button>
-      <button @click="emit('addRune', RUNES.YELLOW)">Add Vitality Rune</button>
-      <button @click="emit('addRune', RUNES.BLUE)">Add Wisdom Rune</button>
+      <template v-if="state.config.FEATURES.RUNES">
+        <button @click="emit('addRune', RUNES.RED)">Add Power Rune</button>
+        <button @click="emit('addRune', RUNES.YELLOW)">
+          Add Vitality Rune
+        </button>
+        <button @click="emit('addRune', RUNES.BLUE)">Add Wisdom Rune</button>
+      </template>
       <ComboboxRoot class="relative" v-model="card">
         <ComboboxAnchor
           class="min-w-[160px] inline-flex items-center justify-between rounded-lg border px-[15px] text-xs leading-none h-[35px] gap-[5px] bg-gray-10 text-grass11 shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-grass9 outline-none"

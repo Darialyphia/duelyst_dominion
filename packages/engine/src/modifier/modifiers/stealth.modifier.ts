@@ -11,10 +11,9 @@ import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
 import type { UnitAttackEvent } from '../../unit/unit-events';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
+import { TogglableModifierMixin } from '../mixins/togglable.mixin';
 
 export class StealthModifier extends Modifier<MinionCard> {
-  private unitModifier: Modifier<Unit> | null = null;
-
   constructor(
     game: Game,
     source: AnyCard,
@@ -25,57 +24,60 @@ export class StealthModifier extends Modifier<MinionCard> {
         new KeywordModifierMixin(game, KEYWORDS.STEALTH),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
-            await this.applyStealthToUnit(unit);
+            await unit.modifiers.add(new StealthUnitModifier(game, source, {}));
           },
           onRemoved: async unit => {
-            if (this.unitModifier) {
-              await this.removeStealthFromUnit(unit);
-            }
+            await unit.modifiers.remove(StealthUnitModifier);
           }
         }),
         ...(options?.mixins ?? [])
       ]
     });
   }
+}
 
-  private onAfterAttack = async (event?: UnitAttackEvent) => {
-    if (!this.unitModifier) return;
-    if (!event) return;
-    const unit = event.data.unit;
-    if (!unit.equals(this.unitModifier.target)) return;
-
-    await this.removeStealthFromUnit(unit);
-  };
-
-  private async applyStealthToUnit(unit: Unit): Promise<void> {
-    this.unitModifier = new Modifier(KEYWORDS.STEALTH.id, this.game, unit.card, {
+export class StealthUnitModifier extends Modifier<Unit> {
+  private hasAttacked = false;
+  constructor(
+    game: Game,
+    source: AnyCard,
+    options: {
+      mixins?: ModifierMixin<Unit>[];
+      modifierType?: string;
+      isRemovable?: boolean;
+    }
+  ) {
+    super(options.modifierType ?? KEYWORDS.STEALTH.id, game, source, {
       name: KEYWORDS.STEALTH.name,
       description: KEYWORDS.STEALTH.description,
       icon: 'icons/keyword-stealth',
+      isRemovable: options.isRemovable ?? true,
       mixins: [
-        new UnitInterceptorModifierMixin(this.game, {
+        new UnitInterceptorModifierMixin(game, {
           key: 'canBeAttackTarget',
           interceptor: () => false
         }),
-        new UnitInterceptorModifierMixin(this.game, {
+        new UnitInterceptorModifierMixin(game, {
           key: 'canBeCardTarget',
           interceptor: () => false
         }),
-        new GameEventModifierMixin(this.game, {
+        new GameEventModifierMixin(game, {
           eventName: UNIT_EVENTS.UNIT_AFTER_ATTACK,
-          handler: this.onAfterAttack.bind(this)
-        })
+          handler: event => {
+            return this.onAfterAttack(event);
+          }
+        }),
+        new TogglableModifierMixin(game, () => !this.hasAttacked),
+        ...(options.mixins ?? [])
       ]
     });
-
-    await unit.modifiers.add(this.unitModifier);
   }
 
-  private async removeStealthFromUnit(unit: Unit): Promise<void> {
-    if (this.unitModifier) {
-      await unit.modifiers.remove(this.unitModifier);
-      this.unitModifier = null;
-    }
-    await this.addInterceptor('isEnabled', () => false);
+  private async onAfterAttack(event?: UnitAttackEvent) {
+    if (!event) return;
+    const unit = event.data.unit;
+    if (!unit.equals(this.target)) return;
+
+    this.hasAttacked = true;
   }
 }

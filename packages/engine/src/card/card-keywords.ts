@@ -25,7 +25,7 @@ export const KEYWORDS = {
     name: 'Backstab (x)',
     description:
       'When attacking from behind, this deals extra damaged and cannot be counterattacked.',
-    aliases: [/backstab \([0-9]+\)/]
+    aliases: [/^backstab$/, /backstab \([0-9]+\)/]
   },
   BATTLE_PET: {
     id: 'battlepet',
@@ -113,7 +113,7 @@ export const KEYWORDS = {
     id: 'essence',
     name: 'Essence',
     description:
-      "If you don't have enough gold, you can play this minion as a spell by paying its essence cost instead.",
+      "If you don't have enough mana, you can play this minion as a spell by paying its essence cost instead.",
     aliases: [/essence\([0-9]+\)/]
   },
   FEARSOME: {
@@ -293,7 +293,7 @@ export const KEYWORDS = {
   STEALTH: {
     id: 'stealth',
     name: 'Stealth',
-    description: 'Cannot be targeted or attacked until this attacks or captures.',
+    description: 'Cannot be targeted or attacked until this attacks.',
     aliases: []
   }
 } as const satisfies Record<string, Keyword>;

@@ -331,27 +331,32 @@ export class Unit
     }
   }
 
-  async teleport(to: Point) {
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
-      new UnitBeforeMoveEvent({
-        unit: this,
-        position: this.position,
-        path: [this.position, Vec2.fromPoint(to)]
-      })
-    );
+  async teleport(to: Point, silent = false) {
+    // dont trigger events if moving from a source outside of the game (for example sandbox tools)
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
+        new UnitBeforeMoveEvent({
+          unit: this,
+          position: this.position,
+          path: [this.position, Vec2.fromPoint(to)]
+        })
+      );
+    }
     const prevPosition = this.movement.position.clone();
     this.movement.position.x = to.x;
     this.movement.position.y = to.y;
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_TELEPORT,
-      new UnitAfterMoveEvent({
-        unit: this,
-        position: this.position,
-        previousPosition: prevPosition,
-        path: [this.position, Vec2.fromPoint(to)]
-      })
-    );
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_AFTER_TELEPORT,
+        new UnitAfterMoveEvent({
+          unit: this,
+          position: this.position,
+          previousPosition: prevPosition,
+          path: [this.position, Vec2.fromPoint(to)]
+        })
+      );
+    }
   }
 
   get getPathTo() {

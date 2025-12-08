@@ -18,6 +18,8 @@ import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { keshraiFanblade } from './core/f2/keshrai-fanblade';
 import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
+import { massacreArtist } from './core/f2/massacre-artist';
+import { phoenixFire } from './core/f2/phoenix-fire';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
@@ -60,6 +62,8 @@ export const coreSet: CardSet = {
     maskOfTheMantis,
     kaidoAssassin,
     keshraiFanblade,
-    chakriAvatar
+    chakriAvatar,
+    phoenixFire,
+    massacreArtist
   ]
 };

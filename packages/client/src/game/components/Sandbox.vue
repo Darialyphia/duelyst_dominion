@@ -43,6 +43,7 @@ const sandbox = useSandbox({
     @refillMana="sandbox.refillMana"
     @addRune="sandbox.addRune"
     @addToHand="sandbox.addCardToHand"
+    @setMaxMana="sandbox.setMaxMana"
   />
 </template>
 

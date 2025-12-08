@@ -2,6 +2,8 @@ import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { PointAOEShape } from '../aoe/point.aoe-shape';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { Game } from '../game/game';
+import { UnitEffectModifierMixin } from '../modifier/mixins/unit-effect.mixin';
+import type { Modifier } from '../modifier/modifier.entity';
 import { TARGETING_TYPE } from '../targeting/targeting-strategy';
 import type { Unit } from '../unit/unit.entity';
 import { CARD_KINDS } from './card.enums';

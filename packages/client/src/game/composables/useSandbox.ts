@@ -105,6 +105,12 @@ export const useSandbox = (
         type: 'addRune',
         payload: { rune, playerId: client.value.getActivePlayerId() }
       });
+    },
+    setMaxMana(amount: number) {
+      worker.postMessage({
+        type: 'setMaxMana',
+        payload: { amount, playerId: client.value.getActivePlayerId() }
+      });
     }
   };
 };
