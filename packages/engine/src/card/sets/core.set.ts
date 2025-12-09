@@ -15,6 +15,7 @@ import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { chakriAvatar } from './core/f2/chakri-avatar';
 import { ghostLightning } from './core/f2/ghost-lightning';
+import { heavensEclipse } from './core/f2/heavens-eclipse';
 import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { keshraiFanblade } from './core/f2/keshrai-fanblade';
@@ -72,6 +73,7 @@ export const coreSet: CardSet = {
     voidHunter,
     ghostLightning,
     mistDragonSeal,
-    killingEdge
+    killingEdge,
+    heavensEclipse
   ]
 };

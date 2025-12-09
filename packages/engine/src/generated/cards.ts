@@ -38,7 +38,8 @@ export const cards = {
 "void-hunter": "void-hunter",
 "ghost-lightning": "ghost-lightning",
 "mist-dragon-seal": "mist-dragon-seal",
-"killing-edge": "killing-edge"
+"killing-edge": "killing-edge",
+"heavens-eclipse": "heavens-eclipse"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -75,5 +76,6 @@ export const collectableCards = {
 "void-hunter": "void-hunter",
 "ghost-lightning": "ghost-lightning",
 "mist-dragon-seal": "mist-dragon-seal",
-"killing-edge": "killing-edge"
+"killing-edge": "killing-edge",
+"heavens-eclipse": "heavens-eclipse"
 } as const satisfies Record<string, string>;

@@ -1690,6 +1690,45 @@
         },
         {
           "alias": [
+            "f2_heavens-eclipse"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_heavens-eclipse.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_heavens-eclipse.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_heavens-eclipse.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_killing-edge"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_killing-edge.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f2_killing-edge.png"
           ],
           "src": [

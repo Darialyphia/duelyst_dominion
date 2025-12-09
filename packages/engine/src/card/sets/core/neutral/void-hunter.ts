@@ -1,6 +1,5 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
-import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
