@@ -1664,6 +1664,71 @@
         },
         {
           "alias": [
+            "f2_ghost-lightning"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_ghost-lightning.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_ghost-lightning.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_ghost-lightning.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_killing-edge.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_killing-edge.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_mist-dragon-seal"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_mist-dragon-seal.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_mist-dragon-seal.png"
+          ],
+          "src": [
+            "/assets/cards/spells/f2_mist-dragon-seal.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f2_phoenix-fire"
           ],
           "src": [

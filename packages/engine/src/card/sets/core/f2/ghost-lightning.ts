@@ -4,44 +4,47 @@ import { singleEnemyTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 
-export const phoenixFire: SpellBlueprint = {
-  id: 'phoenix-fire',
-  name: 'Phoenix Fire',
-  description: 'Deal 3 damage to an enemy.',
-  sprite: { id: 'spells/f2_phoenix-fire' },
+export const ghostLightning: SpellBlueprint = {
+  id: 'ghost-lightning',
+  name: 'Ghost Lightning',
+  description: 'Deal 1 damage to all enemy minions.',
+  sprite: { id: 'spells/f2_ghost-lightning' },
   sounds: {
-    play: 'sfx_spell_phoenixfire.m4a'
+    play: 'sfx_spell_ghostlightning.m4a'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F2,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
-  manaCost: 2,
+  manaCost: 1,
   runeCost: {
     red: 1
   },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
+  getAoe: game =>
+    new EverywhereAOEShape(TARGETING_TYPE.ENEMY_MINION, {
+      width: game.boardSystem.map.cols,
+      height: game.boardSystem.map.rows
+    }),
   canPlay: (game, card) =>
     singleEnemyTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
   getTargets(game, card) {
     return singleEnemyTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isEnemy(card.player),
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
+      getAoe(targets) {
+        return card.getAOE(targets);
       }
     });
   },
   async onInit() {},
-  async onPlay(game, card, { targets }) {
-    const target = game.unitSystem.getUnitAt(targets[0]);
-    if (!target) return;
+  async onPlay(game, card, { targets, aoe }) {
+    const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
-    await target.takeDamage(card, new SpellDamage(card, 3));
-    // if (target.isAlive) return;
-
-    // await card.player.gainMana(1);
+    for (const unit of unitsToDamage) {
+      await unit.takeDamage(card, new SpellDamage(card, 1));
+    }
   }
 };

@@ -10,7 +10,12 @@ import {
   ComboboxContent,
   ComboboxViewport,
   ComboboxItem,
-  ComboboxEmpty
+  ComboboxEmpty,
+  AccordionRoot,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTrigger,
+  AccordionContent
 } from 'reka-ui';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Icon } from '@iconify/vue';
@@ -82,234 +87,304 @@ const shouldTriggerDyingWish = ref(false);
 
     <PopoverContent as-child>
       <div class="sandbox-content fancy-scrollbar" @keyup.stop>
-        <!-- Player Controls Section -->
-        <section class="section">
-          <h3 class="section-title">Player Controls</h3>
-          <div class="button-group">
-            <button
-              v-for="(player, index) in players"
-              :key="player.id"
-              class="btn"
-              :class="{ p1: player.id === p1.id, p2: player.id !== p1.id }"
-              @click="playerId = player.id"
-            >
-              Switch to Player {{ index + 1 }}
-            </button>
-          </div>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              v-model="autoSwitchPlayer"
-              class="checkbox"
-            />
-            <span>Auto Switch to Active Player</span>
-          </label>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- Game Controls Section -->
-        <section class="section">
-          <h3 class="section-title">Game Controls</h3>
-          <div class="button-group">
-            <button @click="emit('restart')" class="btn">Restart Game</button>
-            <button @click="emit('rewindOneStep')" class="btn">
-              Rewind One Step
-            </button>
-          </div>
-          <h3 class="section-title">Rewind to :</h3>
-          <div class="history-list fancy-scrollbar">
-            <span v-if="history.length === 0" class="history-item italic">
-              No history.
-            </span>
-            <div
-              v-for="(input, index) in history.toReversed()"
-              :key="index"
-              class="history-item"
-              :class="{
-                p1: input.payload.playerId === p1.id,
-                p2: input.payload.playerId !== p1.id
-              }"
-              @click="emit('rewindTo', index)"
-            >
-              {{ input.type }}
-            </div>
-          </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <!-- Mana Controls Section -->
-        <section class="section">
-          <h3 class="section-title">Mana Controls</h3>
-          <div class="input-group">
-            <input
-              id="max-mana-input"
-              type="number"
-              min="0"
-              step="1"
-              placeholder="Max"
-              class="number-input"
-              v-model.number="maxMana"
-            />
-            <button
-              :disabled="!isDefined(maxMana)"
-              @click="emit('setMaxMana', maxMana!)"
-              class="btn btn-flex"
-            >
-              Set Max Mana
-            </button>
-          </div>
-          <button @click="emit('refillMana')" class="btn">Refill Mana</button>
-        </section>
-
-        <!-- Runes Section -->
-        <template v-if="state.config.FEATURES.RUNES">
-          <div class="divider"></div>
-          <section class="section">
-            <h3 class="section-title">Runes</h3>
-            <div class="button-group">
-              <button @click="emit('addRune', RUNES.RED)" class="btn">
-                Add Power Rune
-              </button>
-              <button @click="emit('addRune', RUNES.YELLOW)" class="btn">
-                Add Vitality Rune
-              </button>
-              <button @click="emit('addRune', RUNES.BLUE)" class="btn">
-                Add Wisdom Rune
-              </button>
-            </div>
-          </section>
-        </template>
-
-        <div class="divider"></div>
-
-        <!-- Cards Section -->
-        <section class="section">
-          <h3 class="section-title">Cards</h3>
-          <ComboboxRoot class="relative" v-model="card">
-            <ComboboxAnchor class="combobox-anchor">
-              <ComboboxInput
-                class="combobox-input"
-                placeholder="Search cards..."
-              />
-              <ComboboxTrigger>
-                <Icon icon="radix-icons:chevron-down" class="chevron-icon" />
-              </ComboboxTrigger>
-            </ComboboxAnchor>
-
-            <ComboboxContent class="combobox-content">
-              <ComboboxViewport class="combobox-viewport">
-                <ComboboxEmpty class="combobox-empty" />
-
-                <ComboboxItem
-                  v-for="card in allCards"
-                  :key="card.id"
-                  :value="card.id"
-                  class="combobox-item"
+        <AccordionRoot class="accordion-root" type="multiple">
+          <!-- Player Controls Section -->
+          <AccordionItem class="accordion-item" value="player-controls">
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Player Controls</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <div class="button-group">
+                <button
+                  v-for="(player, index) in players"
+                  :key="player.id"
+                  class="btn"
+                  :class="{ p1: player.id === p1.id, p2: player.id !== p1.id }"
+                  @click="playerId = player.id"
                 >
-                  {{ card.name }}
-                </ComboboxItem>
-              </ComboboxViewport>
-            </ComboboxContent>
-          </ComboboxRoot>
-          <button
-            :disabled="!card"
-            @click="
-              () => {
-                emit('addToHand', card!);
-                card = null;
-              }
-            "
-            class="btn"
+                  Switch to Player {{ index + 1 }}
+                </button>
+              </div>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  v-model="autoSwitchPlayer"
+                  class="checkbox"
+                />
+                <span>Auto Switch to Active Player</span>
+              </label>
+            </AccordionContent>
+          </AccordionItem>
+
+          <!-- Game Controls Section -->
+          <AccordionItem class="accordion-item" value="game-controls">
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Game Controls</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <div class="button-group">
+                <button @click="emit('restart')" class="btn">
+                  Restart Game
+                </button>
+                <button @click="emit('rewindOneStep')" class="btn">
+                  Rewind One Step
+                </button>
+              </div>
+              <h3 class="section-title mt-3">Rewind to :</h3>
+              <div class="history-list fancy-scrollbar">
+                <span v-if="history.length === 0" class="history-item italic">
+                  No history.
+                </span>
+                <div
+                  v-for="(input, index) in history.toReversed()"
+                  :key="index"
+                  class="history-item"
+                  :class="{
+                    p1: input.payload.playerId === p1.id,
+                    p2: input.payload.playerId !== p1.id
+                  }"
+                  @click="emit('rewindTo', index)"
+                >
+                  {{ input.type }}
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <!-- Mana Controls Section -->
+          <AccordionItem class="accordion-item" value="mana-controls">
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Mana Controls</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <div class="input-group">
+                <input
+                  id="max-mana-input"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="Max"
+                  class="number-input"
+                  v-model.number="maxMana"
+                />
+                <button
+                  :disabled="!isDefined(maxMana)"
+                  @click="emit('setMaxMana', maxMana!)"
+                  class="btn btn-flex"
+                >
+                  Set Max Mana
+                </button>
+              </div>
+              <button @click="emit('refillMana')" class="btn mt-2">
+                Refill Mana
+              </button>
+            </AccordionContent>
+          </AccordionItem>
+
+          <!-- Runes Section -->
+          <AccordionItem
+            v-if="state.config.FEATURES.RUNES"
+            class="accordion-item"
+            value="runes"
           >
-            Add to Hand
-          </button>
-        </section>
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Runes</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <div class="button-group">
+                <button @click="emit('addRune', RUNES.RED)" class="btn">
+                  Add Power Rune
+                </button>
+                <button @click="emit('addRune', RUNES.YELLOW)" class="btn">
+                  Add Vitality Rune
+                </button>
+                <button @click="emit('addRune', RUNES.BLUE)" class="btn">
+                  Add Wisdom Rune
+                </button>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-        <div class="divider"></div>
+          <!-- Cards Section -->
+          <AccordionItem class="accordion-item" value="cards">
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Cards</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <ComboboxRoot class="relative" v-model="card">
+                <ComboboxAnchor class="combobox-anchor">
+                  <ComboboxInput
+                    class="combobox-input"
+                    placeholder="Search cards..."
+                  />
+                  <ComboboxTrigger>
+                    <Icon
+                      icon="radix-icons:chevron-down"
+                      class="chevron-icon"
+                    />
+                  </ComboboxTrigger>
+                </ComboboxAnchor>
 
-        <!-- Unit section-->
-        <h3 class="section-title">Units</h3>
+                <ComboboxContent class="combobox-content">
+                  <ComboboxViewport class="combobox-viewport">
+                    <ComboboxEmpty class="combobox-empty" />
 
-        <ComboboxRoot class="relative" v-model="unit">
-          <ComboboxAnchor class="combobox-anchor">
-            <ComboboxInput
-              class="combobox-input"
-              placeholder="Search units..."
-            />
-            <ComboboxTrigger>
-              <Icon icon="radix-icons:chevron-down" class="chevron-icon" />
-            </ComboboxTrigger>
-          </ComboboxAnchor>
-
-          <ComboboxContent class="combobox-content">
-            <ComboboxViewport class="combobox-viewport">
-              <ComboboxEmpty class="combobox-empty" />
-
-              <ComboboxItem
-                v-for="unit in units"
-                :key="unit.id"
-                :value="unit.id"
-                class="combobox-item"
+                    <ComboboxItem
+                      v-for="card in allCards"
+                      :key="card.id"
+                      :value="card.id"
+                      class="combobox-item"
+                    >
+                      {{ card.name }}
+                    </ComboboxItem>
+                  </ComboboxViewport>
+                </ComboboxContent>
+              </ComboboxRoot>
+              <button
+                :disabled="!card"
+                @click="
+                  () => {
+                    emit('addToHand', card!);
+                    card = null;
+                  }
+                "
+                class="btn mt-2"
               >
-                {{ unit.getCard().name }} ({{ unit.x + 1 }}, {{ unit.y + 1 }})
-              </ComboboxItem>
-            </ComboboxViewport>
-          </ComboboxContent>
-        </ComboboxRoot>
+                Add to Hand
+              </button>
+            </AccordionContent>
+          </AccordionItem>
 
-        <div class="position-controls">
-          <label>X</label>
-          <select v-model="position.x" class="position-select">
-            <option v-for="i in state.board.columns" :key="i" :value="i - 1">
-              {{ i }}
-            </option>
-          </select>
-          <label>Y</label>
-          <select v-model="position.y" class="position-select">
-            <option v-for="i in state.board.rows" :key="i" :value="i - 1">
-              {{ i }}
-            </option>
-          </select>
-          <button
-            :disabled="!unit"
-            @click="
-              () => {
-                emit('move', unit!, { x: position.x, y: position.y });
-                unit = null;
-              }
-            "
-            class="btn flex-1 text-center"
-          >
-            Move
-          </button>
-        </div>
+          <!-- Units Section -->
+          <AccordionItem class="accordion-item" value="units">
+            <AccordionHeader class="accordion-header">
+              <AccordionTrigger class="accordion-trigger">
+                <span>Units</span>
+                <Icon
+                  icon="radix-icons:chevron-down"
+                  class="accordion-chevron"
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent class="accordion-content">
+              <ComboboxRoot class="relative" v-model="unit">
+                <ComboboxAnchor class="combobox-anchor">
+                  <ComboboxInput
+                    class="combobox-input"
+                    placeholder="Search units..."
+                  />
+                  <ComboboxTrigger>
+                    <Icon
+                      icon="radix-icons:chevron-down"
+                      class="chevron-icon"
+                    />
+                  </ComboboxTrigger>
+                </ComboboxAnchor>
 
-        <button
-          :disabled="!unit"
-          @click="emit('activateUnit', unit!)"
-          class="btn"
-        >
-          Activate
-        </button>
+                <ComboboxContent class="combobox-content">
+                  <ComboboxViewport class="combobox-viewport">
+                    <ComboboxEmpty class="combobox-empty" />
 
-        <div class="flex gap-2 items-center">
-          <button
-            :disabled="!unit"
-            @click="
-              () => {
-                emit('destroyUnit', unit!, !shouldTriggerDyingWish);
-                unit = null;
-              }
-            "
-            class="btn"
-          >
-            Destroy
-          </button>
-          <UiSwitch v-model="shouldTriggerDyingWish" />
-          <span class="option-title">Trigger dying wish</span>
-        </div>
+                    <ComboboxItem
+                      v-for="unit in units"
+                      :key="unit.id"
+                      :value="unit.id"
+                      class="combobox-item"
+                    >
+                      {{ unit.getCard().name }} ({{ unit.x + 1 }},
+                      {{ unit.y + 1 }})
+                    </ComboboxItem>
+                  </ComboboxViewport>
+                </ComboboxContent>
+              </ComboboxRoot>
+
+              <div class="position-controls">
+                <label>X</label>
+                <select v-model="position.x" class="position-select">
+                  <option
+                    v-for="i in state.board.columns"
+                    :key="i"
+                    :value="i - 1"
+                  >
+                    {{ i }}
+                  </option>
+                </select>
+                <label>Y</label>
+                <select v-model="position.y" class="position-select">
+                  <option v-for="i in state.board.rows" :key="i" :value="i - 1">
+                    {{ i }}
+                  </option>
+                </select>
+                <button
+                  :disabled="!unit"
+                  @click="
+                    () => {
+                      emit('move', unit!, { x: position.x, y: position.y });
+                      unit = null;
+                    }
+                  "
+                  class="btn flex-1 text-center"
+                >
+                  Move
+                </button>
+              </div>
+
+              <div class="flex gap-2 items-center mt-2">
+                <button
+                  :disabled="!unit"
+                  @click="emit('activateUnit', unit!)"
+                  class="btn"
+                >
+                  Activate
+                </button>
+                <button
+                  :disabled="!unit"
+                  @click="
+                    () => {
+                      emit('destroyUnit', unit!, !shouldTriggerDyingWish);
+                      unit = null;
+                    }
+                  "
+                  class="btn"
+                >
+                  Destroy
+                </button>
+                <UiSwitch v-model="shouldTriggerDyingWish" />
+                <span class="option-title">Trigger dying wish</span>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </AccordionRoot>
       </div>
     </PopoverContent>
   </PopoverRoot>
@@ -338,7 +413,6 @@ const shouldTriggerDyingWish = ref(false);
 .sandbox-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   padding: 1.25rem;
   background-color: var(--gray-9);
   border-radius: 0.5rem;
@@ -348,6 +422,81 @@ const shouldTriggerDyingWish = ref(false);
   width: 20rem;
   max-height: 80vh;
   overflow-y: auto;
+}
+
+.accordion-root {
+  width: 100%;
+}
+
+.accordion-item {
+  border-bottom: 1px solid var(--gray-7);
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  display: flex;
+}
+
+.accordion-trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  cursor: pointer;
+  transition: color 150ms;
+}
+
+.accordion-trigger:hover {
+  color: var(--gray-5);
+}
+
+.accordion-chevron {
+  height: 1rem;
+  width: 1rem;
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.accordion-trigger[data-state='open'] .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  overflow: hidden;
+  font-size: 0.875rem;
+}
+
+.accordion-content[data-state='open'] {
+  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.accordion-content[data-state='closed'] {
+  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 .p1 {
@@ -522,8 +671,9 @@ const shouldTriggerDyingWish = ref(false);
 
 .position-controls {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--size-3);
   align-items: center;
+  margin-top: var(--size-2);
 }
 
 .position-select {

@@ -14,11 +14,14 @@ import { trueStrike } from './core/f1/true-strike';
 import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { chakriAvatar } from './core/f2/chakri-avatar';
+import { ghostLightning } from './core/f2/ghost-lightning';
 import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { keshraiFanblade } from './core/f2/keshrai-fanblade';
+import { killingEdge } from './core/f2/killing-edge';
 import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
 import { massacreArtist } from './core/f2/massacre-artist';
+import { mistDragonSeal } from './core/f2/mist-dragon-seal';
 import { phoenixFire } from './core/f2/phoenix-fire';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
@@ -66,6 +69,9 @@ export const coreSet: CardSet = {
     chakriAvatar,
     phoenixFire,
     massacreArtist,
-    voidHunter
+    voidHunter,
+    ghostLightning,
+    mistDragonSeal,
+    killingEdge
   ]
 };

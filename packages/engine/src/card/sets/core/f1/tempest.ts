@@ -1,5 +1,5 @@
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { anywhere } from '../../../card-utils';
+import { anywhereTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
@@ -30,7 +30,7 @@ export const tempest: SpellBlueprint = {
     }),
   canPlay: () => true,
   getTargets(game, card) {
-    return anywhere.getPreResponseTargets({
+    return anywhereTargetRules.getPreResponseTargets({
       min: 1,
       max: 1,
       allowRepeat: false

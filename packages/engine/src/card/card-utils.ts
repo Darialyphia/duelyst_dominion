@@ -173,7 +173,14 @@ export const multipleEnemyTargetRules = {
     }
 };
 
-export const anywhere = {
+export const anywhereTargetRules = {
+  canPlay:
+    ({ min }: { min: number; max: number }) =>
+    (game: Game, predicate: (cell: BoardCell) => boolean = () => true) => {
+      const allCells = game.boardSystem.cells;
+      const elligibleCells = allCells.filter(cell => predicate(cell) && !cell.unit);
+      return elligibleCells.length >= min;
+    },
   getPreResponseTargets:
     ({ min, max, allowRepeat }: { min: number; max: number; allowRepeat: boolean }) =>
     async (
@@ -195,6 +202,47 @@ export const anywhere = {
             (allowRepeat
               ? true
               : !selectedCells.some(selected => selected.equals(candidate))) &&
+            predicate(candidate)
+          );
+        },
+        canCommit(selectedCards) {
+          return selectedCards.length >= min;
+        },
+        isDone(selectedCards) {
+          return selectedCards.length === max;
+        }
+      });
+    }
+};
+
+export const emptySpacesTargetRules = {
+  canPlay:
+    ({ min }: { min: number }) =>
+    (game: Game, predicate: (cell: BoardCell) => boolean = () => true) => {
+      const allCells = game.boardSystem.cells;
+      const elligibleCells = allCells.filter(cell => predicate(cell) && !cell.unit);
+      return elligibleCells.length >= min;
+    },
+  getPreResponseTargets:
+    ({ min, max }: { min: number; max: number }) =>
+    async (
+      game: Game,
+      card: AnyCard,
+      {
+        predicate = () => true,
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
+      }: {
+        predicate?: (cell: BoardCell) => boolean;
+        getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      } = {}
+    ) => {
+      return await game.interaction.selectSpacesOnBoard({
+        player: card.player,
+        getAoe,
+        isElligible(candidate, selectedCells) {
+          return (
+            !candidate.unit &&
+            !selectedCells.some(selected => selected.equals(candidate)) &&
             predicate(candidate)
           );
         },

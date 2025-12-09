@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { ArtifactBlueprint } from '../../../card-blueprint';
-import { anywhere, singleMinionTargetRules } from '../../../card-utils';
+import { anywhereTargetRules, singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
@@ -31,7 +31,11 @@ export const maskOfTheMantis: ArtifactBlueprint = {
       override: card.player.general
     }),
   canPlay: () => true,
-  getTargets: anywhere.getPreResponseTargets({ min: 1, max: 1, allowRepeat: false }),
+  getTargets: anywhereTargetRules.getPreResponseTargets({
+    min: 1,
+    max: 1,
+    allowRepeat: false
+  }),
   async onInit() {},
   async onPlay(game, card, { artifact }) {
     await artifact.modifiers.add(

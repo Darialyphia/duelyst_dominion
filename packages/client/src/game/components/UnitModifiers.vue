@@ -51,8 +51,10 @@ const { modifiers } = defineProps<{
   position: absolute;
   top: var(--size-2);
   right: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-auto-flow: column;
+  direction: rtl;
 }
 
 .modifier-image {
