@@ -4,7 +4,6 @@ import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { consume } from '../../../card-actions-utils';
 
 export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
@@ -12,7 +11,9 @@ export const martyrdom: SpellBlueprint = {
   description: dedent`
   Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
   sprite: { id: 'spells/f1_martyrdom' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_martyrdom.m4a'
+  },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

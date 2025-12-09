@@ -199,7 +199,7 @@ watch(width, v => {
   position: relative;
   z-index: 1;
   width: 100%;
-  transition: transform 0.15s var(--ease-in-2);
+  transition: transform 0.15s var(--ease-in-3);
   &.opponent-hand:not(.expanded) {
     position: absolute;
     right: 0;

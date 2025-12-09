@@ -11,7 +11,14 @@ export const suntideMaiden: MinionBlueprint = {
   name: 'Suntide Maiden',
   description: '@Zeal@ : fully heal this unit at the end of your turn.',
   sprite: { id: 'minions/f1_suntide-maiden' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_immolation_b.m4a',
+    walk: 'sfx_unit_run_magical_4.m4a',
+    attack: 'sfx_neutral_gambitgirl_attack_swing.m4a',
+    takeDamage: 'sfx_neutral_luxignis_hit.m4a',
+    dealDamage: 'sfx_neutral_jaxtruesight_death.m4a',
+    death: 'sfx_neutral_pandora_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

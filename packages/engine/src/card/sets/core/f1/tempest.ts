@@ -12,7 +12,9 @@ export const tempest: SpellBlueprint = {
   sprite: {
     id: 'spells/f1_tempest'
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_heavenstrike.m4a'
+  },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

@@ -12,7 +12,9 @@ export const holyImmolation: SpellBlueprint = {
   description: dedent`
   Heal an allied minion for 4 and deal 4 damage to enemies nearby it.`,
   sprite: { id: 'spells/f1_holy-immolation' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_f2_jadeogre_attack_impact.m4a'
+  },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,
