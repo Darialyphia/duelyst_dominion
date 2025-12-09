@@ -21,59 +21,11 @@ const {
 const card = useCard(computed(() => cardId));
 const ui = useGameUi();
 
-// const state = useGameState();
-// const { playerId } = useGameClient();
-// const activePlayerId = computed(() => {
-//   return state.value.interaction.ctx.player;
-// });
-
-// const isTargetable = computed(() => {
-//   return (
-//     (activePlayerId.value === playerId.value && card.value.canBeTargeted) ||
-//     ui.value.selectedManaCostIndices.includes(card.value.indexInHand!)
-//   );
-// });
-
 const myPlayer = useMyPlayer();
 
 const handleClick = () => {
   if (!isInteractive) return;
-  // ui.value.onCardClick(card.value);
 };
-
-// const isAttacking = refAutoReset(false, 500);
-// const isTakingDamage = refAutoReset(false, 500);
-// const damageTaken = refAutoReset(0, 1000);
-// const isUsingAbility = refAutoReset(false, 1000);
-// const onAttack = async (e: { card: string }) => {
-//   if (e.card !== cardId) return;
-//   isAttacking.value = true;
-// };
-
-// const onTakeDamage = async (e: { card: string; amount: number }) => {
-//   if (e.card !== cardId) return;
-//   isTakingDamage.value = true;
-//   damageTaken.value = e.amount;
-//   await waitFor(500);
-// };
-
-// const waitForAttackDone = async () => {
-//   await waitFor(200);
-// };
-
-// const onAbilityUse = async (e: { card: string }) => {
-//   if (e.card !== cardId) return;
-//   isUsingAbility.value = true;
-//   await waitFor(1000);
-// };
-// useFxEvent(FX_EVENTS.MINION_BEFORE_DEAL_COMBAT_DAMAGE, onAttack);
-// useFxEvent(FX_EVENTS.MINION_AFTER_DEAL_COMBAT_DAMAGE, waitForAttackDone);
-// useFxEvent(FX_EVENTS.HERO_BEFORE_DEAL_COMBAT_DAMAGE, onAttack);
-// useFxEvent(FX_EVENTS.HERO_AFTER_DEAL_COMBAT_DAMAGE, waitForAttackDone);
-// useFxEvent(FX_EVENTS.MINION_BEFORE_TAKE_DAMAGE, onTakeDamage);
-// useFxEvent(FX_EVENTS.HERO_BEFORE_TAKE_DAMAGE, onTakeDamage);
-// useFxEvent(FX_EVENTS.ABILITY_BEFORE_USE, onAbilityUse);
-// useFxEvent(FX_EVENTS.CARD_EFFECT_TRIGGERED, onAbilityUse);
 
 const classes = computed(() => {
   return [
@@ -81,11 +33,7 @@ const classes = computed(() => {
     {
       disabled: !card.value.canPlay && card.value.location === 'hand',
       selected: ui.value.selectedCard?.equals(card.value),
-      // targetable: isTargetable.value,
       flipped: flipped && !myPlayer.value.equals(card.value.player)
-      // 'is-attacking': isAttacking.value,
-      // 'is-taking-damage': isTakingDamage.value,
-      // 'is-using-ability': isUsingAbility.value
     }
   ];
 });

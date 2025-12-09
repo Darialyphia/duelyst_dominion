@@ -11,8 +11,11 @@ const state = useGameState();
 
 useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
   card.value = state.value.entities[event.card.id] as CardViewModel;
-  await waitFor(config.PLAYED_CARD_PREVIEW_TIME);
-  card.value = null;
+  setTimeout(() => {
+    card.value = null;
+  }, config.PLAYED_CARD_PREVIEW_TIME);
+  // await waitFor(config.PLAYED_CARD_PREVIEW_TIME);
+  // card.value = null;
 });
 </script>
 
