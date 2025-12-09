@@ -1053,6 +1053,32 @@
         },
         {
           "alias": [
+            "f2_tusk-boar"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_tusk-boar.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_tusk-boar.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_tusk-boar.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder"
           ],
           "src": [
