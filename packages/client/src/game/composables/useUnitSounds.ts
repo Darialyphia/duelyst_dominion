@@ -18,31 +18,31 @@ export const useUnitSounds = (unit: Ref<UnitViewModel>) => {
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_ATTACK, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.attack.value?.play();
+    sounds.attack.play();
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.attack.value?.play();
+    sounds.attack.play();
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_DEAL_DAMAGE, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.dealDamage.value?.play();
+    sounds.dealDamage.play();
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.takeDamage.value?.play();
+    sounds.takeDamage.play();
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.walk.value?.play();
+    sounds.walk.play();
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_DESTROY, async event => {
     if (event.unit !== unit.value.id) return;
-    sounds.death.value?.play();
+    sounds.death.play();
   });
 };

@@ -29,5 +29,17 @@ export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
     );
   });
 
-  return howl;
+  return {
+    sound: howl,
+    async play() {
+      await nextTick();
+      if (howl.value?.state() === 'loaded') {
+        howl.value?.play();
+      } else {
+        howl.value?.once('load', () => {
+          howl.value?.play();
+        });
+      }
+    }
+  };
 };

@@ -70,7 +70,7 @@ const { modifiers } = defineProps<{
     position: absolute;
     bottom: -5px;
     right: -5px;
-    font-size: var(--font-size-2);
+    font-size: var(--font-size-1);
     color: white;
     paint-order: stroke fill;
     font-weight: var(--font-weight-7);

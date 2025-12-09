@@ -7,14 +7,10 @@ export const useGlobalSounds = () => {
   const state = useGameState();
 
   const cardSoundId = ref();
-  const cardSound = useSoundEffect(cardSoundId);
+  const { play: playCardSound } = useSoundEffect(cardSoundId);
   useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
     const card = state.value.entities[event.card.id] as CardViewModel;
     cardSoundId.value = card.sounds.play;
-    await nextTick();
-
-    cardSound.value?.once('load', () => {
-      cardSound.value?.play();
-    });
+    playCardSound();
   });
 };
