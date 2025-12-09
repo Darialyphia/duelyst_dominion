@@ -59,7 +59,10 @@ export class StealthUnitModifier extends Modifier<Unit> {
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCardTarget',
-          interceptor: () => false
+          interceptor: (value, ctx) => {
+            if (!value) return false;
+            return ctx.card.player.equals(this.target.player);
+          }
         }),
         new GameEventModifierMixin(game, {
           eventName: UNIT_EVENTS.UNIT_AFTER_ATTACK,

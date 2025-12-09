@@ -8,6 +8,8 @@ import {
   useGameUi,
   useMyPlayer,
   useOpponentPlayer,
+  usePlayer1,
+  usePlayer2,
   useTiles,
   useUnits
 } from '../composables/useGameClient';
@@ -32,6 +34,9 @@ const units = useUnits();
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
 const state = useGameState();
+const player1 = usePlayer1();
+const player2 = usePlayer2();
+
 useGlobalSounds();
 
 const ui = useGameUi();
@@ -68,36 +73,36 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       <Hand :player-id="myPlayer.id" :key="myPlayer.id" />
     </div>
 
-    <div class="my-infos">
-      {{ myPlayer.name }}
+    <div class="p1-infos">
+      {{ player1.name }}
 
       <div class="flex gap-2">
         <div
-          v-for="i in Math.max(myPlayer.maxMana, myPlayer.mana)"
+          v-for="i in Math.max(player1.maxMana, player1.mana)"
           :key="i"
           class="mana"
-          :class="{ spent: i <= myPlayer.spentMana }"
+          :class="{ spent: i <= player1.spentMana }"
         />
       </div>
 
       <div v-if="state.config.FEATURES.RUNES" class="flex gap-5">
         <div class="rune-count">
           <img src="/assets/ui/rune-red.png" />
-          {{ myPlayer.runes.red }}
+          {{ player1.runes.red }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-yellow.png" />
-          {{ myPlayer.runes.yellow }}
+          {{ player1.runes.yellow }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-blue.png" />
-          {{ myPlayer.runes.blue }}
+          {{ player1.runes.blue }}
         </div>
       </div>
 
       <div class="flex flex-col gap-2 mt-2">
         <EquipedArtifact
-          v-for="artifact in myPlayer.artifacts"
+          v-for="artifact in player1.artifacts"
           :key="artifact.id"
           :artifact="artifact"
         />
@@ -105,7 +110,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 
       <UiButton
         v-if="state.config.FEATURES.RUNES"
-        v-show="myPlayer.canUseResourceAction"
+        v-show="player1.canUseResourceAction"
         class="action-button red"
         @click="client.gainRune(RUNES.RED)"
       >
@@ -113,7 +118,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       </UiButton>
       <UiButton
         v-if="state.config.FEATURES.RUNES"
-        v-show="myPlayer.canUseResourceAction"
+        v-show="player1.canUseResourceAction"
         class="action-button yellow"
         @click="client.gainRune(RUNES.YELLOW)"
       >
@@ -129,14 +134,14 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       </UiButton>
       <UiButton
         v-if="state.config.FEATURES.RUNES"
-        v-show="myPlayer.canUseResourceAction"
+        v-show="player1.canUseResourceAction"
         class="action-button"
         @click="client.drawCard()"
       >
         Draw Card
       </UiButton>
       <UiButton
-        v-show="myPlayer.canReplace"
+        v-show="player1.canReplace"
         class="action-button"
         :class="{ 'is-replacing': ui.isReplacingCard }"
         @click="ui.isReplacingCard = !ui.isReplacingCard"
@@ -148,15 +153,14 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       </UiButton>
     </div>
 
-    <div class="opponent-infos">
-      {{ opponent.name }}
-
+    <div class="p2-infos">
+      {{ player2.name }}
       <div class="flex gap-2 flex-row-reverse">
         <div
-          v-for="i in Math.max(opponent.maxMana, opponent.mana)"
+          v-for="i in Math.max(player2.maxMana, player2.mana)"
           :key="i"
           class="mana"
-          :class="{ spent: i <= opponent.spentMana }"
+          :class="{ spent: i <= player2.spentMana }"
         />
       </div>
       <div
@@ -165,15 +169,15 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       >
         <div class="rune-count">
           <img src="/assets/ui/rune-red.png" />
-          {{ opponent.runes.red }}
+          {{ player2.runes.red }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-yellow.png" />
-          {{ opponent.runes.yellow }}
+          {{ player2.runes.yellow }}
         </div>
         <div class="rune-count">
           <img src="/assets/ui/rune-blue.png" />
-          {{ opponent.runes.blue }}
+          {{ player2.runes.blue }}
         </div>
       </div>
     </div>
@@ -233,15 +237,15 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   }
 }
 
-.my-infos,
-.opponent-infos {
+.p1-infos,
+.p2-infos {
   pointer-events: none;
   /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
   button {
     pointer-events: auto;
   }
 }
-.my-infos {
+.p1-infos {
   position: fixed;
   top: var(--size-8);
   left: var(--size-8);
@@ -253,7 +257,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   gap: var(--size-2);
 }
 
-.opponent-infos {
+.p2-infos {
   position: fixed;
   top: var(--size-8);
   right: var(--size-8);
