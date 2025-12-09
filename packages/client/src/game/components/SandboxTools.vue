@@ -5,6 +5,7 @@ import {
   PopoverContent,
   ComboboxRoot,
   ComboboxAnchor,
+  ComboboxPortal,
   ComboboxTrigger,
   ComboboxInput,
   ComboboxContent,
@@ -255,20 +256,29 @@ const shouldTriggerDyingWish = ref(false);
                   </ComboboxTrigger>
                 </ComboboxAnchor>
 
-                <ComboboxContent class="combobox-content">
-                  <ComboboxViewport class="combobox-viewport">
-                    <ComboboxEmpty class="combobox-empty" />
+                <ComboboxPortal to="#sandbox-tools-combobox-portal">
+                  <ComboboxContent
+                    align="start"
+                    position="popper"
+                    position-strategy="fixed"
+                    as-child
+                  >
+                    <div class="combobox-content">
+                      <ComboboxViewport class="combobox-viewport">
+                        <ComboboxEmpty class="combobox-empty" />
 
-                    <ComboboxItem
-                      v-for="card in allCards"
-                      :key="card.id"
-                      :value="card.id"
-                      class="combobox-item"
-                    >
-                      {{ card.name }}
-                    </ComboboxItem>
-                  </ComboboxViewport>
-                </ComboboxContent>
+                        <ComboboxItem
+                          v-for="card in allCards"
+                          :key="card.id"
+                          :value="card.id"
+                          class="combobox-item"
+                        >
+                          {{ card.name }}
+                        </ComboboxItem>
+                      </ComboboxViewport>
+                    </div>
+                  </ComboboxContent>
+                </ComboboxPortal>
               </ComboboxRoot>
               <button
                 :disabled="!card"
@@ -311,21 +321,30 @@ const shouldTriggerDyingWish = ref(false);
                   </ComboboxTrigger>
                 </ComboboxAnchor>
 
-                <ComboboxContent class="combobox-content">
-                  <ComboboxViewport class="combobox-viewport">
-                    <ComboboxEmpty class="combobox-empty" />
+                <ComboboxPortal to="#sandbox-tools-combobox-portal">
+                  <ComboboxContent
+                    align="start"
+                    position="popper"
+                    position-strategy="fixed"
+                    as-child
+                  >
+                    <div class="combobox-content">
+                      <ComboboxViewport class="combobox-viewport">
+                        <ComboboxEmpty class="combobox-empty" />
 
-                    <ComboboxItem
-                      v-for="unit in units"
-                      :key="unit.id"
-                      :value="unit.id"
-                      class="combobox-item"
-                    >
-                      {{ unit.getCard().name }} ({{ unit.x + 1 }},
-                      {{ unit.y + 1 }})
-                    </ComboboxItem>
-                  </ComboboxViewport>
-                </ComboboxContent>
+                        <ComboboxItem
+                          v-for="unit in units"
+                          :key="unit.id"
+                          :value="unit.id"
+                          class="combobox-item"
+                        >
+                          {{ unit.getCard().name }} ({{ unit.x + 1 }},
+                          {{ unit.y + 1 }})
+                        </ComboboxItem>
+                      </ComboboxViewport>
+                    </div>
+                  </ComboboxContent>
+                </ComboboxPortal>
               </ComboboxRoot>
 
               <div class="position-controls">
@@ -385,6 +404,8 @@ const shouldTriggerDyingWish = ref(false);
             </AccordionContent>
           </AccordionItem>
         </AccordionRoot>
+
+        <div id="sandbox-tools-combobox-portal" />
       </div>
     </PopoverContent>
   </PopoverRoot>
@@ -411,15 +432,17 @@ const shouldTriggerDyingWish = ref(false);
 }
 
 .sandbox-content {
+  --sandbox-tools-width: 23rem;
+  --sandbox-tools-padding: var(--size-4);
   display: flex;
   flex-direction: column;
-  padding: 1.25rem;
+  padding: var(--sandbox-tools-padding);
   background-color: var(--gray-9);
   border-radius: 0.5rem;
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.1),
     0 4px 6px -4px rgb(0 0 0 / 0.1);
-  width: 20rem;
+  width: var(--sandbox-tools-width);
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -507,24 +530,17 @@ const shouldTriggerDyingWish = ref(false);
   color: var(--red-6);
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .section-title {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--size-1);
 }
 
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: var(--size-2);
 }
 
 .btn {
@@ -566,10 +582,6 @@ const shouldTriggerDyingWish = ref(false);
 
 .checkbox {
   cursor: pointer;
-}
-
-.divider {
-  border-top: 1px solid var(--gray-6);
 }
 
 .input-group {
@@ -629,9 +641,8 @@ const shouldTriggerDyingWish = ref(false);
 }
 
 .combobox-content {
-  position: absolute;
   z-index: 10;
-  width: 100%;
+  width: calc(var(--sandbox-tools-width) - 2 * var(--sandbox-tools-padding));
   margin-top: 0.25rem;
   background-color: var(--gray-9);
   border: 1px solid var(--gray-7);
