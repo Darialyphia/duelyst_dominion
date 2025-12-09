@@ -176,7 +176,7 @@ export const multipleEnemyTargetRules = {
 export const anywhereTargetRules = {
   canPlay:
     ({ min }: { min: number; max: number }) =>
-    (game: Game, predicate: (cell: BoardCell) => boolean = () => true) => {
+    (game: Game, card: AnyCard, predicate: (cell: BoardCell) => boolean = () => true) => {
       const allCells = game.boardSystem.cells;
       const elligibleCells = allCells.filter(cell => predicate(cell) && !cell.unit);
       return elligibleCells.length >= min;

@@ -35,11 +35,7 @@ export const tempest: SpellBlueprint = {
       max: 1,
       allowRepeat: false
     })(game, card, {
-      getAoe: () =>
-        new EverywhereAOEShape(TARGETING_TYPE.UNIT, {
-          width: game.boardSystem.map.cols,
-          height: game.boardSystem.map.rows
-        })
+      getAoe: targets => card.getAOE(targets)
     });
   },
   async onInit() {},

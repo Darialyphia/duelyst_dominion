@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { singleEnemyTargetRules } from '../../../card-utils';
+import { anywhereTargetRules, singleEnemyTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
@@ -29,14 +29,14 @@ export const ghostLightning: SpellBlueprint = {
       width: game.boardSystem.map.cols,
       height: game.boardSystem.map.rows
     }),
-  canPlay: (game, card) =>
-    singleEnemyTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
+  canPlay: anywhereTargetRules.canPlay({ min: 1, max: 1 }),
   getTargets(game, card) {
-    return singleEnemyTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isEnemy(card.player),
-      getAoe(targets) {
-        return card.getAOE(targets);
-      }
+    return anywhereTargetRules.getPreResponseTargets({
+      min: 1,
+      max: 1,
+      allowRepeat: false
+    })(game, card, {
+      getAoe: targets => card.getAOE(targets)
     });
   },
   async onInit() {},
