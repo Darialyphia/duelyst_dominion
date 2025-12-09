@@ -289,7 +289,7 @@ export class UiController {
     }
 
     if (state.interaction.state === INTERACTION_STATES.SELECTING_SPACE_ON_BOARD) {
-      return 'Select targets';
+      return state.interaction.ctx.label;
     }
 
     return '';

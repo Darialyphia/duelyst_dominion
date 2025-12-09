@@ -21,6 +21,8 @@ export class SelectSpacesOnBoardAction extends Action<'select_spaces_on_board'> 
 
     const selectedSpaces = await this.game.interaction.selectSpacesOnBoard({
       player,
+      source: this.ctx.card,
+      getLabel: () => `Select targets for ${this.ctx.card.blueprint.name}`,
       getAoe() {
         return new NoAOEShape(TARGETING_TYPE.ANYWHERE, {});
       },

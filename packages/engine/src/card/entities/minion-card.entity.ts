@@ -133,6 +133,8 @@ export class MinionCard extends Card<
 
         const [position] = await this.game.interaction.selectSpacesOnBoard({
           player: this.player,
+          source: this,
+          getLabel: () => `Select position to summon ${this.blueprint.name}`,
           isElligible: cell => {
             return this.summoningTargetingStrategy.canTargetAt(cell);
           },

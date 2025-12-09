@@ -148,6 +148,8 @@ export const parseMinionBlueprintSchema = (
     getTargets: (game, card) => {
       return game.interaction.selectSpacesOnBoard({
         player: card.player,
+        getLabel: () => `Select targets for ${card.blueprint.name}`,
+        source: card,
         canCommit(selectedSpaces) {
           return selectedSpaces.length >= schema.getTargets.min;
         },
@@ -264,6 +266,8 @@ export const parseSpellBlueprintSchema = (
     getTargets: (game, card) => {
       return game.interaction.selectSpacesOnBoard({
         player: card.player,
+        getLabel: () => `Select targets for ${card.blueprint.name}`,
+        source: card,
         canCommit(selectedSpaces) {
           return selectedSpaces.length >= schema.getTargets.min;
         },
@@ -345,6 +349,8 @@ export const parseArtifactBlueprintSchema = (
     getTargets: (game, card) => {
       return game.interaction.selectSpacesOnBoard({
         player: card.player,
+        getLabel: () => `Select targets for ${card.blueprint.name}`,
+        source: card,
         canCommit(selectedSpaces) {
           return selectedSpaces.length >= schema.getTargets.min;
         },

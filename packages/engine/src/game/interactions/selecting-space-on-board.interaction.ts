@@ -6,9 +6,12 @@ import type { BoardCell } from '../../board/entities/board-cell.entity';
 import type { GenericAOEShape } from '../../aoe/aoe-shape';
 import { INTERACTION_STATE_TRANSITIONS } from '../game.enums';
 import { InvalidPlayerError, UnableToCommitError } from '../game-error';
+import type { AnyCard } from '../../card/entities/card.entity';
 
 type SelectingSpaceOnBoardContextOptions = {
   player: Player;
+  source: AnyCard;
+  getLabel: (selectedSpaces: BoardCell[]) => string;
   isElligible: (space: BoardCell, selectedSpaces: BoardCell[]) => boolean;
   canCommit: (selectedSpaces: BoardCell[]) => boolean;
   getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
@@ -35,7 +38,7 @@ export class SelectingSpaceOnBoardContext {
 
   private constructor(
     private game: Game,
-    options: SelectingSpaceOnBoardContextOptions
+    private options: SelectingSpaceOnBoardContextOptions
   ) {
     this.player = options.player;
     this.isElligible = options.isElligible;
@@ -47,6 +50,8 @@ export class SelectingSpaceOnBoardContext {
   serialize() {
     return {
       player: this.player.id,
+      source: this.options.source.serialize(),
+      label: this.options.getLabel(this.selectedSpaces),
       selectedSpaces: this.selectedSpaces.map(space => space.position.serialize()),
       elligibleSpaces: this.game.boardSystem.cells
         .filter(cell => this.isElligible(cell, this.selectedSpaces))

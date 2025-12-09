@@ -49,6 +49,9 @@ export const mistDragonSeal: SpellBlueprint = {
         predicate: () => true,
         getAoe(selectedSpaces) {
           return card.getAOE(selectedSpaces);
+        },
+        getLabel() {
+          return `${card.blueprint.name} : Select the space to teleport to`;
         }
       }
     );

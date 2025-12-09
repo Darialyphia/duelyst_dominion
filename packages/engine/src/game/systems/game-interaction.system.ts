@@ -130,6 +130,8 @@ export class GameInteractionSystem
     isDone(selectedCards: BoardCell[]): boolean;
     getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
     player: Player;
+    getLabel: (selectedSpaces: BoardCell[]) => string;
+    source: AnyCard;
   }) {
     this.dispatch(INTERACTION_STATE_TRANSITIONS.START_SELECTING_SPACE_ON_BOARD);
     this._ctx = await this.ctxDictionary[

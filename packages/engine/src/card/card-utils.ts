@@ -2,8 +2,6 @@ import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { PointAOEShape } from '../aoe/point.aoe-shape';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { Game } from '../game/game';
-import { UnitEffectModifierMixin } from '../modifier/mixins/unit-effect.mixin';
-import type { Modifier } from '../modifier/modifier.entity';
 import { TARGETING_TYPE } from '../targeting/targeting-strategy';
 import type { Unit } from '../unit/unit.entity';
 import { CARD_KINDS } from './card.enums';
@@ -46,15 +44,19 @@ export const singleEnemyTargetRules = {
     {
       predicate = () => true,
       getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
+      getLabel = () => `${card.blueprint.name} : Select an enemy unit`,
       required = true
     }: {
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      getLabel?: () => string;
       required?: boolean;
     }
   ) {
     return await game.interaction.selectSpacesOnBoard({
       player: card.player,
+      getLabel: getLabel,
+      source: card,
       getAoe,
       isElligible(candidate, selectedCards) {
         if (!candidate.unit) return false;
@@ -90,15 +92,19 @@ export const singleMinionTargetRules = {
     {
       required = true,
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+      getLabel = () => `${card.blueprint.name} : Select a minion`
     }: {
       required?: boolean;
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      getLabel?: () => string;
     } = {}
   ) {
     return await game.interaction.selectSpacesOnBoard({
       player: card.player,
+      source: card,
+      getLabel: getLabel,
       getAoe,
       isElligible(candidate, selectedCells) {
         if (!candidate.unit || !isMinion(candidate.unit.card)) {
@@ -138,14 +144,19 @@ export const multipleEnemyTargetRules = {
       card: AnyCard,
       {
         predicate = () => true,
-        getAoe
+        getAoe,
+        getLabel = selected =>
+          `${card.blueprint.name} : Select enemy units (${selected} / ${max})`
       }: {
         predicate?: (unit: Unit) => boolean;
         getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+        getLabel?: (selectedSpaces: BoardCell[]) => string;
       }
     ) => {
       return await game.interaction.selectSpacesOnBoard({
         player: card.player,
+        source: card,
+        getLabel,
         getAoe,
         isElligible(candidate, selectedCards) {
           if (!candidate.unit) {
@@ -188,14 +199,18 @@ export const anywhereTargetRules = {
       card: AnyCard,
       {
         predicate = () => true,
-        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+        getLabel = () => `${card.blueprint.name} : Select a space`
       }: {
         predicate?: (cell: BoardCell) => boolean;
         getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+        getLabel?: () => string;
       } = {}
     ) => {
       return await game.interaction.selectSpacesOnBoard({
         player: card.player,
+        source: card,
+        getLabel,
         getAoe,
         isElligible(candidate, selectedCells) {
           return (
@@ -230,14 +245,18 @@ export const emptySpacesTargetRules = {
       card: AnyCard,
       {
         predicate = () => true,
-        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {})
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+        getLabel = () => `${card.blueprint.name} : Select a space`
       }: {
         predicate?: (cell: BoardCell) => boolean;
         getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+        getLabel?: (selectedSpaces: BoardCell[]) => string;
       } = {}
     ) => {
       return await game.interaction.selectSpacesOnBoard({
         player: card.player,
+        source: card,
+        getLabel,
         getAoe,
         isElligible(candidate, selectedCells) {
           return (
@@ -270,15 +289,19 @@ export const singleUnitTargetRules = {
     {
       required = true,
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {})
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
+      getLabel = () => `${card.blueprint.name} : Select a unit`
     }: {
       required?: boolean;
       predicate?: (unit: Unit) => boolean;
       getAoe?: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
+      getLabel?: () => string;
     } = {}
   ) {
     return await game.interaction.selectSpacesOnBoard({
       player: card.player,
+      source: card,
+      getLabel,
       getAoe,
       isElligible(candidate, selectedCells) {
         if (!candidate.unit) {
