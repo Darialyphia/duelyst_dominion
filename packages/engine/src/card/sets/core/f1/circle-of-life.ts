@@ -5,32 +5,30 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 
-export const trueStrike: SpellBlueprint = {
-  id: 'true-strike',
-  name: 'True Strike',
-  description: 'Deal 2 damage to an enemy minion.',
-  sprite: { id: 'spells/f1_true-strike' },
+export const circleOfLife: SpellBlueprint = {
+  id: 'circle-of-life',
+  name: 'Circle of Life',
+  description: 'Deal 5 damage to a minion and heal your general for 5.',
+  sprite: { id: 'spells/f1_circle-of-life' },
   sounds: {
-    play: 'sfx_spell_truestrike.m4a'
+    play: 'sfx_neutral_spelljammer_attack_swing.m4a'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.LEGENDARY,
   tags: [],
-  manaCost: 1,
+  manaCost: 5,
   runeCost: {
     red: 1
   },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
-  canPlay: (game, card) =>
-    singleMinionTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
+  canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isEnemy(card.player),
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
+      getAoe(targets) {
+        return card.getAOE(targets);
       }
     });
   },
@@ -39,6 +37,7 @@ export const trueStrike: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    await target.takeDamage(card, new SpellDamage(card, 2));
+    await target.takeDamage(card, new SpellDamage(card, 5));
+    await card.player.general.heal(card, 5);
   }
 };

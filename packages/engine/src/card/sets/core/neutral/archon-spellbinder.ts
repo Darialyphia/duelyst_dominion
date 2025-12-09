@@ -18,7 +18,14 @@ export const archonSpellbinder: MinionBlueprint = {
   @[rune:blue]@ @[rune:blue]@ @[rune:blue]@: +0 / +2
   `,
   sprite: { id: 'minions/neutral_archon-spellbinder' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_summonlegendary.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_neutral_archonspellbinder_attack_swing.m4a',
+    takeDamage: 'sfx_neutral_archonspellbinder_hit.m4a',
+    dealDamage: 'sfx_neutral_archonspellbinder_attack_impact.m4a',
+    death: 'sfx_neutral_archonspellbinder_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

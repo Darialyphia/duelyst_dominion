@@ -9,7 +9,14 @@ export const saberspineTiger: MinionBlueprint = {
   name: 'Saberspine Tiger',
   description: '@Rush@.',
   sprite: { id: 'minions/neutral_saberspine-tiger' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy_1.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_f6_boreanbear_attack_swing.m4a',
+    takeDamage: 'sfx_neutral_beastsaberspinetiger_hit.m4a',
+    dealDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact.m4a',
+    death: 'sfx_neutral_beastsaberspinetiger_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

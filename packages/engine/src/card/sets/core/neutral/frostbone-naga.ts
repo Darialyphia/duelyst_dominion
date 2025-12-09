@@ -10,7 +10,14 @@ export const frostboneNaga: MinionBlueprint = {
   name: 'Frostbone Naga',
   description: '@On Enter@: Deal 2 damage to nearby units.',
   sprite: { id: 'minions/neutral_frostbone-naga' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy_2.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_f4_siren_attack_swing.m4a',
+    takeDamage: 'sfx_f4_siren_hit.m4a',
+    dealDamage: 'sfx_f6_ancientgrove_attack_impact.m4a',
+    death: 'sfx_f4_siren_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

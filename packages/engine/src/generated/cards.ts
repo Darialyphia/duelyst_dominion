@@ -43,7 +43,8 @@ export const cards = {
 "tusk_boar": "tusk_boar",
 "sundrop-elixir": "sundrop-elixir",
 " augury": " augury",
-"light_chaser": "light_chaser"
+"light_chaser": "light_chaser",
+"circle-of-life": "circle-of-life"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -85,5 +86,6 @@ export const collectableCards = {
 "tusk_boar": "tusk_boar",
 "sundrop-elixir": "sundrop-elixir",
 " augury": " augury",
-"light_chaser": "light_chaser"
+"light_chaser": "light_chaser",
+"circle-of-life": "circle-of-life"
 } as const satisfies Record<string, string>;

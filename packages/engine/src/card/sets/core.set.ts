@@ -3,6 +3,7 @@ import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
 import { augury } from './core/f1/augury';
 import { azuriteLion } from './core/f1/azurite-lion';
+import { circleOfLife } from './core/f1/circle-of-life';
 import { divineBond } from './core/f1/divine-bond';
 import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
@@ -82,6 +83,7 @@ export const coreSet: CardSet = {
     tuskBoar,
     sundropElixir,
     augury,
-    lightChaser
+    lightChaser,
+    circleOfLife
   ]
 };

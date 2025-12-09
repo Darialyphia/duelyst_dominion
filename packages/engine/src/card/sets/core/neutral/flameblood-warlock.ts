@@ -10,7 +10,14 @@ export const flamebloodWarlock: MinionBlueprint = {
   name: 'Flameblood Warlock',
   description: '@On Enter@: Deal 3 damage to all generals.',
   sprite: { id: 'minions/neutral_flameblood-warlock' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy_2.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_f4_engulfingshadow_attack_swing.m4a',
+    takeDamage: 'sfx_f4_engulfingshadow_attack_impact.m4a',
+    dealDamage: 'sfx_f4_engulfingshadow_hit.m4a',
+    death: 'sfx_f6_icebeetle_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

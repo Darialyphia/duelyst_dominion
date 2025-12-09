@@ -184,16 +184,19 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 
     <ExplainerMessage class="explainer-message" />
 
-    <div
-      class="hovered-card"
-      v-if="hoveredCard"
-      :class="{
-        ally: hoveredCard.getPlayer().equals(myPlayer),
-        enemy: hoveredCard.getPlayer().equals(opponent)
-      }"
-    >
-      <GameCard :card-id="hoveredCard.id" :is-interactive="false" />
-    </div>
+    <transition>
+      <div
+        class="hovered-card"
+        v-if="hoveredCard"
+        :key="hoveredCard.id"
+        :class="{
+          ally: hoveredCard.getPlayer().equals(myPlayer),
+          enemy: hoveredCard.getPlayer().equals(opponent)
+        }"
+      >
+        <GameCard :card-id="hoveredCard.id" :is-interactive="false" />
+      </div>
+    </transition>
     <div id="dragged-card-container" />
     <div id="card-portal"></div>
   </div>
@@ -325,12 +328,26 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
 .hovered-card {
   --pixel-scale: 1.5;
   position: fixed;
-  bottom: var(--size-9);
+  bottom: var(--size-14);
+  &:is(.v-enter-active, .v-leave-active) {
+    transition:
+      transform 0.2s var(--ease-3),
+      opacity 0.2s var(--ease-3);
+  }
+  &:is(.v-enter-from, .v-leave-to) {
+    opacity: 0;
+  }
   &.ally {
     left: var(--size-6);
+    &:is(.v-enter-from, .v-leave-to) {
+      transform: translateX(-20%);
+    }
   }
   &.enemy {
     right: var(--size-6);
+    &:is(.v-enter-from, .v-leave-to) {
+      transform: translateX(20%);
+    }
   }
 }
 

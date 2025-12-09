@@ -9,7 +9,14 @@ export const voidHunter: MinionBlueprint = {
   name: 'Void Hunter',
   description: '@Dying Wish@ : Draw 2 cards..',
   sprite: { id: 'minions/neutral_void-hunter' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_voidpulse.m4a',
+    walk: 'sfx_neutral_chaoselemental_hit.m4a',
+    attack: 'sfx_neutral_voidhunter_attack_swing.m4a',
+    takeDamage: 'sfx_neutral_voidhunter_hit.m4a',
+    dealDamage: 'sfx_neutral_voidhunter_attack_impact.m4a',
+    death: 'sfx_neutral_voidhunter_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

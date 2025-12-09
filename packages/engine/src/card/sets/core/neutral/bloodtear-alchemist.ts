@@ -11,7 +11,14 @@ export const bloodtearAlchemist: MinionBlueprint = {
   name: 'Bloodtear Alchemist',
   description: '@On Enter@: Deal 1 damage to an enemy minion.',
   sprite: { id: 'minions/neutral_bloodtear-alchemist' },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy_2.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_neutral_bloodtearalchemist_attack_swing.m4a',
+    takeDamage: 'sfx_neutral_bloodtearalchemist_hit.m4a',
+    dealDamage: 'sfx_neutral_bloodtearalchemist_attack_impact.m4a',
+    death: 'sfx_neutral_bloodtearalchemist_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
