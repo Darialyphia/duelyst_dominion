@@ -5502,136 +5502,6 @@
         },
         {
           "alias": [
-            "undefinedsfx_f1general_attack_impact.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_attack_impact.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1general_attack_swing.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_attack_swing.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1general_death.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_death.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1general_hit_1.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_hit_1.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1general_hit_2.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_hit_2.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1general_hit_3.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1general_hit_3.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1tank_attack_impact.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1tank_attack_impact.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1tank_attack_swing.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1tank_attack_swing.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1tank_death.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1tank_death.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f1tank_hit.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f1tank_hit.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
             "undefinedsfx_f1_elyxstormblade_attack_impact.m4a"
           ],
           "src": [
@@ -6087,10 +5957,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_attack_impact_1.m4a"
+            "undefinedsfx_f1general_attack_impact.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_attack_impact_1.m4a"
+            "/assets/sfx/sfx_f1general_attack_impact.m4a"
           ],
           "data": {
             "tags": {
@@ -6100,10 +5970,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_attack_impact_2.m4a"
+            "undefinedsfx_f1general_attack_swing.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_attack_impact_2.m4a"
+            "/assets/sfx/sfx_f1general_attack_swing.m4a"
           ],
           "data": {
             "tags": {
@@ -6113,10 +5983,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_attack_impact_3.m4a"
+            "undefinedsfx_f1general_death.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_attack_impact_3.m4a"
+            "/assets/sfx/sfx_f1general_death.m4a"
           ],
           "data": {
             "tags": {
@@ -6126,10 +5996,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_attack_swing.m4a"
+            "undefinedsfx_f1general_hit_1.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_attack_swing.m4a"
+            "/assets/sfx/sfx_f1general_hit_1.m4a"
           ],
           "data": {
             "tags": {
@@ -6139,10 +6009,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_death.m4a"
+            "undefinedsfx_f1general_hit_2.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_death.m4a"
+            "/assets/sfx/sfx_f1general_hit_2.m4a"
           ],
           "data": {
             "tags": {
@@ -6152,10 +6022,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_hit_1.m4a"
+            "undefinedsfx_f1general_hit_3.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_hit_1.m4a"
+            "/assets/sfx/sfx_f1general_hit_3.m4a"
           ],
           "data": {
             "tags": {
@@ -6165,10 +6035,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_hit_2.m4a"
+            "undefinedsfx_f1tank_attack_impact.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_hit_2.m4a"
+            "/assets/sfx/sfx_f1tank_attack_impact.m4a"
           ],
           "data": {
             "tags": {
@@ -6178,10 +6048,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2general_hit_3.m4a"
+            "undefinedsfx_f1tank_attack_swing.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2general_hit_3.m4a"
+            "/assets/sfx/sfx_f1tank_attack_swing.m4a"
           ],
           "data": {
             "tags": {
@@ -6191,10 +6061,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2melee_attack_impact_1.m4a"
+            "undefinedsfx_f1tank_death.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2melee_attack_impact_1.m4a"
+            "/assets/sfx/sfx_f1tank_death.m4a"
           ],
           "data": {
             "tags": {
@@ -6204,192 +6074,10 @@
         },
         {
           "alias": [
-            "undefinedsfx_f2melee_attack_impact_2.m4a"
+            "undefinedsfx_f1tank_hit.m4a"
           ],
           "src": [
-            "/assets/sfx/sfx_f2melee_attack_impact_2.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_attack_impact_3.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_attack_impact_3.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_attack_swing_1.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_attack_swing_1.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_attack_swing_2.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_attack_swing_2.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_attack_swing_3.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_attack_swing_3.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_death.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_death.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_hit_1.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_hit_1.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_hit_2.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_hit_2.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2melee_hit_3.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2melee_hit_3.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_attack_impact.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_attack_impact.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_attack_swing.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_attack_swing.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_death.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_death.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_hit_1.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_hit_1.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_hit_2.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_hit_2.m4a"
-          ],
-          "data": {
-            "tags": {
-              "m": true
-            }
-          }
-        },
-        {
-          "alias": [
-            "undefinedsfx_f2tank_hit_3.m4a"
-          ],
-          "src": [
-            "/assets/sfx/sfx_f2tank_hit_3.m4a"
+            "/assets/sfx/sfx_f1tank_hit.m4a"
           ],
           "data": {
             "tags": {
@@ -6767,6 +6455,318 @@
           ],
           "src": [
             "/assets/sfx/sfx_f2_tank_attack.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_attack_impact_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_attack_impact_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_attack_impact_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_attack_impact_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_attack_impact_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_attack_impact_3.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_attack_swing.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_attack_swing.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_death.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_death.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_hit_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_hit_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_hit_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_hit_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2general_hit_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2general_hit_3.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_impact_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_impact_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_impact_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_impact_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_impact_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_impact_3.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_swing_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_swing_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_swing_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_swing_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_attack_swing_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_attack_swing_3.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_death.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_death.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_hit_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_hit_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_hit_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_hit_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2melee_hit_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2melee_hit_3.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_attack_impact.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_attack_impact.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_attack_swing.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_attack_swing.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_death.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_death.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_hit_1.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_hit_1.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_hit_2.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_hit_2.m4a"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "undefinedsfx_f2tank_hit_3.m4a"
+          ],
+          "src": [
+            "/assets/sfx/sfx_f2tank_hit_3.m4a"
           ],
           "data": {
             "tags": {

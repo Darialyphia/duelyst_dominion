@@ -7,7 +7,7 @@ import {
   type Faction,
   type Rarity
 } from '@game/engine/src/card/card.enums';
-import { uppercaseFirstLetter } from '@game/shared';
+import { uppercaseFirstLetter, type Nullable } from '@game/shared';
 import { useTemplateRef, computed, ref } from 'vue';
 import CardFoil from './CardFoil.vue';
 import CardGlare from './CardGlare.vue';
@@ -48,7 +48,7 @@ const {
     runeCost?: RuneCost;
     faction: Faction;
   };
-  sprite: {
+  sprite: Nullable<{
     id: string;
     frameSize: { w: number; h: number };
     sheetSize: { w: number; h: number };
@@ -56,7 +56,7 @@ const {
       string,
       { startFrame: number; endFrame: number; frameDuration: number }
     >;
-  };
+  }>;
   isAnimated?: boolean;
   animationSequence?: string[];
   isFoil?: boolean;
@@ -174,6 +174,7 @@ const factionBgOpacity = computed(() => {
         <CardName :name="card.name" />
 
         <CardArtwork
+          v-if="sprite"
           :kind="card.kind"
           :is-foil="isFoil"
           :is-tiltable="isTiltable"

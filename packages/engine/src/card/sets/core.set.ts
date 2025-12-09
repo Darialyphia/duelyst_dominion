@@ -1,13 +1,16 @@
 import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
 import { argeonHighmane } from './core/f1/argeon-highmane';
+import { augury } from './core/f1/augury';
 import { azuriteLion } from './core/f1/azurite-lion';
 import { divineBond } from './core/f1/divine-bond';
 import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
+import { lightChaser } from './core/f1/light-chaser';
 import { magnetize } from './core/f1/magnetize';
 import { martyrdom } from './core/f1/martyrdom';
 import { silverguardKnight } from './core/f1/silverguard-knight';
+import { sundropElixir } from './core/f1/sundrop-elixir';
 import { suntideMaiden } from './core/f1/suntide-maiden';
 import { tempest } from './core/f1/tempest';
 import { trueStrike } from './core/f1/true-strike';
@@ -76,6 +79,9 @@ export const coreSet: CardSet = {
     mistDragonSeal,
     killingEdge,
     heavensEclipse,
-    tuskBoar
+    tuskBoar,
+    sundropElixir,
+    augury,
+    lightChaser
   ]
 };

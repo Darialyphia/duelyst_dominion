@@ -11,7 +11,6 @@ const sprite = computed(() => {
 
 <template>
   <Card
-    v-if="sprite"
     :card="{
       id: blueprint.id,
       name: blueprint.name,
@@ -31,9 +30,6 @@ const sprite = computed(() => {
     }"
     :sprite="sprite"
   />
-  <div v-else>
-    Missing sprite for card: {{ blueprint.name }} ({{ blueprint.id }})
-  </div>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -1,4 +1,5 @@
 import type { AnyCard } from '../../card/entities/card.entity';
+import type { GeneralCard } from '../../card/entities/general-card.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
@@ -6,7 +7,9 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 
-export class WhileOnBoardModifier extends Modifier<MinionCard> {
+export class WhileOnBoardModifier<
+  T extends MinionCard | GeneralCard
+> extends Modifier<T> {
   constructor(
     game: Game,
     source: AnyCard,
@@ -16,7 +19,7 @@ export class WhileOnBoardModifier extends Modifier<MinionCard> {
       modifierType = 'while-on-board'
     }: {
       modifier: Modifier<Unit>;
-      mixins?: ModifierMixin<MinionCard>[];
+      mixins?: ModifierMixin<T>[];
       modifierType?: string;
     }
   ) {

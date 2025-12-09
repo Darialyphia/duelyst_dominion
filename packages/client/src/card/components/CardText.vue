@@ -201,13 +201,13 @@ const tokens = computed<Token[]>(() => {
 <style scoped lang="postcss">
 .card-text {
   white-space: pre-wrap;
-  color: #bea991;
+  color: #efef9f;
   line-height: 1.3;
 }
 
 :is(.token-keyword, .token-card) {
   font-weight: var(--font-weight-7);
-  color: #efef9f;
+  color: var(--orange-4);
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
 }
