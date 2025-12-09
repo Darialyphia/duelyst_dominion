@@ -43,6 +43,7 @@ export const scionsCrown: ArtifactBlueprint = {
 
     const aura = new CelerityUnitModifier(game, card, {
       modifierType: MODIFIER_ID,
+      isRemovable: false,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',

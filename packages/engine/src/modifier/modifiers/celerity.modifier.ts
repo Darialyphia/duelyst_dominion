@@ -37,12 +37,17 @@ export class CelerityUnitModifier extends Modifier<Unit> {
   constructor(
     game: Game,
     source: AnyCard,
-    options: { mixins?: ModifierMixin<Unit>[]; modifierType?: string }
+    options: {
+      mixins?: ModifierMixin<Unit>[];
+      modifierType?: string;
+      isRemovable?: boolean;
+    } = {}
   ) {
     super(options.modifierType ?? KEYWORDS.CELERITY.id, game, source, {
       name: KEYWORDS.CELERITY.name,
       description: KEYWORDS.CELERITY.description,
       icon: 'icons/keyword-celerity',
+      isRemovable: options.isRemovable ?? true,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'maxAttacksPerTurn',
