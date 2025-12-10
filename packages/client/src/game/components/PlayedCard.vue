@@ -2,9 +2,10 @@
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { useFxEvent, useGameState } from '../composables/useGameClient';
 import { CardViewModel } from '@game/engine/src/client/view-models/card.model';
-import { waitFor } from '@game/shared';
+
 import GameCard from './GameCard.vue';
 import { config } from '@/utils/config';
+import { waitFor } from '@game/shared';
 
 const card = ref<CardViewModel | null>(null);
 const state = useGameState();
@@ -14,8 +15,7 @@ useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
   setTimeout(() => {
     card.value = null;
   }, config.PLAYED_CARD_PREVIEW_TIME);
-  // await waitFor(config.PLAYED_CARD_PREVIEW_TIME);
-  // card.value = null;
+  await waitFor(config.PLAYED_CARD_PREVIEW_TIME / 2);
 });
 </script>
 

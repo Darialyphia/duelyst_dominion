@@ -4,12 +4,39 @@ import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { lightOverlay } from '../../../card-vfx-sequences';
 
 export const circleOfLife: SpellBlueprint = {
   id: 'circle-of-life',
   name: 'Circle of Life',
   description: 'Deal 5 damage to a minion and heal your general for 5.',
-  vfx: { spriteId: 'spells/f1_circle-of-life' },
+  vfx: {
+    spriteId: 'spells/f1_circle-of-life',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            lightOverlay(game, { color: '#faa03c' }),
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_f1_circlelife',
+                    animationSequence: ['default'],
+                    scale: 1.5,
+                    flipX: false,
+                    offset: { x: 20, y: -50 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_neutral_spelljammer_attack_swing.m4a'
   },

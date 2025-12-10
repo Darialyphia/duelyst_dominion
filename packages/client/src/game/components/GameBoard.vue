@@ -236,7 +236,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   position: fixed;
   inset: 0;
   background: radial-gradient(circle at center, transparent, black 75%);
-  opacity: 0.7;
+  opacity: 0.45;
   pointer-events: none;
   &:is(.v-enter-active, .v-leave-active) {
     transition: opacity 0.5s;

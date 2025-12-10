@@ -1,6 +1,7 @@
 import type { Point } from '@game/shared';
 import {
   BLEND_MODES,
+  type BlendMode,
   type VFXSequence,
   type VFXSequenceTrack,
   type VFXStep
@@ -155,4 +156,29 @@ export const forEachUnit = (
     .map(u => u.position.serialize());
 
   return aoeTargets.map(target => steps(target)).flat();
+};
+
+export const lightOverlay = (
+  game: Game,
+  opts: { color: string; blendMode?: BlendMode; opacity?: number; duration?: number }
+): VFXSequenceTrack => {
+  return {
+    steps: [
+      {
+        type: 'addLightAt',
+        params: {
+          blendMode: opts.blendMode ?? BLEND_MODES.SCREEN,
+          color: opts.color,
+          position: {
+            x: Math.round(game.boardSystem.map.cols / 2),
+            y: Math.round(game.boardSystem.map.rows / 2)
+          },
+          offset: { x: 0, y: 0 },
+          opacity: opts.opacity ?? 0.15,
+          duration: opts.duration ?? 1000,
+          radius: 2000
+        }
+      }
+    ]
+  };
 };

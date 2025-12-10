@@ -4,8 +4,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import { BLEND_MODES } from '../../../../game/systems/vfx.system';
-import { forEachUnit } from '../../../card-vfx-sequences';
+import { forEachUnit, lightOverlay } from '../../../card-vfx-sequences';
 
 export const tempest: SpellBlueprint = {
   id: 'tempest',
@@ -66,28 +65,7 @@ export const tempest: SpellBlueprint = {
         });
 
         return {
-          tracks: [
-            {
-              steps: [
-                {
-                  type: 'addLightAt',
-                  params: {
-                    blendMode: BLEND_MODES.SCREEN,
-                    color: '#faa03c',
-                    position: {
-                      x: Math.round(game.boardSystem.map.cols / 2),
-                      y: Math.round(game.boardSystem.map.rows / 2)
-                    },
-                    offset: { x: 0, y: 0 },
-                    opacity: 0.15,
-                    duration: 1000,
-                    radius: 2000
-                  }
-                }
-              ]
-            },
-            ...targetTracks
-          ]
+          tracks: [lightOverlay(game, { color: '#faa03c' }), ...targetTracks]
         };
       }
     }

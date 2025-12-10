@@ -169,7 +169,7 @@ export function useUnitAnimations({
   });
 
   const state = useGameState();
-  useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
+  useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
     const card = state.value.entities[event.card.id] as CardViewModel;
     if (!card) return;
     if (card.kind !== CARD_KINDS.SPELL && card.kind !== CARD_KINDS.ARTIFACT) {
@@ -181,7 +181,6 @@ export function useUnitAnimations({
     return new Promise<void>(resolve => {
       animationSequence.value = [
         ANIMATIONS_NAMES.CAST_START,
-        ANIMATIONS_NAMES.CAST_LOOP,
         ANIMATIONS_NAMES.CAST,
         ANIMATIONS_NAMES.CAST_END
       ];

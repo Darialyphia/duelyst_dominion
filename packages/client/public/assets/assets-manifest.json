@@ -2023,6 +2023,87 @@
         },
         {
           "alias": [
+            "fx-fx_buff"
+          ],
+          "src": [
+            "/assets/fx/fx_buff.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_buff.png"
+          ],
+          "src": [
+            "/assets/fx/fx_buff.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_circlelife"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_circlelife.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_circlelife.png"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_circlelife.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_divinebond"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_divinebond.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_divinebond.png"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_divinebond.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "fx-fx_f1_inmolation"
           ],
           "src": [
@@ -2122,6 +2203,33 @@
           ],
           "src": [
             "/assets/fx/fx_heavenlystrike.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_ringswirl"
+          ],
+          "src": [
+            "/assets/fx/fx_ringswirl.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_ringswirl.png"
+          ],
+          "src": [
+            "/assets/fx/fx_ringswirl.png"
           ],
           "data": {
             "tags": {

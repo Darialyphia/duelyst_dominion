@@ -84,6 +84,7 @@ useVFXStep('playSpriteAt', async step => {
   position: fixed;
   top: var(--sprite-top);
   left: var(--sprite-left);
+  outline: solid 1px red; /* for debugging */
   &.is-flipped {
     transform-origin: center center;
     transform: scaleX(-1);
