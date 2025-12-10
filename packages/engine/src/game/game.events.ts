@@ -19,7 +19,7 @@ import type { PlayerEventMap } from '../player/player.events';
 import type { UnitEventMap } from '../unit/unit-events';
 import { UNIT_EVENTS } from '../unit/unit.enums';
 import type { ArtifactEventMap } from '../player/player-artifact.events';
-import { VFX_EVENTS, type FxEventMap } from './systems/vfx.system';
+import { VFX_EVENTS, type VFXEventMap } from './systems/vfx.system';
 import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
 import { TILE_EVENTS } from '../tile/tile-enums';
@@ -127,8 +127,8 @@ export type GameEventMap = Prettify<
     ArtifactEventMap &
     MinionEventMap &
     GeneralEventMap &
-    FxEventMap &
-    TileEventMap
+    TileEventMap &
+    VFXEventMap
 >;
 export type GameEventName = keyof GameEventMap;
 export type GameEvent = Values<GameEventMap>;

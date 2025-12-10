@@ -23,6 +23,9 @@ import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
 import { GAME_PHASES } from '../game/game.enums';
 import type { Rune } from '../card/card.enums';
+import { VFXPlaySequenceEvent } from '../game/systems/vfx.system';
+import { VFXSequenceController } from './controllers/vfx-sequence.controller';
+import { GAME_EVENTS } from '../game/game.events';
 
 export const GAME_TYPES = {
   LOCAL: 'local',
@@ -66,6 +69,8 @@ export type GameClientOptions = {
 
 export class GameClient {
   readonly fx = new FxController();
+
+  readonly vfx = new VFXSequenceController();
 
   readonly stateManager: ClientStateController;
 
@@ -230,6 +235,10 @@ export class GameClient {
           await this.emitter.emit('update', {});
           await postUpdateCallback?.();
         });
+
+        if (event.eventName === GAME_EVENTS.VFX_PLAY_SEQUENCE) {
+          await this.vfx.playSequence(event.event.sequence);
+        }
 
         await this.fx.emit(event.eventName, event.event);
       }

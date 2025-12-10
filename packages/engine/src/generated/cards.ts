@@ -44,7 +44,9 @@ export const cards = {
 "sundrop-elixir": "sundrop-elixir",
 " augury": " augury",
 "light_chaser": "light_chaser",
-"circle-of-life": "circle-of-life"
+"circle-of-life": "circle-of-life",
+"sunriser": "sunriser",
+"arclyte-regalia": "arclyte-regalia"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -87,5 +89,7 @@ export const collectableCards = {
 "sundrop-elixir": "sundrop-elixir",
 " augury": " augury",
 "light_chaser": "light_chaser",
-"circle-of-life": "circle-of-life"
+"circle-of-life": "circle-of-life",
+"sunriser": "sunriser",
+"arclyte-regalia": "arclyte-regalia"
 } as const satisfies Record<string, string>;

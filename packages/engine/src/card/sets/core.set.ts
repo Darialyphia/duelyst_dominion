@@ -1,5 +1,6 @@
 import type { CardSet } from '.';
 import { CARD_SETS } from '../card.enums';
+import { arclyteRegalia } from './core/f1/arclyte-regalia';
 import { argeonHighmane } from './core/f1/argeon-highmane';
 import { augury } from './core/f1/augury';
 import { azuriteLion } from './core/f1/azurite-lion';
@@ -12,6 +13,7 @@ import { magnetize } from './core/f1/magnetize';
 import { martyrdom } from './core/f1/martyrdom';
 import { silverguardKnight } from './core/f1/silverguard-knight';
 import { sundropElixir } from './core/f1/sundrop-elixir';
+import { sunriser } from './core/f1/sunriser';
 import { suntideMaiden } from './core/f1/suntide-maiden';
 import { tempest } from './core/f1/tempest';
 import { trueStrike } from './core/f1/true-strike';
@@ -84,6 +86,8 @@ export const coreSet: CardSet = {
     sundropElixir,
     augury,
     lightChaser,
-    circleOfLife
+    circleOfLife,
+    sunriser,
+    arclyteRegalia
   ]
 };

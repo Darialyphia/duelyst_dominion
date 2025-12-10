@@ -57,7 +57,6 @@ export type VFXStep =
         resourceName: string;
         animationSequence: string[];
         offset: Point;
-        duration: number;
       };
     }
   | {
@@ -66,7 +65,6 @@ export type VFXStep =
         resourceName: string;
         animationSequence: string[];
         offset: Point;
-        duration: number;
       };
     }
   | {
@@ -115,12 +113,12 @@ export type VFXSequence = {
 };
 
 export const VFX_EVENTS = {
-  PLAY_ANIMATION: 'fx.playAnimation'
+  VFX_PLAY_SEQUENCE: 'fx.play_sequence'
 } as const;
-export type FxEvent = Values<typeof VFX_EVENTS>;
+export type VFXEvent = Values<typeof VFX_EVENTS>;
 
-export type FxEventMap = {
-  [VFX_EVENTS.PLAY_ANIMATION]: VFXPlayAnimation;
+export type VFXEventMap = {
+  [VFX_EVENTS.VFX_PLAY_SEQUENCE]: VFXPlaySequenceEvent;
 };
 
 export class VFXSystem extends System<EmptyObject> {
@@ -128,25 +126,21 @@ export class VFXSystem extends System<EmptyObject> {
 
   shutdown() {}
 
-  async playAnimation(units: Unit[], animation: AnimationName) {
+  async playSequence(sequence: VFXSequence) {
     await this.game.emit(
-      VFX_EVENTS.PLAY_ANIMATION,
-      new VFXPlayAnimation({ units, animation })
+      VFX_EVENTS.VFX_PLAY_SEQUENCE,
+      new VFXPlaySequenceEvent({ sequence })
     );
   }
 }
 
-export class VFXPlayAnimation extends TypedSerializableEvent<
-  { animation: AnimationName; units: Unit[] },
+export class VFXPlaySequenceEvent extends TypedSerializableEvent<
+  { sequence: VFXSequence },
   {
-    animation: AnimationName;
-    units: string[];
+    sequence: VFXSequence;
   }
 > {
   serialize() {
-    return {
-      animation: this.data.animation,
-      units: this.data.units.map(unit => unit.id)
-    };
+    return { sequence: this.data.sequence };
   }
 }
