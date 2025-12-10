@@ -4,13 +4,21 @@ import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.m
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
   description: '@Zeal@ : fully heal this unit at the end of your turn.',
-  vfx: { spriteId: 'minions/f1_suntide-maiden' },
+  vfx: {
+    spriteId: 'minions/f1_suntide-maiden',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_magical_4.m4a',

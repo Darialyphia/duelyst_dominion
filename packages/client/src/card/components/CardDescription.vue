@@ -12,7 +12,7 @@ defineProps<{
 const descriptionBox = useTemplateRef('description-box');
 const { fontSize: descriptionFontSize } = useAutoResizeText(descriptionBox, {
   min: 12,
-  max: 21
+  max: 20
 });
 </script>
 

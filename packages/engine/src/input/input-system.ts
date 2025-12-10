@@ -133,7 +133,6 @@ export class InputSystem extends System<never> {
   }
 
   pause<T>() {
-    console.log('game paused for player input');
     return new Promise<T>(resolve => {
       this.onUnpause = data => {
         this.onUnpause = null;
@@ -146,7 +145,6 @@ export class InputSystem extends System<never> {
 
   unpause<T>(data: T) {
     assert(this.isPaused, new GameNotPausedError());
-    console.log('game unpaused after player input');
     this.onUnpause?.(data);
   }
 

@@ -44,7 +44,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
     if (!candidate.unit) return false;
     if (candidate.location !== 'board') return false;
     if (candidate.isAlly(this.target)) return false;
-
+    if (!this.target.unit) return false;
     return (
       this.game.boardSystem.getDistance(
         this.target.unit.position,

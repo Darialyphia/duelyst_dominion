@@ -18,7 +18,10 @@ const ui = useGameUi();
     @mouseleave="ui.unhover()"
     @mouseup="ui.onBoardCellClick(cell, $event)"
   >
-    <div class="cell" />
+    <div
+      class="cell"
+      :id="ui.DOMSelectors.cell(cell.position.x, cell.position.y).id"
+    />
   </BoardPositioner>
 </template>
 

@@ -2,13 +2,21 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const azuriteLion: MinionBlueprint = {
   id: 'azurite_lion',
   name: 'Azurite Lion',
   description: '@Celerity@.',
-  vfx: { spriteId: 'minions/f1_azurite-lion' },
+  vfx: {
+    spriteId: 'minions/f1_azurite-lion',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_diretidefrenzy.m4a',
     walk: 'sfx_neutral_arakiheadhunter_hit.m4a',

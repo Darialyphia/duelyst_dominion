@@ -6,6 +6,7 @@ import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 
 export const silverguardKnight: MinionBlueprint = {
   id: 'silverguard_knight',
@@ -15,7 +16,12 @@ export const silverguardKnight: MinionBlueprint = {
   @Zeal@ : +2 Attack.
   `,
   vfx: {
-    spriteId: 'minions/f1_silverguard-knight'
+    spriteId: 'minions/f1_silverguard-knight',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

@@ -82,7 +82,7 @@ export function useSprite({
     },
     { immediate: true }
   );
-
+  console.log(spriteRef.value?.id);
   useIntervalFn(
     () => {
       if (!spriteRef.value) return;
@@ -104,6 +104,7 @@ export function useSprite({
             isDone.value = true;
             return;
           }
+
           emitter.emit('sequenceEnd', {});
         }
       } else {

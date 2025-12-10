@@ -5,13 +5,21 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { AirdropModifier } from '../../../../modifier/modifiers/airdrop.modifier';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 
 export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
   description: dedent`
   @Airdrop@, @Provoke@.`,
-  vfx: { spriteId: 'minions/f1_ironcliffe-guardian' },
+  vfx: {
+    spriteId: 'minions/f1_ironcliffe-guardian',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_charge_4.m4a',

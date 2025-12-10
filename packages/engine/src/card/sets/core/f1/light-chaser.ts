@@ -6,6 +6,7 @@ import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/sim
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const lightChaser: MinionBlueprint = {
@@ -13,7 +14,12 @@ export const lightChaser: MinionBlueprint = {
   name: 'Light Chaser',
   description: 'When a unit is healed, this gains +2/0',
   vfx: {
-    spriteId: 'minions/f1_lightchaser'
+    spriteId: 'minions/f1_lightchaser',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

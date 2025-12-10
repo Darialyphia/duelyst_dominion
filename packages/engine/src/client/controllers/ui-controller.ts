@@ -79,6 +79,7 @@ export class UiController {
   };
 
   DOMSelectors = {
+    cell: (x: number, y: number) => new DOMSelector(`cell-${x}-${y}`),
     board: new DOMSelector('board'),
     effectChain: new DOMSelector('effect-chain'),
     playedCardZone: new DOMSelector('played-card'),

@@ -51,20 +51,22 @@ export type VFXStep =
       };
     }
   | {
-      type: 'playSfxOnUnits';
+      type: 'playSpriteAt';
       params: {
-        units: string[];
+        position: Point;
         resourceName: string;
         animationSequence: string[];
         offset: Point;
+        scale: number;
       };
     }
   | {
-      type: 'playSfxOnScreenCenter';
+      type: 'playSpriteOnScreenCenter';
       params: {
         resourceName: string;
         animationSequence: string[];
         offset: Point;
+        scale: number;
       };
     }
   | {
@@ -87,9 +89,9 @@ export type VFXStep =
       };
     }
   | {
-      type: 'addLightOnUnit';
+      type: 'addLightAt';
       params: {
-        units: string[];
+        position: Point;
         color: string;
         offset: Point;
         opacity: number;

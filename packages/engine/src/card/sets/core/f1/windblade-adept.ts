@@ -1,8 +1,10 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { BLEND_MODES } from '../../../../game/systems/vfx.system';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const windbladeAdept: MinionBlueprint = {
@@ -10,7 +12,12 @@ export const windbladeAdept: MinionBlueprint = {
   name: 'Windblade Adept',
   description: '@Zeal@ : +2 Attack.',
   vfx: {
-    spriteId: 'minions/f1_windblade-adept'
+    spriteId: 'minions/f1_windblade-adept',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

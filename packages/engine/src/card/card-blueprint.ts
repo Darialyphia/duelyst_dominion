@@ -17,6 +17,7 @@ import type { GenericAOEShape } from '../aoe/aoe-shape';
 import type { PlayerArtifact } from '../player/player-artifact.entity';
 import type { AnyCard } from './entities/card.entity';
 import type { VFXSequence } from '../game/systems/vfx.system';
+import type { Point } from '@game/shared';
 
 export type CardBlueprintBase = {
   id: string;
@@ -30,9 +31,6 @@ export type CardBlueprintBase = {
   tags: (Tag | (string & {}))[];
   vfx: {
     spriteId: string;
-    sequences?: {
-      play?: VFXSequence;
-    };
   };
   sounds: {
     play?: string;
@@ -50,6 +48,16 @@ export type MinionBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.MINION>;
   manaCost: number;
   runeCost: RuneCost;
+  vfx: CardBlueprintBase['vfx'] & {
+    sequences?: {
+      play?: (
+        game: Game,
+        card: MinionCard,
+        position: Point,
+        targets: Point[]
+      ) => VFXSequence;
+    };
+  };
   onInit: (game: Game, card: MinionCard) => Promise<void>;
   canPlay: (game: Game, card: MinionCard) => boolean;
   onPlay: (
@@ -76,6 +84,18 @@ export type SpellBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.SPELL>;
   manaCost: number;
   runeCost: RuneCost;
+  vfx: CardBlueprintBase['vfx'] & {
+    sequences?: {
+      play?: (
+        game: Game,
+        card: SpellCard,
+        options: {
+          targets: Point[];
+          aoe: GenericAOEShape;
+        }
+      ) => VFXSequence;
+    };
+  };
   onInit: (game: Game, card: SpellCard) => Promise<void>;
   canPlay: (game: Game, card: SpellCard) => boolean;
   onPlay: (
@@ -122,6 +142,19 @@ export type ArtifactBlueprint = CardBlueprintBase & {
   durability: number;
   manaCost: number;
   runeCost: RuneCost;
+  vfx: CardBlueprintBase['vfx'] & {
+    sequences?: {
+      play?: (
+        game: Game,
+        card: ArtifactCard,
+        options: {
+          targets: Point[];
+          aoe: GenericAOEShape;
+          artifact: PlayerArtifact;
+        }
+      ) => VFXSequence;
+    };
+  };
   onInit: (game: Game, card: ArtifactCard) => Promise<void>;
   canPlay: (game: Game, card: ArtifactCard) => boolean;
   onPlay: (

@@ -7,7 +7,6 @@ import {
 } from '../composables/useGameClient';
 import { config } from '@/utils/config';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
-import { useGlobalSounds } from '../composables/useGlobalSounds';
 import type { Point } from '@game/shared';
 import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
 // import { useMouse, useWindowSize } from '@vueuse/core';
@@ -15,7 +14,6 @@ import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
 const state = useGameState();
 const ui = useGameUi();
 const units = useUnits();
-useGlobalSounds();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 

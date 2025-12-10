@@ -169,8 +169,18 @@ export class MinionCard extends Card<
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })
     );
-    const aoe = this.getAOE(position, targets);
 
+    await this.game.vfxSystem.playSequence(
+      this.blueprint.vfx.sequences?.play?.(
+        this.game,
+        this,
+        position.position.serialize(),
+        targets.map(t => t.position.serialize())
+      ) ?? {
+        tracks: []
+      }
+    );
+    const aoe = this.getAOE(position, targets);
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
       new MinionSummonedEvent({
@@ -181,6 +191,7 @@ export class MinionCard extends Card<
       })
     );
     this.game.unitSystem.addUnit(this, position);
+
     if (this.hasSummoningSickness) {
       await this.unit.modifiers.add(new SummoningSicknessModifier(this.game, this));
       this.unit.exhaust();

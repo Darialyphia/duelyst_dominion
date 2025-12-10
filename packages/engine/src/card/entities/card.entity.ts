@@ -48,7 +48,6 @@ export type SerializedCard = {
   isFoil: boolean;
   spriteId: string;
   sounds: CardBlueprint['sounds'];
-  vfx: Defined<CardBlueprint['vfx']['sequences']>;
   kind: CardKind;
   rarity: Rarity;
   player: string;
@@ -227,8 +226,7 @@ export abstract class Card<
         description: keyword.description
       })),
       faction: this.blueprint.faction,
-      spacesToHighlight: this.spacesToHighlight,
-      vfx: this.blueprint.vfx.sequences ?? {}
+      spacesToHighlight: this.spacesToHighlight
     };
   }
 

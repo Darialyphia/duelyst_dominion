@@ -49,7 +49,6 @@ export function useUnitAnimations({
 
   const isAttacking = ref(false);
   const latestDamageReceived = ref<number>();
-  const isBeingSummoned = ref(false);
 
   // Movement animation
   useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
@@ -195,20 +194,11 @@ export function useUnitAnimations({
     });
   });
 
-  // Summon animation
-  setTimeout(() => {
-    isBeingSummoned.value = true;
-    setTimeout(() => {
-      isBeingSummoned.value = false;
-    }, 650);
-  }, 300);
-
   return {
     animationSequence,
     positionOffset,
     isAttacking,
     latestDamageReceived,
-    isBeingSummoned,
     damageIndicatorEl,
     activeFrameRect,
     bgPosition,

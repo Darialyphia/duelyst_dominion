@@ -41,8 +41,7 @@ const {
   imageBg,
   positionOffset,
   isAttacking,
-  latestDamageReceived,
-  isBeingSummoned
+  latestDamageReceived
 } = useUnitAnimations({
   unit,
   isSelected,
@@ -50,12 +49,10 @@ const {
   damageIndicatorEl
 });
 
-const { damageEffects, summonEffects, showDamageEffects, showSummonEffects } =
-  useUnitEffects({
-    latestDamageReceived,
-    isBeingSummoned,
-    activeFrameRect
-  });
+const { damageEffects, showDamageEffects } = useUnitEffects({
+  latestDamageReceived,
+  activeFrameRect
+});
 
 const isInAoe = useIsInAoe();
 </script>
@@ -124,13 +121,6 @@ const isInAoe = useIsInAoe();
         class="fx-container"
         :class="{ 'is-flipped': isFlipped }"
         :sprites="damageEffects"
-      />
-
-      <SpriteFX
-        v-if="showSummonEffects"
-        class="fx-container"
-        :class="{ 'is-flipped': isFlipped }"
-        :sprites="summonEffects"
       />
 
       <UnitModifiers :modifiers="displayedModifiers" />

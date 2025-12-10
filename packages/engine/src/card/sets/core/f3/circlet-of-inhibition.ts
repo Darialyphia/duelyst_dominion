@@ -4,7 +4,6 @@ import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { consume } from '../../../card-actions-utils';
 import { TimelessModifier } from '../../../../modifier/modifiers/timeless.modifier';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { ArtifactEffectModifierMixin } from '../../../../modifier/mixins/artifact-effect.mixin';
@@ -19,7 +18,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
   name: 'Circlet of Inhibition',
   description: dedent`
   @Timeless@.
-  When an enemy attacks your general, your opponent must pay 2. If they can't, you gain 1 max mana until the end of your next turn.
+  When an enemy attacks your general, your opponent must pay 2 or you gain 1 max mana until the end of your next turn.
   `,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},

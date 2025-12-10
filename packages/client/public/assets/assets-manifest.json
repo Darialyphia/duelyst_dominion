@@ -1996,6 +1996,87 @@
         },
         {
           "alias": [
+            "fx-fx_bladestorm"
+          ],
+          "src": [
+            "/assets/fx/fx_bladestorm.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_bladestorm.png"
+          ],
+          "src": [
+            "/assets/fx/fx_bladestorm.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_inmolation"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_inmolation.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_inmolation.png"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_inmolation.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_teleportrecall"
+          ],
+          "src": [
+            "/assets/fx/fx_teleportrecall.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_teleportrecall.png"
+          ],
+          "src": [
+            "/assets/fx/fx_teleportrecall.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "fx-impact"
           ],
           "src": [

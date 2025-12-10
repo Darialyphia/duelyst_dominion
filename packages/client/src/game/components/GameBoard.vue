@@ -26,6 +26,8 @@ import Camera from './Camera.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import ExplainerMessage from './ExplainerMessage.vue';
 import EquipedArtifact from './EquipedArtifact.vue';
+import VFXLights from './VFXLights.vue';
+import VFXSprites from './VFXSprites.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
@@ -65,6 +67,10 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       <Tile v-for="tile in tiles" :key="tile.id" :tile="tile" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </Camera>
+    <VFXLights />
+    <VFXSprites />
+
+    <div class="overlay" />
     <Transition appear>
       <div class="vfx-overlay" v-if="isVfxOverlayDisplayed" />
     </Transition>

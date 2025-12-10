@@ -6,6 +6,7 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const sunriser: MinionBlueprint = {
@@ -13,7 +14,12 @@ export const sunriser: MinionBlueprint = {
   name: 'Sunriser',
   description: 'After a unit is healed, deal 2 damage to nearby enemies.',
   vfx: {
-    spriteId: 'minions/f1_sunriser'
+    spriteId: 'minions/f1_sunriser',
+    sequences: {
+      play(game, card, position) {
+        return lyonarSpawn(position);
+      }
+    }
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

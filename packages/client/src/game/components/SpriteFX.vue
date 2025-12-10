@@ -12,17 +12,22 @@ const { sprites } = defineProps<{
   }>;
 }>();
 
+const emit = defineEmits<{
+  end: [];
+}>();
 const buildSprites = () => {
   const parts = sprites.map(s => {
+    const sprite = useSprite({
+      sprite: spritesData[s.spriteId],
+      animationSequence: s.animationSequence,
+      scale: s.scale,
+      kind: CARD_KINDS.SPELL,
+      pathPrefix: '/fx',
+      repeat: false
+    });
+
     return {
-      ...useSprite({
-        sprite: spritesData[s.spriteId],
-        animationSequence: s.animationSequence,
-        scale: s.scale,
-        kind: CARD_KINDS.SPELL,
-        pathPrefix: '/fx',
-        repeat: false
-      }),
+      ...sprite,
       spriteData: spritesData[s.spriteId],
       id: s.spriteId,
       scale: s.scale,
@@ -33,6 +38,14 @@ const buildSprites = () => {
   return parts;
 };
 const _sprites = buildSprites();
+
+const isDone = computed(() => _sprites.every(sprite => sprite.isDone.value));
+
+watch(isDone, done => {
+  if (done) {
+    emit('end');
+  }
+});
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import { useSettingsStore } from './useSettings';
 import { isDefined } from '@game/shared';
 
 export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
-  const SCALE_FACTOR = 0.4;
+  const SCALE_FACTOR = 0.6;
   const { settings: userSettings } = storeToRefs(useSettingsStore());
 
   const howl = ref() as Ref<Howl | undefined>;
