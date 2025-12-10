@@ -68,6 +68,7 @@ const isInAoe = useIsInAoe();
     }"
   >
     <UnitShadow
+      :unit="unit"
       :bg-position="bgPosition"
       :image-bg="imageBg"
       :sprite-width="activeFrameRect.width"

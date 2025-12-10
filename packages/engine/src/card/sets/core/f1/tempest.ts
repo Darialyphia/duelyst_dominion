@@ -4,13 +4,93 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
+import { BLEND_MODES } from '../../../../game/systems/vfx.system';
+import { forEachUnit } from '../../../card-vfx-sequences';
 
 export const tempest: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
   description: 'Deal 2 damage to all units.',
   vfx: {
-    spriteId: 'spells/f1_tempest'
+    spriteId: 'spells/f1_tempest',
+    sequences: {
+      play(game, card, { targets, aoe }) {
+        const targetTracks = forEachUnit({ game, aoe, targets, card }, position => {
+          return [
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position,
+                    resourceName: 'fx_fireslash',
+                    animationSequence: ['default'],
+                    offset: { x: 0, y: 0 },
+                    scale: 1.5,
+                    flipX: false
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position,
+                    resourceName: 'fx_fireslash',
+                    animationSequence: ['default'],
+                    offset: { x: 0, y: -100 },
+                    scale: 1.5,
+                    flipX: true
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position,
+                    resourceName: 'fx_heavenlystrike',
+                    animationSequence: ['default'],
+                    offset: { x: 0, y: -150 },
+                    scale: 1.5,
+                    flipX: false
+                  }
+                }
+              ]
+            }
+          ];
+        });
+
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'addLightAt',
+                  params: {
+                    blendMode: BLEND_MODES.SCREEN,
+                    color: '#faa03c',
+                    position: {
+                      x: Math.round(game.boardSystem.map.cols / 2),
+                      y: Math.round(game.boardSystem.map.rows / 2)
+                    },
+                    offset: { x: 0, y: 0 },
+                    opacity: 0.15,
+                    duration: 1000,
+                    radius: 2000
+                  }
+                }
+              ]
+            },
+            ...targetTracks
+          ]
+        };
+      }
+    }
   },
   sounds: {
     play: 'sfx_spell_heavenstrike.m4a'

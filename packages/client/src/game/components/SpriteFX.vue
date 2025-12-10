@@ -25,7 +25,9 @@ const buildSprites = () => {
       pathPrefix: '/fx',
       repeat: false
     });
-
+    if (!spritesData[s.spriteId]) {
+      console.warn('Sprite data not found for spriteId:', s.spriteId);
+    }
     return {
       ...sprite,
       spriteData: spritesData[s.spriteId],

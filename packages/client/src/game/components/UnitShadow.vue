@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import { config } from '@/utils/config';
+import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
+import { mapRange, Vec2 } from '@game/shared';
+import { useEventListener } from '@vueuse/core';
+import { useGameUi } from '../composables/useGameClient';
+
 const {
+  unit,
   bgPosition,
   imageBg,
   spriteWidth,
@@ -8,6 +15,7 @@ const {
   sheetHeight,
   isFlipped
 } = defineProps<{
+  unit: UnitViewModel;
   bgPosition: string;
   imageBg: string;
   spriteWidth: number;
@@ -16,8 +24,52 @@ const {
   sheetHeight: number;
   isFlipped: boolean;
 }>();
-</script>
+const ui = useGameUi();
+const unitPosition = computed(() => {
+  const raw = config.CELL.toScreenPosition(unit.position);
+  const board = ui.value.DOMSelectors.board.element;
+  if (!board) return raw;
 
+  const boardRect = board.getBoundingClientRect();
+  return new Vec2(raw.x + boardRect.left, raw.y + boardRect.top);
+});
+
+const mouseX = ref(window.innerWidth / 2);
+const mouseY = ref(window.innerHeight / 2);
+
+useEventListener(window, 'mousemove', (e: MouseEvent) => {
+  mouseX.value = e.clientX;
+  mouseY.value = e.clientY;
+});
+
+const distance = computed(() => {
+  const unitScreenPos = unitPosition.value;
+
+  return new Vec2(mouseX.value, mouseY.value).dist(unitScreenPos);
+});
+const maxdistance = Math.sqrt(
+  window.innerWidth * window.innerWidth +
+    (window.innerHeight * window.innerHeight) / 4
+);
+
+const distanceX = computed(() => {
+  return mouseX.value - unitPosition.value.x;
+});
+const maxDistanceX = window.innerWidth;
+
+const blur = computed(() => mapRange(distance.value, [0, maxdistance], [0, 3]));
+const opacity = computed(() =>
+  mapRange(distance.value, [0, maxdistance], [1, 0.53])
+);
+const skewX = computed(() => {
+  const angle = mapRange(
+    distanceX.value,
+    [-maxDistanceX, maxDistanceX],
+    [-35, 35]
+  );
+  return isFlipped ? -angle : angle;
+});
+</script>
 <template>
   <div
     class="shadow-wrapper"
@@ -50,6 +102,9 @@ const {
   scale: 2;
   transform-origin: bottom center;
   transform-style: preserve-3d;
+  &.is-flipped {
+    transform: scaleX(-1);
+  }
 }
 
 .shadow {
@@ -61,13 +116,13 @@ const {
   background-size: var(--background-width) var(--background-height);
   pointer-events: none;
   position: absolute;
-  transform: translateZ(1px) scaleY(-1) translateY(45%) skewX(15deg);
-  transform-origin: bottom center;
-  filter: brightness(0);
-  opacity: 0.25;
-
-  .is-flipped & {
-    translate: 12.5% 0;
-  }
+  /* transform: translateZ(1px) scaleY(-1) translateY(v-bind('`${translateY}%`'))
+    skewX(v-bind('`${skewX}deg`')) scaleX(v-bind('scaleX'))
+    scaleY(v-bind('scaleY')); */
+  transform: translateZ(1px) scaleY(-1) skewX(v-bind('`${skewX}deg`'));
+  transform-origin: 50% calc(100% - 16px);
+  filter: brightness(0) blur(v-bind('`${blur}px`'));
+  opacity: v-bind(opacity);
+  /* translate: v-bind('`${translateX}%`') 0; */
 }
 </style>

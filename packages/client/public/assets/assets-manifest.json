@@ -2077,6 +2077,60 @@
         },
         {
           "alias": [
+            "fx-fx_fireslash"
+          ],
+          "src": [
+            "/assets/fx/fx_fireslash.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_fireslash.png"
+          ],
+          "src": [
+            "/assets/fx/fx_fireslash.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_heavenlystrike"
+          ],
+          "src": [
+            "/assets/fx/fx_heavenlystrike.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_heavenlystrike.png"
+          ],
+          "src": [
+            "/assets/fx/fx_heavenlystrike.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "fx-fx_teleportrecall"
           ],
           "src": [

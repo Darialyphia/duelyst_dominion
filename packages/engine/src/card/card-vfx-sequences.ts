@@ -1,5 +1,13 @@
 import type { Point } from '@game/shared';
-import { BLEND_MODES, type VFXSequence } from '../game/systems/vfx.system';
+import {
+  BLEND_MODES,
+  type VFXSequence,
+  type VFXSequenceTrack,
+  type VFXStep
+} from '../game/systems/vfx.system';
+import type { Game } from '../game/game';
+import type { GenericAOEShape } from '../aoe/aoe-shape';
+import type { AnyCard } from './entities/card.entity';
 
 export const lyonarSpawn = (position: Point): VFXSequence => {
   return {
@@ -135,4 +143,16 @@ export const songhaiSpawn = (position: Point): VFXSequence => {
       }
     ]
   };
+};
+
+export const forEachUnit = (
+  ctx: { game: Game; aoe: GenericAOEShape; targets: Point[]; card: AnyCard },
+  steps: (pos: Point) => VFXSequenceTrack[]
+): VFXSequenceTrack[] => {
+  const { game, aoe, targets, card } = ctx;
+  const aoeTargets = game.unitSystem
+    .getUnitsInAOE(aoe, targets, card.player)
+    .map(u => u.position.serialize());
+
+  return aoeTargets.map(target => steps(target)).flat();
 };
