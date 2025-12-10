@@ -11,6 +11,7 @@ import { Modifier } from '../../../../modifier/modifier.entity';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { StealthUnitModifier } from '../../../../modifier/modifiers/stealth.modifier';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
 
 export const massacreArtist: MinionBlueprint = {
   id: 'massacre_artist',
@@ -20,7 +21,12 @@ export const massacreArtist: MinionBlueprint = {
   Allies with @Backstab@ have @Stealth@ and "When this unit backstabs, deal 2 more damage".
   `,
   vfx: {
-    spriteId: 'minions/f2_massacre-artist'
+    spriteId: 'minions/f2_massacre-artist',
+    sequences: {
+      play(game, card, position) {
+        return songhaiSpawn(position);
+      }
+    }
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

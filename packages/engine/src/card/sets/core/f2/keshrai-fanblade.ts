@@ -7,13 +7,19 @@ import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mi
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
 import { DurationModifierMixin } from '../../../../modifier/mixins/duration.mixin';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
 
 export const keshraiFanblade: MinionBlueprint = {
   id: 'keshrai_fanblade',
   name: 'Keshrai Fanblade',
   description: "@On Enter@: Your opponent's spells cost 1 more until your next turn.",
   vfx: {
-    spriteId: 'minions/f2_keshrai-fanblade'
+    spriteId: 'minions/f2_keshrai-fanblade',
+    sequences: {
+      play(game, card, position) {
+        return songhaiSpawn(position);
+      }
+    }
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

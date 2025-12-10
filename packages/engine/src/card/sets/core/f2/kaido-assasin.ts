@@ -2,6 +2,7 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const kaidoAssassin: MinionBlueprint = {
@@ -9,7 +10,12 @@ export const kaidoAssassin: MinionBlueprint = {
   name: 'Kaido Assassin',
   description: '@Backstab (1)@.',
   vfx: {
-    spriteId: 'minions/f2_kaido-assasin'
+    spriteId: 'minions/f2_kaido-assasin',
+    sequences: {
+      play(game, card, position) {
+        return songhaiSpawn(position);
+      }
+    }
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

@@ -82,7 +82,6 @@ export function useSprite({
     },
     { immediate: true }
   );
-  console.log(spriteRef.value?.id);
   useIntervalFn(
     () => {
       if (!spriteRef.value) return;

@@ -10,6 +10,7 @@ type SpriteConfig = {
   animationSequence: string[];
   offset: Point;
   scale: number;
+  flipX: boolean;
 };
 const sprites = ref<SpriteConfig[]>([]);
 
@@ -56,6 +57,7 @@ useVFXStep('playSpriteAt', async step => {
 <template>
   <div
     class="vfx-sprite"
+    :class="sprite.flipX && 'is-flipped'"
     v-for="sprite in sprites"
     :key="sprite.id"
     :style="{
@@ -82,5 +84,9 @@ useVFXStep('playSpriteAt', async step => {
   position: fixed;
   top: var(--sprite-top);
   left: var(--sprite-left);
+  &.is-flipped {
+    transform-origin: center center;
+    transform: scaleX(-1);
+  }
 }
 </style>

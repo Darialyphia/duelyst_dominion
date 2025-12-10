@@ -26,10 +26,10 @@ export const silverguardKnight: MinionBlueprint = {
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f1silverguardsquire_attack_swing.m4a',
-    takeDamage: 'sfx_f1silverguardsquire_hit.m4a',
-    dealDamage: 'sfx_f1silverguardsquire_attack_impact.m4a',
-    death: 'sfx_f1silverguardsquire_death.m4a'
+    attack: 'sfx_f1_silverguardsquire_attack_swing.m4a',
+    takeDamage: 'sfx_f1_silverguardsquire_hit.m4a',
+    dealDamage: 'sfx_f1_silverguardsquire_attack_impact.m4a',
+    death: 'sfx_f1_silverguardsquire_death.m4a'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

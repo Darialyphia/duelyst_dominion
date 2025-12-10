@@ -49,13 +49,10 @@ const {
   translate: -50% 0;
   scale: 2;
   transform-origin: bottom center;
-  transition:
-    transform 0.3s var(--ease-2),
-    opacity 0.3s var(--ease-2);
+  transition: filter 1s var(--ease-2);
 
   @starting-style {
-    transform: translateY(20px);
-    opacity: 0;
+    filter: brightness(0);
   }
 }
 

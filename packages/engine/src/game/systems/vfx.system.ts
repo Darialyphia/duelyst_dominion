@@ -58,6 +58,7 @@ export type VFXStep =
         animationSequence: string[];
         offset: Point;
         scale: number;
+        flipX: boolean;
       };
     }
   | {
@@ -67,6 +68,7 @@ export type VFXStep =
         animationSequence: string[];
         offset: Point;
         scale: number;
+        flipX: boolean;
       };
     }
   | {

@@ -145,6 +145,24 @@ export class ClientStateController {
     return await flush();
   }
 
+  private async onAfterMinionSummoned(
+    event: {
+      event: SerializedEvent<'MINION_AFTER_SUMMON'>;
+    },
+    flush: (postUpdateCallback?: () => Promise<void>) => Promise<void>
+  ) {
+    if (!this.state.entities[event.event.unit.id]) {
+      return;
+    }
+    const unit = this.buildViewModel(event.event.unit as any) as UnitViewModel;
+    this.state.entities[unit.id] = unit;
+    if (!this.state.units.includes(unit.id)) {
+      this.state.units.push(unit.id);
+    }
+    this.state = { ...this.state };
+    return await flush();
+  }
+
   async onEvent(
     event: SerializedStarEvent,
     flush: (postUpdateCallback?: () => Promise<void>) => Promise<void>
@@ -152,10 +170,10 @@ export class ClientStateController {
     if (event.eventName === GAME_EVENTS.CARD_BEFORE_PLAY) {
       return this.onBeforePlayCard(event, flush);
     }
+    if (event.eventName === GAME_EVENTS.MINION_AFTER_SUMMON) {
+      return this.onAfterMinionSummoned(event, flush);
+    }
     return await flush();
-    // if (event.eventName === GAME_EVENTS.MINION_SUMMONED) {
-    //   return this.onMinionSummoned(event, flush);
-    // }
     // if (event.eventName === GAME_EVENTS.ARTIFACT_EQUIPED) {
     //   return this.onArtifactEquiped(event, flush);
     // }

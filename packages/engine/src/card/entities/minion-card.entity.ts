@@ -20,7 +20,11 @@ import {
   type TargetingStrategy
 } from '../../targeting/targeting-strategy';
 import type { MaybePromise } from '@game/shared';
-import { MINION_EVENTS, MinionSummonedEvent } from '../events/minion.events';
+import {
+  MINION_EVENTS,
+  MinionAfterSummonedEvent,
+  MinionBeforeSummonedEvent
+} from '../events/minion.events';
 import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-sickness.modifier';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -170,20 +174,10 @@ export class MinionCard extends Card<
       new CardBeforePlayEvent({ card: this })
     );
 
-    await this.game.vfxSystem.playSequence(
-      this.blueprint.vfx.sequences?.play?.(
-        this.game,
-        this,
-        position.position.serialize(),
-        targets.map(t => t.position.serialize())
-      ) ?? {
-        tracks: []
-      }
-    );
     const aoe = this.getAOE(position, targets);
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
-      new MinionSummonedEvent({
+      new MinionBeforeSummonedEvent({
         card: this,
         cell: position,
         targets,
@@ -199,12 +193,22 @@ export class MinionCard extends Card<
 
     await this.game.emit(
       MINION_EVENTS.MINION_AFTER_SUMMON,
-      new MinionSummonedEvent({
+      new MinionAfterSummonedEvent({
         card: this,
-        cell: position,
+        unit: this.unit,
         targets,
         aoe
       })
+    );
+    await this.game.vfxSystem.playSequence(
+      this.blueprint.vfx.sequences?.play?.(
+        this.game,
+        this,
+        position.position.serialize(),
+        targets.map(t => t.position.serialize())
+      ) ?? {
+        tracks: []
+      }
     );
     await this.blueprint.onPlay(this.game, this, {
       aoe,

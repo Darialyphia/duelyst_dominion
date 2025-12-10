@@ -1,6 +1,6 @@
 import { isDefined, type MaybePromise } from '@game/shared';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import { MINION_EVENTS, MinionSummonedEvent } from '../../card/events/minion.events';
+import { MINION_EVENTS, MinionAfterSummonedEvent } from '../../card/events/minion.events';
 import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { ModifierMixin } from '../modifier-mixin';
@@ -23,7 +23,7 @@ export class UnitEffectModifierMixin<
     this.onAfterSummoned = this.onAfterSummoned.bind(this);
   }
 
-  private async onAfterSummoned(event: MinionSummonedEvent) {
+  private async onAfterSummoned(event: MinionAfterSummonedEvent) {
     if (!event.data.card.equals(this.modifier.target)) return;
     await this.options.onApplied(event.data.card.unit!);
   }

@@ -100,6 +100,7 @@ export const useCard = (cardId: MaybeRef<string>) => {
 
 export const useUnits = () => {
   const state = useGameState();
+
   return useEntities<UnitViewModel>(computed(() => state.value.units));
 };
 

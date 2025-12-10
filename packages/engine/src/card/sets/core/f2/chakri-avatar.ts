@@ -9,13 +9,19 @@ import { isSpell } from '../../../card-utils';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
 
 export const chakriAvatar: MinionBlueprint = {
   id: 'chakri_avatar',
   name: 'Chakri Avatar',
   description: 'When you play a spell, this gains +1 / +1.',
   vfx: {
-    spriteId: 'minions/f2_chakri-avatar'
+    spriteId: 'minions/f2_chakri-avatar',
+    sequences: {
+      play(game, card, position) {
+        return songhaiSpawn(position);
+      }
+    }
   },
   sounds: {},
   kind: CARD_KINDS.MINION,
