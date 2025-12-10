@@ -9,7 +9,7 @@ export const circleOfLife: SpellBlueprint = {
   id: 'circle-of-life',
   name: 'Circle of Life',
   description: 'Deal 5 damage to a minion and heal your general for 5.',
-  sprite: { id: 'spells/f1_circle-of-life' },
+  vfx: { spriteId: 'spells/f1_circle-of-life' },
   sounds: {
     play: 'sfx_neutral_spelljammer_attack_swing.m4a'
   },

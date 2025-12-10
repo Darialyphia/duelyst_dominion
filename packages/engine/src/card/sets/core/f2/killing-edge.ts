@@ -14,7 +14,7 @@ export const killingEdge: SpellBlueprint = {
   name: 'Killing Edge',
   description:
     'Give an allied minion +1/+1. If it has @Backstab@, draw a card at the end of the turn.',
-  sprite: { id: 'spells/f2_killing-edge' },
+  vfx: { spriteId: 'spells/f2_killing-edge' },
   sounds: {
     play: 'sfx_spell_twinstrike.m4a'
   },

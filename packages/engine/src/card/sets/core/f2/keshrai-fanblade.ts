@@ -12,8 +12,8 @@ export const keshraiFanblade: MinionBlueprint = {
   id: 'keshrai_fanblade',
   name: 'Keshrai Fanblade',
   description: "@On Enter@: Your opponent's spells cost 1 more until your next turn.",
-  sprite: {
-    id: 'minions/f2_keshrai-fanblade'
+  vfx: {
+    spriteId: 'minions/f2_keshrai-fanblade'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

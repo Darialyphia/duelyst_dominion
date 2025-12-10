@@ -10,7 +10,7 @@ export const ghostLightning: SpellBlueprint = {
   id: 'ghost-lightning',
   name: 'Ghost Lightning',
   description: 'Deal 1 damage to all enemy minions.',
-  sprite: { id: 'spells/f2_ghost-lightning' },
+  vfx: { spriteId: 'spells/f2_ghost-lightning' },
   sounds: {
     play: 'sfx_spell_ghostlightning.m4a'
   },

@@ -5,7 +5,7 @@ import sprites from 'virtual:sprites';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
 const sprite = computed(() => {
-  return sprites[blueprint.sprite.id];
+  return sprites[blueprint.vfx.spriteId];
 });
 </script>
 

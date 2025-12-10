@@ -9,7 +9,7 @@ export const trueStrike: SpellBlueprint = {
   id: 'true-strike',
   name: 'True Strike',
   description: 'Deal 2 damage to an enemy minion.',
-  sprite: { id: 'spells/f1_true-strike' },
+  vfx: { spriteId: 'spells/f1_true-strike' },
   sounds: {
     play: 'sfx_spell_truestrike.m4a'
   },

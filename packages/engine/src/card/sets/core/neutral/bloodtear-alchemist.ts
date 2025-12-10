@@ -10,7 +10,7 @@ export const bloodtearAlchemist: MinionBlueprint = {
   id: 'bloodtear-alchemist',
   name: 'Bloodtear Alchemist',
   description: '@On Enter@: Deal 1 damage to an enemy minion.',
-  sprite: { id: 'minions/neutral_bloodtear-alchemist' },
+  vfx: { spriteId: 'minions/neutral_bloodtear-alchemist' },
   sounds: {
     play: 'sfx_unit_deploy_2.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

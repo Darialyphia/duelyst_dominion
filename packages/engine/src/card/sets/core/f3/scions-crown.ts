@@ -16,7 +16,7 @@ export const scionsCrown: ArtifactBlueprint = {
   description: dedent`
   Your general has @Celerity@ and cannot damage generals.
   `,
-  sprite: { id: 'artifacts/f3_scions-crown' },
+  vfx: { spriteId: 'artifacts/f3_scions-crown' },
   sounds: {},
   kind: CARD_KINDS.ARTIFACT,
   collectable: true,

@@ -8,7 +8,7 @@ export const sundropElixir: SpellBlueprint = {
   id: 'sundrop-elixir',
   name: 'Sundrop Elixir',
   description: 'Heal a unit for 4.',
-  sprite: { id: 'spells/f1_sundrop-elixir' },
+  vfx: { spriteId: 'spells/f1_sundrop-elixir' },
   sounds: {
     play: 'sfx_spell_lionheartblessing.m4a'
   },

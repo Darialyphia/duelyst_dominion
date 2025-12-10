@@ -18,8 +18,8 @@ export const tuskBoar: MinionBlueprint = {
   name: 'Tusk Boar',
   description: dedent`@Rush@.
   At the start of your turn, return this to your hand.`,
-  sprite: {
-    id: 'minions/f2_tusk-boar'
+  vfx: {
+    spriteId: 'minions/f2_tusk-boar'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

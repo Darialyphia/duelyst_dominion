@@ -11,7 +11,7 @@ export const ironcliffeGuardian: MinionBlueprint = {
   name: 'Ironcliffe Guardian',
   description: dedent`
   @Airdrop@, @Provoke@.`,
-  sprite: { id: 'minions/f1_ironcliffe-guardian' },
+  vfx: { spriteId: 'minions/f1_ironcliffe-guardian' },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_charge_4.m4a',

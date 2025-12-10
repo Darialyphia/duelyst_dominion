@@ -17,7 +17,7 @@ export const archonSpellbinder: MinionBlueprint = {
   Enemy spells cost 1 more to play.
   @[rune:blue]@ @[rune:blue]@ @[rune:blue]@: +0 / +2
   `,
-  sprite: { id: 'minions/neutral_archon-spellbinder' },
+  vfx: { spriteId: 'minions/neutral_archon-spellbinder' },
   sounds: {
     play: 'sfx_summonlegendary.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

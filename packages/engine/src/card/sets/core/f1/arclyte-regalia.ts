@@ -20,7 +20,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
   Your general has +2/+0.
   The first time your general takes damage each turn, reduce that damage by 2.
   `,
-  sprite: { id: 'artifacts/f1_arclyte-regalia' },
+  vfx: { spriteId: 'artifacts/f1_arclyte-regalia' },
   sounds: {
     play: 'sfx_victory_crest.m4a'
   },

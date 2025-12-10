@@ -9,8 +9,8 @@ export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
   description: '@Zeal@ : +2 Attack.',
-  sprite: {
-    id: 'minions/f1_windblade-adept'
+  vfx: {
+    spriteId: 'minions/f1_windblade-adept'
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

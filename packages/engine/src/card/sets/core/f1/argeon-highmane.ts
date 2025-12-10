@@ -5,8 +5,8 @@ export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
   description: '',
-  sprite: {
-    id: 'generals/f1_argeon-highmane'
+  vfx: {
+    spriteId: 'generals/f1_argeon-highmane'
   },
   sounds: {
     play: 'sfx_unit_deploy.m4a',

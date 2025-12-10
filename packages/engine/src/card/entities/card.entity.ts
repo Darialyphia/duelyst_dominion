@@ -1,4 +1,9 @@
-import { type JSONObject, type MaybePromise, type Point } from '@game/shared';
+import {
+  type Defined,
+  type JSONObject,
+  type MaybePromise,
+  type Point
+} from '@game/shared';
 import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
 import type { Game } from '../../game/game';
 import { ModifierManager } from '../../modifier/modifier-manager.component';
@@ -43,6 +48,7 @@ export type SerializedCard = {
   isFoil: boolean;
   spriteId: string;
   sounds: CardBlueprint['sounds'];
+  vfx: Defined<CardBlueprint['vfx']['sequences']>;
   kind: CardKind;
   rarity: Rarity;
   player: string;
@@ -203,7 +209,7 @@ export abstract class Card<
     return {
       id: this.id,
       isFoil: this.isFoil,
-      spriteId: this.blueprint.sprite.id,
+      spriteId: this.blueprint.vfx.spriteId,
       sounds: this.blueprint.sounds,
       entityType: 'card',
       rarity: this.blueprint.rarity,
@@ -221,7 +227,8 @@ export abstract class Card<
         description: keyword.description
       })),
       faction: this.blueprint.faction,
-      spacesToHighlight: this.spacesToHighlight
+      spacesToHighlight: this.spacesToHighlight,
+      vfx: this.blueprint.vfx.sequences ?? {}
     };
   }
 

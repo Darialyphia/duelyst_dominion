@@ -9,7 +9,7 @@ export const healingMystic: MinionBlueprint = {
   id: 'healing-mystic',
   name: 'Healing Mystic',
   description: '@On Enter@: Heal a minion for 2.',
-  sprite: { id: 'minions/neutral_healing-mystic' },
+  vfx: { spriteId: 'minions/neutral_healing-mystic' },
   sounds: {
     play: 'sfx_unit_deploy_3.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

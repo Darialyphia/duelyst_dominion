@@ -21,7 +21,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
   @Timeless@.
   When an enemy attacks your general, your opponent must pay 2. If they can't, you gain 1 max mana until the end of your next turn.
   `,
-  sprite: { id: 'artifacts/f3_circlet-of-inhibition' },
+  vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},
   kind: CARD_KINDS.ARTIFACT,
   collectable: true,

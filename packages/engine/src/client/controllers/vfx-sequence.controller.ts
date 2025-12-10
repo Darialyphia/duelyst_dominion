@@ -13,9 +13,17 @@ export class VFXSequenceController {
     await Promise.all(
       sequence.tracks.map(async track => {
         for (const step of track.steps) {
-          await this.emitter.emit(step.type, step as any);
+          await this.emitter.emit(step.type, step);
         }
       })
     );
+  }
+
+  get on() {
+    return this.emitter.on.bind(this.emitter);
+  }
+
+  get off() {
+    return this.emitter.off.bind(this.emitter);
   }
 }

@@ -9,8 +9,8 @@ export const tempest: SpellBlueprint = {
   id: 'tempest',
   name: 'Tempest',
   description: 'Deal 2 damage to all units.',
-  sprite: {
-    id: 'spells/f1_tempest'
+  vfx: {
+    spriteId: 'spells/f1_tempest'
   },
   sounds: {
     play: 'sfx_spell_heavenstrike.m4a'

@@ -10,7 +10,7 @@ export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
   description: 'Give allied minions +1 / +1.',
-  sprite: { id: 'spells/f1_war-surge' },
+  vfx: { spriteId: 'spells/f1_war-surge' },
   sounds: {
     play: 'sfx_spell_warsurge.m4a'
   },

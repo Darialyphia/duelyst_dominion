@@ -9,7 +9,7 @@ export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
   description: 'Deal 3 damage to an enemy.',
-  sprite: { id: 'spells/f2_phoenix-fire' },
+  vfx: { spriteId: 'spells/f2_phoenix-fire' },
   sounds: {
     play: 'sfx_spell_phoenixfire.m4a'
   },

@@ -16,6 +16,7 @@ import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import type { PlayerArtifact } from '../player/player-artifact.entity';
 import type { AnyCard } from './entities/card.entity';
+import type { VFXSequence } from '../game/systems/vfx.system';
 
 export type CardBlueprintBase = {
   id: string;
@@ -27,8 +28,11 @@ export type CardBlueprintBase = {
   faction: Faction;
   // eslint-disable-next-line @typescript-eslint/ban-types
   tags: (Tag | (string & {}))[];
-  sprite: {
-    id: string;
+  vfx: {
+    spriteId: string;
+    sequences?: {
+      play?: VFXSequence;
+    };
   };
   sounds: {
     play?: string;

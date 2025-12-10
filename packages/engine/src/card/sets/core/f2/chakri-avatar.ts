@@ -14,8 +14,8 @@ export const chakriAvatar: MinionBlueprint = {
   id: 'chakri_avatar',
   name: 'Chakri Avatar',
   description: 'When you play a spell, this gains +1 / +1.',
-  sprite: {
-    id: 'minions/f2_chakri-avatar'
+  vfx: {
+    spriteId: 'minions/f2_chakri-avatar'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

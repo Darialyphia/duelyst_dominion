@@ -8,7 +8,7 @@ export const azuriteLion: MinionBlueprint = {
   id: 'azurite_lion',
   name: 'Azurite Lion',
   description: '@Celerity@.',
-  sprite: { id: 'minions/f1_azurite-lion' },
+  vfx: { spriteId: 'minions/f1_azurite-lion' },
   sounds: {
     play: 'sfx_spell_diretidefrenzy.m4a',
     walk: 'sfx_neutral_arakiheadhunter_hit.m4a',

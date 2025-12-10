@@ -9,7 +9,7 @@ export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
   description: '@On Enter@: Deal 2 damage to nearby units.',
-  sprite: { id: 'minions/neutral_frostbone-naga' },
+  vfx: { spriteId: 'minions/neutral_frostbone-naga' },
   sounds: {
     play: 'sfx_unit_deploy_2.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

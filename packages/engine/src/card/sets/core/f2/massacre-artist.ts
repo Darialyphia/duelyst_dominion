@@ -19,8 +19,8 @@ export const massacreArtist: MinionBlueprint = {
   @Backstab (1)@.
   Allies with @Backstab@ have @Stealth@ and "When this unit backstabs, deal 2 more damage".
   `,
-  sprite: {
-    id: 'minions/f2_massacre-artist'
+  vfx: {
+    spriteId: 'minions/f2_massacre-artist'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

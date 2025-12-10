@@ -14,8 +14,8 @@ export const silverguardKnight: MinionBlueprint = {
   @Provoke@.
   @Zeal@ : +2 Attack.
   `,
-  sprite: {
-    id: 'minions/f1_silverguard-knight'
+  vfx: {
+    spriteId: 'minions/f1_silverguard-knight'
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

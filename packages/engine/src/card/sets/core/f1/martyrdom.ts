@@ -10,7 +10,7 @@ export const martyrdom: SpellBlueprint = {
   name: 'Martyrdom',
   description: dedent`
   Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
-  sprite: { id: 'spells/f1_martyrdom' },
+  vfx: { spriteId: 'spells/f1_martyrdom' },
   sounds: {
     play: 'sfx_spell_martyrdom.m4a'
   },

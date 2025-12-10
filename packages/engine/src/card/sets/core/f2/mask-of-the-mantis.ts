@@ -15,7 +15,7 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   description: dedent`
   When your general deals damage, deal 2 damage to a minion.
   `,
-  sprite: { id: 'artifacts/f2_mask-of-the-mantis' },
+  vfx: { spriteId: 'artifacts/f2_mask-of-the-mantis' },
   sounds: {},
   kind: CARD_KINDS.ARTIFACT,
   collectable: true,

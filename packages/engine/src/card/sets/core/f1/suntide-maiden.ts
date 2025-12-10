@@ -10,7 +10,7 @@ export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
   description: '@Zeal@ : fully heal this unit at the end of your turn.',
-  sprite: { id: 'minions/f1_suntide-maiden' },
+  vfx: { spriteId: 'minions/f1_suntide-maiden' },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_magical_4.m4a',

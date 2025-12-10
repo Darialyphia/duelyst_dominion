@@ -8,7 +8,7 @@ export const primusShieldmaster: MinionBlueprint = {
   id: 'primus-shieldmaster',
   name: 'Primus Shieldmaster',
   description: '@Provoke@.',
-  sprite: { id: 'minions/neutral_primus-shieldmaster' },
+  vfx: { spriteId: 'minions/neutral_primus-shieldmaster' },
   sounds: {
     play: 'sfx_unit_deploy_3.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

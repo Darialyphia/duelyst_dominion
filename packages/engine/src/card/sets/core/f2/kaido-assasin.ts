@@ -8,8 +8,8 @@ export const kaidoAssassin: MinionBlueprint = {
   id: 'kaido_assassin',
   name: 'Kaido Assassin',
   description: '@Backstab (1)@.',
-  sprite: {
-    id: 'minions/f2_kaido-assasin'
+  vfx: {
+    spriteId: 'minions/f2_kaido-assasin'
   },
   sounds: {},
   kind: CARD_KINDS.MINION,

@@ -13,7 +13,7 @@ export const divineBond: SpellBlueprint = {
   description: dedent`
   Set an allied minion's attack equal to its health.
   `,
-  sprite: { id: 'spells/f1_divine-bond' },
+  vfx: { spriteId: 'spells/f1_divine-bond' },
   sounds: {
     play: 'sfx_spell_divinebond.m4a'
   },

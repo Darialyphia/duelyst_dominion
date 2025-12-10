@@ -8,7 +8,7 @@ export const voidHunter: MinionBlueprint = {
   id: 'void-hunter',
   name: 'Void Hunter',
   description: '@Dying Wish@ : Draw 2 cards..',
-  sprite: { id: 'minions/neutral_void-hunter' },
+  vfx: { spriteId: 'minions/neutral_void-hunter' },
   sounds: {
     play: 'sfx_spell_voidpulse.m4a',
     walk: 'sfx_neutral_chaoselemental_hit.m4a',

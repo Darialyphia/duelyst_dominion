@@ -8,7 +8,7 @@ export const saberspineTiger: MinionBlueprint = {
   id: 'saberspine-tiger',
   name: 'Saberspine Tiger',
   description: '@Rush@.',
-  sprite: { id: 'minions/neutral_saberspine-tiger' },
+  vfx: { spriteId: 'minions/neutral_saberspine-tiger' },
   sounds: {
     play: 'sfx_unit_deploy_1.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

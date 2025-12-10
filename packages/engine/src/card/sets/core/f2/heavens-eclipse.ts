@@ -11,7 +11,7 @@ export const heavensEclipse: SpellBlueprint = {
   id: 'heavens-eclipse',
   name: "Heaven's Eclipse",
   description: 'Draw 3 spells.',
-  sprite: { id: 'spells/f2_heavens-eclipse' },
+  vfx: { spriteId: 'spells/f2_heavens-eclipse' },
   sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,

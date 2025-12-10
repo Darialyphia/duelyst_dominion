@@ -66,7 +66,7 @@ const highestRuneCost = computed<Record<Rune, number>>(() => {
 });
 
 const sprite = computed(() =>
-  general.value ? sprites[general.value.sprite.id] : null
+  general.value ? sprites[general.value.vfx.spriteId] : null
 );
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.GENERAL,

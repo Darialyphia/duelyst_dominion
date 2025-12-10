@@ -12,8 +12,8 @@ export const lightChaser: MinionBlueprint = {
   id: 'light_chaser',
   name: 'Light Chaser',
   description: 'When a unit is healed, this gains +2/0',
-  sprite: {
-    id: 'minions/f1_lightchaser'
+  vfx: {
+    spriteId: 'minions/f1_lightchaser'
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

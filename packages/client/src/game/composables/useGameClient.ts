@@ -20,6 +20,7 @@ import { gameStateRef } from './gameStateRef';
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
 import type { TileViewModel } from '@game/engine/src/client/view-models/tile.model';
+import type { VFXStep } from '@game/engine/src/game/systems/vfx.system';
 
 type GameClientContext = { client: Ref<GameClient>; playerId: Ref<string> };
 
@@ -114,6 +115,19 @@ export const useFxEvent = <T extends FXEvent>(
   const { client } = useGameClient();
 
   const unsub = client.value.fx.on(name, handler);
+
+  onUnmounted(unsub);
+
+  return unsub;
+};
+
+export const useVFXStep = <T extends VFXStep['type']>(
+  name: T,
+  handler: (step: VFXStep & { type: T }) => MaybePromise<void>
+) => {
+  const { client } = useGameClient();
+
+  const unsub = client.value.vfx.on(name, handler as any);
 
   onUnmounted(unsub);
 

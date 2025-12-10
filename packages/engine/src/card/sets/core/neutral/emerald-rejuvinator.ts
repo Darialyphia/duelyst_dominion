@@ -8,7 +8,7 @@ export const emeraldRejuvinator: MinionBlueprint = {
   id: 'emerald-rejuvinator',
   name: 'Emerald Rejuvinator',
   description: '@On Enter@: Heal your general for 4.',
-  sprite: { id: 'minions/neutral_emerald-rejuvinator' },
+  vfx: { spriteId: 'minions/neutral_emerald-rejuvinator' },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_charge_4.m4a',

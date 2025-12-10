@@ -12,8 +12,8 @@ export const sunriser: MinionBlueprint = {
   id: 'sunriser',
   name: 'Sunriser',
   description: 'After a unit is healed, deal 2 damage to nearby enemies.',
-  sprite: {
-    id: 'minions/f1_sunriser'
+  vfx: {
+    spriteId: 'minions/f1_sunriser'
   },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',

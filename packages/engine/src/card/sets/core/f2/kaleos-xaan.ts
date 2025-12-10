@@ -5,8 +5,8 @@ export const kaleosXaan: GeneralBlueprint = {
   id: 'kaleos-xaan',
   name: 'Kaleos Xaan',
   description: '',
-  sprite: {
-    id: 'generals/f2_kaleos-xaan'
+  vfx: {
+    spriteId: 'generals/f2_kaleos-xaan'
   },
   sounds: {},
   kind: CARD_KINDS.GENERAL,
