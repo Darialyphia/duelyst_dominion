@@ -28,6 +28,7 @@ import ExplainerMessage from './ExplainerMessage.vue';
 import EquipedArtifact from './EquipedArtifact.vue';
 import VFXLights from './VFXLights.vue';
 import VFXSprites from './VFXSprites.vue';
+import SVGFilters from './SVGFilters.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
@@ -61,6 +62,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
     <DraggedCard />
     <!-- <FPS /> -->
     <PlayedCard />
+    <SVGFilters />
 
     <Camera>
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />

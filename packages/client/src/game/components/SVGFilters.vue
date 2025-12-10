@@ -100,5 +100,11 @@
         <feComposite in="SourceGraphic" in2="blurredBloom" operator="lighter" />
       </filter>
     </defs>
+
+    <defs>
+      <filter id="shadow-blur">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0 4" />
+      </filter>
+    </defs>
   </svg>
 </template>

@@ -59,7 +59,7 @@ const maxDistanceX = window.innerWidth;
 
 const blur = computed(() => mapRange(distance.value, [0, maxdistance], [0, 3]));
 const opacity = computed(() =>
-  mapRange(distance.value, [0, maxdistance], [1, 0.53])
+  mapRange(distance.value, [0, maxdistance], [0.7, 0.45])
 );
 const skewX = computed(() => {
   const angle = mapRange(
@@ -68,6 +68,9 @@ const skewX = computed(() => {
     [-35, 35]
   );
   return isFlipped ? -angle : angle;
+});
+const scaleY = computed(() => {
+  return mapRange(distance.value, [0, maxdistance], [0.75, 1.1]) * -1;
 });
 </script>
 <template>
@@ -86,6 +89,7 @@ const skewX = computed(() => {
     }"
   >
     <div class="shadow" />
+    <div class="shadow-blur" />
   </div>
 </template>
 
@@ -119,10 +123,30 @@ const skewX = computed(() => {
   /* transform: translateZ(1px) scaleY(-1) translateY(v-bind('`${translateY}%`'))
     skewX(v-bind('`${skewX}deg`')) scaleX(v-bind('scaleX'))
     scaleY(v-bind('scaleY')); */
-  transform: translateZ(1px) scaleY(-1) skewX(v-bind('`${skewX}deg`'));
+  transform: translateZ(1px) scaleY(v-bind('`${scaleY}`'))
+    skewX(v-bind('`${skewX}deg`'));
   transform-origin: 50% calc(100% - 16px);
   filter: brightness(0) blur(v-bind('`${blur}px`'));
-  opacity: v-bind(opacity);
-  /* translate: v-bind('`${translateX}%`') 0; */
+  opacity: calc(v-bind(opacity) * 0.5);
+  mask-image: linear-gradient(to top, black, black 15%, transparent 70%);
+}
+.shadow-blur {
+  width: 100%;
+  height: 100%;
+  background: v-bind(imageBg);
+  background-position: var(--bg-position);
+  background-repeat: no-repeat;
+  background-size: var(--background-width) var(--background-height);
+  pointer-events: none;
+  position: absolute;
+  /* transform: translateZ(1px) scaleY(-1) translateY(v-bind('`${translateY}%`'))
+  skewX(v-bind('`${skewX}deg`')) scaleX(v-bind('scaleX'))
+  scaleY(v-bind('scaleY')); */
+  transform: translateZ(1px) scaleY(calc(1.25 * v-bind('`${scaleY}`')))
+    skewX(v-bind('`${skewX}deg`'));
+  transform-origin: 50% calc(100% - 16px);
+  filter: brightness(0) url(#shadow-blur);
+  opacity: calc(v-bind(opacity) * 0.75);
+  mask-image: linear-gradient(to top, transparent, black 20%);
 }
 </style>
