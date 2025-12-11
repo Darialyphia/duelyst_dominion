@@ -23,7 +23,14 @@ export const tuskBoar: MinionBlueprint = {
       }
     }
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_summonlegendary.m4a',
+    walk: 'sfx_neutral_arakiheadhunter_hit.m4a',
+    attack: 'sfx_f6_seismicelemental_attack_impact.m4a',
+    takeDamage: 'sfx_neutral_golembloodshard_hit.m4a',
+    dealDamage: 'sfx_f2_lanternfox_death.m4a',
+    death: 'sfx_f2_lanternfox_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

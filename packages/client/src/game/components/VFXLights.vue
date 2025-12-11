@@ -74,6 +74,7 @@ useVFXStep('addLightAt', async light => {
   left: var(--light-left);
   width: calc(var(--light-radius) * 2);
   aspect-ratio: 1;
+  pointer-events: none;
   background: radial-gradient(
     circle at center,
     var(--light-color),

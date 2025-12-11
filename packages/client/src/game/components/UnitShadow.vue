@@ -111,7 +111,7 @@ const scaleY = computed(() => {
   }
 }
 
-.shadow {
+:is(.shadow, .shadow-blur) {
   width: 100%;
   height: 100%;
   background: v-bind(imageBg);
@@ -120,33 +120,23 @@ const scaleY = computed(() => {
   background-size: var(--background-width) var(--background-height);
   pointer-events: none;
   position: absolute;
-  /* transform: translateZ(1px) scaleY(-1) translateY(v-bind('`${translateY}%`'))
-    skewX(v-bind('`${skewX}deg`')) scaleX(v-bind('scaleX'))
-    scaleY(v-bind('scaleY')); */
-  transform: translateZ(1px) scaleY(v-bind('`${scaleY}`'))
-    skewX(v-bind('`${skewX}deg`'));
   transform-origin: 50% calc(100% - 16px);
+  transform: translateZ(1px)
+    scaleY(calc(var(--scale-factor) * v-bind('`${scaleY}`')))
+    skewX(v-bind('`${skewX}deg`'));
+  opacity: calc(v-bind(opacity) * var(--opacity-factor));
+}
+
+.shadow {
+  --scale-factor: 1;
+  --opacity-factor: 0.5;
   filter: brightness(0) blur(v-bind('`${blur}px`'));
-  opacity: calc(v-bind(opacity) * 0.5);
   mask-image: linear-gradient(to top, black, black 15%, transparent 70%);
 }
 .shadow-blur {
-  width: 100%;
-  height: 100%;
-  background: v-bind(imageBg);
-  background-position: var(--bg-position);
-  background-repeat: no-repeat;
-  background-size: var(--background-width) var(--background-height);
-  pointer-events: none;
-  position: absolute;
-  /* transform: translateZ(1px) scaleY(-1) translateY(v-bind('`${translateY}%`'))
-  skewX(v-bind('`${skewX}deg`')) scaleX(v-bind('scaleX'))
-  scaleY(v-bind('scaleY')); */
-  transform: translateZ(1px) scaleY(calc(1.25 * v-bind('`${scaleY}`')))
-    skewX(v-bind('`${skewX}deg`'));
-  transform-origin: 50% calc(100% - 16px);
+  --scale-factor: 1.25;
+  --opacity-factor: 0.75;
   filter: brightness(0) url(#shadow-blur);
-  opacity: calc(v-bind(opacity) * 0.75);
   mask-image: linear-gradient(to top, transparent, black 20%);
 }
 </style>

@@ -15,10 +15,10 @@ import {
 } from '../composables/useGameClient';
 import Hand from './Hand.vue';
 import Tile from './Tile.vue';
-import Unit from './Unit.vue';
 import { RUNES } from '@game/engine/src/card/card.enums';
 import DraggedCard from './DraggedCard.vue';
 import BoardCell from './BoardCell.vue';
+import Unit from './Unit.vue';
 import GameCard from './GameCard.vue';
 import PlayedCard from './PlayedCard.vue';
 import { useGlobalSounds } from '../composables/useGlobalSounds';
@@ -29,6 +29,7 @@ import EquipedArtifact from './EquipedArtifact.vue';
 import VFXLights from './VFXLights.vue';
 import VFXSprites from './VFXSprites.vue';
 import SVGFilters from './SVGFilters.vue';
+// import MouseLight from './MouseLight.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
@@ -69,8 +70,10 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
       <Tile v-for="tile in tiles" :key="tile.id" :tile="tile" />
       <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
     </Camera>
+    <div id="lights-teleport" />
     <VFXLights />
     <VFXSprites />
+    <!-- <MouseLight /> -->
 
     <div class="overlay" />
     <Transition appear>
@@ -337,6 +340,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   --pixel-scale: 1.5;
   position: fixed;
   bottom: var(--size-14);
+  pointer-events: none;
   &:is(.v-enter-active, .v-leave-active) {
     transition:
       transform 0.2s var(--ease-3),
@@ -371,5 +375,11 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   top: 0;
   left: 50%;
   translate: -50% 0;
+}
+
+#lights-teleport {
+  /* position: fixed; */
+  top: 0;
+  left: 0;
 }
 </style>

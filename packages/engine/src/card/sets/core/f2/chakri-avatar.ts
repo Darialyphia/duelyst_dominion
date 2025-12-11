@@ -23,7 +23,14 @@ export const chakriAvatar: MinionBlueprint = {
       }
     }
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_deathstrikeseal.m4a',
+    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
+    attack: 'sfx_f2_chakriavatar_attack_swing.m4a',
+    takeDamage: 'sfx_f2_chakriavatar_hit.m4a',
+    dealDamage: 'sfx_f2_chakriavatar_attack_impact.m4a',
+    death: 'sfx_f2_chakriavatar_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -32,8 +39,8 @@ export const chakriAvatar: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   runeCost: {},
-  atk: 2,
-  maxHp: 3,
+  atk: 1,
+  maxHp: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

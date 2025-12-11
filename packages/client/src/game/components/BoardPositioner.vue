@@ -15,7 +15,11 @@ import { pointToCellId } from '@game/engine/src/board/board-utils';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { useIsInAoe } from '../composables/useIsInAoe';
 
-const { x, y } = defineProps<Point>();
+const {
+  x,
+  y,
+  canHighlight = true
+} = defineProps<Point & { canHighlight?: boolean }>();
 
 const state = useGameState();
 const ui = useGameUi();
@@ -97,6 +101,7 @@ const { client } = useGameClient();
   <div
     class="board-positioner"
     :class="{
+      'is-highlightable': canHighlight,
       'is-in-aoe': isInAoe({ x, y }) && !client.isPlayingFx,
       'is-targetable': isTargetable && !client.isPlayingFx,
       'is-targeted': isTargeted && !client.isPlayingFx,
@@ -114,7 +119,6 @@ const { client } = useGameClient();
   position: absolute;
   transform: translateX(calc(var(--board-cell-width) * v-bind(x)))
     translateY(calc(var(--board-cell-height) * v-bind(y))) translateZ(0.1px);
-  will-change: transform;
   pointer-events: none;
   width: var(--board-cell-width);
   height: var(--board-cell-height);
@@ -124,76 +128,79 @@ const { client } = useGameClient();
   * {
     display: none;
   }
-  &.is-targetable::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-targetable.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+
+  &.is-highlightable {
+    &.is-targetable::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-targetable.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
-  }
-  &.is-targeted::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-selected.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+    &.is-targeted::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-selected.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
-  }
-  &.can-move-to::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-move-reach.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+    &.can-move-to::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-move-reach.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
-  }
-  &.can-attack::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-attackable.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+    &.can-attack::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-attackable.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
-  }
-  &.is-in-aoe::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-aoe.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+    &.is-in-aoe::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-aoe.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
-  }
-  &.is-selected-unit::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/assets/ui/cell-highlight-unit-selected.png');
-    background-size: cover;
-    z-index: 1;
-    transition: opacity 0.3s var(--ease-3);
-    @starting-style {
-      opacity: 0;
+    &.is-selected-unit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/ui/cell-highlight-unit-selected.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
     }
   }
 }

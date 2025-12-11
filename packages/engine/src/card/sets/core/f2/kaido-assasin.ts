@@ -17,7 +17,14 @@ export const kaidoAssassin: MinionBlueprint = {
       }
     }
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_deathstrikeseal.m4a',
+    walk: 'sfx_unit_run_magical_3.m4a',
+    attack: 'sfx_f2_kaidoassassin_attack_swing.m4a',
+    takeDamage: 'sfx_f2_kaidoassassin_hit.m4a',
+    dealDamage: 'sfx_f2_kaidoassassin_attack_impact.m4a',
+    death: 'sfx_f2_kaidoassassin_death.m4a'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,

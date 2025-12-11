@@ -12,6 +12,7 @@ import UnitModifiers from './UnitModifiers.vue';
 import UnitSprite from './UnitSprite.vue';
 import UnitShadow from './UnitShadow.vue';
 import { useUnitSounds } from '../composables/useUnitSounds';
+import { useElementBounding } from '@vueuse/core';
 
 const { unit } = defineProps<{ unit: UnitViewModel }>();
 
@@ -55,6 +56,17 @@ const { damageEffects, showDamageEffects } = useUnitEffects({
 });
 
 const isInAoe = useIsInAoe();
+
+const element = ref<HTMLElement>();
+onMounted(() => {
+  element.value = ui.value.DOMSelectors.unit(unit.id).element!;
+});
+const rect = useElementBounding(element);
+const isHovered = computed(() => {
+  return (
+    ui.value.hoveredCell?.x === unit.x && ui.value.hoveredCell?.y === unit.y
+  );
+});
 </script>
 
 <template>
@@ -90,6 +102,7 @@ const isInAoe = useIsInAoe();
         }
       ]"
     >
+      <div class="unit-light" v-if="isSelected" />
       <UnitSprite
         :bg-position="bgPosition"
         :image-bg="imageBg"
@@ -124,6 +137,19 @@ const isInAoe = useIsInAoe();
         :sprites="damageEffects"
       />
 
+      <Teleport to="#lights-teleport" defer>
+        <Transition>
+          <div
+            v-if="isHovered"
+            class="light"
+            :style="{
+              '--x': rect.left.value + rect.width.value / 2 + 'px',
+              '--y': rect.top.value + rect.height.value / 2 + 'px',
+              '--color': `var(--faction-${unit.getCard().faction.toLocaleLowerCase()})`
+            }"
+          />
+        </Transition>
+      </Teleport>
       <UnitModifiers :modifiers="displayedModifiers" />
     </div>
   </BoardPositioner>
@@ -189,6 +215,30 @@ const isInAoe = useIsInAoe();
   inset: 0;
   &.is-flipped {
     scale: -1 1;
+  }
+}
+
+.light {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 800px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--color) 0%, transparent 50%);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotateX(-15deg);
+  mix-blend-mode: color-dodge;
+  transform-origin: center center;
+  opacity: 0; /* disable for now */
+  &:is(.v-enter-active, .v-leave-active) {
+    transition:
+      opacity 0.3s var(--ease-3),
+      transform 0.3s var(--ease-3);
+  }
+  &:is(.v-enter-from, .v-leave-to) {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.25);
   }
 }
 </style>
