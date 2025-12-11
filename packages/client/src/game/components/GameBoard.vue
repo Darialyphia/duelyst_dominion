@@ -68,7 +68,15 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
     <Camera>
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Tile v-for="tile in tiles" :key="tile.id" :tile="tile" />
-      <Unit v-for="unit in units" :key="unit.id" :unit="unit" />
+      <transition-group>
+        <Unit
+          v-for="unit in units"
+          :key="unit.id"
+          :unit="unit"
+          class="board-unit"
+        />
+      </transition-group>
+      >
     </Camera>
     <div id="lights-teleport" />
     <VFXLights />
@@ -381,5 +389,12 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   /* position: fixed; */
   top: 0;
   left: 0;
+}
+
+.board-unit:is(.v-enter-active, .v-leave-active) {
+  transition: opacity 0.3s var(--ease-3);
+}
+.board-unit:is(.v-enter-from, .v-leave-to) {
+  opacity: 0;
 }
 </style>
