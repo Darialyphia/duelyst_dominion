@@ -5,11 +5,10 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { ModifierMixin } from '../modifier-mixin';
-import { CardAuraModifierMixin } from '../mixins/aura.mixin';
-import { isMinionOrGeneral } from '../../card/card-utils';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { UnitAuraModifierMixin } from '../mixins/aura.mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
+import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   private unitModifier: Modifier<Unit> | null = null;
@@ -24,67 +23,66 @@ export class ProvokeModifier extends Modifier<MinionCard> {
         new KeywordModifierMixin(game, KEYWORDS.PROVOKE),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
-            await this.applyProvokeToUnit(unit);
+            await unit.modifiers.add(new ProvokeUnitModifier(game, this.source));
           },
           onRemoved: async unit => {
-            if (this.unitModifier) {
-              await unit.modifiers.remove(this.unitModifier);
-            }
+            await unit.modifiers.remove(ProvokeUnitModifier);
           }
         }),
         ...(options?.mixins ?? [])
       ]
     });
-    this.moveInterceptor = this.moveInterceptor.bind(this);
-    this.attackInterceptor = this.attackInterceptor.bind(this);
   }
+}
 
-  private shouldBeProvoked(candidate: AnyCard): boolean {
-    if (!isMinionOrGeneral(candidate)) return false;
-    if (!candidate.unit) return false;
-    if (candidate.location !== 'board') return false;
-    if (candidate.isAlly(this.target)) return false;
-    if (!this.target.unit) return false;
-    return (
-      this.game.boardSystem.getDistance(
-        this.target.unit.position,
-        candidate.unit.position
-      ) === 1
-    );
-  }
-
-  private async applyProvokeToUnit(unit: Unit): Promise<void> {
-    this.unitModifier = new Modifier(KEYWORDS.PROVOKE.id, this.game, unit.card, {
+export class ProvokeUnitModifier extends Modifier<Unit> {
+  constructor(game: Game, source: AnyCard) {
+    super(KEYWORDS.PROVOKE.id, game, source, {
       name: KEYWORDS.PROVOKE.name,
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
-        new CardAuraModifierMixin<Unit, MinionCard | GeneralCard>(this.game, {
+        new UnitAuraModifierMixin(game, {
           isElligible: candidate => {
             return this.shouldBeProvoked(candidate);
           },
           onGainAura: async candidate => {
-            await candidate.unit.addInterceptor('canMove', this.moveInterceptor);
-            await candidate.unit.addInterceptor('canAttack', this.attackInterceptor);
+            await candidate.modifiers.add(new ProvokedModifier(game, this.source));
           },
           onLoseAura: async candidate => {
-            await candidate.unit.removeInterceptor('canMove', this.moveInterceptor);
-            await candidate.unit.removeInterceptor('canAttack', this.attackInterceptor);
+            await candidate.modifiers.remove(ProvokedModifier);
           }
         })
       ]
     });
-
-    await unit.modifiers.add(this.unitModifier);
   }
 
-  moveInterceptor() {
-    return false;
+  private shouldBeProvoked(candidate: Unit): boolean {
+    if (candidate.isAlly(this.target)) return false;
+    return (
+      this.game.boardSystem.getDistance(this.target.position, candidate.position) === 1
+    );
   }
+}
 
-  attackInterceptor(value: boolean, { target }: { target: Unit }): boolean {
-    if (!value) return value;
+export class ProvokedModifier extends Modifier<Unit> {
+  constructor(game: Game, source: AnyCard) {
+    super(KEYWORDS.PROVOKE.id, game, source, {
+      isRemovable: false,
+      mixins: [
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canMove',
+          interceptor: () => false
+        }),
+        new UnitInterceptorModifierMixin(game, {
+          key: 'canAttack',
+          interceptor: (value: boolean, { target }: { target: Unit }) => {
+            if (!value) return value;
 
-    return target.modifiers.has(KEYWORDS.PROVOKE.id);
+            return target.modifiers.has(KEYWORDS.PROVOKE.id);
+          }
+        })
+      ]
+    });
   }
 }
