@@ -29,12 +29,6 @@
   }
 }
 
-@layer components {
-  .some-class {
-    color: blue;
-  }
-}
-
 @layer utilities {
   @unocss default;
   @unocss;

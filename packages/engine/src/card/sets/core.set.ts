@@ -30,6 +30,7 @@ import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
 import { massacreArtist } from './core/f2/massacre-artist';
 import { mistDragonSeal } from './core/f2/mist-dragon-seal';
 import { phoenixFire } from './core/f2/phoenix-fire';
+import { rythmweaver } from './core/f2/rythmweaver';
 import { tuskBoar } from './core/f2/tusk-boar';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
@@ -88,6 +89,7 @@ export const coreSet: CardSet = {
     lightChaser,
     circleOfLife,
     sunriser,
-    arclyteRegalia
+    arclyteRegalia,
+    rythmweaver
   ]
 };

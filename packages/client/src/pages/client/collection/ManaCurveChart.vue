@@ -69,7 +69,7 @@ const bars = computed(() => {
 </script>
 
 <template>
-  <div class="bars" :style="{ '--total': deckBuilder.deckSize }">
+  <div class="bars lt-lg:hidden" :style="{ '--total': deckBuilder.deckSize }">
     <div
       v-for="bar in bars"
       :key="bar.label"
