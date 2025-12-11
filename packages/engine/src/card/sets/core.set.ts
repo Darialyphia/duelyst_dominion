@@ -20,8 +20,11 @@ import { trueStrike } from './core/f1/true-strike';
 import { warSurge } from './core/f1/war-surge';
 import { windbladeAdept } from './core/f1/windblade-adept';
 import { chakriAvatar } from './core/f2/chakri-avatar';
+import { flamewreath } from './core/f2/flamewreath';
+import { fourWindsMagus } from './core/f2/four-winds-magus';
 import { ghostLightning } from './core/f2/ghost-lightning';
 import { heavensEclipse } from './core/f2/heavens-eclipse';
+import { jadeMonk } from './core/f2/jade-monk';
 import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { keshraiFanblade } from './core/f2/keshrai-fanblade';
@@ -90,6 +93,9 @@ export const coreSet: CardSet = {
     circleOfLife,
     sunriser,
     arclyteRegalia,
-    rythmweaver
+    rythmweaver,
+    fourWindsMagus,
+    flamewreath,
+    jadeMonk
   ]
 };

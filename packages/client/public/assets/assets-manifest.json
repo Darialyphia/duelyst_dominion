@@ -1053,6 +1053,97 @@
         },
         {
           "alias": [
+            "f2_flamewreath"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_flamewreath.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_flamewreath.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_flamewreath.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_four-winds-magus"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_four-winds-magus.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_four-winds-magus.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_four-winds-magus.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_heartseeker.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_heartseeker.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_jade-monk"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_jade-monk.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_jade-monk.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_jade-monk.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f2_kaido-assasin"
           ],
           "src": [
@@ -1105,6 +1196,32 @@
         },
         {
           "alias": [
+            "f2_lantern-fox"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_lantern-fox.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_lantern-fox.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_lantern-fox.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "f2_massacre-artist"
           ],
           "src": [
@@ -1122,6 +1239,32 @@
           ],
           "src": [
             "/assets/cards/minions/f2_massacre-artist.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_rythmweaver"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_rythmweaver.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f2_rythmweaver.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f2_rythmweaver.png"
           ],
           "data": {
             "tags": {

@@ -1,0 +1,66 @@
+import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
+import type { MinionBlueprint } from '../../../card-blueprint';
+import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { Modifier } from '../../../../modifier/modifier.entity';
+import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../../../game/game.events';
+import { isSpell } from '../../../card-utils';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
+import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
+import { MinionInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
+
+export const jadeMonk: MinionBlueprint = {
+  id: 'jade-monk',
+  name: 'Jade Monk',
+  description: `
+  @Provoke@.
+  This card costs 1 less for each played this turn.`,
+  vfx: {
+    spriteId: 'minions/f2_jade-monk',
+    sequences: {
+      play(game, card, position) {
+        return songhaiSpawn(position);
+      }
+    }
+  },
+  sounds: {
+    play: 'sfx_spell_deathstrikeseal.m4a',
+    walk: 'sfx_unit_physical_4.m4a',
+    attack: 'sfx_f2_jadeogre_attack_swing.m4a',
+    takeDamage: 'sfx_f2_jadeogre_hit.m4a',
+    dealDamage: 'sfx_f2_jadeogre_attack_impact.m4a',
+    death: 'sfx_f2_jadeogre_death.m4a'
+  },
+  kind: CARD_KINDS.MINION,
+  collectable: true,
+  setId: CARD_SETS.CORE,
+  faction: FACTIONS.F2,
+  rarity: RARITIES.COMMON,
+  tags: [],
+  manaCost: 3,
+  runeCost: {},
+  atk: 3,
+  maxHp: 3,
+  getTargets: () => Promise.resolve([]),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+  canPlay: () => true,
+  async onInit(game, card) {
+    await card.modifiers.add(new ProvokeModifier(game, card));
+    await card.modifiers.add(
+      new Modifier('jade-monk-discount', game, card, {
+        mixins: [
+          new MinionInterceptorModifierMixin(game, {
+            key: 'manaCost',
+            interceptor: cost =>
+              Math.max(
+                0,
+                cost - card.player.cardTracker.cardsPlayedThisTurn.filter(isSpell).length
+              )
+          })
+        ]
+      })
+    );
+  },
+  async onPlay() {}
+};
