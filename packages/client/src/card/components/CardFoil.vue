@@ -3,6 +3,7 @@
 <template>
   <div class="foil" />
   <div class="foil-oil" />
+  <div class="foil-gradient" />
 </template>
 
 <style scoped lang="postcss">

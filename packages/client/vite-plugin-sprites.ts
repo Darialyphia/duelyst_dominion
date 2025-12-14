@@ -26,9 +26,36 @@ interface AsepriteJson {
 export default function spritesPlugin(): Plugin {
   const virtualModuleId = 'virtual:sprites';
   const resolvedVirtualModuleId = '\0' + virtualModuleId;
+  const assetDirs = [
+    'src/assets/cards{m}',
+    'src/assets/fx{m}',
+    'src/assets/tiles{m}'
+  ];
 
   return {
     name: 'vite-plugin-sprites',
+    configureServer(server) {
+      for (const dir of assetDirs) {
+        const assetsDir = path.resolve(process.cwd(), dir);
+        server.watcher.add(path.join(assetsDir, '**'));
+      }
+    },
+
+    async handleHotUpdate({ server, file }) {
+      const isMatch = assetDirs.some(
+        dir => file.includes(dir) && file.endsWith('.json')
+      );
+      if (isMatch) {
+        console.log(`[vite-plugin-sprites] Detected change in sprite files.`);
+        const module = server.moduleGraph.getModuleById(
+          resolvedVirtualModuleId
+        );
+        if (module) {
+          server.moduleGraph.invalidateModule(module);
+          return [module];
+        }
+      }
+    },
     resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;
@@ -37,11 +64,7 @@ export default function spritesPlugin(): Plugin {
     async load(id) {
       if (id === resolvedVirtualModuleId) {
         const __dirname = path.dirname(fileURLToPath(import.meta.url));
-        const assetDirs = [
-          'src/assets/cards{m}',
-          'src/assets/fx{m}',
-          'src/assets/tiles{m}'
-        ];
+
         const sprites: Record<string, any> = {};
 
         for (const dir of assetDirs) {

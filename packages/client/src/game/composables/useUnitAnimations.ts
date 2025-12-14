@@ -14,6 +14,7 @@ interface UseUnitAnimationsOptions {
   unit: UnitViewModel;
   isSelected: Ref<boolean>;
   damageIndicatorEl: Ref<HTMLElement | null>;
+  healIndicatorEl: Ref<HTMLElement | null>;
   spriteData: Ref<SpriteData>;
 }
 
@@ -21,7 +22,8 @@ export function useUnitAnimations({
   unit,
   isSelected,
   spriteData,
-  damageIndicatorEl
+  damageIndicatorEl,
+  healIndicatorEl
 }: UseUnitAnimationsOptions) {
   const defaultAnimation = computed(() =>
     isSelected.value ? 'idle' : 'breathing'
@@ -49,6 +51,7 @@ export function useUnitAnimations({
 
   const isAttacking = ref(false);
   const latestDamageReceived = ref<number>();
+  const latestHealReceived = ref<number>();
 
   // Movement animation
   useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
@@ -152,6 +155,43 @@ export function useUnitAnimations({
     await Promise.all([animation, damageIndicator()]);
   });
 
+  // Heal animation
+  useFxEvent(FX_EVENTS.UNIT_BEFORE_HEAL, async event => {
+    if (event.unit !== unit.id) return;
+    latestHealReceived.value = event.amount;
+
+    const healIndicator = async () => {
+      await nextTick();
+      if (!healIndicatorEl.value) return;
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          latestHealReceived.value = undefined;
+        }
+      });
+
+      tl.fromTo(
+        healIndicatorEl.value,
+        { y: 0, scale: 0.5, opacity: 0 },
+        {
+          y: -75,
+          scale: 1.5,
+          opacity: 1,
+          duration: 0.3,
+          ease: 'back.out(2.5)'
+        }
+      ).to(healIndicatorEl.value, {
+        y: -80,
+        opacity: 0,
+        duration: 0.3,
+        delay: 0.2,
+        ease: Power2.easeIn
+      });
+    };
+
+    await healIndicator();
+  });
+
   // Death animation
   useFxEvent(FX_EVENTS.UNIT_BEFORE_DESTROY, async event => {
     if (event.unit !== unit.id) return;
@@ -198,7 +238,9 @@ export function useUnitAnimations({
     positionOffset,
     isAttacking,
     latestDamageReceived,
+    latestHealReceived,
     damageIndicatorEl,
+    healIndicatorEl,
     activeFrameRect,
     bgPosition,
     imageBg

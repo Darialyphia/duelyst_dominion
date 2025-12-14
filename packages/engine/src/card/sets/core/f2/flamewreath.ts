@@ -5,7 +5,6 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
-import { isSpell } from '../../../card-utils';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
@@ -13,7 +12,7 @@ import { AbilityDamage } from '../../../../utils/damage';
 export const flamewreath: MinionBlueprint = {
   id: 'flamewreath',
   name: 'Flamewreath',
-  description: 'After this moves or teleport, deal 1 damage t onearby enemies.',
+  description: 'After this moves or teleport, deal 1 damage to nearby enemies.',
   vfx: {
     spriteId: 'minions/f2_flamewreath',
     sequences: {

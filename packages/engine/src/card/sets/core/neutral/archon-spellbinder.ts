@@ -15,7 +15,6 @@ export const archonSpellbinder: MinionBlueprint = {
   name: 'Archon Spellbinder',
   description: dedent`
   Enemy spells cost 1 more to play.
-  @[rune:blue]@ @[rune:blue]@ @[rune:blue]@: +0 / +2
   `,
   vfx: { spriteId: 'minions/neutral_archon-spellbinder' },
   sounds: {

@@ -9,13 +9,14 @@ import { isSpell } from '../../../card-utils';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { MinionInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
+import dedent from 'dedent';
 
 export const jadeMonk: MinionBlueprint = {
   id: 'jade-monk',
   name: 'Jade Monk',
-  description: `
+  description: dedent`
   @Provoke@.
-  This card costs 1 less for each played this turn.`,
+  This card costs 1 less for each spell you played this turn.`,
   vfx: {
     spriteId: 'minions/f2_jade-monk',
     sequences: {

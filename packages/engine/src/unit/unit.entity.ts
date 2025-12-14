@@ -589,9 +589,9 @@ export class Unit
       );
     }
     // remove modifiers after the events to avoid removing OnDestroy modifiers
-    this.modifiers.list.forEach(async modifier => {
+    for (const modifier of this.modifiers.list) {
       await this.modifiers.remove(modifier.id);
-    });
+    }
   }
 
   exhaust() {

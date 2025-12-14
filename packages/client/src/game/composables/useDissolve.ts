@@ -10,7 +10,6 @@ const easeOutCubic = (t: number) => {
 export const useDissolveVFX = (speed = 0.1, maxDisplacementScale = 300) => {
   return {
     play(element: HTMLElement, duration: number) {
-      console.log(element);
       if (element.getAttribute('data-dissolve') === 'true') return;
 
       const displacement = document.getElementById(

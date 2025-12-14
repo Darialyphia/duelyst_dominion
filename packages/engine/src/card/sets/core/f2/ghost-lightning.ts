@@ -1,9 +1,8 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { anywhereTargetRules, singleEnemyTargetRules } from '../../../card-utils';
+import { anywhereTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 
 export const ghostLightning: SpellBlueprint = {

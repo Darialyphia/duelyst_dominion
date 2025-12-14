@@ -35,6 +35,7 @@ useUnitSounds(computed(() => unit));
 const isSelected = computed(() => ui.value.selectedUnit?.equals(unit) ?? false);
 
 const damageIndicatorEl = useTemplateRef('damageIndicator');
+const healIndicatorEl = useTemplateRef('healIndicator');
 
 const {
   activeFrameRect,
@@ -42,12 +43,14 @@ const {
   imageBg,
   positionOffset,
   isAttacking,
-  latestDamageReceived
+  latestDamageReceived,
+  latestHealReceived
 } = useUnitAnimations({
   unit,
   isSelected,
   spriteData,
-  damageIndicatorEl
+  damageIndicatorEl,
+  healIndicatorEl
 });
 
 const { damageEffects, showDamageEffects } = useUnitEffects({
@@ -131,6 +134,10 @@ const isHovered = computed(() => {
         {{ latestDamageReceived }}
       </div>
 
+      <div ref="healIndicator" v-if="latestHealReceived" class="heal-indicator">
+        +{{ latestHealReceived }}
+      </div>
+
       <SpriteFX
         v-if="showDamageEffects"
         class="fx-container"
@@ -206,6 +213,19 @@ const isHovered = computed(() => {
   font-size: var(--font-size-4);
   font-weight: var(--font-weight-8);
   color: var(--red-7);
+  pointer-events: none;
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
+}
+
+.heal-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-8);
+  color: var(--green-7);
   pointer-events: none;
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;

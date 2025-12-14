@@ -6,6 +6,7 @@ import { augury } from './core/f1/augury';
 import { azuriteLion } from './core/f1/azurite-lion';
 import { circleOfLife } from './core/f1/circle-of-life';
 import { divineBond } from './core/f1/divine-bond';
+import { grandStrategos } from './core/f1/grand-strategos';
 import { holyImmolation } from './core/f1/holy-immolation';
 import { ironcliffeGuardian } from './core/f1/ironcliffe-guardian';
 import { lightChaser } from './core/f1/light-chaser';
@@ -96,6 +97,7 @@ export const coreSet: CardSet = {
     rythmweaver,
     fourWindsMagus,
     flamewreath,
-    jadeMonk
+    jadeMonk,
+    grandStrategos
   ]
 };

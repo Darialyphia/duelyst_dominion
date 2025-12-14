@@ -9,7 +9,7 @@ import { consume } from '../../../card-actions-utils';
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
-  description: dedent`Move an minion to the space @in front@ of your general.`,
+  description: dedent`Move an minion to the space in front of your general.`,
   vfx: { spriteId: 'spells/f1_magnetize' },
   sounds: {
     play: 'sfx_spell_naturalselection.m4a'

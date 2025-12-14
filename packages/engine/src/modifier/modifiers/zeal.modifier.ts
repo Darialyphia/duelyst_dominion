@@ -8,6 +8,7 @@ import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
+import { Interceptable } from '../../utils/interceptable';
 
 export class ZealModifier extends Modifier<MinionCard> {
   constructor(
@@ -23,40 +24,53 @@ export class ZealModifier extends Modifier<MinionCard> {
         new KeywordModifierMixin(game, KEYWORDS.ZEAL),
         new UnitEffectModifierMixin(game, {
           onApplied: async unit => {
-            await this.applyZeal(unit, game, options.mixins);
+            await unit.modifiers.add(
+              new ZealUnitModifier(game, source, {
+                mixins: options.mixins
+              })
+            );
           },
           onRemoved: async unit => {
-            await unit.modifiers.remove(this.unitModifierId);
+            await unit.modifiers.remove(ZealUnitModifier);
           }
         })
       ]
     });
   }
+}
 
-  get unitModifierId() {
-    return `${this.modifierType}-unit-effect`;
-  }
+export class ZealUnitModifier extends Modifier<Unit> {
+  private _isZealed = new Interceptable<boolean>();
 
-  private async applyZeal(unit: Unit, game: Game, mixins: ModifierMixin<Unit>[]) {
-    await unit.modifiers.add(
-      new Modifier(this.unitModifierId, game, this.target, {
-        name: KEYWORDS.ZEAL.name,
-        description: KEYWORDS.ZEAL.description,
-        icon: 'icons/keyword-zeal',
-        mixins: [
-          new TogglableModifierMixin(game, modifier => this.isZealed(modifier)),
-          ...mixins
-        ]
-      })
-    );
-  }
-
-  private isZealed(modifier: Modifier<Unit>) {
-    return (
+  get isZealed() {
+    return this._isZealed.getValue(
       this.game.boardSystem.getDistance(
-        modifier.target.position,
-        modifier.target.player.general.position
-      ) === 1
+        this.target.position,
+        this.target.player.general.position
+      ) === 1,
+
+      {}
     );
+  }
+
+  constructor(game: Game, source: AnyCard, options: { mixins?: ModifierMixin<Unit>[] }) {
+    super(KEYWORDS.ZEAL.id, game, source, {
+      name: KEYWORDS.ZEAL.name,
+      description: KEYWORDS.ZEAL.description,
+      icon: 'icons/keyword-zeal',
+      mixins: [
+        new TogglableModifierMixin(game, () => this.isZealed),
+        ...(options?.mixins ?? [])
+      ]
+    });
+  }
+
+  addIsZealedInterceptor(interceptor: (value: boolean) => boolean) {
+    this._isZealed.add(interceptor);
+    return () => this.removeIsZealedInterceptor(interceptor);
+  }
+
+  removeIsZealedInterceptor(interceptor: (value: boolean) => boolean) {
+    this._isZealed.remove(interceptor);
   }
 }
