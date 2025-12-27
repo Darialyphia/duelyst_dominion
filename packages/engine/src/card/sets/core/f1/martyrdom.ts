@@ -9,8 +9,48 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  Destroy an enemy minion ans heal its owner's general for the amount of health thatm inion had .`,
-  vfx: { spriteId: 'spells/f1_martyrdom' },
+  Destroy a minion and heal its owner's general for the amount of health that minion had.`,
+  vfx: {
+    spriteId: 'spells/f1_martyrdom',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_f1_martyrdom',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    flipX: false,
+                    offset: { x: 0, y: -150 },
+                    scale: 1.5
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_martyrdom',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    flipX: false,
+                    offset: { x: 0, y: -25 },
+                    scale: 1.5
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_martyrdom.m4a'
   },
@@ -24,14 +64,12 @@ export const martyrdom: SpellBlueprint = {
   runeCost: {
     blue: 1
   },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
-  canPlay: (game, card) =>
-    singleMinionTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
+  canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isEnemy(card.player),
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
+      getAoe(selectedSpaces) {
+        return card.getAOE(selectedSpaces);
       }
     });
   },

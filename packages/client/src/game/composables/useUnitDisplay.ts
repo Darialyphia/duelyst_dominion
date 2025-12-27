@@ -44,9 +44,7 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, event => {
     const destination = event.path.at(-1)!;
-    if (unit.value.x > destination?.x) {
-      flipOverride.value = true;
-    }
+    flipOverride.value = unit.value.x > destination.x;
   });
 
   useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, () => {

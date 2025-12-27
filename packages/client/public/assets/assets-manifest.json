@@ -2378,6 +2378,33 @@
         },
         {
           "alias": [
+            "fx-fx_f1_martyrdom"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_martyrdom.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_f1_martyrdom.png"
+          ],
+          "src": [
+            "/assets/fx/fx_f1_martyrdom.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "fx-fx_f2_phoenixfire"
           ],
           "src": [
