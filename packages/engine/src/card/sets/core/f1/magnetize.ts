@@ -10,7 +10,62 @@ export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
   description: dedent`Move an minion to the space in front of your general.`,
-  vfx: { spriteId: 'spells/f1_magnetize' },
+  vfx: {
+    spriteId: 'spells/f1_magnetize',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_bladestorm',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    flipX: false,
+                    offset: { x: 0, y: 0 },
+                    scale: 1.5
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_martyrdom',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    flipX: false,
+                    offset: { x: 0, y: -25 },
+                    scale: 1.5
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_buff',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_naturalselection.m4a'
   },

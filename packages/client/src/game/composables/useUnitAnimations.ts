@@ -54,10 +54,10 @@ export function useUnitAnimations({
   const latestHealReceived = ref<number>();
 
   // Movement animation
-  useFxEvent(FX_EVENTS.UNIT_AFTER_MOVE, async event => {
+  useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, async event => {
     if (event.unit !== unit.id) return;
-    const { path, previousPosition } = event;
-
+    const { path } = event;
+    const previousPosition = { x: unit.x, y: unit.y };
     const stepDuration = 0.5;
 
     animationSequence.value = [ANIMATIONS_NAMES.RUN];
