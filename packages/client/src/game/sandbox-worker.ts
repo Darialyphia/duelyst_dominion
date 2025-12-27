@@ -124,6 +124,7 @@ self.addEventListener('message', ({ data }) => {
     .with({ type: 'setMaxMana' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       player.gainMaxMana(payload.amount - player.maxMana);
+      player.refillMana();
       game.snapshotSystem.takeSnapshot();
     })
     .with({ type: 'moveUnit' }, async ({ payload }) => {

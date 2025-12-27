@@ -145,6 +145,73 @@ export const songhaiSpawn = (position: Point): VFXSequence => {
   };
 };
 
+export const neutralSpawn = (position: Point): VFXSequence => {
+  return {
+    tracks: [
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
+              resourceName: 'fx_teleportrecall',
+              animationSequence: ['default'],
+              offset: { x: 0, y: 0 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      },
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
+              resourceName: 'fx_bladestorm',
+              animationSequence: ['default'],
+              offset: { x: 0, y: -25 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      },
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
+              resourceName: 'fx_swirl',
+              animationSequence: ['swirlloop'],
+              offset: { x: 0, y: 20 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      },
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
+              resourceName: 'smokeground',
+              animationSequence: ['smokeground'],
+              offset: { x: 0, y: 40 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      }
+    ]
+  };
+};
+
 export const forEachUnit = (
   ctx: { game: Game; aoe: GenericAOEShape; targets: Point[]; card: AnyCard },
   steps: (pos: Point) => VFXSequenceTrack[]

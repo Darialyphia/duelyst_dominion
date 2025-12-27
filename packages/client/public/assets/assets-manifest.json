@@ -1378,6 +1378,32 @@
         },
         {
           "alias": [
+            "f3_wind-dervish"
+          ],
+          "src": [
+            "/assets/cards/minions/f3_wind-dervish.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "f3_wind-dervish.png"
+          ],
+          "src": [
+            "/assets/cards/minions/f3_wind-dervish.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "neutral_archon-spellbinder"
           ],
           "src": [
@@ -2514,6 +2540,33 @@
         },
         {
           "alias": [
+            "fx-fx_swirl"
+          ],
+          "src": [
+            "/assets/fx/fx_swirl.json"
+          ],
+          "loadParser": "aseprite_loader",
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "fx-fx_swirl.png"
+          ],
+          "src": [
+            "/assets/fx/fx_swirl.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "fx-fx_teleportrecall"
           ],
           "src": [
@@ -3098,6 +3151,19 @@
           ],
           "src": [
             "/assets/icons/keyword-ember.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
+            "icon-keyword-ephemeral"
+          ],
+          "src": [
+            "/assets/icons/keyword-ephemeral.png"
           ],
           "data": {
             "tags": {

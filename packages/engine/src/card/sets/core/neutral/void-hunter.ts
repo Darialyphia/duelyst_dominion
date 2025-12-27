@@ -2,13 +2,21 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const voidHunter: MinionBlueprint = {
   id: 'void-hunter',
   name: 'Void Hunter',
   description: '@Dying Wish@ : Draw 2 cards..',
-  vfx: { spriteId: 'minions/neutral_void-hunter' },
+  vfx: {
+    spriteId: 'minions/neutral_void-hunter',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_voidpulse.m4a',
     walk: 'sfx_neutral_chaoselemental_hit.m4a',

@@ -9,6 +9,7 @@ import { isSpell } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import type { MinionCard } from '../../../entities/minion-card.entity';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 
 export const archonSpellbinder: MinionBlueprint = {
   id: 'archon-spellbinder',
@@ -16,7 +17,14 @@ export const archonSpellbinder: MinionBlueprint = {
   description: dedent`
   Enemy spells cost 1 more to play.
   `,
-  vfx: { spriteId: 'minions/neutral_archon-spellbinder' },
+  vfx: {
+    spriteId: 'minions/neutral_archon-spellbinder',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_summonlegendary.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

@@ -8,12 +8,10 @@ import sprites from 'virtual:sprites';
 const {
   cardId,
   isInteractive = true,
-  showDisabledMessage = false,
   flipped
 } = defineProps<{
   cardId: string;
   isInteractive?: boolean;
-  showDisabledMessage?: boolean;
   portalTarget?: string;
   flipped?: boolean;
 }>();
@@ -96,9 +94,6 @@ const animationSequence = computed(() => {
     <!-- <div class="damage" v-if="damageTaken > 0">
       {{ damageTaken }}
     </div> -->
-    <p v-if="!card.canPlay && showDisabledMessage" class="disabled-message">
-      You cannot play this card right now.
-    </p>
   </div>
 </template>
 

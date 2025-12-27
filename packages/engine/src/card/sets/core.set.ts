@@ -38,6 +38,7 @@ import { rythmweaver } from './core/f2/rythmweaver';
 import { tuskBoar } from './core/f2/tusk-boar';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { scionsCrown } from './core/f3/scions-crown';
+import { windDervish } from './core/f3/wind-dervish';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
 import { bloodtearAlchemist } from './core/neutral/bloodtear-alchemist';
 import { emeraldRejuvinator } from './core/neutral/emerald-rejuvinator';
@@ -98,6 +99,7 @@ export const coreSet: CardSet = {
     fourWindsMagus,
     flamewreath,
     jadeMonk,
-    grandStrategos
+    grandStrategos,
+    windDervish
   ]
 };

@@ -2,13 +2,21 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const primusShieldmaster: MinionBlueprint = {
   id: 'primus-shieldmaster',
   name: 'Primus Shieldmaster',
   description: '@Provoke@.',
-  vfx: { spriteId: 'minions/neutral_primus-shieldmaster' },
+  vfx: {
+    spriteId: 'minions/neutral_primus-shieldmaster',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_unit_deploy_3.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

@@ -3,13 +3,21 @@ import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.m
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
   description: '@On Enter@: Deal 2 damage to nearby units.',
-  vfx: { spriteId: 'minions/neutral_frostbone-naga' },
+  vfx: {
+    spriteId: 'minions/neutral_frostbone-naga',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_unit_deploy_2.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

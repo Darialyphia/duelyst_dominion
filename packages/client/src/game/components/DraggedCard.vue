@@ -138,7 +138,7 @@ onBeforeUnmount(() => {
         'is-pinning': isPinning
       }"
       :style="{
-        '--pixel-scale': 1.5,
+        '--pixel-scale': 1,
         '--x': `${x}px`,
         '--y': `${y}px`
       }"

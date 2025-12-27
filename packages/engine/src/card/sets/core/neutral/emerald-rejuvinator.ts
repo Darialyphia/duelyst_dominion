@@ -2,13 +2,21 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const emeraldRejuvinator: MinionBlueprint = {
   id: 'emerald-rejuvinator',
   name: 'Emerald Rejuvinator',
   description: '@On Enter@: Heal your general for 4.',
-  vfx: { spriteId: 'minions/neutral_emerald-rejuvinator' },
+  vfx: {
+    spriteId: 'minions/neutral_emerald-rejuvinator',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_immolation_b.m4a',
     walk: 'sfx_unit_run_charge_4.m4a',

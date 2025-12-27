@@ -4,13 +4,21 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { singleEnemyTargetRules } from '../../../card-utils';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const bloodtearAlchemist: MinionBlueprint = {
   id: 'bloodtear-alchemist',
   name: 'Bloodtear Alchemist',
   description: '@On Enter@: Deal 1 damage to an enemy minion.',
-  vfx: { spriteId: 'minions/neutral_bloodtear-alchemist' },
+  vfx: {
+    spriteId: 'minions/neutral_bloodtear-alchemist',
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    }
+  },
   sounds: {
     play: 'sfx_unit_deploy_2.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',

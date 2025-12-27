@@ -3,13 +3,21 @@ import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.m
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { singleUnitTargetRules } from '../../../card-utils';
+import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const healingMystic: MinionBlueprint = {
   id: 'healing-mystic',
   name: 'Healing Mystic',
   description: '@On Enter@: Heal a minion for 2.',
-  vfx: { spriteId: 'minions/neutral_healing-mystic' },
+  vfx: {
+    sequences: {
+      play(game, card, position) {
+        return neutralSpawn(position);
+      }
+    },
+    spriteId: 'minions/neutral_healing-mystic'
+  },
   sounds: {
     play: 'sfx_unit_deploy_3.m4a',
     walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
