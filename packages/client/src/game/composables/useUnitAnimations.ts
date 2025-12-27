@@ -53,8 +53,7 @@ export function useUnitAnimations({
   const latestDamageReceived = ref<number>();
   const latestHealReceived = ref<number>();
 
-  // Movement animation
-  useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, async event => {
+  const onMove = async (event: { unit: string; path: Point[] }) => {
     if (event.unit !== unit.id) return;
     const { path } = event;
     const previousPosition = { x: unit.x, y: unit.y };
@@ -82,9 +81,11 @@ export function useUnitAnimations({
 
     await timeline.play();
     animationSequence.value = [defaultAnimation.value];
-  });
+  };
 
-  // Attack animation
+  useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, onMove);
+  useFxEvent(FX_EVENTS.UNIT_BEFORE_TELEPORT, onMove);
+
   const onAttack = async (event: { unit: string; target: Point }) => {
     if (event.unit !== unit.id) return;
     return new Promise<void>(resolve => {
