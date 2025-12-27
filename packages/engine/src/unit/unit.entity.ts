@@ -630,17 +630,19 @@ export class Unit
     if (canBounce) {
       await this.player.cardManager.addToHand(this.card);
       await this.removeFromBoard();
+      for (const modifier of this.modifiers.list) {
+        await this.modifiers.remove(modifier.id);
+      }
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_AFTER_BOUNCE,
+        new UnitAfterBounceEvent({
+          unit: this,
+          didBounce: canBounce
+        })
+      );
     } else {
       await this.destroy(this.card);
     }
-
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_BOUNCE,
-      new UnitAfterBounceEvent({
-        unit: this,
-        didBounce: canBounce
-      })
-    );
   }
 
   serialize() {

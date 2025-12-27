@@ -14770,6 +14770,19 @@
         },
         {
           "alias": [
+            "card_back.png"
+          ],
+          "src": [
+            "/assets/ui/card/card_back.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        },
+        {
+          "alias": [
             "card-art-frame-mask.png"
           ],
           "src": [

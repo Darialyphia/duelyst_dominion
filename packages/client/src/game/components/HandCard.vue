@@ -162,6 +162,7 @@ const isDisabled = computed(() => {
         actions-side="top"
         :actions-offset="15"
         :is-interactive="isInteractive"
+        show-disabled-message
       />
     </component>
   </div>

@@ -3,8 +3,7 @@ import {
   BLEND_MODES,
   type BlendMode,
   type VFXSequence,
-  type VFXSequenceTrack,
-  type VFXStep
+  type VFXSequenceTrack
 } from '../game/systems/vfx.system';
 import type { Game } from '../game/game';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
