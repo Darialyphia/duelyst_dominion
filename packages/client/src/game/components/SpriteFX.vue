@@ -9,6 +9,7 @@ const { sprites } = defineProps<{
     animationSequence: string[];
     scale: number;
     offset: { x: number; y: number };
+    tint?: string;
   }>;
 }>();
 
@@ -33,7 +34,8 @@ const buildSprites = () => {
       spriteData: spritesData[s.spriteId],
       id: s.spriteId,
       scale: s.scale,
-      offset: s.offset
+      offset: s.offset,
+      tint: s.tint ?? 'transparent'
     };
   });
 
@@ -65,7 +67,8 @@ watch(isDone, done => {
           '--offset-x': `${sprite.offset.x}px`,
           '--offset-y': `${sprite.offset.y}px`,
           '--scale': sprite.scale,
-          '--image-bg': sprite.imageBg.value
+          '--image-bg': sprite.imageBg.value,
+          '--tint-color': sprite.tint
         }"
       />
     </template>
@@ -90,5 +93,15 @@ watch(isDone, done => {
   background-position: var(--bg-position);
   background-repeat: no-repeat;
   background-size: var(--background-width) var(--background-height);
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--tint-color);
+    mask-image: var(--image-bg);
+    mask-position: var(--bg-position);
+    mask-size: var(--background-width) var(--background-height);
+    mix-blend-mode: color;
+  }
 }
 </style>

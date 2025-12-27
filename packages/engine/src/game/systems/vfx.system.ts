@@ -59,6 +59,7 @@ export type VFXStep =
         offset: Point;
         scale: number;
         flipX: boolean;
+        tint?: string;
       };
     }
   | {

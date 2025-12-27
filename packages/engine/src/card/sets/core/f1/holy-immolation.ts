@@ -5,13 +5,71 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import dedent from 'dedent';
 import { RingAOEShape } from '../../../../aoe/ring.aoe-shape';
+import { lightOverlay } from '../../../card-vfx-sequences';
 
 export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
   Heal an allied minion for 4 and deal 4 damage to enemies nearby it.`,
-  vfx: { spriteId: 'spells/f1_holy-immolation' },
+  vfx: {
+    spriteId: 'spells/f1_holy-immolation',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            lightOverlay(game, { color: '#faa03c', duration: 1500 }),
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_heavenlystrike',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: -150 }
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_vortexswirl',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: -15 },
+                    tint: '#faa03c'
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_f1_inmolation',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: -15 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_f2_jadeogre_attack_impact.m4a'
   },

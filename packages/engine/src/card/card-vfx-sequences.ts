@@ -242,7 +242,7 @@ export const lightOverlay = (
           offset: { x: 0, y: 0 },
           opacity: opts.opacity ?? 0.15,
           duration: opts.duration ?? 1000,
-          radius: 2000
+          radius: 3000
         }
       }
     ]

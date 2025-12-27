@@ -11,6 +11,7 @@ type SpriteConfig = {
   offset: Point;
   scale: number;
   flipX: boolean;
+  tint?: string;
 };
 const sprites = ref<SpriteConfig[]>([]);
 
@@ -71,7 +72,8 @@ useVFXStep('playSpriteAt', async step => {
           spriteId: sprite.resourceName,
           animationSequence: sprite.animationSequence,
           scale: sprite.scale,
-          offset: sprite.offset
+          offset: sprite.offset,
+          tint: sprite.tint
         }
       ]"
       @end="promisesResolversById.get(sprite.id)?.()"
