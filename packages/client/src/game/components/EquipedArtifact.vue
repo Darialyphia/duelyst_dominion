@@ -3,7 +3,6 @@ import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
 import type { SerializedPlayerArtifact } from '@game/engine/src/player/player-artifact.entity';
-import sprites from 'virtual:sprites';
 import { useCard } from '../composables/useGameClient';
 import {
   HoverCardContent,
@@ -12,6 +11,7 @@ import {
   HoverCardTrigger
 } from 'reka-ui';
 import GameCard from './GameCard.vue';
+import { sprites } from '@/assets';
 
 const { artifact } = defineProps<{
   artifact: SerializedPlayerArtifact;

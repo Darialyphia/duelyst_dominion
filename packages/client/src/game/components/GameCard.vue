@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { sprites } from '@/assets';
 import { useCard, useGameUi, useMyPlayer } from '../composables/useGameClient';
 import Card from '@/card/components/Card.vue';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { match } from 'ts-pattern';
-import sprites from 'virtual:sprites';
 
 const {
   cardId,
@@ -37,7 +37,7 @@ const classes = computed(() => {
 });
 
 const sprite = computed(() => {
-  return sprites[card.value.spriteId];
+  return sprites[`cards/${card.value.spriteId}`];
 });
 
 const animationSequence = computed(() => {

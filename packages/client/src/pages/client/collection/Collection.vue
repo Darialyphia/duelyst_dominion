@@ -116,7 +116,7 @@ useIntersectionObserver(
 }
 
 .card:not(.disabled):hover {
-  cursor: url('/assets/ui/cursor-hover.png'), auto;
+  cursor: url('@/assets/ui/cursor-hover.png'), auto;
 }
 
 .v-enter-active,

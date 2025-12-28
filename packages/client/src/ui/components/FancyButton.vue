@@ -81,19 +81,19 @@ const tag = computed(() => {
 
     transition: filter 0.2s var(--ease-2);
     &.primary {
-      border-image-source: url('/assets/ui/button.png');
+      border-image-source: url('@/assets/ui/button.png');
     }
 
     &.error {
-      border-image-source: url('/assets/ui/button-error.png');
+      border-image-source: url('@/assets/ui/button-error.png');
     }
 
     &.info {
-      border-image-source: url('/assets/ui/button-blue.png');
+      border-image-source: url('@/assets/ui/button-blue.png');
     }
 
     &:disabled {
-      border-image-source: url('/assets/ui/button-disabled.png');
+      border-image-source: url('@/assets/ui/button-disabled.png');
       color: #8d7a5f;
       cursor: not-allowed;
     }

@@ -87,14 +87,14 @@ const { atk, hp, atkState, hpState } = defineProps<{
 }
 
 .atk {
-  background-image: url('/assets/ui/atk-frame-textless.png');
+  background-image: url('@/assets/ui/atk-frame-textless.png');
   background-size: cover;
   left: 0;
   bottom: -5px;
 }
 
 .hp {
-  background-image: url('/assets/ui/hp-frame-textless.png');
+  background-image: url('@/assets/ui/hp-frame-textless.png');
   background-size: cover;
   right: 0;
   bottom: -5px;

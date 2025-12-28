@@ -53,13 +53,13 @@ defineProps<{
   padding-right: calc(2px * var(--pixel-scale));
   padding-top: calc(1px * var(--pixel-scale));
   &.cmd {
-    background-image: url('/assets/ui/cmd-frame.png');
+    background-image: url('@/assets/ui/cmd-frame.png');
   }
   &.atk {
-    background-image: url('/assets/ui/atk-frame.png');
+    background-image: url('@/assets/ui/atk-frame.png');
   }
   &.hp {
-    background-image: url('/assets/ui/hp-frame.png');
+    background-image: url('@/assets/ui/hp-frame.png');
   }
 }
 

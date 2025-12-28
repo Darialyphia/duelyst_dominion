@@ -157,31 +157,31 @@ const pointerStyle = computed(() => {
 
 .card-front {
   backface-visibility: hidden;
-  background: url('/assets/ui/card-front-small.png');
+  background: url('@/assets/ui/card-front-small.png');
   background-size: cover;
   color: #fcffcb;
   font-size: 16px;
   padding: calc(1rem * var(--pixel-scale));
   position: relative;
   transform-style: preserve-3d;
-  --glare-mask: url('/assets/ui/card-front-small.png');
-  --foil-mask: url('/assets/ui/card-front-small.png');
+  --glare-mask: url('@/assets/ui/card-front-small.png');
+  --foil-mask: url('@/assets/ui/card-front-small.png');
 }
 
 .card-back {
   transform: rotateY(0.5turn);
   backface-visibility: hidden;
-  background: url('/assets/ui/card-back-small.png');
+  background: url('@/assets/ui/card-back-small.png');
   background-size: cover;
-  --glare-mask: url('/assets/ui/card-front-small.png');
-  --foil-mask: url('/assets/ui/card-front-small.png');
+  --glare-mask: url('@/assets/ui/card-front-small.png');
+  --foil-mask: url('@/assets/ui/card-front-small.png');
 }
 
 .image {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  mask: url('/assets/ui/card-front-small-mask.png');
+  mask: url('@/assets/ui/card-front-small-mask.png');
   mask-size: cover;
   display: grid;
   transform-origin: center center;
@@ -210,22 +210,22 @@ const pointerStyle = computed(() => {
   }
   .spell & .art {
     --pixel-scale: var(--art-pixel-scale);
-    background-image: v-bind(imageBg), url('/assets/ui/frame-spell.png');
+    background-image: v-bind(imageBg), url('@/assets/ui/frame-spell.png');
   }
 
   .sigil & .art {
     --pixel-scale: var(--art-pixel-scale);
-    background-image: v-bind(imageBg), url('/assets/ui/frame-sigil.png');
+    background-image: v-bind(imageBg), url('@/assets/ui/frame-sigil.png');
   }
 
   .artifact & .art {
     --pixel-scale: var(--art-pixel-scale);
-    background-image: v-bind(imageBg), url('/assets/ui/frame-artifact.png');
+    background-image: v-bind(imageBg), url('@/assets/ui/frame-artifact.png');
   }
 }
 
 .atk {
-  background-image: url('/assets/ui/card-attack.png');
+  background-image: url('@/assets/ui/card-attack.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(24px * var(--pixel-scale));
@@ -244,7 +244,7 @@ const pointerStyle = computed(() => {
 }
 
 .hp {
-  background-image: url('/assets/ui/card-hp.png');
+  background-image: url('@/assets/ui/card-hp.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(24px * var(--pixel-scale));
@@ -272,7 +272,7 @@ const pointerStyle = computed(() => {
 }
 
 .durability {
-  background-image: url('/assets/ui/card-durability.png');
+  background-image: url('@/assets/ui/card-durability.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(24px * var(--pixel-scale));
@@ -291,7 +291,7 @@ const pointerStyle = computed(() => {
 }
 
 .countdown {
-  background-image: url('/assets/ui/card-countdown.png');
+  background-image: url('@/assets/ui/card-countdown.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(24px * var(--pixel-scale));
@@ -310,7 +310,7 @@ const pointerStyle = computed(() => {
 }
 
 .mana-cost {
-  background-image: url('/assets/ui/mana-cost.png');
+  background-image: url('@/assets/ui/mana-cost.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(22px * var(--pixel-scale));
@@ -329,7 +329,7 @@ const pointerStyle = computed(() => {
 }
 
 .destiny-cost {
-  background-image: url('/assets/ui/destiny-cost.png');
+  background-image: url('@/assets/ui/destiny-cost.png');
   background-repeat: no-repeat;
   background-size: cover;
   width: calc(22px * var(--pixel-scale));

@@ -12,7 +12,7 @@ import {
   PlayerBeforeReplaceCardEvent
 } from '../../../player/player.events';
 import type { BuilderContext } from '../schema';
-import { MinionSummonedEvent } from '../../events/minion.events';
+import { MinionAfterSummonedEvent } from '../../events/minion.events';
 
 export type CardFilter =
   | { type: 'any_card' }
@@ -147,7 +147,7 @@ export const resolveCardFilter = ({ filter, ...ctx }: CardFilterContext) => {
               return selectedCard.equals(c);
             })
             .with({ type: 'summoned_minion_card' }, () => {
-              if (ctx.event instanceof MinionSummonedEvent) {
+              if (ctx.event instanceof MinionAfterSummonedEvent) {
                 return ctx.event.data.card.equals(c);
               }
 

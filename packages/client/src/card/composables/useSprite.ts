@@ -4,6 +4,7 @@ import { isDefined, type EmptyObject } from '@game/shared';
 import { CARD_KINDS, type CardKind } from '@game/engine/src/card/card.enums';
 import { TypedEventEmitter } from '@game/engine/src/utils/typed-emitter';
 import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
+import { assets } from '@/assets';
 
 export interface SpriteData {
   id: string;
@@ -26,11 +27,9 @@ export function useSprite({
   animationSequence,
   kind,
   scale = 1,
-  pathPrefix = '/cards',
   repeat = true,
   scalePositionByPixelScale = false
 }: {
-  pathPrefix?: string;
   sprite: MaybeRefOrGetter<SpriteData | null>;
   animationSequence: MaybeRefOrGetter<string[] | undefined>;
   kind: MaybeRefOrGetter<CardKind>;
@@ -135,7 +134,7 @@ export function useSprite({
   });
 
   const imageBg = computed(() => {
-    return `url(/assets${pathPrefix}/${spriteRef.value?.id}.png)`;
+    return assets[`${spriteRef.value?.id}`]?.css ?? 'none';
   });
 
   return {

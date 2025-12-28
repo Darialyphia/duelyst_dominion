@@ -78,7 +78,7 @@
       #0e152e 10%,
       #0e152e 12%
     );
-  /* url('/assets/ui/foil-texture.webp'); */
+  /* url('@/assets/ui/foil-texture.webp'); */
   background-size:
     40%,
     200% 700%,

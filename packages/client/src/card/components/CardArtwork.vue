@@ -19,11 +19,9 @@ const props = defineProps<{
   isTiltable?: boolean;
   isHovered?: boolean;
 }>();
-
 const isSpell = computed(() => props.kind === CARD_KINDS.SPELL);
 const isArtifact = computed(() => props.kind === CARD_KINDS.ARTIFACT);
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
-
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   animationSequence: toRef(props, 'animationSequence'),
   sprite: toRef(props, 'sprite'),

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
-import spritesData from 'virtual:sprites';
+import { isDefined } from '@game/shared';
+import { sprites as spritesData } from '@/assets';
 
 const { sprites } = defineProps<{
   sprites: Array<{
@@ -17,31 +18,37 @@ const emit = defineEmits<{
   end: [];
 }>();
 const buildSprites = () => {
-  const parts = sprites.map(s => {
-    const sprite = useSprite({
-      sprite: spritesData[s.spriteId],
-      animationSequence: s.animationSequence,
-      scale: s.scale,
-      kind: CARD_KINDS.SPELL,
-      pathPrefix: '/fx',
-      repeat: false
-    });
-    if (!spritesData[s.spriteId]) {
-      console.warn('Sprite data not found for spriteId:', s.spriteId);
-    }
-    return {
-      ...sprite,
-      spriteData: spritesData[s.spriteId],
-      id: s.spriteId,
-      scale: s.scale,
-      offset: s.offset,
-      tint: s.tint ?? 'transparent'
-    };
-  });
+  const parts = sprites
+    .map(s => {
+      const sprite = useSprite({
+        sprite: spritesData[s.spriteId],
+        animationSequence: s.animationSequence,
+        scale: s.scale,
+        kind: CARD_KINDS.SPELL,
+        repeat: false
+      });
+      if (!spritesData[s.spriteId]) {
+        console.warn('Sprite data not found for spriteId:', s.spriteId);
+        return null;
+      }
+      return {
+        ...sprite,
+        spriteData: spritesData[s.spriteId],
+        id: s.spriteId,
+        scale: s.scale,
+        offset: s.offset,
+        tint: s.tint ?? 'transparent'
+      };
+    })
+    .filter(isDefined);
 
   return parts;
 };
 const _sprites = buildSprites();
+if (_sprites.length === 0) {
+  console.warn('No valid sprites to play in SpriteFX component');
+  emit('end');
+}
 
 const isDone = computed(() => _sprites.every(sprite => sprite.isDone.value));
 
@@ -56,7 +63,7 @@ watch(isDone, done => {
   <div ref="spriteContainer" class="sprite-fx-container">
     <template v-for="sprite in _sprites" :key="sprite.id">
       <div
-        v-if="!sprite.isDone.value"
+        v-if="!sprite.isDone.value && sprite.spriteData"
         class="sprite-fx"
         :style="{
           '--bg-position': sprite.bgPosition.value,

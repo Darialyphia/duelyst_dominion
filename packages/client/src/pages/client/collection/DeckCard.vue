@@ -5,7 +5,14 @@ import { useCollectionPage } from './useCollectionPage';
 import { defaultConfig } from '@game/engine/src/config';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { useSprite } from '@/card/composables/useSprite';
-import sprites from 'virtual:sprites';
+import { sprites } from '@/assets';
+import {
+  HoverCardRoot,
+  HoverCardTrigger,
+  HoverCardPortal,
+  HoverCardContent
+} from 'reka-ui';
+import BlueprintCard from '@/card/components/BlueprintCard.vue';
 
 const { card } = defineProps<{
   card: {
@@ -18,7 +25,7 @@ const { card } = defineProps<{
 
 const { deckBuilder } = useCollectionPage();
 
-const sprite = computed(() => sprites[card.blueprint.vfx.spriteId]);
+const sprite = computed(() => sprites[`cards/${card.blueprint.vfx.spriteId}`]);
 
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.GENERAL,
@@ -31,9 +38,6 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   <HoverCardRoot :open-delay="100" :close-delay="0">
     <HoverCardTrigger class="inspectable-card" v-bind="$attrs" as-child>
       <li
-        :style="{
-          '--bg': `url(/assets/cards/${card.blueprint.vfx.spriteId}.png)`
-        }"
         :class="[
           card.blueprint.kind.toLocaleLowerCase(),
           card.copies === 1 && 'first-copy'
@@ -104,15 +108,15 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   align-items: center;
   border: solid var(--border-size-1) #bba08377;
   padding: var(--size-2) var(--size-2);
-  cursor: url('/assets/ui/cursor-hover.png'), auto;
-  background-image:
-    linear-gradient(to right, hsl(0deg 0% 20% / 0.5), hsl(0deg 0% 0% / 0.5)),
-    var(--bg);
+  cursor: url('@/assets/ui/cursor-hover.png'), auto;
+  background-image: linear-gradient(
+    to right,
+    hsl(0deg 0% 20% / 0.5),
+    hsl(0deg 0% 0% / 0.5)
+  );
   background-repeat: no-repeat;
-  background-position:
-    center center,
-    calc(100% + 40px) -104px;
-  background-size: 200%, calc(2px * 96);
+  background-position: center center;
+  background-size: 200%;
   transition:
     transform 0.3s var(--ease-2),
     opacity 0.3s var(--ease-2),
@@ -147,7 +151,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
 }
 
 .mana-cost {
-  background: url(/assets/ui/mana-cost.png) no-repeat center center;
+  background: url(@/assets/ui/mana-cost.png) no-repeat center center;
   background-size: contain;
   font-size: var(--size-3);
   font-weight: var(--font-weight-5);
@@ -187,13 +191,13 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   paint-order: stroke fill;
 
   &.red {
-    background: url(/assets/ui/rune-red.png) no-repeat center center;
+    background: url(@/assets/ui/rune-red.png) no-repeat center center;
   }
   &.yellow {
-    background: url(/assets/ui/rune-yellow.png) no-repeat center center;
+    background: url(@/assets/ui/rune-yellow.png) no-repeat center center;
   }
   &.blue {
-    background: url(/assets/ui/rune-blue.png) no-repeat center center;
+    background: url(@/assets/ui/rune-blue.png) no-repeat center center;
   }
 }
 
@@ -210,5 +214,9 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   background-repeat: no-repeat;
   background-size: var(--background-width) var(--background-height);
   opacity: 0.35;
+
+  :where(.artifact, .spell) & {
+    translate: -15px -20px;
+  }
 }
 </style>

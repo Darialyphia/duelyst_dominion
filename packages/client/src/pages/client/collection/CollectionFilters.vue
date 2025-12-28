@@ -9,6 +9,7 @@ import {
 import { uppercaseFirstLetter } from '@game/shared';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { useCollectionPage } from './useCollectionPage';
+import { assets } from '@/assets';
 
 const {
   textFilter,
@@ -27,7 +28,7 @@ const cardKinds: Array<{
   color: string;
 }> = Object.values(CARD_KINDS).map(kind => ({
   id: kind,
-  img: `/assets/ui/card-kind-${kind.toLocaleLowerCase()}.png`,
+  img: assets[`ui/card-kind-${kind.toLocaleLowerCase()}`].path,
   label: uppercaseFirstLetter(kind),
   color: '#dec7a6'
 }));
@@ -39,7 +40,7 @@ const factions: Array<{
   color: string;
 }> = Object.values(FACTIONS).map(faction => ({
   id: faction,
-  img: `/assets/ui/crest-${faction.toLocaleLowerCase()}.png`,
+  img: assets[`ui/crest-${faction.toLocaleLowerCase()}`].path,
   label: uppercaseFirstLetter(faction),
   color: 'white'
 }));
@@ -189,7 +190,7 @@ aside {
 }
 
 .view-toggle {
-  cursor: url('/assets/ui/cursor-hover.png'), auto;
+  cursor: url('@/assets/ui/cursor-hover.png'), auto;
 }
 
 .search-input {

@@ -158,7 +158,7 @@ const boardStyle = computed(() => ({
   position: absolute;
   width: 125vw;
   height: 125dvh;
-  background: url(/assets/backgrounds/booster-opening.png) center/cover
+  background: url(@/assets/backgrounds/booster-opening.png) center/cover
     no-repeat;
   translate: -9.9% -10%;
 }

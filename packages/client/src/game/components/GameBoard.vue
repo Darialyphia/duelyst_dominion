@@ -29,7 +29,7 @@ import EquipedArtifact from './EquipedArtifact.vue';
 import VFXLights from './VFXLights.vue';
 import VFXSprites from './VFXSprites.vue';
 import SVGFilters from './SVGFilters.vue';
-// import MouseLight from './MouseLight.vue';
+import MouseLight from './MouseLight.vue';
 
 const { client } = useGameClient();
 const boardCells = useBoardCells();
@@ -81,9 +81,8 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
     <div id="lights-teleport" />
     <VFXLights />
     <VFXSprites />
-    <!-- <MouseLight /> -->
+    <MouseLight />
 
-    <div class="overlay" />
     <Transition appear>
       <div class="vfx-overlay" v-if="isVfxOverlayDisplayed" />
     </Transition>

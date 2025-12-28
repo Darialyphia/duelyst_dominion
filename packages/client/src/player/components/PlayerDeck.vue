@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sprites } from '@/assets';
 import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS, type Rune } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
@@ -9,7 +10,6 @@ import {
   HoverCardRoot,
   HoverCardTrigger
 } from 'reka-ui';
-import sprites from 'virtual:sprites';
 
 export type DisplayedDeck = {
   name: string;
@@ -66,7 +66,7 @@ const highestRuneCost = computed<Record<Rune, number>>(() => {
 });
 
 const sprite = computed(() =>
-  general.value ? sprites[general.value.vfx.spriteId] : null
+  general.value ? sprites[`cards/${general.value.vfx.spriteId}`] : null
 );
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.GENERAL,

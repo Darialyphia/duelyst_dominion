@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
+import { assets } from '@/assets';
 
 interface Modifier {
   id: string;
@@ -26,7 +27,7 @@ const { modifiers } = defineProps<{
       <template #trigger>
         <div
           :style="{
-            '--bg': `url(/assets/${modifier.icon}.png)`,
+            '--bg': `url(@/assets/${modifier.icon}.png)`,
             '--pixel-scale': 1
           }"
           :alt="modifier.name"
@@ -36,7 +37,7 @@ const { modifiers } = defineProps<{
       </template>
 
       <div class="modifier">
-        <img :src="`/assets/${modifier.icon}.png`" class="modifier-image" />
+        <img :src="assets[`ui/${modifier.icon}`].path" class="modifier-image" />
         <div>
           <div class="font-7">{{ modifier.name }}</div>
           {{ modifier.description }}

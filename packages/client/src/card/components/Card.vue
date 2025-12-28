@@ -20,6 +20,7 @@ import CardCost from './CardCost.vue';
 import CardArtwork from './CardArtwork.vue';
 import { match } from 'ts-pattern';
 import { ANIMATIONS_NAMES } from '@game/engine/src/game/systems/vfx.system';
+import { assets } from '@/assets';
 
 const {
   card,
@@ -65,21 +66,20 @@ const {
   parallaxMultiplier?: number;
   hasBacklighting?: boolean;
 }>();
-
 const rarityBg = computed(() => {
   if (
     [RARITIES.BASIC, RARITIES.COMMON, RARITIES.TOKEN].includes(
       card.rarity as any
     )
   ) {
-    return `url('/assets/ui/card-rarity-common.png')`;
+    return assets[`ui/card-rarity-common`].css;
   }
 
-  return `url('/assets/ui/card-rarity-${card.rarity}.png')`;
+  return assets[`ui/card-rarity-${card.rarity}`].css;
 });
 
 const factionBg = computed(() => {
-  return `url('/assets/ui/crest-${card.faction.toLocaleLowerCase()}.png')`;
+  return assets[`ui/crest-${card.faction.toLocaleLowerCase()}`].css;
 });
 
 const root = useTemplateRef('card');
@@ -114,7 +114,7 @@ const _animationSequence = computed(() => {
 });
 
 const kindImg = computed(() => {
-  return `/assets/ui/card-kind-${card.kind.toLocaleLowerCase()}.png`;
+  return assets[`ui/card-kind-${card.kind.toLocaleLowerCase()}`].path;
 });
 
 const factionColor = computed(() => {
@@ -245,7 +245,7 @@ const factionBgOpacity = computed(() => {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: url('/assets/ui/card-front.png');
+    background: url('@/assets/ui/card-front.png');
     background-repeat: no-repeat;
     background-size: cover;
     z-index: -1;
@@ -268,15 +268,15 @@ const factionBgOpacity = computed(() => {
       hsla(from v-bind(factionColor) h s l / v-bind(factionBgOpacity)),
       transparent
     ),
-    url('/assets/ui/card-front.png');
+    url('@/assets/ui/card-front.png');
   background-size: cover, cover;
   background-blend-mode: color;
   color: #fcffcb;
   font-size: calc(var(--pixel-scale) * 8px);
   position: relative;
   transform-style: preserve-3d;
-  --glare-mask: url('/assets/ui/card-front.png');
-  --foil-mask: url('/assets/ui/card-front.png');
+  --glare-mask: url('@/assets/ui/card-front.png');
+  --foil-mask: url('@/assets/ui/card-front.png');
 }
 
 .card.animated:has(.foil) .parallax {
@@ -296,10 +296,10 @@ const factionBgOpacity = computed(() => {
 .card-back {
   transform: rotateY(0.5turn);
   backface-visibility: hidden;
-  background: url('/assets/ui/card-back.png');
+  background: url('@/assets/ui/card-back.png');
   background-size: cover;
-  --glare-mask: url('/assets/ui/card-back.png');
-  --foil-mask: url('/assets/ui/card-back.png');
+  --glare-mask: url('@/assets/ui/card-back.png');
+  --foil-mask: url('@/assets/ui/card-back.png');
 }
 
 .top-right {

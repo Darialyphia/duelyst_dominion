@@ -64,18 +64,21 @@ const isDeleteModalOpened = ref(false);
   font-weight: 500;
   text-align: right;
   padding: var(--size-3) var(--size-3) 0;
-  box-shadow: 0 -10px 1rem hsl(var(--gray-12-hsl) / 0.5);
+  border-top: solid 1px #bba08377;
 }
 
 footer {
   position: sticky;
   bottom: 0;
-  background-color: #10181e;
+  background-color: #1a1320;
 }
 
 .delete-icon {
   width: var(--size-6);
   color: var(--red-7);
+  :has(> &) {
+    --ui-button-bg: #1a1320;
+  }
   &:hover {
     color: var(--red-9);
   }

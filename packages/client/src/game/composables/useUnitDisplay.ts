@@ -1,11 +1,11 @@
 import { computed, type ComputedRef, type Ref } from 'vue';
 import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.model';
-import sprites from 'virtual:sprites';
 import { uniqBy } from 'lodash-es';
 import { isDefined } from '@game/shared';
 import type { SpriteData } from '@/card/composables/useSprite';
 import { useFxEvent, useUnits } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import { sprites } from '@/assets';
 
 interface UseUnitDisplayOptions {
   unit: Ref<UnitViewModel>;
@@ -59,7 +59,7 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
   });
 
   const spriteData = computed<SpriteData>(
-    () => sprites[unit.value.getCard().spriteId]
+    () => sprites[`cards/${unit.value.getCard().spriteId}`]
   );
 
   const displayedModifiers = computed(() => {

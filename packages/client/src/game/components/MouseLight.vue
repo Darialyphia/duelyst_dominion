@@ -1,43 +1,38 @@
 <script setup lang="ts">
 import { useEventListener, useRafFn } from '@vueuse/core';
-import { useGameState } from '../composables/useGameClient';
+import { useGameClient, useGameState } from '../composables/useGameClient';
 import { GAME_PHASES } from '@game/engine/src/game/game.enums';
 
-const targetX = ref(window.innerWidth / 2);
-const targetY = ref(window.innerHeight / 2);
+const target = ref({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
-const lightX = ref(window.innerWidth / 2);
-const lightY = ref(window.innerHeight / 2);
+const light = ref({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
-// Configuration for smooth movement
-const easing = 0.08; // Lower = more delay/smoothness
+const easing = 0.1;
 
 useEventListener(window, 'mousemove', (e: MouseEvent) => {
-  targetX.value = e.clientX;
-  targetY.value = e.clientY;
+  target.value.x = e.clientX;
+  target.value.y = e.clientY;
 });
 
-// Use requestAnimationFrame for smooth 60fps animation
 useRafFn(() => {
-  // Calculate distance to target
-  const dx = targetX.value - lightX.value;
-  const dy = targetY.value - lightY.value;
+  const dx = target.value.x - light.value.x;
+  const dy = target.value.y - light.value.y;
 
-  // Apply easing directly to position (no velocity/friction for overshoot)
-  lightX.value += dx * easing;
-  lightY.value += dy * easing;
+  light.value.x += dx * easing;
+  light.value.y += dy * easing;
 });
 
 const state = useGameState();
+const { client } = useGameClient();
 </script>
 
 <template>
   <div
-    v-if="state.phase.state === GAME_PHASES.PLAYING_CARD"
+    v-if="state.phase.state === GAME_PHASES.PLAYING_CARD && !client.isPlayingFx"
     class="light"
     :style="{
-      left: `${lightX}px`,
-      top: `${lightY}px`
+      left: `${light.x}px`,
+      top: `${light.y}px`
     }"
   />
 </template>
@@ -45,7 +40,7 @@ const state = useGameState();
 <style scoped lang="postcss">
 .light {
   position: fixed;
-  width: 800px;
+  width: 500px;
   aspect-ratio: 1;
   background: radial-gradient(
     circle,

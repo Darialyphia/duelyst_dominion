@@ -171,7 +171,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
   align-items: center;
   min-height: 800px; /* Ensure enough space */
   max-width: 100vw;
-  background: url(/assets/backgrounds/booster-opening.png) center/cover
+  background: url(@/assets/backgrounds/booster-opening.png) center/cover
     no-repeat;
 
   &.is-shaking::after {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import Card from './Card.vue';
-import sprites from 'virtual:sprites';
+import { sprites } from '@/assets';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
 const sprite = computed(() => {
-  return sprites[blueprint.vfx.spriteId];
+  return sprites[`cards/${blueprint.vfx.spriteId}`];
 });
 </script>
 

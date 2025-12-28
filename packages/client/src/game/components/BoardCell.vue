@@ -27,7 +27,7 @@ const ui = useGameUi();
 
 <style scoped lang="postcss">
 .cell {
-  background: url('/assets/ui/board-cell.png');
+  background: url('@/assets/ui/board-cell.png');
   background-size: cover;
   width: 100%;
   height: 100%;

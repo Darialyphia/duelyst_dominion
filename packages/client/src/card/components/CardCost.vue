@@ -77,7 +77,7 @@ const costStatus = computed(() => {
 .mana-cost {
   width: calc(29px * var(--pixel-scale));
   height: calc(32px * var(--pixel-scale));
-  background: url('/assets/ui/mana-cost.png');
+  background: url('@/assets/ui/mana-cost.png');
   background-size: cover;
   display: flex;
   align-items: center;
@@ -107,13 +107,13 @@ const costStatus = computed(() => {
   --bottom-color: #dec7a6;
   text-shadow: 0 3px 1rem black;
   &.red {
-    background-image: url('/assets/ui/rune-red.png');
+    background-image: url('@/assets/ui/rune-red.png');
   }
   &.yellow {
-    background-image: url('/assets/ui/rune-yellow.png');
+    background-image: url('@/assets/ui/rune-yellow.png');
   }
   &.blue {
-    background-image: url('/assets/ui/rune-blue.png');
+    background-image: url('@/assets/ui/rune-blue.png');
   }
 }
 

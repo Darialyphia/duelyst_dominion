@@ -34,7 +34,7 @@ const maxSize = 25;
 }
 
 .pile-item {
-  background: url('/assets/ui/card-back-small.png') no-repeat;
+  background: url('@/assets/ui/card-back-small.png') no-repeat;
   background-size: contain;
   transform: translateY(calc(var(--i) * -1px));
 }

@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import sprites, { type SpriteData } from 'virtual:sprites';
 import BoardPositioner from './BoardPositioner.vue';
 
 import type { TileViewModel } from '@game/engine/src/client/view-models/tile.model';
 import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { sprites, type SpriteData } from '@/assets';
 
 const { tile } = defineProps<{ tile: TileViewModel }>();
-const spriteData = computed<SpriteData>(() => sprites[tile.spriteId]);
+const spriteData = computed<SpriteData>(
+  () => sprites[`tiles/${tile.spriteId}`]
+);
 
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   animationSequence: ['default'],
   sprite: spriteData,
   kind: CARD_KINDS.MINION,
-  scale: 1,
-  pathPrefix: '/tiles'
+  scale: 1
 });
 </script>
 

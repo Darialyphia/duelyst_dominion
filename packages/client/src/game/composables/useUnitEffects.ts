@@ -17,7 +17,7 @@ export function useUnitEffects({
   const damageEffects = computed(() => {
     return [
       {
-        spriteId: 'impact',
+        spriteId: 'fx/impact',
         animationSequence: ['impactorangebig'],
         scale: 1.25,
         offset: {
@@ -26,7 +26,7 @@ export function useUnitEffects({
         }
       },
       {
-        spriteId: 'collision',
+        spriteId: 'fx/collision',
         animationSequence: ['collisionsparksblue'],
         scale: 1.25,
         offset: {
@@ -35,7 +35,7 @@ export function useUnitEffects({
         }
       },
       {
-        spriteId: 'bloodground',
+        spriteId: 'fx/bloodground',
         animationSequence: ['bloodground2'],
         scale: 1,
         offset: {

@@ -69,7 +69,7 @@ useVFXStep('playSpriteAt', async step => {
     <SpriteFX
       :sprites="[
         {
-          spriteId: sprite.resourceName,
+          spriteId: `fx/${sprite.resourceName}`,
           animationSequence: sprite.animationSequence,
           scale: sprite.scale,
           offset: sprite.offset,

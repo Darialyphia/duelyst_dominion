@@ -9,7 +9,43 @@ export const trueStrike: SpellBlueprint = {
   id: 'true-strike',
   name: 'True Strike',
   description: 'Deal 2 damage to an enemy minion.',
-  vfx: { spriteId: 'spells/f1_true-strike' },
+  vfx: {
+    spriteId: 'spells/f1_true-strike',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_f1_truestrike',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                },
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    position: ctx.targets[0],
+                    resourceName: 'fx_energyhaloground',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: 40 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_truestrike.m4a'
   },

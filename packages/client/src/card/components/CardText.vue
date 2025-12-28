@@ -12,6 +12,7 @@ import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import BlueprintCard from './BlueprintCard.vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
+import { assets } from '@/assets';
 
 const { text, highlighted = true } = defineProps<{
   text: string;
@@ -128,21 +129,21 @@ const tokens = computed<Token[]>(() => {
     >
       <UiSimpleTooltip v-if="token.type === 'exhaust'">
         <template #trigger>
-          <img src="/assets/ui/ability-exhaust.png" class="inline" />
+          <img :src="assets['ui/ability-exhaust'].path" class="inline" />
         </template>
         Exhaust the card.
       </UiSimpleTooltip>
 
       <UiSimpleTooltip v-else-if="token.type === 'rune'">
         <template #trigger>
-          <img :src="`/assets/ui/rune-${token.rune}.png`" class="inline" />
+          <img :src="assets[`ui/rune-${token.rune}`].path" class="inline" />
         </template>
         {{ uppercaseFirstLetter(token.rune) }} Rune
       </UiSimpleTooltip>
 
       <UiSimpleTooltip v-else-if="token.type === 'spellpower'">
         <template #trigger>
-          <img src="/assets/ui/ability-power.png" class="inline" />
+          <img :src="assets['ui/ability-power'].path" class="inline" />
         </template>
         <b>Spellpower</b>
         : is used to enhance the effects of some cards.
@@ -150,7 +151,7 @@ const tokens = computed<Token[]>(() => {
 
       <UiSimpleTooltip v-else-if="token.type === 'health'">
         <template #trigger>
-          <img src="/assets/ui/hp.png" class="inline" />
+          <img :src="assets['ui/hp'].path" class="inline" />
         </template>
         <b>Health</b>
         : represents the amount of damage a minion or hero can take before being
@@ -159,7 +160,7 @@ const tokens = computed<Token[]>(() => {
 
       <UiSimpleTooltip v-else-if="token.type === 'attack'">
         <template #trigger>
-          <img src="/assets/ui/attack.png" class="inline" />
+          <img :src="assets['ui/attack'].path" class="inline" />
         </template>
         <b>Attack</b>
         : is the amount of damage a minion or hero can deal in combat.
@@ -167,7 +168,7 @@ const tokens = computed<Token[]>(() => {
 
       <UiSimpleTooltip v-else-if="token.type === 'durability'">
         <template #trigger>
-          <img src="/assets/ui/shield.png" class="inline" />
+          <img :src="assets['ui/shield'].path" class="inline" />
         </template>
         <b>Durability</b>
         : when it reaches zero, the artifact is destroyed.
@@ -213,7 +214,7 @@ const tokens = computed<Token[]>(() => {
 }
 
 .token-mana {
-  background: url('/assets/ui/mana-cost.png') no-repeat center center;
+  background: url('@/assets/ui/mana-cost.png') no-repeat center center;
   background-size: cover;
   font-weight: var(--font-weight-5);
   border-radius: var(--radius-round);
@@ -226,7 +227,7 @@ const tokens = computed<Token[]>(() => {
   text-shadow: 0 2px 2px black;
 }
 .token-destiny {
-  background: url('/assets/ui/destiny-cost.png') no-repeat center center;
+  background: url('@/assets/ui/destiny-cost.png') no-repeat center center;
   background-size: cover;
   font-weight: var(--font-weight-5);
   border-radius: var(--radius-round);

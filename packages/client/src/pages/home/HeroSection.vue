@@ -55,7 +55,7 @@ import FancyButton from '@/ui/components/FancyButton.vue';
   background-attachment: fixed;
   background:
     linear-gradient(to top, hsl(0 0% 0% / 0.8) 20%, transparent 80%),
-    url('/assets/backgrounds/home_hero.jpg');
+    url('@/assets/backgrounds/home_hero.jpg');
   background-size: cover;
   background-position: center, center, bottom;
   position: relative;
