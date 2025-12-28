@@ -18,12 +18,12 @@ export const primusShieldmaster: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_unit_deploy_3.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: '.sfx_neutral_sunseer_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_sunseer_hit.m4a',
-    dealDamage: 'sfx_neutral_sunseer_attack_impact.m4a',
-    death: 'sfx_neutral_sunseer_death.m4a'
+    play: 'sfx_unit_deploy_3',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: '.sfx_neutral_sunseer_attack_swing',
+    takeDamage: 'sfx_neutral_sunseer_hit',
+    dealDamage: 'sfx_neutral_sunseer_attack_impact',
+    death: 'sfx_neutral_sunseer_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

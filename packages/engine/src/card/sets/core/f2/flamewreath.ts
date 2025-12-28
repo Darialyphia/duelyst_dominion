@@ -22,12 +22,12 @@ export const flamewreath: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_f4_blacksolus_attack_swing.m4a',
-    walk: 'sfx_f3_aymarahealer_impact.m4a',
-    attack: 'sfx_f3_anubis_attack_impact.m4a',
-    takeDamage: 'sfx_f3_anubis_hit.m4a',
-    dealDamage: 'sfx_f4_siren_attack_impact.m4a',
-    death: 'sfx_f3_anubis_death.m4a'
+    play: 'sfx_f4_blacksolus_attack_swing',
+    walk: 'sfx_f3_aymarahealer_impact',
+    attack: 'sfx_f3_anubis_attack_impact',
+    takeDamage: 'sfx_f3_anubis_hit',
+    dealDamage: 'sfx_f4_siren_attack_impact',
+    death: 'sfx_f3_anubis_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

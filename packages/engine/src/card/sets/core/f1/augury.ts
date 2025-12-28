@@ -12,7 +12,7 @@ export const augury: SpellBlueprint = {
   name: 'Augury',
   description: 'Draw a card. You can replace two additional cards this turn.',
   vfx: { spriteId: 'spells/f1_augury' },
-  sounds: { play: 'sfx_spell_divineblood.m4a' },
+  sounds: { play: 'sfx_spell_divineblood' },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

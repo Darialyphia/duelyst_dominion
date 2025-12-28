@@ -26,12 +26,12 @@ export const archonSpellbinder: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_summonlegendary.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_neutral_archonspellbinder_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_archonspellbinder_hit.m4a',
-    dealDamage: 'sfx_neutral_archonspellbinder_attack_impact.m4a',
-    death: 'sfx_neutral_archonspellbinder_death.m4a'
+    play: 'sfx_summonlegendary',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_neutral_archonspellbinder_attack_swing',
+    takeDamage: 'sfx_neutral_archonspellbinder_hit',
+    dealDamage: 'sfx_neutral_archonspellbinder_attack_impact',
+    death: 'sfx_neutral_archonspellbinder_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

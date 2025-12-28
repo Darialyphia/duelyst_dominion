@@ -52,7 +52,7 @@ export const martyrdom: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_martyrdom.m4a'
+    play: 'sfx_spell_martyrdom'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

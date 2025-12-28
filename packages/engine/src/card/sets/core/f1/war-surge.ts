@@ -12,7 +12,7 @@ export const warSurge: SpellBlueprint = {
   description: 'Give allied minions +1 / +1.',
   vfx: { spriteId: 'spells/f1_war-surge' },
   sounds: {
-    play: 'sfx_spell_warsurge.m4a'
+    play: 'sfx_spell_warsurge'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

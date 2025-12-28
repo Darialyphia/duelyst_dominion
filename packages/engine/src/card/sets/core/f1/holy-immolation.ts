@@ -71,7 +71,7 @@ export const holyImmolation: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_f2_jadeogre_attack_impact.m4a'
+    play: 'sfx_f2_jadeogre_attack_impact'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

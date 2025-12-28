@@ -11,12 +11,12 @@ export const windDervish: MinionBlueprint = {
   description: '@Rush@, @Ephemeral@.',
   vfx: { spriteId: 'minions/f3_wind-dervish' },
   sounds: {
-    play: 'sfx_spell_ghostlightning.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_neutral_komodocharger_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_komodocharger_hit.m4a',
-    dealDamage: 'sfx_neutral_komodocharger_attack_impact.m4a',
-    death: 'sfx_neutral_komodocharger_death.m4a'
+    play: 'sfx_spell_ghostlightning',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_neutral_komodocharger_attack_swing',
+    takeDamage: 'sfx_neutral_komodocharger_hit',
+    dealDamage: 'sfx_neutral_komodocharger_attack_impact',
+    death: 'sfx_neutral_komodocharger_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: false,

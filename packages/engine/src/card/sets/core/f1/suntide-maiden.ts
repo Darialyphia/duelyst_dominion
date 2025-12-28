@@ -20,12 +20,12 @@ export const suntideMaiden: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_immolation_b.m4a',
-    walk: 'sfx_unit_run_magical_4.m4a',
-    attack: 'sfx_neutral_gambitgirl_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_luxignis_hit.m4a',
-    dealDamage: 'sfx_neutral_jaxtruesight_death.m4a',
-    death: 'sfx_neutral_pandora_death.m4a'
+    play: 'sfx_spell_immolation_b',
+    walk: 'sfx_unit_run_magical_4',
+    attack: 'sfx_neutral_gambitgirl_attack_swing',
+    takeDamage: 'sfx_neutral_luxignis_hit',
+    dealDamage: 'sfx_neutral_jaxtruesight_death',
+    death: 'sfx_neutral_pandora_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

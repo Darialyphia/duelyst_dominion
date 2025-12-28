@@ -24,12 +24,12 @@ export const fourWindsMagus: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_deathstrikeseal.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f2_mage4winds_attack_swing.m4a',
-    takeDamage: 'sfx_f2_mage4winds_hit.m4a',
-    dealDamage: 'sfx_f2_mage4winds_impact.m4a',
-    death: 'sfx_f2_mage4winds_death.m4a'
+    play: 'sfx_spell_deathstrikeseal',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f2_mage4winds_attack_swing',
+    takeDamage: 'sfx_f2_mage4winds_hit',
+    dealDamage: 'sfx_f2_mage4winds_impact',
+    death: 'sfx_f2_mage4winds_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

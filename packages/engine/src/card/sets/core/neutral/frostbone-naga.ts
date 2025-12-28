@@ -19,12 +19,12 @@ export const frostboneNaga: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_unit_deploy_2.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f4_siren_attack_swing.m4a',
-    takeDamage: 'sfx_f4_siren_hit.m4a',
-    dealDamage: 'sfx_f6_ancientgrove_attack_impact.m4a',
-    death: 'sfx_f4_siren_death.m4a'
+    play: 'sfx_unit_deploy_2',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f4_siren_attack_swing',
+    takeDamage: 'sfx_f4_siren_hit',
+    dealDamage: 'sfx_f6_ancientgrove_attack_impact',
+    death: 'sfx_f4_siren_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

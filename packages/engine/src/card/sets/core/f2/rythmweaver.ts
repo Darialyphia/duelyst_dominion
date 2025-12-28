@@ -22,12 +22,12 @@ export const rythmweaver: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_neutral_ubo_attack_swing.m4a',
-    walk: 'sfx_neutral_ubo_attack_swing.m4a',
-    attack: 'sfx_neutral_prophetofthewhite_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_prophetofthewhite_hit.m4a',
-    dealDamage: 'sfx_neutral_prophetofthewhite_impact.m4a',
-    death: 'sfx_neutral_prophetofthewhite_death.m4a'
+    play: 'sfx_neutral_ubo_attack_swing',
+    walk: 'sfx_neutral_ubo_attack_swing',
+    attack: 'sfx_neutral_prophetofthewhite_attack_swing',
+    takeDamage: 'sfx_neutral_prophetofthewhite_hit',
+    dealDamage: 'sfx_neutral_prophetofthewhite_impact',
+    death: 'sfx_neutral_prophetofthewhite_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

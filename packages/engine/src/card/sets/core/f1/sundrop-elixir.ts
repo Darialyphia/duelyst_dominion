@@ -50,7 +50,7 @@ export const sundropElixir: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_lionheartblessing.m4a'
+    play: 'sfx_spell_lionheartblessing'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

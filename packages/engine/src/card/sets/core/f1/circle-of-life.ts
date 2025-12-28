@@ -38,7 +38,7 @@ export const circleOfLife: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_neutral_spelljammer_attack_swing.m4a'
+    play: 'sfx_neutral_spelljammer_attack_swing'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

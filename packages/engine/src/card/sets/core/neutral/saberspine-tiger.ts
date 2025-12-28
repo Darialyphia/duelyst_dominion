@@ -18,12 +18,12 @@ export const saberspineTiger: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_unit_deploy_1.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f6_boreanbear_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_beastsaberspinetiger_hit.m4a',
-    dealDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact.m4a',
-    death: 'sfx_neutral_beastsaberspinetiger_death.m4a'
+    play: 'sfx_unit_deploy_1',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f6_boreanbear_attack_swing',
+    takeDamage: 'sfx_neutral_beastsaberspinetiger_hit',
+    dealDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact',
+    death: 'sfx_neutral_beastsaberspinetiger_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

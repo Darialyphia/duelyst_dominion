@@ -53,7 +53,7 @@ export const phoenixFire: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_phoenixfire.m4a'
+    play: 'sfx_spell_phoenixfire'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

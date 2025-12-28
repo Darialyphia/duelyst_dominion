@@ -9,12 +9,12 @@ export const kaleosXaan: GeneralBlueprint = {
     spriteId: 'generals/f2_kaleos-xaan'
   },
   sounds: {
-    play: 'sfx_unit_deploy_1.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f2general_attack_swing.m4a',
-    takeDamage: 'sfx_f2general_hit_2.m4a',
-    dealDamage: 'sfx_f2general_attack_impact_3.m4a',
-    death: 'sfx_f2general_death.m4a'
+    play: 'sfx_unit_deploy_1',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f2general_attack_swing',
+    takeDamage: 'sfx_f2general_hit_2',
+    dealDamage: 'sfx_f2general_attack_impact_3',
+    death: 'sfx_f2general_death'
   },
   kind: CARD_KINDS.GENERAL,
   collectable: true,

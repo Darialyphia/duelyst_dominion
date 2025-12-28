@@ -18,12 +18,12 @@ export const azuriteLion: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_diretidefrenzy.m4a',
-    walk: 'sfx_neutral_arakiheadhunter_hit.m4a',
-    attack: 'sfx_neutral_beastsaberspinetiger_attack_swing.m4a',
-    dealDamage: 'sfx_neutral_beastsaberspinetiger_hit.m4a',
-    takeDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact.m4a',
-    death: 'sfx_neutral_beastphasehound_death.m4a'
+    play: 'sfx_spell_diretidefrenzy',
+    walk: 'sfx_neutral_arakiheadhunter_hit',
+    attack: 'sfx_neutral_beastsaberspinetiger_attack_swing',
+    dealDamage: 'sfx_neutral_beastsaberspinetiger_hit',
+    takeDamage: 'sfx_neutral_beastsaberspinetiger_attack_impact',
+    death: 'sfx_neutral_beastphasehound_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

@@ -19,12 +19,12 @@ export const healingMystic: MinionBlueprint = {
     spriteId: 'minions/neutral_healing-mystic'
   },
   sounds: {
-    play: 'sfx_unit_deploy_3.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f6_voiceofthewind_attack_swing.m4a',
-    takeDamage: 'sfx_neutral_spelljammer_hit.m4a',
-    dealDamage: 'sfx_neutral_spelljammer_attack_impact.m4a',
-    death: 'sfx_neutral_spelljammer_death.m4a'
+    play: 'sfx_unit_deploy_3',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f6_voiceofthewind_attack_swing',
+    takeDamage: 'sfx_neutral_spelljammer_hit',
+    dealDamage: 'sfx_neutral_spelljammer_attack_impact',
+    death: 'sfx_neutral_spelljammer_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

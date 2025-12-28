@@ -19,12 +19,12 @@ export const flamebloodWarlock: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_unit_deploy_2.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f4_engulfingshadow_attack_swing.m4a',
-    takeDamage: 'sfx_f4_engulfingshadow_attack_impact.m4a',
-    dealDamage: 'sfx_f4_engulfingshadow_hit.m4a',
-    death: 'sfx_f6_icebeetle_death.m4a'
+    play: 'sfx_unit_deploy_2',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f4_engulfingshadow_attack_swing',
+    takeDamage: 'sfx_f4_engulfingshadow_attack_impact',
+    dealDamage: 'sfx_f4_engulfingshadow_hit',
+    death: 'sfx_f6_icebeetle_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

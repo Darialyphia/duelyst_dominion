@@ -71,7 +71,7 @@ export const tempest: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_heavenstrike.m4a'
+    play: 'sfx_spell_heavenstrike'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

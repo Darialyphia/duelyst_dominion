@@ -67,7 +67,7 @@ export const magnetize: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_naturalselection.m4a'
+    play: 'sfx_spell_naturalselection'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

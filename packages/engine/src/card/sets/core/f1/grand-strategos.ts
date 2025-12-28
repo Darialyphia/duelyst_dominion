@@ -26,12 +26,12 @@ export const grandStrategos: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_ui_booster_packexplode.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f2_jadeogre_attack_swing.m4a',
-    takeDamage: 'sfx_f3_dunecaster_hit.m4a',
+    play: 'sfx_ui_booster_packexplode',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f2_jadeogre_attack_swing',
+    takeDamage: 'sfx_f3_dunecaster_hit',
     dealDamage: 'sfx_f3_dunecaster_impact',
-    death: 'sfx_f3_dunecaster_death.m4a'
+    death: 'sfx_f3_dunecaster_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

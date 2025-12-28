@@ -47,7 +47,7 @@ export const trueStrike: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_truestrike.m4a'
+    play: 'sfx_spell_truestrike'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

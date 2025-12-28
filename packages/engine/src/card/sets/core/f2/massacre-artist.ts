@@ -29,11 +29,11 @@ export const massacreArtist: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_deathstrikeseal.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_neutral_redsynja_attack_swing.m4a',
-    takeDamage: 'sfx_f2_kaidoassassin_hit.m4a',
-    dealDamage: 'sfx_neutral_syvrel_attack_impact.m4a',
+    play: 'sfx_spell_deathstrikeseal',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_neutral_redsynja_attack_swing',
+    takeDamage: 'sfx_f2_kaidoassassin_hit',
+    dealDamage: 'sfx_neutral_syvrel_attack_impact',
     death: 'sfx_neutral_syvrel_death.m4a  '
   },
   kind: CARD_KINDS.MINION,

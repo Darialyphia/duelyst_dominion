@@ -17,7 +17,7 @@ export const mistDragonSeal: SpellBlueprint = {
   description: 'Give an allied minion +1/+1 and teleport it to any space..',
   vfx: { spriteId: 'spells/f2_mist-dragon-seal' },
   sounds: {
-    play: 'sfx_spell_phoenixfire.m4a'
+    play: 'sfx_spell_phoenixfire'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

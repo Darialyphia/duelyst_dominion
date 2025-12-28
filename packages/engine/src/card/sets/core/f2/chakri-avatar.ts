@@ -24,12 +24,12 @@ export const chakriAvatar: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_deathstrikeseal.m4a',
-    walk: 'sfx_neutral_ladylocke_attack_impact.m4a',
-    attack: 'sfx_f2_chakriavatar_attack_swing.m4a',
-    takeDamage: 'sfx_f2_chakriavatar_hit.m4a',
-    dealDamage: 'sfx_f2_chakriavatar_attack_impact.m4a',
-    death: 'sfx_f2_chakriavatar_death.m4a'
+    play: 'sfx_spell_deathstrikeseal',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f2_chakriavatar_attack_swing',
+    takeDamage: 'sfx_f2_chakriavatar_hit',
+    dealDamage: 'sfx_f2_chakriavatar_attack_impact',
+    death: 'sfx_f2_chakriavatar_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

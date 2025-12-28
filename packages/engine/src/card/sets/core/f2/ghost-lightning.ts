@@ -11,7 +11,7 @@ export const ghostLightning: SpellBlueprint = {
   description: 'Deal 1 damage to all enemy minions.',
   vfx: { spriteId: 'spells/f2_ghost-lightning' },
   sounds: {
-    play: 'sfx_spell_ghostlightning.m4a'
+    play: 'sfx_spell_ghostlightning'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,

@@ -18,12 +18,12 @@ export const emeraldRejuvinator: MinionBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_immolation_b.m4a',
-    walk: 'sfx_unit_run_charge_4.m4a',
-    attack: 'sfx_neutral_emeraldrejuvinator_attack_swing.m4a',
-    takeDamage: 'sfx_f1_silvermanevanguard_hit.m4a',
-    dealDamage: 'sfx_f1_silvermanevanguard_attack_impact.m4a',
-    death: 'sfx_neutral_emeraldrejuvinator_death.m4a'
+    play: 'sfx_spell_immolation_b',
+    walk: 'sfx_unit_run_charge_4',
+    attack: 'sfx_neutral_emeraldrejuvinator_attack_swing',
+    takeDamage: 'sfx_f1_silvermanevanguard_hit',
+    dealDamage: 'sfx_f1_silvermanevanguard_attack_impact',
+    death: 'sfx_neutral_emeraldrejuvinator_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,

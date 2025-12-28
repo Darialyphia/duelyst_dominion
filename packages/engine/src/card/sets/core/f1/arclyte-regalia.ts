@@ -22,7 +22,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
   `,
   vfx: { spriteId: 'artifacts/f1_arclyte-regalia' },
   sounds: {
-    play: 'sfx_victory_crest.m4a'
+    play: 'sfx_victory_crest'
   },
   kind: CARD_KINDS.ARTIFACT,
   collectable: true,

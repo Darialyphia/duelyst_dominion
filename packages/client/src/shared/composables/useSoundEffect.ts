@@ -2,6 +2,7 @@ import { Howl } from 'howler';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from './useSettings';
 import { isDefined } from '@game/shared';
+import { sounds } from '@/assets';
 
 export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
   const SCALE_FACTOR = 0.6;
@@ -14,7 +15,7 @@ export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
     if (!isDefined(id)) return;
 
     howl.value = new Howl({
-      src: `/assets/sfx/${id}`,
+      src: sounds[id],
       volume: (userSettings.value.sound.sfxVolume[0] / 100) * SCALE_FACTOR
     });
 

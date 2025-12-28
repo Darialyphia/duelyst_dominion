@@ -70,7 +70,7 @@ export const divineBond: SpellBlueprint = {
     }
   },
   sounds: {
-    play: 'sfx_spell_divineblood.m4a'
+    play: 'sfx_spell_divineblood'
   },
   kind: CARD_KINDS.SPELL,
   collectable: true,
