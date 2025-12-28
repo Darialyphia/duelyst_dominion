@@ -9,7 +9,45 @@ export const ghostLightning: SpellBlueprint = {
   id: 'ghost-lightning',
   name: 'Ghost Lightning',
   description: 'Deal 1 damage to all enemy minions.',
-  vfx: { spriteId: 'spells/f2_ghost-lightning' },
+  vfx: {
+    spriteId: 'spells/f2_ghost-lightning',
+    sequences: {
+      play() {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteOnScreenCenter',
+                  params: {
+                    resourceName: 'fx_redplasma_vertical',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: -15, y: 0 }
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteOnScreenCenter',
+                  params: {
+                    resourceName: 'fx_redplasma_vertical',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 15, y: 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_ghostlightning'
   },

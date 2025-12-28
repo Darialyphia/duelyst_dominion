@@ -20,6 +20,10 @@ type SandboxWorkerEvent =
       type: 'addCardtoHand';
       payload: { blueprintId: string; playerId: string };
     }
+  | {
+      type: 'draw';
+      payload: { playerId: string };
+    }
   | { type: 'refillMana'; payload: { playerId: string } }
   | { type: 'addRune'; payload: { playerId: string; rune: Rune } }
   | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
@@ -149,6 +153,11 @@ self.addEventListener('message', ({ data }) => {
         return;
       }
       await unit.destroy(unit.player.general.card, payload.silent);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'draw' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      await player.cardManager.drawFromDeck(1);
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();

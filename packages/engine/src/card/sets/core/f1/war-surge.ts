@@ -13,7 +13,7 @@ export const warSurge: SpellBlueprint = {
   vfx: {
     spriteId: 'spells/f1_war-surge',
     sequences: {
-      play(game, card, ctx) {
+      play() {
         return {
           tracks: [
             {
