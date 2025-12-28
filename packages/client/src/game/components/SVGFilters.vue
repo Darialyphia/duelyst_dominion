@@ -103,7 +103,7 @@
 
     <defs>
       <filter id="shadow-blur">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="0 4" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0 3" />
       </filter>
     </defs>
   </svg>

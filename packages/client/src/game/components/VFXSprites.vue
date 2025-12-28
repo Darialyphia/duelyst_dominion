@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { useGameUi, useVFXStep } from '../composables/useGameClient';
+import {
+  useGameState,
+  useGameUi,
+  useVFXStep
+} from '../composables/useGameClient';
 import { type Point } from '@game/shared';
 import SpriteFX from './SpriteFX.vue';
 
@@ -53,6 +57,40 @@ useVFXStep('playSpriteAt', async step => {
     });
   });
 });
+
+const state = useGameState();
+useVFXStep('playSpriteOnScreenCenter', async step => {
+  return new Promise<void>(resolve => {
+    const cellElement = ui.value.DOMSelectors.cell(
+      Math.floor(state.value.board.columns / 2),
+      Math.floor(state.value.board.rows / 2)
+    ).element;
+
+    if (!cellElement) {
+      console.warn('Could not find cell element for position', {
+        x: Math.floor(state.value.board.columns / 2),
+        y: Math.floor(state.value.board.rows / 2)
+      });
+      resolve();
+      return;
+    }
+
+    const id = nextId++;
+    const rect = cellElement.getBoundingClientRect();
+    sprites.value.push({
+      ...step.params,
+      id,
+      position: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      }
+    });
+    promisesResolversById.set(id, () => {
+      sprites.value = sprites.value.filter(s => s.id !== id);
+      resolve();
+    });
+  });
+});
 </script>
 
 <template>
@@ -86,7 +124,6 @@ useVFXStep('playSpriteAt', async step => {
   position: fixed;
   top: var(--sprite-top);
   left: var(--sprite-left);
-  outline: solid 1px red; /* for debugging */
   &.is-flipped {
     transform-origin: center center;
     transform: scaleX(-1);

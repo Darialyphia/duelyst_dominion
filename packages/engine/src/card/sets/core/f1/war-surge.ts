@@ -10,7 +10,31 @@ export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
   description: 'Give allied minions +1 / +1.',
-  vfx: { spriteId: 'spells/f1_war-surge' },
+  vfx: {
+    spriteId: 'spells/f1_war-surge',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteOnScreenCenter',
+                  params: {
+                    resourceName: 'fx_f1_warsurge',
+                    scale: 1.5,
+                    animationSequence: ['default'],
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_warsurge'
   },
