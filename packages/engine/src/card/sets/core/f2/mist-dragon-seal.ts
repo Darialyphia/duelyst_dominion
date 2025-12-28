@@ -1,12 +1,7 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import {
-  emptySpacesTargetRules,
-  singleEnemyTargetRules,
-  singleMinionTargetRules
-} from '../../../card-utils';
+import { emptySpacesTargetRules, singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';

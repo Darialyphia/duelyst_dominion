@@ -184,6 +184,9 @@ const isDisabled = computed(() => {
     filter 1s var(--ease-2);
   pointer-events: auto;
 
+  @starting-style {
+    filter: brightness(3.5) saturate(2) !important;
+  }
   &:hover {
     --hover-offset: -110px;
     z-index: var(--hand-size);

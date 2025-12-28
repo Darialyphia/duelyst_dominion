@@ -88,7 +88,7 @@ export const songhaiSpawn = (position: Point): VFXSequence => {
               blendMode: BLEND_MODES.OVERLAY,
               color: '#ff6464',
               position,
-              offset: { x: 0, y: -50 },
+              offset: { x: 0, y: -25 },
               opacity: 1,
               duration: 1000,
               radius: 270

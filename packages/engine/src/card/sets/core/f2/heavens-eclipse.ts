@@ -2,16 +2,41 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhereTargetRules, isSpell } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
-import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
-import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
+import { lightOverlay } from '../../../card-vfx-sequences';
 
 export const heavensEclipse: SpellBlueprint = {
   id: 'heavens-eclipse',
   name: "Heaven's Eclipse",
   description: 'Draw 3 spells.',
-  vfx: { spriteId: 'spells/f2_heavens-eclipse' },
+  vfx: {
+    spriteId: 'spells/f2_heavens-eclipse',
+    sequences: {
+      play(game) {
+        return {
+          tracks: [
+            lightOverlay(game, {
+              color: '#ff003c'
+            }),
+            {
+              steps: [
+                {
+                  type: 'playSpriteOnScreenCenter',
+                  params: {
+                    resourceName: 'fx_f2_heavenseclipse',
+                    animationSequence: ['default'],
+                    scale: 1.5,
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {},
   kind: CARD_KINDS.SPELL,
   collectable: true,

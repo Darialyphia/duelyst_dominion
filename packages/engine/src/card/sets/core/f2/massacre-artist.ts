@@ -45,7 +45,7 @@ export const massacreArtist: MinionBlueprint = {
   manaCost: 4,
   runeCost: {},
   atk: 3,
-  maxHp: 5,
+  maxHp: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
