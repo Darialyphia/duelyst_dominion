@@ -5,6 +5,8 @@ import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Game, type GameOptions } from '@game/engine/src/game/game';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
 import { match } from 'ts-pattern';
+import type { DeckCard } from '@game/engine/src/card/components/card-manager.component';
+import { AbilityDamage } from '@game/engine/src/utils/damage';
 
 type SandboxWorkerEvent =
   | {
@@ -21,15 +23,31 @@ type SandboxWorkerEvent =
       payload: { blueprintId: string; playerId: string };
     }
   | {
+      type: 'addCardToTopOfDeck';
+      payload: { blueprintId: string; playerId: string };
+    }
+  | {
+      type: 'addCardToDiscardPile';
+      payload: { blueprintId: string; playerId: string };
+    }
+  | {
       type: 'draw';
       payload: { playerId: string };
     }
   | { type: 'refillMana'; payload: { playerId: string } }
   | { type: 'addRune'; payload: { playerId: string; rune: Rune } }
   | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
-  | { type: 'moveUnit'; payload: { unitId: string; position: Point } }
+  | {
+      type: 'moveUnit';
+      payload: { unitId: string; position: Point; silent: boolean };
+    }
   | { type: 'activateUnit'; payload: { unitId: string } }
-  | { type: 'destroyUnit'; payload: { unitId: string; silent: boolean } };
+  | { type: 'destroyUnit'; payload: { unitId: string; silent: boolean } }
+  | { type: 'bounceUnit'; payload: { unitId: string; silent: boolean } }
+  | {
+      type: 'dealDamage';
+      payload: { unitId: string; amount: number; silent: boolean };
+    };
 
 let game: Game;
 self.addEventListener('message', ({ data }) => {
@@ -115,6 +133,21 @@ self.addEventListener('message', ({ data }) => {
       await card.addToHand();
       game.snapshotSystem.takeSnapshot();
     })
+    .with({ type: 'addCardToTopOfDeck' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      const card = await player.generateCard<DeckCard>(
+        payload.blueprintId,
+        false
+      );
+      player.cardManager.deck.addToTop(card);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'addCardToDiscardPile' }, async ({ payload }) => {
+      const player = game.playerSystem.getPlayerById(payload.playerId)!;
+      const card = await player.generateCard(payload.blueprintId, false);
+      await card.sendToDiscardPile();
+      game.snapshotSystem.takeSnapshot();
+    })
     .with({ type: 'refillMana' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       player.refillMana();
@@ -136,7 +169,7 @@ self.addEventListener('message', ({ data }) => {
       if (!unit) {
         return;
       }
-      await unit.teleport(payload.position, true);
+      await unit.teleport(payload.position, payload.silent);
       game.snapshotSystem.takeSnapshot();
     })
     .with({ type: 'activateUnit' }, async ({ payload }) => {
@@ -155,9 +188,32 @@ self.addEventListener('message', ({ data }) => {
       await unit.destroy(unit.player.general.card, payload.silent);
       game.snapshotSystem.takeSnapshot();
     })
+    .with({ type: 'bounceUnit' }, async ({ payload }) => {
+      const unit = game.unitSystem.getUnitById(payload.unitId);
+      if (!unit) {
+        return;
+      }
+      if (unit.isGeneral) {
+        return;
+      }
+      await unit.bounce(payload.silent);
+      game.snapshotSystem.takeSnapshot();
+    })
     .with({ type: 'draw' }, async ({ payload }) => {
       const player = game.playerSystem.getPlayerById(payload.playerId)!;
       await player.cardManager.drawFromDeck(1);
+      game.snapshotSystem.takeSnapshot();
+    })
+    .with({ type: 'dealDamage' }, async ({ payload }) => {
+      const unit = game.unitSystem.getUnitById(payload.unitId);
+      if (!unit) {
+        return;
+      }
+      await unit.takeDamage(
+        unit.card,
+        new AbilityDamage(unit.card, payload.amount),
+        payload.silent
+      );
       game.snapshotSystem.takeSnapshot();
     })
     .exhaustive();

@@ -28,7 +28,7 @@ export const useSandbox = (
   };
   const networkAdapter: NetworkAdapter = {
     dispatch: input => {
-      // helper to detect input serialization issues when sending to the worker
+      // helper to detect input serialization issues when sending to the worker (eg. sending an unserialized class instance that satisfies the interface and gives no type error)
       try {
         JSON.stringify(input);
       } catch {
@@ -94,6 +94,24 @@ export const useSandbox = (
         payload: { blueprintId, playerId: client.value.getActivePlayerId() }
       });
     },
+    addCardToTopOfDeck(blueprintId: string) {
+      worker.postMessage({
+        type: 'addCardToTopOfDeck',
+        payload: { blueprintId, playerId: client.value.getActivePlayerId() }
+      });
+    },
+    addCardToDiscardPile(blueprintId: string) {
+      worker.postMessage({
+        type: 'addCardToDiscardPile',
+        payload: { blueprintId, playerId: client.value.getActivePlayerId() }
+      });
+    },
+    draw() {
+      worker.postMessage({
+        type: 'draw',
+        payload: { playerId: client.value.getActivePlayerId() }
+      });
+    },
     refillMana() {
       worker.postMessage({
         type: 'refillMana',
@@ -112,10 +130,14 @@ export const useSandbox = (
         payload: { amount, playerId: client.value.getActivePlayerId() }
       });
     },
-    moveUnit(unitId: string, position: { x: number; y: number }) {
+    moveUnit(
+      unitId: string,
+      position: { x: number; y: number },
+      silent: boolean
+    ) {
       worker.postMessage({
         type: 'moveUnit',
-        payload: { unitId, position }
+        payload: { unitId, position, silent }
       });
     },
     activateUnit(unitId: string) {
@@ -128,6 +150,18 @@ export const useSandbox = (
       worker.postMessage({
         type: 'destroyUnit',
         payload: { unitId, silent }
+      });
+    },
+    bounceUnit(unitId: string, silent: boolean) {
+      worker.postMessage({
+        type: 'bounceUnit',
+        payload: { unitId, silent }
+      });
+    },
+    dealDamageToUnit(unitId: string, amount: number, silent: boolean) {
+      worker.postMessage({
+        type: 'dealDamage',
+        payload: { unitId, amount, silent }
       });
     }
   };

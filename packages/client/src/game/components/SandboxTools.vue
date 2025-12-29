@@ -20,7 +20,6 @@ import {
 } from 'reka-ui';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import { Icon } from '@iconify/vue';
-import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
 import { ref } from 'vue';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
 import {
@@ -42,12 +41,14 @@ const emit = defineEmits<{
   rewindTo: [index: number];
   restart: [];
   refillMana: [];
-  addRune: [rune: Rune];
   addToHand: [cardId: string];
   setMaxMana: [amount: number];
-  move: [unitId: string, pos: Point];
+  move: [unitId: string, pos: Point, silent: boolean];
   activateUnit: [unitId: string];
   destroyUnit: [unitId: string, silent: boolean];
+  bounceUnit: [unitId: string, silent: boolean];
+  dealDamageToUnit: [unitId: string, amount: number, silent: boolean];
+  draw: [];
 }>();
 
 const state = useGameState();
@@ -79,7 +80,8 @@ const units = useUnits();
 const maxMana = ref<number>();
 
 const p1 = usePlayer1();
-const shouldTriggerDyingWish = ref(false);
+const triggerEvents = ref(true);
+const damageToDeal = ref(0);
 </script>
 
 <template>
@@ -200,36 +202,6 @@ const shouldTriggerDyingWish = ref(false);
             </AccordionContent>
           </AccordionItem>
 
-          <!-- Runes Section -->
-          <AccordionItem
-            v-if="state.config.FEATURES.RUNES"
-            class="accordion-item"
-            value="runes"
-          >
-            <AccordionHeader class="accordion-header">
-              <AccordionTrigger class="accordion-trigger">
-                <span>Runes</span>
-                <Icon
-                  icon="radix-icons:chevron-down"
-                  class="accordion-chevron"
-                />
-              </AccordionTrigger>
-            </AccordionHeader>
-            <AccordionContent class="accordion-content">
-              <div class="button-group">
-                <button @click="emit('addRune', RUNES.RED)" class="btn">
-                  Add Power Rune
-                </button>
-                <button @click="emit('addRune', RUNES.YELLOW)" class="btn">
-                  Add Vitality Rune
-                </button>
-                <button @click="emit('addRune', RUNES.BLUE)" class="btn">
-                  Add Wisdom Rune
-                </button>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
           <!-- Cards Section -->
           <AccordionItem class="accordion-item" value="cards">
             <AccordionHeader class="accordion-header">
@@ -242,6 +214,7 @@ const shouldTriggerDyingWish = ref(false);
               </AccordionTrigger>
             </AccordionHeader>
             <AccordionContent class="accordion-content">
+              <button @click="emit('draw')" class="btn mb-2">Draw card</button>
               <ComboboxRoot class="relative" v-model="card">
                 <ComboboxAnchor class="combobox-anchor">
                   <ComboboxInput
@@ -288,7 +261,7 @@ const shouldTriggerDyingWish = ref(false);
                     card = null;
                   }
                 "
-                class="btn mt-2"
+                class="btn my-2"
               >
                 Add to Hand
               </button>
@@ -347,6 +320,47 @@ const shouldTriggerDyingWish = ref(false);
                 </ComboboxPortal>
               </ComboboxRoot>
 
+              <div class="flex gap-2 items-center mt-3">
+                <UiSwitch v-model="triggerEvents" />
+                <span class="option-title">
+                  Trigger Events (can cause issues if disabled)
+                </span>
+              </div>
+
+              <div class="flex gap-2 items-center mt-2">
+                <button
+                  :disabled="!unit"
+                  @click="emit('activateUnit', unit!)"
+                  class="btn"
+                >
+                  Activate
+                </button>
+                <button
+                  :disabled="!unit"
+                  @click="
+                    () => {
+                      emit('destroyUnit', unit!, !triggerEvents);
+                      unit = null;
+                    }
+                  "
+                  class="btn"
+                >
+                  Destroy
+                </button>
+                <button
+                  :disabled="!unit"
+                  @click="
+                    () => {
+                      emit('bounceUnit', unit!, !triggerEvents);
+                      unit = null;
+                    }
+                  "
+                  class="btn"
+                >
+                  Return to hand
+                </button>
+              </div>
+
               <div class="position-controls">
                 <label>X</label>
                 <select v-model="position.x" class="position-select">
@@ -364,11 +378,17 @@ const shouldTriggerDyingWish = ref(false);
                     {{ i }}
                   </option>
                 </select>
+
                 <button
                   :disabled="!unit"
                   @click="
                     () => {
-                      emit('move', unit!, { x: position.x, y: position.y });
+                      emit(
+                        'move',
+                        unit!,
+                        { x: position.x, y: position.y },
+                        !triggerEvents
+                      );
                       unit = null;
                     }
                   "
@@ -378,28 +398,30 @@ const shouldTriggerDyingWish = ref(false);
                 </button>
               </div>
 
-              <div class="flex gap-2 items-center mt-2">
+              <div class="input-group mt-2">
+                <input
+                  id="damage-input"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="Damage to deal"
+                  class="number-input flex-1"
+                  v-model.number="damageToDeal"
+                />
                 <button
-                  :disabled="!unit"
-                  @click="emit('activateUnit', unit!)"
-                  class="btn"
-                >
-                  Activate
-                </button>
-                <button
-                  :disabled="!unit"
+                  :disabled="!isDefined(damageToDeal) || !unit"
                   @click="
-                    () => {
-                      emit('destroyUnit', unit!, !shouldTriggerDyingWish);
-                      unit = null;
-                    }
+                    emit(
+                      'dealDamageToUnit',
+                      unit!,
+                      damageToDeal!,
+                      !triggerEvents
+                    )
                   "
                   class="btn"
                 >
-                  Destroy
+                  Deal damage
                 </button>
-                <UiSwitch v-model="shouldTriggerDyingWish" />
-                <span class="option-title">Trigger Dying Wish</span>
               </div>
             </AccordionContent>
           </AccordionItem>

@@ -41,12 +41,14 @@ const sandbox = useSandbox({
     @rewindTo="sandbox.rewindTo"
     @restart="sandbox.restart"
     @refillMana="sandbox.refillMana"
-    @addRune="sandbox.addRune"
     @addToHand="sandbox.addCardToHand"
     @setMaxMana="sandbox.setMaxMana"
     @move="sandbox.moveUnit"
     @activate-unit="sandbox.activateUnit"
     @destroy-unit="sandbox.destroyUnit"
+    @draw="sandbox.draw"
+    @bounce-unit="sandbox.bounceUnit"
+    @deal-damage-to-unit="sandbox.dealDamageToUnit"
   />
 </template>
 

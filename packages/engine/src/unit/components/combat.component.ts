@@ -125,25 +125,29 @@ export class CombatComponent {
     );
   }
 
-  async takeDamage(from: AnyCard, damage: Damage) {
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE,
-      new UnitReceiveDamageEvent({
-        from,
-        unit: this.unit,
-        damage
-      })
-    );
+  async takeDamage(from: AnyCard, damage: Damage, silent = false) {
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE,
+        new UnitReceiveDamageEvent({
+          from,
+          unit: this.unit,
+          damage
+        })
+      );
+    }
 
     await this.unit.removeHp(damage.getFinalAmount(this.unit));
 
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
-      new UnitReceiveDamageEvent({
-        from,
-        unit: this.unit,
-        damage
-      })
-    );
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
+        new UnitReceiveDamageEvent({
+          from,
+          unit: this.unit,
+          damage
+        })
+      );
+    }
   }
 }

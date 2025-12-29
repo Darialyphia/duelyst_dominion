@@ -618,30 +618,35 @@ export class Unit
     return canAttack;
   }
 
-  async bounce() {
-    await this.game.emit(
-      UNIT_EVENTS.UNIT_BEFORE_BOUNCE,
-      new UnitBeforeBounceEvent({
-        unit: this
-      })
-    );
+  async bounce(silent = false) {
+    if (!silent) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_BEFORE_BOUNCE,
+        new UnitBeforeBounceEvent({
+          unit: this
+        })
+      );
+    }
 
     const canBounce = !this.player.cardManager.isHandFull && !isGeneral(this.card);
-    if (canBounce) {
-      await this.player.cardManager.addToHand(this.card);
+    // we force the bounce if it is silent since this comes from sandbox tools
+    if (canBounce || silent) {
+      await this.player.cardManager.addToHand(this.card as MinionCard);
       await this.removeFromBoard();
       for (const modifier of this.modifiers.list) {
         await this.modifiers.remove(modifier.id);
       }
-      await this.game.emit(
-        UNIT_EVENTS.UNIT_AFTER_BOUNCE,
-        new UnitAfterBounceEvent({
-          unit: this,
-          didBounce: canBounce
-        })
-      );
+      if (!silent) {
+        await this.game.emit(
+          UNIT_EVENTS.UNIT_AFTER_BOUNCE,
+          new UnitAfterBounceEvent({
+            unit: this,
+            didBounce: canBounce
+          })
+        );
+      }
     } else {
-      await this.destroy(this.card);
+      await this.destroy(this.card, silent);
     }
   }
 

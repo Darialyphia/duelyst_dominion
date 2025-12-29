@@ -48,9 +48,7 @@ useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
 }
 
 :is(.v-enter-active, .v-leave-active) {
-  transition:
-    opacity 0.5s var(--ease-2),
-    transform 0.5s var(--ease-2);
+  transition: all 0.5s var(--ease-2);
 }
 
 :is(.v-enter-from, .v-leave-to) {
@@ -63,5 +61,7 @@ useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
 
 .v-leave-to {
   transform: translateY(-30px);
+  filter: brightness(3.5);
+  transition-delay: opacity 0.3s;
 }
 </style>
