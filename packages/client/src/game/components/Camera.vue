@@ -23,19 +23,28 @@ const camera = ref({
   angle: { x: 20, y: 0, z: 0 }
 });
 
-const zoomIn = (origin: Point, duration: number) => {
-  camera.value.origin = {
-    x: origin.x + config.CELL.width * 3,
-    y: origin.y
-  };
+const zoomIn = async (origin: Point, duration: number) => {
   const proxy = {
     scale: camera.value.scale,
     angleX: camera.value.angle.x,
     angleY: camera.value.angle.y,
-    angleZ: camera.value.angle.z
+    angleZ: camera.value.angle.z,
+    originX: camera.value.origin.x,
+    originY: camera.value.origin.y
   };
 
-  gsap.to(proxy, {
+  await gsap.to(proxy, {
+    duration: duration / 2,
+    ease: Power2.easeOut,
+    originX: origin.x + config.CELL.width * 3,
+    originY: origin.y,
+    onUpdate: () => {
+      camera.value.origin.x = proxy.originX;
+      camera.value.origin.y = proxy.originY;
+    }
+  });
+
+  await gsap.to(proxy, {
     duration,
     ease: Power2.easeOut,
     scale: 2,
@@ -68,10 +77,12 @@ const zoomOut = async (duration: number) => {
       camera.value.angle.x = proxy.angleX;
       camera.value.angle.y = proxy.angleY;
       camera.value.angle.z = proxy.angleZ;
+    },
+    onComplete: () => {
+      camera.value.angle.z = 0;
+      camera.value.origin = { x: 0, y: 0 };
     }
   });
-  camera.value.angle.z = 0;
-  camera.value.origin = { x: 0, y: 0 };
 };
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;

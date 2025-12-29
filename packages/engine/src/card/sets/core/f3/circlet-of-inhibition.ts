@@ -34,18 +34,8 @@ export const circletOfInhibition: ArtifactBlueprint = {
     blue: 1
   },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
-  canPlay: (game, card) => {
-    if (card.player.general.inFront?.isOccupied) return false;
-
-    return singleMinionTargetRules.canPlay(game, card);
-  },
-  getTargets(game, card) {
-    return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
-      }
-    });
-  },
+  canPlay: () => true,
+  getTargets: () => Promise.resolve([]),
   async onInit(game, card) {
     await card.modifiers.add(new TimelessModifier(game, card));
 
@@ -76,6 +66,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
                   })
                 );
               } else {
+                console.log('spend mana');
                 await opponent.spendMana(2);
               }
             }

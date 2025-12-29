@@ -89,7 +89,7 @@ export type SpellBlueprint = CardBlueprintBase & {
       play?: (
         game: Game,
         card: SpellCard,
-        options: {
+        ctx: {
           targets: Point[];
           aoe: GenericAOEShape;
         }

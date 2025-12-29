@@ -2,6 +2,10 @@ import { resolveUnitFilter } from '../filters/unit.filters';
 import { Action } from './action';
 
 export class SwapUnitPositionsAction extends Action<'swap_unit_positions'> {
+  static label = 'Swap unit positions';
+
+  static description = 'Swaps the positions of two target units.';
+
   protected async executeImpl(): Promise<void> {
     const [unit1] = resolveUnitFilter({
       game: this.game,

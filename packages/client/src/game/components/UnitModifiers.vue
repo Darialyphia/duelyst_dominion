@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { assets } from '@/assets';
-
-interface Modifier {
-  id: string;
-  name?: string;
-  description?: string;
-  icon?: string;
-  stacks: number;
-}
+import type { ModifierViewModel } from '@game/engine/src/client/view-models/modifier.model';
+import { useGameClient } from '../composables/useGameClient';
 
 const { modifiers } = defineProps<{
-  modifiers: Modifier[];
+  modifiers: ModifierViewModel[];
 }>();
+
+const { playerId } = useGameClient();
 </script>
 
 <template>
@@ -27,7 +23,7 @@ const { modifiers } = defineProps<{
       <template #trigger>
         <div
           :style="{
-            '--bg': `url(@/assets/${modifier.icon}.png)`,
+            '--bg': assets[modifier.icon!]?.css,
             '--pixel-scale': 1
           }"
           :alt="modifier.name"
@@ -36,12 +32,24 @@ const { modifiers } = defineProps<{
         />
       </template>
 
-      <div class="modifier">
-        <img :src="assets[`ui/${modifier.icon}`].path" class="modifier-image" />
-        <div>
-          <div class="font-7">{{ modifier.name }}</div>
+      <div class="modifier-tooltip">
+        <div class="modifier-header">
+          <div
+            class="modifier-icon"
+            :style="{ '--bg': assets[modifier.icon!]?.css }"
+          />
+          <div class="modifier-name">{{ modifier.name }}</div>
+        </div>
+        <div
+          class="modifier-description"
+          :class="{
+            ally: modifier.source.player.id === playerId,
+            enemy: modifier.source.player.id !== playerId
+          }"
+        >
           {{ modifier.description }}
         </div>
+        <div class="modifier-source">{{ modifier.source.name }}</div>
       </div>
     </UiSimpleTooltip>
   </div>
@@ -66,6 +74,7 @@ const { modifiers } = defineProps<{
   pointer-events: auto;
   margin-block-start: var(--size-1);
   position: relative;
+  transform: translateZ(0px);
   &::after {
     content: attr(data-stacks);
     position: absolute;
@@ -79,13 +88,47 @@ const { modifiers } = defineProps<{
   }
 }
 
-.modifier {
-  display: grid;
-  align-items: start;
-  gap: var(--size-3);
-  grid-template-columns: auto 1fr;
-  .modifier-image {
-    width: calc(24px * 2);
-  }
+.modifier-tooltip {
+  display: flex;
+  flex-direction: column;
+  max-width: 250px;
+  padding-bottom: var(--size-1);
+}
+
+.modifier-header {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.modifier-icon {
+  width: 36px;
+  aspect-ratio: 1;
+  background: var(--bg) no-repeat center center;
+  background-size: cover;
+  flex-shrink: 0;
+}
+
+.modifier-name {
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-7);
+  color: var(--gray-0);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modifier-description {
+  font-size: var(--font-size-0);
+  line-height: 1.4;
+  color: var(--gray-2);
+  margin-block-end: var(--size-2);
+}
+
+.modifier-source {
+  font-size: var(--font-size-00);
+  color: var(--gray-5);
+  padding-top: var(--size-1);
+  border-top: 1px solid var(--gray-7);
+  font-style: italic;
 }
 </style>

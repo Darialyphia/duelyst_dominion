@@ -5,6 +5,11 @@ import { ACTION_LOOKUP } from './action-lookup';
 import { resolveCardFilter } from '../filters/card.filters';
 
 export class SelectCardsFromPoolAction extends Action<'select_cards_from_pool'> {
+  static label = 'Select cards from pool';
+
+  static description =
+    'Allows a player to select cards from a specified card pool and perform actions on the selected cards.';
+
   protected async executeImpl(): Promise<void> {
     const [player] = resolvePlayerFilter({
       ...this.ctx,

@@ -3,6 +3,10 @@ import { getAmount } from '../values/amount';
 import { Action } from './action';
 
 export class DrawCardsFromDeckAction extends Action<'draw_cards_from_deck'> {
+  static label = 'Draw cards from deck';
+
+  static description = "Draws a specified number of cards from a player's deck.";
+
   protected async executeImpl(): Promise<void> {
     const amount = getAmount({
       ...this.ctx,

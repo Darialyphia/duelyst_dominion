@@ -1,11 +1,14 @@
 import { match } from 'ts-pattern';
 import { resolveBlueprintFilter } from '../filters/blueprint.filter';
 import { resolvePlayerFilter } from '../filters/player.filter';
-import { getAmount } from '../values/amount';
 import { Action } from './action';
 import type { DeckCard } from '../../components/card-manager.component';
 
 export class GenerateCardsAction extends Action<'generate_cards'> {
+  static label = 'Generate cards';
+
+  static description = 'Generates cards for player and put them in a specified location.';
+
   protected async executeImpl(): Promise<void> {
     const players = resolvePlayerFilter({
       ...this.ctx,

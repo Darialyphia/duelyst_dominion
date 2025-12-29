@@ -3,6 +3,10 @@ import { resolveUnitFilter } from '../filters/unit.filters';
 import { Action } from './action';
 
 export class TeleportUnitAction extends Action<'teleport_unit'> {
+  static label = 'Teleport unit';
+
+  static description = 'Teleports a target unit to a specified destination cell.';
+
   protected async executeImpl(): Promise<void> {
     const [unit] = resolveUnitFilter({
       game: this.game,

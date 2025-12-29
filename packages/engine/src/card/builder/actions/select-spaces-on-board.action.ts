@@ -7,6 +7,11 @@ import { Action } from './action';
 import { ACTION_LOOKUP } from './action-lookup';
 
 export class SelectSpacesOnBoardAction extends Action<'select_spaces_on_board'> {
+  static label = 'Select spaces on board';
+
+  static description =
+    'Allows a player to select spaces on the board and perform actions on the selected spaces.';
+
   protected async executeImpl(): Promise<void> {
     const [player] = resolvePlayerFilter({
       ...this.ctx,

@@ -21,7 +21,10 @@ import {
   UnitReceiveDamageEvent
 } from '../../../unit/unit-events';
 import type { BuilderContext } from '../schema';
-import { MinionSummonedEvent } from '../../events/minion.events';
+import {
+  MinionAfterSummonedEvent,
+  MinionBeforeSummonedEvent
+} from '../../events/minion.events';
 
 export type UnitFilter =
   | { type: 'any_unit' }
@@ -114,7 +117,10 @@ export const resolveUnitFilter = ({ filter, ...ctx }: UnitFilterContext): Unit[]
               const point = ctx.targets[condition.params.index];
               if (point) {
                 unit = ctx.game.unitSystem.getUnitAt(point);
-              } else if (ctx.event instanceof MinionSummonedEvent) {
+              } else if (
+                ctx.event instanceof MinionBeforeSummonedEvent ||
+                ctx.event instanceof MinionAfterSummonedEvent
+              ) {
                 unit = ctx.event.data.targets[condition.params.index]?.unit;
               } else {
                 unit = null;

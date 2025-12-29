@@ -5,6 +5,10 @@ import { getAmount } from '../values/amount';
 import { Action } from './action';
 
 export class DealDamageAction extends Action<'deal_damage'> {
+  static label = 'Deal damage';
+
+  static description = 'Deals damage to target units.';
+
   protected async executeImpl(): Promise<void> {
     const amount = getAmount({
       game: this.game,

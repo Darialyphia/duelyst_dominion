@@ -1,6 +1,8 @@
+import type { BuilderContext } from '../schema';
+import type { Action, ActionData } from './action';
 import { ActivateUnitAction } from './activate-unit.action';
 import { AddModifierToCardsAction } from './add-modifier-to-cards.action';
-import { AddModifierToUnitsAction } from './add-modifier_to_units.action';
+import { AddModifierToUnitsAction } from './add-modifier-to-units.action';
 import { BounceUnitsAction } from './bounce-units.action';
 import { DealDamageAction } from './deal-damage.action';
 import { DestroyUnitsAction } from './destroy-units.action';
@@ -12,6 +14,11 @@ import { SelectCardsFromPoolAction } from './select-card-from-pool.action';
 import { SelectSpacesOnBoardAction } from './select-spaces-on-board.action';
 import { SwapUnitPositionsAction } from './swap-unit-positions.action';
 import { TeleportUnitAction } from './teleport-unit.action';
+
+type ActionStatic = {
+  label: string;
+  description: string;
+};
 
 export const ACTION_LOOKUP = {
   deal_damage: DealDamageAction,
@@ -28,4 +35,4 @@ export const ACTION_LOOKUP = {
   swap_unit_positions: SwapUnitPositionsAction,
   select_spaces_on_board: SelectSpacesOnBoardAction,
   select_cards_from_pool: SelectCardsFromPoolAction
-};
+} as const satisfies Record<string, ActionStatic>;

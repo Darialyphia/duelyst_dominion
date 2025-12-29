@@ -101,6 +101,29 @@
       </filter>
     </defs>
 
+    <filter id="chromatic-aberration">
+      <feColorMatrix
+        type="matrix"
+        result="red_"
+        values="4 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0"
+      />
+      <feOffset in="red_" dx="2" dy="0" result="red" />
+      <feColorMatrix
+        type="matrix"
+        in="SourceGraphic"
+        result="blue_"
+        values="0 0 0 0 0
+              0 3 0 0 0
+              0 0 10 0 0
+              0 0 0 1 0"
+      />
+      <feOffset in="blue_" dx="-3" dy="0" result="blue" />
+      <feBlend mode="screen" in="red" in2="blue" />
+    </filter>
+
     <defs>
       <filter id="shadow-blur">
         <feGaussianBlur in="SourceGraphic" stdDeviation="0 3" />

@@ -10,7 +10,61 @@ export const mistDragonSeal: SpellBlueprint = {
   id: 'mist-dragon-seal',
   name: 'Mist Dragon Seal',
   description: 'Give an allied minion +1/+1 and teleport it to any space..',
-  vfx: { spriteId: 'spells/f2_mist-dragon-seal' },
+  vfx: {
+    spriteId: 'spells/f2_mist-dragon-seal',
+    sequences: {
+      play(game, card, ctx) {
+        return {
+          tracks: [
+            {
+              steps: [
+                {
+                  type: 'playSpriteOnScreenCenter',
+                  params: {
+                    resourceName: 'fx_blueplasma_vertical',
+                    animationSequence: ['default'],
+                    scale: 1.5,
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_f2_mistdragonseal',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    scale: 1.5,
+                    flipX: false,
+                    offset: { x: 0, y: -150 }
+                  }
+                }
+              ]
+            },
+            {
+              steps: [
+                {
+                  type: 'playSpriteAt',
+                  params: {
+                    resourceName: 'fx_explosionblueelectrical',
+                    animationSequence: ['default'],
+                    position: ctx.targets[0],
+                    scale: 1.5,
+                    flipX: false,
+                    offset: { x: 0, y: 0 }
+                  }
+                }
+              ]
+            }
+          ]
+        };
+      }
+    }
+  },
   sounds: {
     play: 'sfx_spell_phoenixfire'
   },

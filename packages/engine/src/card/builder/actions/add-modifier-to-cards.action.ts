@@ -5,6 +5,10 @@ import { resolveModifier } from '../values/modifier';
 import { Action } from './action';
 
 export class AddModifierToCardsAction extends Action<'add_modifier_to_cards'> {
+  static label = 'Add modifier to cards';
+
+  static description = 'Adds a modifier to target cards.';
+
   protected async executeImpl(): Promise<void> {
     const cards = resolveCardFilter({
       ...this.ctx,

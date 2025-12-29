@@ -43,6 +43,7 @@ const {
   imageBg,
   positionOffset,
   isAttacking,
+  isTeleporting,
   latestDamageReceived,
   latestHealReceived
 } = useUnitAnimations({
@@ -116,6 +117,7 @@ const isHovered = computed(() => {
         :sheet-height="spriteData.sheetSize.h"
         :is-flipped="isFlipped"
         :is-foil="unit.getCard().isFoil"
+        :is-teleporting="isTeleporting"
       />
 
       <UnitStats

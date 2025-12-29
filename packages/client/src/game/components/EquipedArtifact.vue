@@ -19,10 +19,11 @@ const { artifact } = defineProps<{
 
 const card = useCard(computed(() => artifact.card));
 
-const spriteData = computed(() => sprites[card.value.spriteId]);
+const spriteData = computed(() => sprites[`cards/${card.value.spriteId}`]!);
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.ARTIFACT,
   sprite: spriteData,
+  scale: 1.5,
   animationSequence: [ANIMATIONS_NAMES.DEFAULT]
 });
 </script>
@@ -56,9 +57,9 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
 <style scoped lang="postcss">
 .equiped-artifact {
   position: relative;
-  --pixel-scale: 1;
-  width: calc(var(--pixel-scale) * var(--width));
-  height: calc(var(--pixel-scale) * var(--height));
+  --pixel-scale: 1.5;
+  width: var(--width);
+  height: var(--height);
   transform-origin: bottom center;
   transition: opacity 0.3s var(--ease-2);
   pointer-events: auto;
@@ -80,8 +81,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
 }
 
 .sprite {
-  width: calc(var(--pixel-scale) * var(--width));
-  height: calc(var(--pixel-scale) * var(--height));
+  width: var(--width);
+  height: var(--height);
   background: v-bind(imageBg);
   background-position: var(--bg-position);
   background-repeat: no-repeat;

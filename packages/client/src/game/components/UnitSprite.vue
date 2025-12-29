@@ -12,7 +12,8 @@ const {
   spriteHeight,
   sheetWidth,
   sheetHeight,
-  isFoil
+  isFoil,
+  isTeleporting
 } = defineProps<{
   unitId: string;
   bgPosition: string;
@@ -23,6 +24,7 @@ const {
   sheetHeight: number;
   isFlipped: boolean;
   isFoil: boolean;
+  isTeleporting: boolean;
 }>();
 
 const dissolve = useDissolveVFX();
@@ -39,6 +41,7 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
   <div
     ref="root"
     class="sprite-wrapper"
+    :class="{ 'is-teleporting': isTeleporting }"
     :style="{
       '--parallax-factor': 0.5,
       '--bg-position': bgPosition,
@@ -67,6 +70,9 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
   scale: 2;
   transform-origin: bottom center;
   transition: filter 1s var(--ease-2);
+  &.is-teleporting {
+    filter: url(#chromatic-aberration) brightness(2.5);
+  }
 
   @starting-style {
     filter: brightness(0);

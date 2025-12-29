@@ -3,6 +3,10 @@ import { getAmount } from '../values/amount';
 import { Action } from './action';
 
 export class HealAction extends Action<'heal'> {
+  static label = 'Heal units';
+
+  static description = 'Heals target units by a specified amount.';
+
   protected async executeImpl(): Promise<void> {
     const amount = getAmount({
       game: this.game,

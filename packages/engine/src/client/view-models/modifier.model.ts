@@ -52,4 +52,8 @@ export class ModifierViewModel {
   get stacks() {
     return this.data.stacks;
   }
+
+  get source() {
+    return this.getEntities()[this.data.source] as CardViewModel;
+  }
 }

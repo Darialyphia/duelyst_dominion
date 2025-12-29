@@ -50,16 +50,16 @@ export function useUnitAnimations({
   });
 
   const isAttacking = ref(false);
+  const isTeleporting = ref(false);
   const latestDamageReceived = ref<number>();
   const latestHealReceived = ref<number>();
 
-  const onMove = async (event: { unit: string; path: Point[] }) => {
-    if (event.unit !== unit.id) return;
-    const { path } = event;
-    const previousPosition = { x: unit.x, y: unit.y };
-    const stepDuration = 0.5;
-
-    animationSequence.value = [ANIMATIONS_NAMES.RUN];
+  const moveAlongPath = async (
+    path: Point[],
+    previousPosition: Point,
+    stepDuration: number,
+    ease: gsap.EaseFunction = Power0.easeNone
+  ) => {
     const timeline = gsap.timeline();
 
     path.forEach((point, index) => {
@@ -73,18 +73,38 @@ export function useUnitAnimations({
         x: `+=${deltaX}`,
         y: `+=${deltaY}`,
         duration: stepDuration,
-        ease: Power0.easeNone
+        ease
       });
     });
 
     timeline.set(positionOffset.value, { x: 0, y: 0 });
 
     await timeline.play();
+  };
+  const onMove = async (event: { unit: string; path: Point[] }) => {
+    if (event.unit !== unit.id) return;
+    const { path } = event;
+    const previousPosition = { x: unit.x, y: unit.y };
+
+    animationSequence.value = [ANIMATIONS_NAMES.RUN];
+
+    await moveAlongPath(path, previousPosition, 0.5);
+
     animationSequence.value = [defaultAnimation.value];
   };
 
+  const onTeleport = async (event: { unit: string; path: Point[] }) => {
+    if (event.unit !== unit.id) return;
+    const { path } = event;
+    const previousPosition = { x: unit.x, y: unit.y };
+
+    isTeleporting.value = true;
+    await moveAlongPath(path, previousPosition, 0.3, Power2.easeIn);
+    isTeleporting.value = false;
+  };
+
   useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, onMove);
-  useFxEvent(FX_EVENTS.UNIT_BEFORE_TELEPORT, onMove);
+  useFxEvent(FX_EVENTS.UNIT_BEFORE_TELEPORT, onTeleport);
 
   const onAttack = async (event: { unit: string; target: Point }) => {
     if (event.unit !== unit.id) return;
@@ -238,6 +258,7 @@ export function useUnitAnimations({
     animationSequence,
     positionOffset,
     isAttacking,
+    isTeleporting,
     latestDamageReceived,
     latestHealReceived,
     damageIndicatorEl,

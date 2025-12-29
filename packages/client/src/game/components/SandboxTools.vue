@@ -399,7 +399,7 @@ const shouldTriggerDyingWish = ref(false);
                   Destroy
                 </button>
                 <UiSwitch v-model="shouldTriggerDyingWish" />
-                <span class="option-title">Destroy silently</span>
+                <span class="option-title">Trigger Dying Wish</span>
               </div>
             </AccordionContent>
           </AccordionItem>

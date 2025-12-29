@@ -5,6 +5,10 @@ import { resolveModifier } from '../values/modifier';
 import { Action } from './action';
 
 export class AddModifierToUnitsAction extends Action<'add_modifier_to_units'> {
+  static label = 'Add modifier to units';
+
+  static description = 'Adds a modifier to target units.';
+
   protected async executeImpl(): Promise<void> {
     const units = resolveUnitFilter({
       ...this.ctx,

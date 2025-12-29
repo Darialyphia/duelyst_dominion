@@ -389,7 +389,6 @@ export class Player
       new PlayerManaChangeEvent({ player: this, amount })
     );
     this._mana = this._mana + amount; // dont clamp to max mana because of effects that go over max mana (ex: mana tile)
-    console.log(this._mana);
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE,
       new PlayerManaChangeEvent({ player: this, amount })

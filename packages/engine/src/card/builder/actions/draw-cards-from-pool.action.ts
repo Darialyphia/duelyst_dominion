@@ -5,6 +5,10 @@ import { getAmount } from '../values/amount';
 import { Action } from './action';
 
 export class DrawCardsFromPoolAction extends Action<'draw_cards_from_pool'> {
+  static label = 'Draw cards from pool';
+
+  static description = 'Draws cards from a specified card pool.';
+
   protected async executeImpl(): Promise<void> {
     const amount = getAmount({
       ...this.ctx,
