@@ -20,7 +20,7 @@ useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
 </script>
 
 <template>
-  <teleport to="#card-portal">
+  <Teleport defer to="#card-portal">
     <div id="declared-played-card">
       <Transition>
         <div class="wrapper" v-if="card">
@@ -32,7 +32,7 @@ useFxEvent(FX_EVENTS.PRE_CARD_BEFORE_PLAY, async event => {
         </div>
       </Transition>
     </div>
-  </teleport>
+  </Teleport>
 </template>
 
 <style scoped lang="postcss">

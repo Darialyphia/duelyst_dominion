@@ -2,6 +2,8 @@
 import type { BoardCellViewModel } from '@game/engine/src/client/view-models/board-cell.model';
 import { useGameUi } from '../composables/useGameClient';
 import BoardPositioner from './BoardPositioner.vue';
+import Sound from '@/ui/components/Sound.vue';
+import { isDefined } from '@game/shared';
 
 const { cell } = defineProps<{
   cell: BoardCellViewModel;
@@ -18,10 +20,16 @@ const ui = useGameUi();
     @mouseleave="ui.unhover()"
     @mouseup="ui.onBoardCellClick(cell, $event)"
   >
-    <div
-      class="cell"
-      :id="ui.DOMSelectors.cell(cell.position.x, cell.position.y).id"
-    />
+    <Sound
+      mouseenter="button-hover"
+      pitch-shift
+      :enabled="isDefined(cell.unit) || isDefined(cell.tile)"
+    >
+      <div
+        class="cell"
+        :id="ui.DOMSelectors.cell(cell.position.x, cell.position.y).id"
+      />
+    </Sound>
   </BoardPositioner>
 </template>
 

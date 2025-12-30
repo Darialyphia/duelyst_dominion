@@ -13,6 +13,8 @@ import {
   GAME_PHASES,
   INTERACTION_STATES
 } from '@game/engine/src/game/game.enums';
+import Sound from '@/ui/components/Sound.vue';
+import { useSoundEffect } from '@/shared/composables/useSoundEffect';
 
 const { card, isInteractive } = defineProps<{
   card: CardViewModel;
@@ -50,6 +52,7 @@ const unselectCard = () => {
     });
   });
 };
+const disabledSound = useSoundEffect('invalid-action');
 const onMouseDown = (e: MouseEvent) => {
   if (ui.value.isReplacingCard) return;
 
@@ -58,6 +61,7 @@ const onMouseDown = (e: MouseEvent) => {
   }
   if (!card.canPlay) {
     isShaking.value = true;
+    disabledSound.play();
     violationWarning.value =
       card.unplayableReason || 'You cannot play this card.';
 
@@ -136,36 +140,38 @@ const isDisabled = computed(() => {
 </script>
 
 <template>
-  <div
-    class="hand-card"
-    :class="{
-      selected: ui.selectedCard?.equals(card),
-      disabled: isDisabled,
-      'is-shaking': isShaking
-    }"
-    @mousedown="onMouseDown($event)"
-    @click="
-      () => {
-        if (ui.isReplacingCard) {
-          client.replaceCard(card);
-          ui.isReplacingCard = false;
+  <Sound mouseenter="button-hover" pitch-shift>
+    <div
+      class="hand-card"
+      :class="{
+        selected: ui.selectedCard?.equals(card),
+        disabled: isDisabled,
+        'is-shaking': isShaking
+      }"
+      @mousedown="onMouseDown($event)"
+      @click="
+        () => {
+          if (ui.isReplacingCard) {
+            client.replaceCard(card);
+            ui.isReplacingCard = false;
+          }
         }
-      }
-    "
-  >
-    <p class="violation-warning" v-if="violationWarning">
-      {{ violationWarning }}
-    </p>
-    <component :is="isDetachedFromHand ? Teleport : 'div'" to="#dragged-card">
-      <GameCard
-        :card-id="card.id"
-        actions-side="top"
-        :actions-offset="15"
-        :is-interactive="isInteractive"
-        show-disabled-message
-      />
-    </component>
-  </div>
+      "
+    >
+      <p class="violation-warning" v-if="violationWarning">
+        {{ violationWarning }}
+      </p>
+      <component :is="isDetachedFromHand ? Teleport : 'div'" to="#dragged-card">
+        <GameCard
+          :card-id="card.id"
+          actions-side="top"
+          :actions-offset="15"
+          :is-interactive="isInteractive"
+          show-disabled-message
+        />
+      </component>
+    </div>
+  </Sound>
 </template>
 
 <style scoped lang="postcss">

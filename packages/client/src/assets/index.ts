@@ -18,13 +18,15 @@ for (const [path, url] of Object.entries(rawAssets)) {
   assets[cleanedPath] = new Asset(url.default);
 }
 
-export const rawSounds = import.meta.glob('./**/*.{mp3,m4a}', {
+export const rawSounds = import.meta.glob('./**/*.{mp3,m4a,wav}', {
   eager: true,
   query: 'url'
 }) as Record<string, { default: string }>;
 export const sounds: Record<string, string> = {};
 for (const [path, url] of Object.entries(rawSounds)) {
-  const cleanedPath = path.replace(/\.mp3$|\.m4a$/, '').replace('./sfx/', '');
+  const cleanedPath = path
+    .replace(/\.mp3$|\.m4a$|\.wav$/, '')
+    .replace('./sfx/', '');
 
   sounds[cleanedPath] = url.default;
 }

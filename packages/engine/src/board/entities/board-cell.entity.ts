@@ -17,6 +17,7 @@ export type SerializedCell = {
   position: Point;
   player: 'p1' | 'p2' | null;
   unit: string | null;
+  tile: string | null;
 };
 
 export type BoardCellOptions = {
@@ -65,6 +66,10 @@ export class BoardCell
     return this.game.unitSystem.getUnitAt(this);
   }
 
+  get tiles() {
+    return this.game.tileSystem.getTileAt(this);
+  }
+
   get shrine() {
     return null;
   }
@@ -103,7 +108,8 @@ export class BoardCell
       entityType: 'cell',
       position: this.position,
       player: this._player,
-      unit: this.unit ? this.unit.id : null
+      unit: this.unit ? this.unit.id : null,
+      tile: this.tiles ? this.tiles.id : null
     };
   }
 }

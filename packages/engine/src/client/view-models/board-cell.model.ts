@@ -1,6 +1,7 @@
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { GameClient, GameStateEntities } from '../client';
+import type { TileViewModel } from './tile.model';
 import type { UnitViewModel } from './unit.model';
 
 export class BoardCellViewModel {
@@ -55,5 +56,11 @@ export class BoardCellViewModel {
     const unit = this.data.unit;
     if (!unit) return null;
     return this.getEntities()[unit] as UnitViewModel;
+  }
+
+  get tile() {
+    const tile = this.data.tile;
+    if (!tile) return null;
+    return this.getEntities()[tile] as TileViewModel;
   }
 }

@@ -12,7 +12,6 @@ provideAuth();
     <TooltipProvider :delay-duration="400">
       <RouterView />
     </TooltipProvider>
-    <div id="card-portal"></div>
     <div id="card-actions-portal"></div>
     <div id="tooltip-portal"></div>
   </div>
