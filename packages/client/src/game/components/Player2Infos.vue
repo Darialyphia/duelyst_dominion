@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { usePlayer2 } from '../composables/useGameClient';
+import {
+  useGameClient,
+  useGameState,
+  usePlayer2
+} from '../composables/useGameClient';
 import EquipedArtifact from './EquipedArtifact.vue';
 import DiscardPile from './DiscardPile.vue';
 import { Icon } from '@iconify/vue';
+import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 
 const player2 = usePlayer2();
+const { playerId } = useGameClient();
+const state = useGameState();
 </script>
 
 <template>
@@ -14,25 +21,44 @@ const player2 = usePlayer2();
         {{ player2.name }}
         <div class="flex gap-2 text-1">
           <DiscardPile :player="player2" />
-          <div class="pointer-events-auto flex gap-2">
-            <Icon icon="mdi:cards-outline" />
-            ({{ player2.handSize }})
-          </div>
-          <div class="pointer-events-auto flex gap-2">
-            <Icon icon="tabler:stack-3-filled" />
-            ({{ player2.remainingCardsInDeck.length }})
-          </div>
+          <UiSimpleTooltip>
+            <template #trigger>
+              <div class="pointer-events-auto flex gap-2">
+                <Icon icon="mdi:cards-outline" />
+                ({{ player2.handSize }})
+              </div>
+            </template>
+            {{ player2.handSize }}/{{ state.config.MAX_HAND_SIZE }} card{{
+              player2.handSize !== 1 ? 's' : ''
+            }}
+            in
+            {{ player2.id === playerId ? 'your' : "opponent's" }} hand
+          </UiSimpleTooltip>
+
+          <UiSimpleTooltip>
+            <template #trigger>
+              <div class="pointer-events-auto flex gap-2">
+                <Icon icon="tabler:stack-3-filled" />
+                ({{ player2.remainingCardsInDeck.length }})
+              </div>
+            </template>
+            {{ player2.remainingCardsInDeck.length }} card{{
+              player2.remainingCardsInDeck.length !== 1 ? 's' : ''
+            }}
+            remaining in
+            {{ player2.id === playerId ? 'your' : "opponent's" }} deck
+          </UiSimpleTooltip>
         </div>
       </div>
-      <div class="flex gap-2">
-        <div
-          v-for="i in Math.max(player2.maxMana, player2.mana)"
-          :key="i"
-          class="mana"
-          :class="{ spent: i <= player2.spentMana }"
-        />
-      </div>
     </header>
+    <div class="flex gap-2">
+      <div
+        v-for="i in Math.max(player2.maxMana, player2.mana)"
+        :key="i"
+        class="mana"
+        :class="{ spent: i <= player2.spentMana }"
+      />
+    </div>
 
     <div class="flex flex-col items-end gap-2">
       <EquipedArtifact
@@ -84,6 +110,8 @@ header {
   width: 34px;
   aspect-ratio: 1;
   background: url('@/assets/ui/mana.png') no-repeat center/contain;
+  filter: drop-shadow(0 0 4px hsl(0 0 0 / 0.5));
+
   &.spent {
     background: url('@/assets/ui/mana-spent.png') no-repeat center/contain;
   }

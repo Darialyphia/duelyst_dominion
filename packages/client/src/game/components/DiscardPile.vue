@@ -5,6 +5,7 @@ import { useMyPlayer } from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
 import type { PlayerViewModel } from '@game/engine/src/client/view-models/player.model';
 import { Icon } from '@iconify/vue';
+import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 
 const { player } = defineProps<{
   player: PlayerViewModel;
@@ -20,10 +21,16 @@ const myPlayer = useMyPlayer();
 </script>
 
 <template>
-  <button class="toggle" @click="isOpened = true">
-    <Icon icon="whh:grave" />
-    ({{ player.discardPile.length }})
-  </button>
+  <UiSimpleTooltip>
+    <template #trigger>
+      <button class="toggle" @click="isOpened = true">
+        <Icon icon="whh:grave" />
+        ({{ player.discardPile.length }})
+      </button>
+    </template>
+    {{ player.discardPile.length }} card{{}} in
+    {{ myPlayer.id === player.id ? 'your' : "opponent's" }} discard pile
+  </UiSimpleTooltip>
 
   <UiModal
     v-model:is-opened="isOpened"

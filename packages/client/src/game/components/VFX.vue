@@ -3,7 +3,7 @@ import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { useFxEvent } from '../composables/useGameClient';
 import VFXLights from './VFXLights.vue';
 import VFXSprites from './VFXSprites.vue';
-// import MouseLight from './MouseLight.vue';
+import MouseLight from './MouseLight.vue';
 
 const isVfxOverlayDisplayed = ref(false);
 useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, () => {
@@ -18,7 +18,7 @@ useFxEvent(FX_EVENTS.CARD_AFTER_PLAY, () => {
   <div id="lights-teleport" />
   <VFXLights />
   <VFXSprites />
-  <!-- <MouseLight /> -->
+  <MouseLight />
 
   <Transition appear>
     <div class="vfx-overlay" v-if="isVfxOverlayDisplayed" />

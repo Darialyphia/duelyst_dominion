@@ -72,11 +72,10 @@ useGlobalSounds();
   position: relative;
   transform-style: preserve-3d;
   perspective: 1500px;
-  background: url(@/assets/backgrounds/battle-bg2.png);
+  /* background: url(@/assets/backgrounds/battle-bg2.png);
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center center;
-  outline: solid 4px red;
+  background-position: center center; */
 }
 #dragged-card-container {
   perspective: 850px;

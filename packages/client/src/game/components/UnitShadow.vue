@@ -57,7 +57,6 @@ const distanceX = computed(() => {
 });
 const maxDistanceX = window.innerWidth;
 
-const blur = computed(() => mapRange(distance.value, [0, maxdistance], [0, 3]));
 const opacity = computed(() =>
   mapRange(distance.value, [0, maxdistance], [0.7, 0.45])
 );
@@ -130,7 +129,7 @@ const scaleY = computed(() => {
 .shadow {
   --scale-factor: 1;
   --opacity-factor: 0.5;
-  filter: brightness(0) blur(v-bind('`${blur}px`'));
+  filter: brightness(0);
   mask-image: linear-gradient(to top, black, black 15%, transparent 70%);
 }
 .shadow-blur {

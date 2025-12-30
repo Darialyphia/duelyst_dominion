@@ -48,7 +48,7 @@ const zoomIn = async (origin: Point, duration: number) => {
   await gsap.to(proxy, {
     duration,
     ease: Power2.easeOut,
-    scale: 2,
+    scale: 1.5,
     angleX: 45,
     angleZ: 0,
     onUpdate: () => {
@@ -86,14 +86,14 @@ const zoomOut = async (duration: number) => {
   });
 };
 const ORIGIN_OFFSET = {
-  x: 0,
+  x: 30,
   y: 50
 };
 useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
   const unit = units.value.find(u => u.id === event.unit)!;
   const origin = config.CELL.toScreenPosition(unit);
   return zoomIn(
-    { x: origin.x + ORIGIN_OFFSET.x, y: origin.y + ORIGIN_OFFSET.y },
+    { x: origin.x + ORIGIN_OFFSET.x * unit.x, y: origin.y + ORIGIN_OFFSET.y },
     0.4
   );
 });
@@ -103,7 +103,7 @@ useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
   const origin = config.CELL.toScreenPosition(unit);
   return zoomIn(
     {
-      x: origin.x + ORIGIN_OFFSET.x,
+      x: origin.x + ORIGIN_OFFSET.x * unit.x,
       y: origin.y + ORIGIN_OFFSET.y
     },
     0.3
@@ -134,7 +134,7 @@ const boardStyle = computed(() => ({
   <div
     class="camera-zoom"
     :style="{
-      transform: ` scale(${camera.scale})`,
+      transform: `scale(${camera.scale})`,
       transformOrigin: `${camera.origin.x}px ${camera.origin.y}px`
     }"
   >
@@ -163,6 +163,12 @@ const boardStyle = computed(() => ({
   position: absolute;
   pointer-events: none;
   transform-style: preserve-3d;
+  background: url(@/assets/backgrounds/battle-bg2.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
+  width: 100%;
 }
 
 .camera-rotate {
@@ -170,8 +176,8 @@ const boardStyle = computed(() => ({
   height: 100dvh;
   position: absolute;
   pointer-events: auto;
-  transform: rotateY(var(--board-angle-Y)) rotateX(var(--board-angle-X))
-    rotateZ(var(--board-angle-Z));
+  transform: translateZ(200px) scale(0.87) rotateY(var(--board-angle-Y))
+    rotateX(var(--board-angle-X)) rotateZ(var(--board-angle-Z));
   transform-style: preserve-3d;
 }
 
