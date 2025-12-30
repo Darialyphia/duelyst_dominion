@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { sprites } from '@/assets';
 import { useSprite } from '@/card/composables/useSprite';
-import { CARD_KINDS, type Rune } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
-import { defaultConfig } from '@game/engine/src/config';
 import {
   HoverCardContent,
   HoverCardPortal,
@@ -45,25 +44,6 @@ const spells = computed(() =>
 const artifacts = computed(() =>
   cards.value.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
 );
-const highestRuneCost = computed<Record<Rune, number>>(() => {
-  const runeCosts: Record<Rune, number> = {
-    red: 0,
-    yellow: 0,
-    blue: 0
-  };
-
-  for (const item of cards.value) {
-    if (!('runeCost' in item.blueprint)) continue;
-    for (const [rune, cost] of Object.entries(item.blueprint.runeCost)) {
-      const runeKey = rune as Rune;
-      if (cost > runeCosts[runeKey]) {
-        runeCosts[runeKey] = cost;
-      }
-    }
-  }
-
-  return runeCosts;
-});
 
 const sprite = computed(() =>
   general.value ? sprites[`cards/${general.value.vfx.spriteId}`] : null
@@ -92,22 +72,6 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
           />
           <div class="deck-name">
             {{ deck.name }}
-          </div>
-
-          <div class="flex gap-1" v-if="defaultConfig.FEATURES.RUNES">
-            <div class="rune-count">
-              <img src="/assets/ui/rune-red.png" />
-              {{ highestRuneCost.red }}
-            </div>
-
-            <div class="rune-count">
-              <img src="/assets/ui/rune-yellow.png" />
-              {{ highestRuneCost.yellow }}
-            </div>
-            <div class="rune-count">
-              <img src="/assets/ui/rune-blue.png" />
-              {{ highestRuneCost.blue }}
-            </div>
           </div>
         </button>
       </HoverCardTrigger>
@@ -217,20 +181,5 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
 
 .legendary {
   color: var(--orange-4);
-}
-
-.rune-count {
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  font-size: var(--font-size-4);
-  --pixel-scale: 1;
-  font-weight: var(--font-weight-5);
-  box-shadow: var(--shadow-4);
-  filter: drop-shadow(0 0 0.5rem black);
-  img {
-    width: calc(17px * var(--pixel-scale));
-    height: calc(21px * var(--pixel-scale));
-  }
 }
 </style>

@@ -32,7 +32,6 @@ export const kaidoAssassin: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
-  runeCost: {},
   atk: 2,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

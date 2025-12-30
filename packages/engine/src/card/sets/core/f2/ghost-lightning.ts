@@ -58,9 +58,6 @@ export const ghostLightning: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    red: 1
-  },
   getAoe: game =>
     new EverywhereAOEShape(TARGETING_TYPE.ENEMY_MINION, {
       width: game.boardSystem.map.cols,

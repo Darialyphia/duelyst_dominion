@@ -36,7 +36,6 @@ export const rythmweaver: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 1,
-  runeCost: {},
   atk: 1,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),

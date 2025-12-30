@@ -38,7 +38,6 @@ export const chakriAvatar: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
-  runeCost: {},
   atk: 1,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),

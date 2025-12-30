@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isString, uppercaseFirstLetter } from '@game/shared';
+import { isString } from '@game/shared';
 import {
   HoverCardRoot,
   HoverCardContent,
@@ -11,7 +11,6 @@ import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import BlueprintCard from './BlueprintCard.vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
-import { RUNES, type Rune } from '@game/engine/src/card/card.enums';
 import { assets } from '@/assets';
 
 const { text, highlighted = true } = defineProps<{
@@ -35,8 +34,7 @@ type Token =
   | { type: 'level-bonus'; text: string }
   | { type: 'lineage-bonus'; text: string }
   | { type: 'missing-affinity'; text: string }
-  | { type: 'durability' }
-  | { type: 'rune'; rune: Rune };
+  | { type: 'durability' };
 const tokens = computed<Token[]>(() => {
   if (!text.includes(KEYWORD_DELIMITER)) return [{ type: 'text', text }];
 
@@ -102,18 +100,6 @@ const tokens = computed<Token[]>(() => {
         text: part.replace('[missing-affinity] ', '')
       };
     }
-    if (part.startsWith('[rune:')) {
-      const runeName = part.replace('[rune:', '').replace(']', '').trim();
-      const rune = Object.values(RUNES).find(
-        r => r.toLowerCase() === runeName.toLowerCase()
-      );
-      if (rune) {
-        return {
-          type: 'rune',
-          rune
-        };
-      }
-    }
 
     return { type: 'text', text: part };
   });
@@ -132,13 +118,6 @@ const tokens = computed<Token[]>(() => {
           <img :src="assets['ui/ability-exhaust'].path" class="inline" />
         </template>
         Exhaust the card.
-      </UiSimpleTooltip>
-
-      <UiSimpleTooltip v-else-if="token.type === 'rune'">
-        <template #trigger>
-          <img :src="assets[`ui/rune-${token.rune}`].path" class="inline" />
-        </template>
-        {{ uppercaseFirstLetter(token.rune) }} Rune
       </UiSimpleTooltip>
 
       <UiSimpleTooltip v-else-if="token.type === 'spellpower'">

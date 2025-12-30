@@ -19,6 +19,7 @@ import Player1Infos from './Player1Infos.vue';
 import Player2Infos from './Player2Infos.vue';
 import VFX from './VFX.vue';
 import HoveredCard from './HoveredCard.vue';
+import UiModal from '@/ui/components/UiModal.vue';
 
 const boardCells = useBoardCells();
 const tiles = useTiles();
@@ -26,6 +27,8 @@ const units = useUnits();
 const myPlayer = useMyPlayer();
 
 useGlobalSounds();
+
+const isSettingsOpened = ref(false);
 </script>
 
 <template>
@@ -60,6 +63,23 @@ useGlobalSounds();
 
     <div id="dragged-card-container" />
     <div id="card-portal"></div>
+
+    <button
+      aria-label="Settings"
+      class="settings-button"
+      @click="isSettingsOpened = true"
+    />
+    <UiModal
+      v-model:is-opened="isSettingsOpened"
+      title="Menu"
+      description="Game settings"
+      :style="{ '--ui-modal-size': 'var(--size-xs)' }"
+    >
+      <div class="game-board-menu">
+        <FancyButton text="Close" @click="isSettingsOpened = false" />
+        <slot name="menu" />
+      </div>
+    </UiModal>
   </div>
 </template>
 
@@ -110,5 +130,28 @@ useGlobalSounds();
 }
 .board-unit:is(.v-enter-from, .v-leave-to) {
   opacity: 0;
+}
+
+.settings-button {
+  --pixel-scale: 2;
+  position: fixed;
+  right: var(--size-8);
+  bottom: var(--size-6);
+  width: calc(32px * var(--pixel-scale));
+  aspect-ratio: 1;
+  background: url('@/assets/ui/settings-icon.png');
+  background-size: cover;
+  z-index: 2;
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.game-board-menu {
+  display: grid;
+  gap: var(--size-2);
+  > * {
+    width: 100%;
+  }
 }
 </style>

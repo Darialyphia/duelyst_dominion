@@ -25,7 +25,6 @@ export const windDervish: MinionBlueprint = {
   rarity: RARITIES.TOKEN,
   tags: [],
   manaCost: 2,
-  runeCost: {},
   atk: 2,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),

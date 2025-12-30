@@ -36,9 +36,6 @@ export const sunriser: MinionBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 4,
-  runeCost: {
-    red: 2
-  },
   atk: 3,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

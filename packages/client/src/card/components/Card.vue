@@ -11,7 +11,6 @@ import { uppercaseFirstLetter, type Nullable } from '@game/shared';
 import { useTemplateRef, computed, ref } from 'vue';
 import CardFoil from './CardFoil.vue';
 import CardGlare from './CardGlare.vue';
-import type { RuneCost } from '@game/engine/src/card/card-blueprint';
 import { useCardTilt } from '../composables/useCardTilt';
 import CardName from './CardName.vue';
 import CardDescription from './CardDescription.vue';
@@ -46,7 +45,6 @@ const {
     durability?: number | null;
     tags?: string[];
     kind: CardKind;
-    runeCost?: RuneCost;
     faction: Faction;
   };
   sprite: Nullable<{
@@ -162,7 +160,6 @@ const factionBgOpacity = computed(() => {
         <CardCost
           :mana-cost="card.manaCost"
           :base-mana-cost="card.baseManaCost"
-          :rune-cost="card.runeCost"
         />
 
         <div class="top-right parallax">

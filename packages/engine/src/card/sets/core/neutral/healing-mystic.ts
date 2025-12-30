@@ -33,9 +33,6 @@ export const healingMystic: MinionBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    yellow: 1
-  },
   atk: 2,
   maxHp: 3,
   getTargets(game, card) {

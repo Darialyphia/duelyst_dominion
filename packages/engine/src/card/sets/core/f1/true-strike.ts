@@ -56,9 +56,6 @@ export const trueStrike: SpellBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    red: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),

@@ -80,9 +80,6 @@ export const holyImmolation: SpellBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 4,
-  runeCost: {
-    yellow: 2
-  },
   getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { size: 1 }),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),

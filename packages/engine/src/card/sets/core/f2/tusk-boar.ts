@@ -38,7 +38,6 @@ export const tuskBoar: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [],
   manaCost: 2,
-  runeCost: {},
   atk: 2,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

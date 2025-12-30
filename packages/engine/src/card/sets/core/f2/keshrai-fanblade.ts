@@ -29,7 +29,6 @@ export const keshraiFanblade: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 5,
-  runeCost: {},
   atk: 5,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

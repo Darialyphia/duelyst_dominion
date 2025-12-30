@@ -59,9 +59,6 @@ export const sundropElixir: SpellBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    red: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => singleUnitTargetRules.canPlay(game, card),
   getTargets(game, card) {

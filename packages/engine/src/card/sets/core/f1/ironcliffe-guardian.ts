@@ -35,9 +35,6 @@ export const ironcliffeGuardian: MinionBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 5,
-  runeCost: {
-    yellow: 3
-  },
   atk: 3,
   maxHp: 10,
   getTargets: () => Promise.resolve([]),

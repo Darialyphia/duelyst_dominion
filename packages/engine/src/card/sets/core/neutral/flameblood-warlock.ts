@@ -33,9 +33,6 @@ export const flamebloodWarlock: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    red: 1
-  },
   atk: 3,
   maxHp: 1,
   getTargets: () => Promise.resolve([]),

@@ -20,9 +20,6 @@ export const augury: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    blue: 1
-  },
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
   getTargets(game, card) {

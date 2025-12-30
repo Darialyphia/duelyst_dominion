@@ -3,7 +3,6 @@ import { type GameOptions } from '@game/engine/src/game/game';
 import { provideGameClient } from './useGameClient';
 import { useFxAdapter } from './useFxAdapter';
 import SandboxWorker from '../sandbox-worker?worker';
-import type { Rune } from '@game/engine/src/card/card.enums';
 
 export const useSandbox = (
   options: Pick<GameOptions, 'players' | 'rngSeed'>
@@ -116,12 +115,6 @@ export const useSandbox = (
       worker.postMessage({
         type: 'refillMana',
         payload: { playerId: client.value.getActivePlayerId() }
-      });
-    },
-    addRune(rune: Rune) {
-      worker.postMessage({
-        type: 'addRune',
-        payload: { rune, playerId: client.value.getActivePlayerId() }
       });
     },
     setMaxMana(amount: number) {

@@ -36,7 +36,6 @@ export const flamewreath: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 4,
-  runeCost: {},
   atk: 2,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

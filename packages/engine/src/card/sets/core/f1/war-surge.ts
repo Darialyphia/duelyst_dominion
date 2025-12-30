@@ -45,9 +45,6 @@ export const warSurge: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    red: 1
-  },
   getAoe: game =>
     new EverywhereAOEShape(TARGETING_TYPE.ALLY_MINION, {
       width: game.boardSystem.map.cols,

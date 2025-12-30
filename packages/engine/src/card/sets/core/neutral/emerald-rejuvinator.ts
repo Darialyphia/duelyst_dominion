@@ -32,9 +32,6 @@ export const emeraldRejuvinator: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 4,
-  runeCost: {
-    yellow: 1
-  },
   atk: 4,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

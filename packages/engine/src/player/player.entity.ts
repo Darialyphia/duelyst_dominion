@@ -24,7 +24,7 @@ import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
-import { CARD_EVENTS, CARD_KINDS, RUNES, type Rune } from '../card/card.enums';
+import { CARD_EVENTS, CARD_KINDS } from '../card/card.enums';
 import { match } from 'ts-pattern';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
 
@@ -55,7 +55,6 @@ export type SerializedPlayer = {
   currentlyPlayedCard: string | null;
   victoryPoints: number;
   canUseResourceAction: boolean;
-  runes: Record<Rune, number>;
   artifacts: SerializedPlayerArtifact[];
 };
 
@@ -73,14 +72,7 @@ const makeInterceptors = (): PlayerInterceptor => {
     maxManathreshold: new Interceptable<number>()
   };
 };
-export type PlayerResourceAction =
-  | {
-      type: 'gain-rune';
-      rune: Rune;
-    }
-  | {
-      type: 'draw-card';
-    };
+
 export class Player
   extends Entity<PlayerInterceptor>
   implements Serializable<SerializedPlayer>
@@ -108,12 +100,6 @@ export class Player
   private _mana = 0;
 
   private _baseMaxMana = 0;
-
-  private _runes: Record<Rune, number> = {
-    [RUNES.RED]: 0,
-    [RUNES.BLUE]: 0,
-    [RUNES.YELLOW]: 0
-  };
 
   private _resourceActionsDoneThisTurn = 0;
 
@@ -190,7 +176,6 @@ export class Player
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
       victoryPoints: this._victoryPoints,
       canUseResourceAction: this.canPerformResourceAction,
-      runes: { ...this._runes },
       artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize())
     };
   }
@@ -283,35 +268,10 @@ export class Player
     return this.cardManager.hand.length + this.cardManager.destinyZone.size;
   }
 
-  get runes(): Record<Rune, number> {
-    return { ...this._runes };
-  }
-
-  gainRune(rune: Rune, amount: number) {
-    this._runes[rune] += amount;
-  }
-
-  loseRune(rune: Rune, amount: number) {
-    this._runes[rune] = Math.max(0, this._runes[rune] - amount);
-  }
-
   get canPerformResourceAction() {
     return (
       this._resourceActionsDoneThisTurn < this.game.config.MAX_RESOURCE_ACTIONS_PER_TURN
     );
-  }
-
-  async performResourceAction(action: PlayerResourceAction) {
-    await match(action)
-      .with({ type: 'draw-card' }, async () => {
-        await this.cardManager.drawFromDeck(1);
-      })
-      .with({ type: 'gain-rune' }, async ({ rune }) => {
-        this.gainRune(rune, 1);
-      })
-      .exhaustive();
-
-    this._resourceActionsDoneThisTurn++;
   }
 
   refillMana() {

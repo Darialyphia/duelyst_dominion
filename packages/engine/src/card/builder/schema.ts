@@ -10,7 +10,6 @@ import type {
   CardBlueprintBase,
   GeneralBlueprint,
   MinionBlueprint,
-  RuneCost,
   SpellBlueprint
 } from '../card-blueprint';
 import {
@@ -61,7 +60,6 @@ export type CardBlueprintSchemaBase = {
 export type MinionBlueprintSchema = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.MINION>;
   manaCost: number;
-  runeCost: RuneCost;
   atk: number;
   maxHp: number;
   cmd: number;
@@ -78,7 +76,6 @@ export type MinionBlueprintSchema = CardBlueprintBase & {
 export type SpellBlueprintSchema = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.SPELL>;
   manaCost: number;
-  runeCost: RuneCost;
   onInit: ActionData[];
   canPlay: Filter<Condition>;
   onPlay: ActionData[];
@@ -102,7 +99,6 @@ export type ArtifactBlueprintSchema = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.ARTIFACT>;
   durability: number;
   manaCost: number;
-  runeCost: RuneCost;
   onInit: ActionData[];
   canPlay: Filter<Condition>;
   onPlay: ActionData[];
@@ -135,7 +131,6 @@ export const parseMinionBlueprintSchema = (
     sounds: schema.sounds,
     kind: schema.kind,
     manaCost: schema.manaCost,
-    runeCost: schema.runeCost,
     atk: schema.atk,
     maxHp: schema.maxHp,
     canPlay: (game, card) =>
@@ -255,7 +250,6 @@ export const parseSpellBlueprintSchema = (
     vfx: schema.vfx,
     kind: schema.kind,
     manaCost: schema.manaCost,
-    runeCost: schema.runeCost,
     canPlay: (game, card) =>
       checkCondition({
         game,
@@ -338,7 +332,6 @@ export const parseArtifactBlueprintSchema = (
     kind: schema.kind,
     durability: schema.durability,
     manaCost: schema.manaCost,
-    runeCost: schema.runeCost,
     canPlay: (game, card) =>
       checkCondition({
         game,

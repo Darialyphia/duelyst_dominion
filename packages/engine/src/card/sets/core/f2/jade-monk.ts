@@ -3,8 +3,6 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
-import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { GAME_EVENTS } from '../../../../game/game.events';
 import { isSpell } from '../../../card-utils';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
@@ -40,7 +38,6 @@ export const jadeMonk: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 3,
-  runeCost: {},
   atk: 3,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

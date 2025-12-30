@@ -40,10 +40,6 @@ export const archonSpellbinder: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [],
   manaCost: 6,
-  runeCost: {
-    yellow: 1,
-    blue: 2
-  },
   atk: 6,
   maxHp: 7,
   getTargets: () => Promise.resolve([]),

@@ -47,9 +47,6 @@ export const circleOfLife: SpellBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [],
   manaCost: 5,
-  runeCost: {
-    red: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
   getTargets(game, card) {

@@ -3,6 +3,7 @@ import UiTextInput from '@/ui/components/UiTextInput.vue';
 import { useCollectionPage } from './useCollectionPage';
 import { Icon } from '@iconify/vue';
 import UiModal from '@/ui/components/UiModal.vue';
+import { assets } from '@/assets';
 
 const { deckBuilder } = useCollectionPage();
 const isPosterOpened = ref(false);
@@ -29,7 +30,7 @@ const isPosterOpened = ref(false);
         :name="deckBuilder.deck.name"
       /> -->
     </UiModal>
-    <img class="edit-icon" src="/assets/ui/pen.png" />
+    <img class="edit-icon" :src="assets['ui/pen'].path" />
     <UiTextInput
       v-model="deckBuilder.deck.name"
       class="flex-1"

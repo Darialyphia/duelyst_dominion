@@ -32,9 +32,6 @@ export const saberspineTiger: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 3,
-  runeCost: {
-    red: 2
-  },
   atk: 3,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),

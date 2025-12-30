@@ -6,7 +6,7 @@ import type { PlayerViewModel } from './player.model';
 import type { ModifierViewModel } from './modifier.model';
 import type { GameClientState } from '../controllers/state-controller';
 import { PlayCardAction } from '../actions/play-card';
-import type { CardKind, Rune } from '../../card/card.enums';
+import type { CardKind } from '../../card/card.enums';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import { GAME_PHASES } from '../../game/game.enums';
@@ -90,13 +90,6 @@ export class CardViewModel {
 
   get player() {
     return this.getEntities()[this.data.player] as PlayerViewModel;
-  }
-
-  get runeCost() {
-    if ('runeCost' in this.data) {
-      return this.data.runeCost as Partial<Record<Rune, number>>;
-    }
-    return null;
   }
 
   get manaCost() {

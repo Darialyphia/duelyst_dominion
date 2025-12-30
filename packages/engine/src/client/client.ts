@@ -22,8 +22,6 @@ import type { BoardCellViewModel } from './view-models/board-cell.model';
 import type { UnitViewModel } from './view-models/unit.model';
 import type { TileViewModel } from './view-models/tile.model';
 import { GAME_PHASES } from '../game/game.enums';
-import type { Rune } from '../card/card.enums';
-import { VFXPlaySequenceEvent } from '../game/systems/vfx.system';
 import { VFXSequenceController } from './controllers/vfx-sequence.controller';
 import { GAME_EVENTS } from '../game/game.events';
 
@@ -306,27 +304,6 @@ export class GameClient {
       payload: {
         playerId: this.playerId,
         indices
-      }
-    });
-  }
-
-  gainRune(rune: Rune) {
-    this.dispatch({
-      type: 'useResourceAction',
-      payload: {
-        playerId: this.playerId,
-        type: 'gain-rune',
-        rune
-      }
-    });
-  }
-
-  drawCard() {
-    this.dispatch({
-      type: 'useResourceAction',
-      payload: {
-        playerId: this.playerId,
-        type: 'draw-card'
       }
     });
   }

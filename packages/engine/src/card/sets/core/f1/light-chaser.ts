@@ -36,9 +36,6 @@ export const lightChaser: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    red: 2
-  },
   atk: 1,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

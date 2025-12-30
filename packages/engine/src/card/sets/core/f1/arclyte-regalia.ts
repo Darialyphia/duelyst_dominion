@@ -32,7 +32,6 @@ export const arclyteRegalia: ArtifactBlueprint = {
   tags: [],
   manaCost: 4,
   durability: 3,
-  runeCost: {},
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
       override: card.player.general

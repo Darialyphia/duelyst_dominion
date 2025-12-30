@@ -38,9 +38,6 @@ export const silverguardKnight: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 3,
-  runeCost: {
-    red: 1
-  },
   atk: 1,
   maxHp: 5,
   getTargets: () => Promise.resolve([]),

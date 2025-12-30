@@ -4,7 +4,6 @@ import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { consume } from '../../../card-actions-utils';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
@@ -76,9 +75,6 @@ export const magnetize: SpellBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 1,
-  runeCost: {
-    blue: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => {
     if (card.player.general.inFront?.isOccupied) return false;
@@ -94,7 +90,6 @@ export const magnetize: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets }) {
-    await consume(card, { blue: 1 });
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 

@@ -40,9 +40,6 @@ export const grandStrategos: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 5,
-  runeCost: {
-    red: 1
-  },
   atk: 4,
   maxHp: 6,
   getTargets: () => Promise.resolve([]),

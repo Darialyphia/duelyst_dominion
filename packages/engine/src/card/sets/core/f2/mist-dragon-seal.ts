@@ -75,9 +75,6 @@ export const mistDragonSeal: SpellBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    red: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) => {
     const first = singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player));

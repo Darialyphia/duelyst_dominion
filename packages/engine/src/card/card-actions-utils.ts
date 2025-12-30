@@ -1,7 +1,6 @@
 import type { Game } from '../game/game';
 import type { AnyCard } from './entities/card.entity';
 import { type DeckCard } from './components/card-manager.component';
-import type { Rune } from './card.enums';
 export const scry = async (game: Game, card: AnyCard, amount: number) => {
   const cards = card.player.cardManager.deck.peek(amount);
   const cardsToPutAtBottom = await game.interaction.chooseCards<DeckCard>({
@@ -39,10 +38,4 @@ export const discover = async (game: Game, card: AnyCard, choicePool: DeckCard[]
   await selectedCard.addToHand();
 
   return { selectedCard, choices };
-};
-
-export const consume = async (card: AnyCard, runes: Partial<Record<Rune, number>>) => {
-  Object.entries(runes).forEach(([rune, amount]) => {
-    card.player.loseRune(rune as Rune, amount);
-  });
 };

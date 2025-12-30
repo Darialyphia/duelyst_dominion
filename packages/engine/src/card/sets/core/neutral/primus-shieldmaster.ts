@@ -32,10 +32,6 @@ export const primusShieldmaster: MinionBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 4,
-  runeCost: {
-    red: 1,
-    yellow: 1
-  },
   atk: 3,
   maxHp: 6,
   getTargets: () => Promise.resolve([]),

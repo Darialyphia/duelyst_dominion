@@ -1,4 +1,4 @@
-import type { MinionBlueprint, RuneCost } from '../card-blueprint';
+import type { MinionBlueprint } from '../card-blueprint';
 import {
   Card,
   makeCardInterceptors,
@@ -12,7 +12,7 @@ import { Interceptable } from '../../utils/interceptable';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
 import { MinionSummonTargetingStrategy } from '../../targeting/minion-summon-targeting.strategy';
-import { CARD_EVENTS, type Rune } from '../card.enums';
+import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import {
@@ -32,7 +32,6 @@ export type SerializedMinionCard = SerializedCard & {
   atk: number;
   maxHp: number;
   manaCost: number;
-  runeCost: RuneCost;
   unplayableReason: string | null;
 };
 
@@ -76,13 +75,6 @@ export class MinionCard extends Card<
     return this.player.canSpendMana(this.manaCost);
   }
 
-  get hasRunes() {
-    if (!this.game.config.FEATURES.RUNES) return true;
-    return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
-      return this.player.runes[rune as Rune] >= cost;
-    });
-  }
-
   get hasSummoningSickness(): boolean {
     return this.interceptors.hasSummoningSickness.getValue(true, this);
   }
@@ -91,7 +83,6 @@ export class MinionCard extends Card<
     return this.interceptors.canPlay.getValue(
       this.hasAvailablePosition &&
         this.canAfford &&
-        this.hasRunes &&
         this.blueprint.canPlay(this.game, this),
       this
     );
@@ -104,9 +95,7 @@ export class MinionCard extends Card<
     if (!this.canAfford) {
       return "You don't have enough mana.";
     }
-    if (!this.hasRunes) {
-      return "You haven't unlocked the necessary runes.";
-    }
+
     return this.canPlay() ? null : 'You cannot play this card.';
   }
 
@@ -230,7 +219,6 @@ export class MinionCard extends Card<
       atk: this.atk,
       maxHp: this.maxHp,
       manaCost: this.manaCost,
-      runeCost: this.blueprint.runeCost,
       unplayableReason: this.unplayableReason
     };
   }

@@ -2,7 +2,6 @@
 import type { DeckBuilderCardMeta } from '@/card/deck-builder.model';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { useCollectionPage } from './useCollectionPage';
-import { defaultConfig } from '@game/engine/src/config';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { useSprite } from '@/card/composables/useSprite';
 import { sprites } from '@/assets';
@@ -64,27 +63,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
             {{ card.blueprint.manaCost }}
           </span>
         </div>
-        <div
-          v-if="defaultConfig.FEATURES.RUNES"
-          class="runes"
-          :style="{ opacity: 'runeCost' in card.blueprint ? 1 : 0 }"
-        >
-          <div class="rune red">
-            <span v-if="'runeCost' in card.blueprint">
-              {{ card.blueprint.runeCost.red || '' }}
-            </span>
-          </div>
-          <div class="rune yellow">
-            <span v-if="'runeCost' in card.blueprint">
-              {{ card.blueprint.runeCost.yellow || '' }}
-            </span>
-          </div>
-          <div class="rune blue">
-            <span v-if="'runeCost' in card.blueprint">
-              {{ card.blueprint.runeCost.blue || '' }}
-            </span>
-          </div>
-        </div>
+
         <span class="card-name">
           <template v-if="'copies' in card">X {{ card.copies }}</template>
           {{ card.blueprint.name }}

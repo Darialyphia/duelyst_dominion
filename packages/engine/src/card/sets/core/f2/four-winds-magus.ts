@@ -38,7 +38,6 @@ export const fourWindsMagus: MinionBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   manaCost: 4,
-  runeCost: {},
   atk: 4,
   maxHp: 4,
   getTargets: () => Promise.resolve([]),

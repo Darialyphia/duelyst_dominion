@@ -33,9 +33,6 @@ export const frostboneNaga: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 4,
-  runeCost: {
-    red: 2
-  },
   atk: 3,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

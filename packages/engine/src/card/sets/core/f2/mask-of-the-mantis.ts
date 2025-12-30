@@ -27,7 +27,6 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   tags: [],
   manaCost: 2,
   durability: 3,
-  runeCost: {},
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
       override: card.player.general

@@ -79,8 +79,7 @@ const animationSequence = computed(() => {
         hp: card.maxHp,
         durability: card.durability,
         faction: card.faction,
-        cmd: card.cmd,
-        runeCost: card.runeCost ?? {}
+        cmd: card.cmd
       }"
       :sprite="sprite"
       class="game-card big"

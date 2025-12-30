@@ -56,10 +56,3 @@ export const FACTIONS = {
   NEUTRAL: 'Neutral'
 } as const;
 export type Faction = Values<typeof FACTIONS>;
-
-export const RUNES = {
-  RED: 'red',
-  BLUE: 'blue',
-  YELLOW: 'yellow'
-} as const;
-export type Rune = Values<typeof RUNES>;

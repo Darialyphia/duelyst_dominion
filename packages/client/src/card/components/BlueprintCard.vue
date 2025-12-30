@@ -17,7 +17,6 @@ const sprite = computed(() => {
       description: blueprint.description,
       kind: blueprint.kind,
       manaCost: (blueprint as any).manaCost,
-      runeCost: (blueprint as any).runeCost,
       rarity: (blueprint as any).rarity,
       atk:
         (blueprint as any).atk ??

@@ -1,7 +1,7 @@
 import type { MaybePromise } from '@game/shared';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
-import type { RuneCost, SpellBlueprint } from '../card-blueprint';
-import { CARD_EVENTS, type Rune } from '../card.enums';
+import type { SpellBlueprint } from '../card-blueprint';
+import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import {
   Card,
@@ -17,7 +17,6 @@ import { Interceptable } from '../../utils/interceptable';
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedSpellCard = SerializedCard & {
   manaCost: number;
-  runeCost: RuneCost;
   unplayableReason: string | null;
 };
 
@@ -46,16 +45,9 @@ export class SpellCard extends Card<
     return this.player.canSpendMana(this.manaCost);
   }
 
-  get hasRunes() {
-    if (!this.game.config.FEATURES.RUNES) return true;
-    return Object.entries(this.blueprint.runeCost).every(([rune, cost]) => {
-      return this.player.runes[rune as Rune] >= cost;
-    });
-  }
-
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
-      this.canAfford && this.hasRunes && this.blueprint.canPlay(this.game, this),
+      this.canAfford && this.blueprint.canPlay(this.game, this),
       this
     );
   }
@@ -64,9 +56,7 @@ export class SpellCard extends Card<
     if (!this.canAfford) {
       return "You don't have enough mana.";
     }
-    if (!this.hasRunes) {
-      return "You haven't unlocked the necessary runes.";
-    }
+
     return this.canPlay() ? null : 'You cannot play this card.';
   }
 
@@ -133,7 +123,6 @@ export class SpellCard extends Card<
     return {
       ...this.serializeBase(),
       manaCost: this.blueprint.manaCost,
-      runeCost: this.blueprint.runeCost,
       unplayableReason: this.unplayableReason
     };
   }

@@ -34,9 +34,6 @@ export const bloodtearAlchemist: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    blue: 1
-  },
   atk: 2,
   maxHp: 1,
   getTargets(game, card) {

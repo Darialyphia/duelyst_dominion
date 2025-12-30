@@ -32,9 +32,6 @@ export const azuriteLion: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    red: 1
-  },
   atk: 2,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),

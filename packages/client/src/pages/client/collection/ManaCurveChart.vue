@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { type Rune } from '@game/engine/src/card/card.enums';
 import { useCollectionPage } from './useCollectionPage';
 import CardText from '@/card/components/CardText.vue';
 const { deckBuilder } = useCollectionPage();
@@ -29,41 +28,12 @@ const getCountForCostAndUp = (minCost: number) =>
     })
   );
 
-const highestRuneCost = computed<Record<Rune, number>>(() => {
-  const runeCosts: Record<Rune, number> = {
-    red: 0,
-    yellow: 0,
-    blue: 0
-  };
-
-  for (const item of deckBuilder.value.cards) {
-    if (!('runeCost' in item.blueprint)) continue;
-    for (const [rune, cost] of Object.entries(item.blueprint.runeCost)) {
-      const runeKey = rune as Rune;
-      if (cost > runeCosts[runeKey]) {
-        runeCosts[runeKey] = cost;
-      }
-    }
-  }
-
-  return runeCosts;
-});
-
 const bars = computed(() => {
   const result: Array<{ label: string; count: number }> = [];
   for (let i = 0; i < 6; i++) {
     result.push({ label: i.toString(), count: getCountForCost(i) });
   }
   result.push({ label: '6+', count: getCountForCostAndUp(6) });
-  result.push({ label: '@[rune:red]@', count: highestRuneCost.value.red });
-  result.push({
-    label: '@[rune:yellow]@',
-    count: highestRuneCost.value.yellow
-  });
-  result.push({
-    label: '@[rune:blue]@',
-    count: highestRuneCost.value.blue
-  });
   return result;
 });
 </script>

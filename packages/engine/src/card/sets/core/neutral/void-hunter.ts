@@ -32,9 +32,6 @@ export const voidHunter: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 3,
-  runeCost: {
-    red: 1
-  },
   atk: 4,
   maxHp: 2,
   getTargets: () => Promise.resolve([]),

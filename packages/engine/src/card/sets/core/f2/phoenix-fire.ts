@@ -62,9 +62,6 @@ export const phoenixFire: SpellBlueprint = {
   rarity: RARITIES.BASIC,
   tags: [],
   manaCost: 2,
-  runeCost: {
-    red: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
     singleEnemyTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),

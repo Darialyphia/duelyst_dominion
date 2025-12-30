@@ -30,7 +30,6 @@ import { EndTurnInput } from './inputs/end-turn.input';
 import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
 import { UseGeneralAbilityInput } from './inputs/use-general-ability';
-import { UseResourceActionInput } from './inputs/use-resource-action';
 
 type GenericInputMap = Record<string, Constructor<Input<ZodType>>>;
 
@@ -55,8 +54,7 @@ const inputMap = validateinputMap({
   endTurn: EndTurnInput,
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,
-  useGeneralAbility: UseGeneralAbilityInput,
-  useResourceAction: UseResourceActionInput
+  useGeneralAbility: UseGeneralAbilityInput
 });
 
 type InputMap = typeof inputMap;

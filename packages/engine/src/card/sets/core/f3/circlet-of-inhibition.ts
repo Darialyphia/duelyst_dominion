@@ -1,6 +1,5 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { ArtifactBlueprint } from '../../../card-blueprint';
-import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
@@ -30,9 +29,6 @@ export const circletOfInhibition: ArtifactBlueprint = {
   tags: [],
   manaCost: 2,
   durability: 3,
-  runeCost: {
-    blue: 1
-  },
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: () => true,
   getTargets: () => Promise.resolve([]),
