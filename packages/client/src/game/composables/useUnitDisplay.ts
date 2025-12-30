@@ -43,6 +43,7 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
   });
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, event => {
+    if (event.unit !== unit.value.id) return;
     const destination = event.path.at(-1)!;
     flipOverride.value = unit.value.x > destination.x;
   });

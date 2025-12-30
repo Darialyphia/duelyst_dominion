@@ -163,10 +163,16 @@ const boardStyle = computed(() => ({
   position: absolute;
   pointer-events: none;
   transform-style: preserve-3d;
-  background: url(@/assets/backgrounds/battle-bg2.png);
+  background:
+    url(@/assets/backgrounds/battle-bg-midground.png),
+    linear-gradient(to bottom, hsl(0 0 0 / 0.2)),
+    url(@/assets/backgrounds/battle-bg-background.png);
   background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
+  background-size: cover, cover, 450px;
+  background-position:
+    center center,
+    center center,
+    top left;
   height: 100%;
   width: 100%;
 }
