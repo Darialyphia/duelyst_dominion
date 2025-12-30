@@ -158,6 +158,17 @@ export class UnitAfterCombatEvent extends TypedSerializableEvent<
   }
 }
 
+export class UnitEffectTriggeredEvent extends TypedSerializableEvent<
+  { unit: Unit },
+  { unit: string }
+> {
+  serialize() {
+    return {
+      unit: this.data.unit.id
+    };
+  }
+}
+
 export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_BEFORE_MOVE]: UnitBeforeMoveEvent;
   [UNIT_EVENTS.UNIT_AFTER_MOVE]: UnitAfterMoveEvent;
@@ -178,4 +189,5 @@ export type UnitEventMap = {
   [UNIT_EVENTS.UNIT_BEFORE_BOUNCE]: UnitBeforeBounceEvent;
   [UNIT_EVENTS.UNIT_AFTER_BOUNCE]: UnitAfterBounceEvent;
   [UNIT_EVENTS.UNIT_AFTER_COMBAT]: UnitAfterCombatEvent;
+  [UNIT_EVENTS.UNIT_EFFECT_TRIGGERED]: UnitEffectTriggeredEvent;
 };

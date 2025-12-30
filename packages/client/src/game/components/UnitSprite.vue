@@ -13,7 +13,8 @@ const {
   sheetWidth,
   sheetHeight,
   isFoil,
-  isTeleporting
+  isTeleporting,
+  isTriggeringEffect
 } = defineProps<{
   unitId: string;
   bgPosition: string;
@@ -25,6 +26,7 @@ const {
   isFlipped: boolean;
   isFoil: boolean;
   isTeleporting: boolean;
+  isTriggeringEffect: boolean;
 }>();
 
 const dissolve = useDissolveVFX();
@@ -41,7 +43,10 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
   <div
     ref="root"
     class="sprite-wrapper"
-    :class="{ 'is-teleporting': isTeleporting }"
+    :class="{
+      'is-teleporting': isTeleporting,
+      'is-triggering-effect': isTriggeringEffect
+    }"
     :style="{
       '--parallax-factor': 0.5,
       '--bg-position': bgPosition,
@@ -188,5 +193,18 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
   mask-position: var(--bg-position);
   mask-repeat: no-repeat;
   mask-size: var(--background-width) var(--background-height);
+}
+
+@keyframes ability-glow {
+  0%,
+  100% {
+    filter: none;
+  }
+  50% {
+    filter: brightness(3);
+  }
+}
+.is-triggering-effect {
+  animation: ability-glow 1s ease-in-out;
 }
 </style>

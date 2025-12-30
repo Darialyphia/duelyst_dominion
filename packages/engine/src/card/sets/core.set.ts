@@ -37,6 +37,8 @@ import { phoenixFire } from './core/f2/phoenix-fire';
 import { rythmweaver } from './core/f2/rythmweaver';
 import { tuskBoar } from './core/f2/tusk-boar';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
+import { endlessObelysk } from './core/f3/endless-obelysk';
+import { etherealObelysk } from './core/f3/ethereal-obelysk';
 import { scionsCrown } from './core/f3/scions-crown';
 import { windDervish } from './core/f3/wind-dervish';
 import { archonSpellbinder } from './core/neutral/archon-spellbinder';
@@ -100,6 +102,8 @@ export const coreSet: CardSet = {
     flamewreath,
     jadeMonk,
     grandStrategos,
-    windDervish
+    windDervish,
+    etherealObelysk,
+    endlessObelysk
   ]
 };

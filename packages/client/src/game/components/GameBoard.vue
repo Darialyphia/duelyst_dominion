@@ -20,6 +20,7 @@ import Player2Infos from './Player2Infos.vue';
 import VFX from './VFX.vue';
 import HoveredCard from './HoveredCard.vue';
 import UiModal from '@/ui/components/UiModal.vue';
+import FancyButton from '@/ui/components/FancyButton.vue';
 
 const boardCells = useBoardCells();
 const tiles = useTiles();

@@ -9,6 +9,9 @@ import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
+import { GameEventModifierMixin } from '../mixins/game-event.mixin';
+import { UNIT_EVENTS } from '../../unit/unit.enums';
+import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   constructor(

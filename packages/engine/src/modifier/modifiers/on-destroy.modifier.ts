@@ -57,7 +57,7 @@ export class MinionOnDestroyUnitModifier extends Modifier<Unit> {
     }
   ) {
     console.log('create on destroy modifier');
-    super(options.modifierType ?? KEYWORDS.CELERITY.id, game, source, {
+    super(options.modifierType ?? KEYWORDS.ON_DESTROYED.id, game, source, {
       name: KEYWORDS.ON_DESTROYED.name,
       description: KEYWORDS.CELERITY.description,
       icon: 'icons/keyword-on-death',

@@ -51,7 +51,10 @@ export const cards = {
 "four-winds-magus": "four-winds-magus",
 "flamewreath": "flamewreath",
 "jade-monk": "jade-monk",
-"grand_strategos": "grand_strategos"
+"grand_strategos": "grand_strategos",
+"wind-dervish": "wind-dervish",
+"ethereal-obelysk": "ethereal-obelysk",
+"endless-obelysk": "endless-obelysk"
 } as const satisfies Record<string, string>;
 
 export const collectableCards = {
@@ -101,5 +104,7 @@ export const collectableCards = {
 "four-winds-magus": "four-winds-magus",
 "flamewreath": "flamewreath",
 "jade-monk": "jade-monk",
-"grand_strategos": "grand_strategos"
+"grand_strategos": "grand_strategos",
+"ethereal-obelysk": "ethereal-obelysk",
+"endless-obelysk": "endless-obelysk"
 } as const satisfies Record<string, string>;

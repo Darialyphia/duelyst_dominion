@@ -45,7 +45,8 @@ const {
   isAttacking,
   isTeleporting,
   latestDamageReceived,
-  latestHealReceived
+  latestHealReceived,
+  isTriggeringEffect
 } = useUnitAnimations({
   unit,
   isSelected,
@@ -118,6 +119,7 @@ const isHovered = computed(() => {
         :is-flipped="isFlipped"
         :is-foil="unit.getCard().isFoil"
         :is-teleporting="isTeleporting"
+        :is-triggering-effect="isTriggeringEffect"
       />
 
       <UnitStats

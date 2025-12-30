@@ -132,6 +132,59 @@ export const songhaiSpawn = (position: Point): VFXSequence => {
             type: 'playSpriteAt',
             params: {
               position,
+              resourceName: 'fx_teleportrecall',
+              animationSequence: ['default'],
+              offset: { x: 0, y: -25 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      }
+    ]
+  };
+};
+
+export const vetruvianSpawn = (position: Point): VFXSequence => {
+  return {
+    tracks: [
+      {
+        steps: [
+          {
+            type: 'addLightAt',
+            params: {
+              blendMode: BLEND_MODES.OVERLAY,
+              color: '#ffff00',
+              position,
+              offset: { x: 0, y: -25 },
+              opacity: 1,
+              duration: 1000,
+              radius: 270
+            }
+          }
+        ]
+      },
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
+              resourceName: 'fx_bladestorm',
+              animationSequence: ['default'],
+              offset: { x: 0, y: -25 },
+              scale: 1.5,
+              flipX: false
+            }
+          }
+        ]
+      },
+      {
+        steps: [
+          {
+            type: 'playSpriteAt',
+            params: {
+              position,
               resourceName: 'smokeground',
               animationSequence: ['smokeground'],
               offset: { x: 0, y: 40 },

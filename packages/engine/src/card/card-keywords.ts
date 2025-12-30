@@ -231,10 +231,10 @@ export const KEYWORDS = {
   },
   SPAWN: {
     id: 'spawn',
-    name: 'Spawn',
+    name: 'Spawn X',
     description:
-      'Pick a space when this unit is summoned. At the start of your turn, summon a unit on this space, or deal 2 damage if an enemy unit is standing on it.',
-    aliases: []
+      'At the start of your turn, summon X on a space nearby this and lose 1 charge.',
+    aliases: [/^spawn/]
   },
   STRUCTURE: {
     id: 'structure',

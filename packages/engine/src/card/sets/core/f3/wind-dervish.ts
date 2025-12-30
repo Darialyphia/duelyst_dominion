@@ -3,7 +3,7 @@ import { EphemeralCardModifier } from '../../../../modifier/modifiers/ephemeral.
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
-import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 
 export const windDervish: MinionBlueprint = {
   id: 'wind-dervish',
@@ -23,7 +23,7 @@ export const windDervish: MinionBlueprint = {
   setId: CARD_SETS.CORE,
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.TOKEN,
-  tags: [],
+  tags: [TAGS.DERVISH],
   manaCost: 2,
   atk: 2,
   maxHp: 2,

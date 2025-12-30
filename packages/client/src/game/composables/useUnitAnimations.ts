@@ -4,7 +4,7 @@ import { useFxEvent, useGameState } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import gsap, { Power0, Power2 } from 'gsap';
 import { config } from '@/utils/config';
-import type { Point } from '@game/shared';
+import { waitFor, type Point } from '@game/shared';
 import { useSprite, type SpriteData } from '@/card/composables/useSprite';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
@@ -254,6 +254,16 @@ export function useUnitAnimations({
     });
   });
 
+  const isTriggeringEffect = ref(false);
+
+  const onEffectTrigger = async (e: { unit: string }) => {
+    if (e.unit !== unit.id) return;
+    isTriggeringEffect.value = true;
+    await waitFor(1000);
+    isTriggeringEffect.value = false;
+  };
+  useFxEvent(FX_EVENTS.UNIT_EFFECT_TRIGGERED, onEffectTrigger);
+
   return {
     animationSequence,
     positionOffset,
@@ -265,6 +275,7 @@ export function useUnitAnimations({
     healIndicatorEl,
     activeFrameRect,
     bgPosition,
-    imageBg
+    imageBg,
+    isTriggeringEffect
   };
 }

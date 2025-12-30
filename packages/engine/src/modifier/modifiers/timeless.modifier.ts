@@ -17,7 +17,7 @@ export class TimelessModifier extends Modifier<ArtifactCard> {
     super(KEYWORDS.TIMELESS.id, game, source, {
       name: KEYWORDS.TIMELESS.name,
       description: KEYWORDS.TIMELESS.description,
-      icon: 'keywords/timeless',
+      icon: 'icons/keywords-timeless',
       mixins: [
         new ArtifactEffectModifierMixin(game, {
           onApplied: async artifact => {
@@ -41,7 +41,7 @@ export class TimelessArtifactModifier extends Modifier<PlayerArtifact> {
     source: AnyCard,
     options: { mixins?: ModifierMixin<PlayerArtifact>[]; modifierType?: string }
   ) {
-    super(options.modifierType ?? KEYWORDS.CELERITY.id, game, source, {
+    super(options.modifierType ?? KEYWORDS.TIMELESS.id, game, source, {
       name: KEYWORDS.CELERITY.name,
       description: KEYWORDS.CELERITY.description,
       icon: 'icons/keyword-celerity',

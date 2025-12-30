@@ -19,6 +19,7 @@ export const UNIT_EVENTS = {
   UNIT_BEFORE_BOUNCE: 'unit.before_bounce',
   UNIT_AFTER_BOUNCE: 'unit.after_bounce',
   UNIT_BEFORE_HEAL: 'unit.before_heal',
-  UNIT_AFTER_HEAL: 'unit.after_heal'
+  UNIT_AFTER_HEAL: 'unit.after_heal',
+  UNIT_EFFECT_TRIGGERED: 'unit.effect_triggered'
 } as const;
 export type UnitEvent = Values<typeof UNIT_EVENTS>;

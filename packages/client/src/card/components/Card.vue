@@ -183,6 +183,7 @@ const factionBgOpacity = computed(() => {
         <div class="kind parallax">
           <img :src="kindImg" :alt="card.kind" />
           {{ uppercaseFirstLetter(card.kind.toLocaleLowerCase()) }}
+          {{ card.tags?.length ? `· ${card.tags?.join(' ')}` : '' }}
         </div>
 
         <CardDescription :description="card.description" :kind="card.kind" />

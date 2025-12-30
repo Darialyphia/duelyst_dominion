@@ -45,7 +45,8 @@ const { client } = useGameClient();
   background: radial-gradient(
     circle,
     var(--yellow-2) 0%,
-    rgba(255, 255, 200, 0) 60%
+    rgb(from var(--yellow-2) r g b / 0.25) 40%,
+    rgba(255, 255, 200, 0) 75%
   );
   border-radius: 50%;
   pointer-events: none;

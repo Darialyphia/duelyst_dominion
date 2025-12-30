@@ -25,7 +25,8 @@ const sprite = computed(() => {
       hp: (blueprint as any).maxHp,
       durability: (blueprint as any).durability,
       cmd: (blueprint as any).cmd,
-      faction: blueprint.faction
+      faction: blueprint.faction,
+      tags: blueprint.tags
     }"
     :sprite="sprite"
   />
