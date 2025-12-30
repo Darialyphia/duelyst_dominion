@@ -61,10 +61,10 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   width: var(--width);
   height: var(--height);
   transform-origin: bottom center;
-  transition: opacity 0.3s var(--ease-2);
+  transition: filter 0.5s var(--ease-2);
   pointer-events: auto;
   @starting-style {
-    opacity: 0;
+    filter: brightness(3.5) saturate(2);
   }
 
   &::after {

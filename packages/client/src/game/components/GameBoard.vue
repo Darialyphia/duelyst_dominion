@@ -45,7 +45,6 @@ useGlobalSounds();
           class="board-unit"
         />
       </TransitionGroup>
-      >
     </Camera>
 
     <VFX />
@@ -73,6 +72,11 @@ useGlobalSounds();
   position: relative;
   transform-style: preserve-3d;
   perspective: 1500px;
+  background: url(@/assets/backgrounds/battle-bg2.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  outline: solid 4px red;
 }
 #dragged-card-container {
   perspective: 850px;
@@ -84,7 +88,7 @@ useGlobalSounds();
 .hand {
   position: fixed;
   width: 100%;
-  bottom: 22%;
+  bottom: 16%;
   left: 0;
 }
 

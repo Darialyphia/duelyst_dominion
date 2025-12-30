@@ -20,7 +20,8 @@ const units = useUnits();
 const camera = ref({
   origin: { x: 0, y: 0 },
   scale: 1,
-  angle: { x: 20, y: 0, z: 0 }
+  angle: { x: 30, y: 0, z: 0 },
+  offset: { x: 0, y: -7 }
 });
 
 const zoomIn = async (origin: Point, duration: number) => {
@@ -70,7 +71,7 @@ const zoomOut = async (duration: number) => {
     duration,
     ease: Power2.easeOut,
     scale: 1,
-    angleX: 20,
+    angleX: 30,
     angleY: 0,
     onUpdate: () => {
       camera.value.scale = proxy.scale;
@@ -145,8 +146,12 @@ const boardStyle = computed(() => ({
         '--board-angle-Z': `${camera.angle.z}deg`
       }"
     >
-      <div class="bg" />
-      <div class="board" :id="ui.DOMSelectors.board.id" :style="boardStyle">
+      <!-- <div class="bg" /> -->
+      <div
+        class="camera-viewport"
+        :id="ui.DOMSelectors.board.id"
+        :style="boardStyle"
+      >
         <slot />
       </div>
     </div>
@@ -170,19 +175,16 @@ const boardStyle = computed(() => ({
   transform-style: preserve-3d;
 }
 
-.board {
+.camera-viewport {
   position: absolute;
-  top: 40%;
+  pointer-events: auto;
+  top: 22%;
   left: 50%;
-  translate: -50% -50%;
+  translate: calc(-50% + v-bind('camera.offset.x') * 1%)
+    calc(v-bind('camera.offset.y') * 1%);
   transform-style: preserve-3d;
-}
-
-.bg {
-  position: absolute;
-  width: 125vw;
-  height: 125dvh;
-  /* background: url(@/assets/backgrounds/battle-bg2.png) center/contain no-repeat; */
-  translate: -9.9% -10%;
+  transition: translate 1s var(--ease-4);
+  /* solves some hover detection issues because of 3D transforms */
+  transform: translateZ(0px);
 }
 </style>

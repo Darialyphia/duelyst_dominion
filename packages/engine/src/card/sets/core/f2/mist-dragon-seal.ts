@@ -118,14 +118,12 @@ export const mistDragonSeal: SpellBlueprint = {
 
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('mist-dragon-seal-attack-buff', game, card, {
-        name: 'Mist Dragon Seal Attack Buff',
         amount: 1
       })
     );
 
     await target.modifiers.add(
       new UnitSimpleHealthBuffModifier('mist-dragon-seal-hp-buff', game, card, {
-        name: 'Mist Dragon Seal Health Buff',
         amount: 1
       })
     );

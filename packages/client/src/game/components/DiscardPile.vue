@@ -20,11 +20,8 @@ const myPlayer = useMyPlayer();
 </script>
 
 <template>
-  <button
-    @click="isOpened = true"
-    class="text-1 pointer-events-auto flex gap-2"
-  >
-    <Icon icon="game-icons:hasty-grave" />
+  <button class="toggle" @click="isOpened = true">
+    <Icon icon="whh:grave" />
     ({{ player.discardPile.length }})
   </button>
 
@@ -68,6 +65,17 @@ const myPlayer = useMyPlayer();
 </template>
 
 <style scoped lang="postcss">
+.toggle {
+  pointer-events: auto;
+  display: flex;
+  gap: var(--size-2);
+
+  /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
+  svg {
+    stroke: black;
+    stroke-width: 4px;
+  }
+}
 .content {
   --pixel-scale: 1.5;
   height: 80dvh;

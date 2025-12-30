@@ -7,6 +7,7 @@ import {
 import UiButton from '@/ui/components/UiButton.vue';
 import EquipedArtifact from './EquipedArtifact.vue';
 import DiscardPile from './DiscardPile.vue';
+import { Icon } from '@iconify/vue';
 
 const player1 = usePlayer1();
 const { client } = useGameClient();
@@ -18,7 +19,17 @@ const ui = useGameUi();
     <header>
       <div class="flex flex-col gap-2">
         {{ player1.name }}
-        <DiscardPile :player="player1" />
+        <div class="flex gap-2 text-1">
+          <DiscardPile :player="player1" />
+          <div class="pointer-events-auto flex gap-2">
+            <Icon icon="mdi:cards-outline" />
+            ({{ player1.handSize }})
+          </div>
+          <div class="pointer-events-auto flex gap-2">
+            <Icon icon="tabler:stack-3-filled" />
+            ({{ player1.remainingCardsInDeck.length }})
+          </div>
+        </div>
       </div>
 
       <div class="flex gap-2">
@@ -31,7 +42,7 @@ const ui = useGameUi();
       </div>
     </header>
 
-    <div class="flex flex-col gap-2 mt-5">
+    <div class="flex flex-col gap-2">
       <EquipedArtifact
         v-for="artifact in player1.artifacts"
         :key="artifact.id"
@@ -57,7 +68,7 @@ const ui = useGameUi();
 .p1-infos {
   position: fixed;
   top: var(--size-9);
-  left: var(--size-11);
+  left: var(--size-13);
   color: white;
   font-weight: bold;
   display: flex;
@@ -72,12 +83,21 @@ const ui = useGameUi();
 }
 
 header {
-  transform: skewY(-5deg);
   font-size: var(--font-size-4);
   display: grid;
   grid-gap: var(--size-2);
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
+  background-color: hsla(0 0% 0% / 0.35);
+  padding: var(--size-3);
+  border-radius: var(--radius-3);
+  backdrop-filter: blur(5px);
+
+  /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
+  svg {
+    stroke: black;
+    stroke-width: 4px;
+  }
 }
 
 .mana {

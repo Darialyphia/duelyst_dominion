@@ -194,7 +194,7 @@ const isDisabled = computed(() => {
     filter: brightness(3.5) saturate(2) !important;
   }
   &:hover {
-    --hover-offset: -110px;
+    --hover-offset: -120px;
     z-index: var(--hand-size);
   }
 

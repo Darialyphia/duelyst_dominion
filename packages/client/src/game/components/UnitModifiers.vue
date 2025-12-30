@@ -24,7 +24,7 @@ const { playerId } = useGameClient();
         <div
           :style="{
             '--bg': assets[modifier.icon!]?.css,
-            '--pixel-scale': 1
+            '--pixel-scale': 0.5
           }"
           :alt="modifier.name"
           :data-stacks="modifier.stacks > 1 ? modifier.stacks : undefined"
@@ -74,7 +74,7 @@ const { playerId } = useGameClient();
   pointer-events: auto;
   margin-block-start: var(--size-1);
   position: relative;
-  transform: translateZ(0px);
+  transform: translateZ(10px);
   &::after {
     content: attr(data-stacks);
     position: absolute;

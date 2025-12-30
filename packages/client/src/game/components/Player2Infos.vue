@@ -2,6 +2,7 @@
 import { usePlayer2 } from '../composables/useGameClient';
 import EquipedArtifact from './EquipedArtifact.vue';
 import DiscardPile from './DiscardPile.vue';
+import { Icon } from '@iconify/vue';
 
 const player2 = usePlayer2();
 </script>
@@ -9,9 +10,19 @@ const player2 = usePlayer2();
 <template>
   <div class="p2-infos">
     <header>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 items-end">
         {{ player2.name }}
-        <DiscardPile :player="player2" />
+        <div class="flex gap-2 text-1">
+          <DiscardPile :player="player2" />
+          <div class="pointer-events-auto flex gap-2">
+            <Icon icon="mdi:cards-outline" />
+            ({{ player2.handSize }})
+          </div>
+          <div class="pointer-events-auto flex gap-2">
+            <Icon icon="tabler:stack-3-filled" />
+            ({{ player2.remainingCardsInDeck.length }})
+          </div>
+        </div>
       </div>
       <div class="flex gap-2">
         <div
@@ -23,7 +34,7 @@ const player2 = usePlayer2();
       </div>
     </header>
 
-    <div class="flex flex-col items-end gap-2 mt-5">
+    <div class="flex flex-col items-end gap-2">
       <EquipedArtifact
         v-for="artifact in player2.artifacts"
         :key="artifact.id"
@@ -37,7 +48,7 @@ const player2 = usePlayer2();
 .p2-infos {
   position: fixed;
   top: var(--size-9);
-  right: var(--size-11);
+  right: var(--size-13);
   color: white;
   font-weight: bold;
   display: flex;
@@ -52,13 +63,21 @@ const player2 = usePlayer2();
 }
 
 header {
-  transform: skewY(5deg);
   font-size: var(--font-size-4);
   display: grid;
   grid-gap: var(--size-2);
   justify-items: end;
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
+  background-color: hsla(0 0% 0% / 0.35);
+  padding: var(--size-3);
+  border-radius: var(--radius-3);
+  backdrop-filter: blur(5px);
+  /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
+  svg {
+    stroke: black;
+    stroke-width: 4px;
+  }
 }
 
 .mana {

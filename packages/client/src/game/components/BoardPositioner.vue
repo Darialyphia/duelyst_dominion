@@ -146,7 +146,7 @@ const { client } = useGameClient();
       content: '';
       position: absolute;
       inset: 0;
-      background-image: url('@/assets/ui/cell-highlight-selected.png');
+      background-image: url('@/assets/ui/cell-highlight-targeted.png');
       background-size: cover;
       z-index: 1;
       transition: opacity 0.3s var(--ease-3);

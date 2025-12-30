@@ -36,14 +36,21 @@ const ui = useGameUi();
 
 <style scoped lang="postcss">
 .cell {
-  background: url('@/assets/ui/board-cell.png');
+  /* background: url('@/assets/ui/board-cell.png'); */
+
   background-size: cover;
   width: 100%;
   height: 100%;
   pointer-events: auto;
-
+  position: relative;
   &:hover {
     filter: brightness(1.5);
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background-color: hsl(0 0% 0% / 0.08);
   }
 }
 </style>
