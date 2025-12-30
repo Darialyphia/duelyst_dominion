@@ -581,6 +581,7 @@ export class Unit
     const position = this.position;
 
     await this.removeFromBoard();
+    await this.card.sendToDiscardPile();
 
     if (!silent) {
       await this.game.emit(

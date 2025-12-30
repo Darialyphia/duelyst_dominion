@@ -1,0 +1,96 @@
+<script setup lang="ts">
+import UiModal from '@/ui/components/UiModal.vue';
+import FancyButton from '@/ui/components/FancyButton.vue';
+import { useMyPlayer } from '../composables/useGameClient';
+import GameCard from './GameCard.vue';
+import type { PlayerViewModel } from '@game/engine/src/client/view-models/player.model';
+import { Icon } from '@iconify/vue';
+
+const { player } = defineProps<{
+  player: PlayerViewModel;
+}>();
+
+const isOpened = ref(false);
+
+const close = () => {
+  isOpened.value = false;
+};
+
+const myPlayer = useMyPlayer();
+</script>
+
+<template>
+  <button
+    @click="isOpened = true"
+    class="text-1 pointer-events-auto flex gap-2"
+  >
+    <Icon icon="game-icons:hasty-grave" />
+    ({{ player.discardPile.length }})
+  </button>
+
+  <UiModal
+    v-model:is-opened="isOpened"
+    :title="
+      myPlayer.id === player.id ? 'Your Discard Pile' : 'Opponent Discard Pile'
+    "
+    description=""
+    :style="{
+      '--ui-modal-size': 'var(--size-lg)'
+    }"
+  >
+    <div class="content" @click="close">
+      <header>
+        <h2 class="text-center">
+          {{
+            myPlayer.id === player.id
+              ? 'Your Discard Pile'
+              : 'Opponent Discard Pile'
+          }}
+        </h2>
+      </header>
+      <div class="card-list fancy-scrollbar" v-if="player.discardPile.length">
+        <div
+          v-for="card in player.getDiscardPile().toReversed()"
+          :key="card.id"
+          @click.stop
+        >
+          <GameCard :card-id="card.id" :actions-offset="10" />
+        </div>
+      </div>
+      <p v-else class="text-center text-3 mt-10 italic">
+        Discard Pile is empty.
+      </p>
+      <footer class="flex mt-7 gap-10 justify-center">
+        <FancyButton text="Close" @click="isOpened = false" />
+      </footer>
+    </div>
+  </UiModal>
+</template>
+
+<style scoped lang="postcss">
+.content {
+  --pixel-scale: 1.5;
+  height: 80dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  &.is-showing-board .card-list {
+    visibility: hidden;
+  }
+}
+
+.card-list {
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: var(--size-3);
+  justify-items: center;
+  grid-auto-rows: min-content;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: var(--size-7);
+  font-weight: var(--font-weight-4);
+}
+</style>

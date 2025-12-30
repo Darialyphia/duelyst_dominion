@@ -75,6 +75,10 @@ export class PlayerViewModel {
     return this.data.handSize;
   }
 
+  get discardPile() {
+    return this.data.discardPile;
+  }
+
   get remainingCardsInDeck() {
     return this.data.remainingCardsInDeck;
   }

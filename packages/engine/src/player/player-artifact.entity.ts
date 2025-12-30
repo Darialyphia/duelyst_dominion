@@ -113,6 +113,7 @@ export class PlayerArtifact
       this.onGeneralDamageTaken.bind(this)
     );
     await this.player.artifactManager.unequip(this.card);
+    await this.card.sendToDiscardPile();
     this.modifiers.list.forEach(async modifier => {
       await this.modifiers.remove(modifier.id);
     });

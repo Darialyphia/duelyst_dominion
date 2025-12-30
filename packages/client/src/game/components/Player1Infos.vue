@@ -1,46 +1,37 @@
 <script setup lang="ts">
 import {
   useGameClient,
-  useGameState,
   useGameUi,
   usePlayer1
 } from '../composables/useGameClient';
+import UiButton from '@/ui/components/UiButton.vue';
+import EquipedArtifact from './EquipedArtifact.vue';
+import DiscardPile from './DiscardPile.vue';
 
 const player1 = usePlayer1();
 const { client } = useGameClient();
-const state = useGameState();
 const ui = useGameUi();
 </script>
 
 <template>
   <div class="p1-infos">
-    {{ player1.name }}
-
-    <div class="flex gap-2">
-      <div
-        v-for="i in Math.max(player1.maxMana, player1.mana)"
-        :key="i"
-        class="mana"
-        :class="{ spent: i <= player1.spentMana }"
-      />
-    </div>
-
-    <div v-if="state.config.FEATURES.RUNES" class="flex gap-5">
-      <div class="rune-count">
-        <img src="/assets/ui/rune-red.png" />
-        {{ player1.runes.red }}
+    <header>
+      <div class="flex flex-col gap-2">
+        {{ player1.name }}
+        <DiscardPile :player="player1" />
       </div>
-      <div class="rune-count">
-        <img src="/assets/ui/rune-yellow.png" />
-        {{ player1.runes.yellow }}
-      </div>
-      <div class="rune-count">
-        <img src="/assets/ui/rune-blue.png" />
-        {{ player1.runes.blue }}
-      </div>
-    </div>
 
-    <div class="flex flex-col gap-2 mt-2">
+      <div class="flex gap-2">
+        <div
+          v-for="i in Math.max(player1.maxMana, player1.mana)"
+          :key="i"
+          class="mana"
+          :class="{ spent: i <= player1.spentMana }"
+        />
+      </div>
+    </header>
+
+    <div class="flex flex-col gap-2 mt-5">
       <EquipedArtifact
         v-for="artifact in player1.artifacts"
         :key="artifact.id"
@@ -50,7 +41,7 @@ const ui = useGameUi();
 
     <UiButton
       v-show="player1.canReplace"
-      class="action-button"
+      class="action-button mt-9"
       :class="{ 'is-replacing': ui.isReplacingCard }"
       @click="ui.isReplacingCard = !ui.isReplacingCard"
     >
@@ -65,8 +56,8 @@ const ui = useGameUi();
 <style scoped lang="postcss">
 .p1-infos {
   position: fixed;
-  top: var(--size-8);
-  left: var(--size-8);
+  top: var(--size-9);
+  left: var(--size-11);
   color: white;
   font-weight: bold;
   display: flex;
@@ -80,15 +71,21 @@ const ui = useGameUi();
   }
 }
 
+header {
+  transform: skewY(-5deg);
+  font-size: var(--font-size-4);
+  display: grid;
+  grid-gap: var(--size-2);
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
+}
+
 .mana {
-  --color: cyan;
-  width: var(--size-5);
+  width: 34px;
   aspect-ratio: 1;
-  border-radius: var(--radius-round);
-  border: solid var(--border-size-2) var(--color);
-  background-color: transparent;
-  &:not(.spent) {
-    background-color: var(--color);
+  background: url('@/assets/ui/mana.png') no-repeat center/contain;
+  &.spent {
+    background: url('@/assets/ui/mana-spent.png') no-repeat center/contain;
   }
 }
 

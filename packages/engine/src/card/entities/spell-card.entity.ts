@@ -104,7 +104,7 @@ export class SpellCard extends Card<
       return;
     }
 
-    await this.removeFromCurrentLocation();
+    await this.sendToDiscardPile();
     await this.game.emit(
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })

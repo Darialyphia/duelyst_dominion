@@ -108,7 +108,7 @@ export class ArtifactCard extends Card<
 
   async play(onCancel: () => MaybePromise<void>) {
     const { targets, cancelled } = await this.selectTargets();
-    await this.sendToDiscardPile();
+    await this.removeFromCurrentLocation();
 
     if (cancelled) {
       await onCancel();

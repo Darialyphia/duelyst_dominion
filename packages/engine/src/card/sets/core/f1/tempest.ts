@@ -103,7 +103,7 @@ export const tempest: SpellBlueprint = {
     const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
     for (const unit of unitsToDamage) {
-      await unit.takeDamage(card, new SpellDamage(card, 3));
+      await unit.takeDamage(card, new SpellDamage(card, 2));
     }
   }
 };

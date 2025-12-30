@@ -1,37 +1,34 @@
 <script setup lang="ts">
-import { useGameState, usePlayer2 } from '../composables/useGameClient';
+import { usePlayer2 } from '../composables/useGameClient';
+import EquipedArtifact from './EquipedArtifact.vue';
+import DiscardPile from './DiscardPile.vue';
 
 const player2 = usePlayer2();
-const state = useGameState();
 </script>
 
 <template>
   <div class="p2-infos">
-    {{ player2.name }}
-    <div class="flex gap-2 flex-row-reverse">
-      <div
-        v-for="i in Math.max(player2.maxMana, player2.mana)"
-        :key="i"
-        class="mana"
-        :class="{ spent: i <= player2.spentMana }"
+    <header>
+      <div class="flex flex-col gap-2">
+        {{ player2.name }}
+        <DiscardPile :player="player2" />
+      </div>
+      <div class="flex gap-2">
+        <div
+          v-for="i in Math.max(player2.maxMana, player2.mana)"
+          :key="i"
+          class="mana"
+          :class="{ spent: i <= player2.spentMana }"
+        />
+      </div>
+    </header>
+
+    <div class="flex flex-col items-end gap-2 mt-5">
+      <EquipedArtifact
+        v-for="artifact in player2.artifacts"
+        :key="artifact.id"
+        :artifact="artifact"
       />
-    </div>
-    <div
-      v-if="state.config.FEATURES.RUNES"
-      class="flex gap-5 flex-1 flex-row-reverse"
-    >
-      <div class="rune-count">
-        <img src="/assets/ui/rune-red.png" />
-        {{ player2.runes.red }}
-      </div>
-      <div class="rune-count">
-        <img src="/assets/ui/rune-yellow.png" />
-        {{ player2.runes.yellow }}
-      </div>
-      <div class="rune-count">
-        <img src="/assets/ui/rune-blue.png" />
-        {{ player2.runes.blue }}
-      </div>
     </div>
   </div>
 </template>
@@ -39,43 +36,37 @@ const state = useGameState();
 <style scoped lang="postcss">
 .p2-infos {
   position: fixed;
-  top: var(--size-8);
-  right: var(--size-8);
+  top: var(--size-9);
+  right: var(--size-11);
   color: white;
   font-weight: bold;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: var(--size-2);
   pointer-events: none;
+
   /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
   button {
     pointer-events: auto;
   }
 }
 
-.mana {
-  --color: cyan;
-  width: var(--size-5);
-  aspect-ratio: 1;
-  border-radius: var(--radius-round);
-  border: solid var(--border-size-2) var(--color);
-  background-color: transparent;
-  &:not(.spent) {
-    background-color: var(--color);
-  }
+header {
+  transform: skewY(5deg);
+  font-size: var(--font-size-4);
+  display: grid;
+  grid-gap: var(--size-2);
+  justify-items: end;
+  -webkit-text-stroke: 4px black;
+  paint-order: stroke fill;
 }
 
-.action-button {
-  width: var(--size-12);
-  --ui-button-bg: var(--gray-10);
-  --ui-button-hover-bg: var(--gray-8);
-  --ui-button-color: white;
-
-  &.is-replacing {
-    --ui-button-bg: var(--lime-5);
-    --ui-button-hover-bg: var(--lime-6);
-    --ui-button-color: var(--text-on-primary);
+.mana {
+  width: 34px;
+  aspect-ratio: 1;
+  background: url('@/assets/ui/mana.png') no-repeat center/contain;
+  &.spent {
+    background: url('@/assets/ui/mana-spent.png') no-repeat center/contain;
   }
 }
 </style>

@@ -22,6 +22,7 @@ const ui = useGameUi();
   >
     <Sound
       mouseenter="button-hover"
+      mouseup="sfx_unit_onclick"
       pitch-shift
       :enabled="isDefined(cell.unit) || isDefined(cell.tile)"
     >
