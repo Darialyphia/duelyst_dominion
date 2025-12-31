@@ -37,6 +37,7 @@ export class GameEventModifierMixin<
   }
 
   private wrappedHandler(event: EventMapWithStarEvent<GameEventMap>[TEvent]) {
+    console.log('wrappedHandler', this.options.eventName);
     if (this.options.filter && !this.options.filter(event)) {
       return;
     }
@@ -82,7 +83,6 @@ export class GameEventModifierMixin<
 
   onRemoved(): void {
     this.game.off(this.options.eventName, this.wrappedHandler as any);
-
     if (isDefined(this.options.frequencyPerPlayerTurn)) {
       this.game.off(GAME_EVENTS.PLAYER_END_TURN, this.onPlayerTurnEnd);
     }

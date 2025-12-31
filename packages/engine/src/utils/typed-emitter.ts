@@ -151,10 +151,10 @@ export class TypedEventEmitter<TEvents extends GenericEventMap> {
   ) {
     const listeners = this._listeners[eventName];
     if (!listeners) return;
-    listeners.splice(
-      listeners.findIndex(l => l.handler === handler),
-      1
-    );
+
+    const index = listeners.findIndex(l => l.handler === handler);
+    if (index === -1) return;
+    listeners.splice(index, 1);
     if (listeners.length === 0) {
       delete this._listeners[eventName];
     }
