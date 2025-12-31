@@ -51,7 +51,7 @@ const state = useGameState();
         </div>
       </div>
     </header>
-    <div class="flex gap-2">
+    <div class="flex gap-2 justify-end">
       <div
         v-for="i in Math.max(player2.maxMana, player2.mana)"
         :key="i"

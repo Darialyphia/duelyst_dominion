@@ -49,7 +49,7 @@ const { playerId } = useGameClient();
         >
           {{ modifier.description }}
         </div>
-        <div class="modifier-source">{{ modifier.source.name }}</div>
+        <div class="modifier-source">from: {{ modifier.source.name }}</div>
       </div>
     </UiSimpleTooltip>
   </div>

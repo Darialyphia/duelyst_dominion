@@ -50,7 +50,10 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
             await candidate.modifiers.add(new ProvokedModifier(game, this.source));
           },
           onLoseAura: async candidate => {
-            await candidate.modifiers.remove(ProvokedModifier);
+            await candidate.modifiers.remove(ProvokedModifier, {
+              source: this.source,
+              force: true
+            });
           }
         })
       ]
@@ -67,7 +70,7 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
 
 export class ProvokedModifier extends Modifier<Unit> {
   constructor(game: Game, source: AnyCard) {
-    super(KEYWORDS.PROVOKE.id, game, source, {
+    super('provoked', game, source, {
       isRemovable: false,
       mixins: [
         new UnitInterceptorModifierMixin(game, {

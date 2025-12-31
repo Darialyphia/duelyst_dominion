@@ -49,13 +49,19 @@ const {
 <style lang="postcss" scoped>
 .tooltip-content {
   background-color: hsl(0 0% 0% / 0.5);
-  color: #efef9f;
+  color: #d7ad42;
   padding: var(--size-2) var(--size-3);
   font-family: var(--font-system-ui);
   font-size: 14px;
   max-width: 40ch;
   border-radius: var(--radius-2);
   backdrop-filter: blur(4px);
+  border: solid var(--border-size-2);
+  border-top-color: #d7ad42;
+  border-left-color: #d7ad42;
+  border-bottom-color: #985e25;
+  border-right-color: #985e25;
+  box-shadow: 0 0 1em hsl(0 0% 0% / 0.5);
 }
 
 :is(.v-enter-active, .v-leave-active) {

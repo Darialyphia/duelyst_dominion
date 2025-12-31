@@ -102,7 +102,7 @@ const parsePlist = (url: string, raw: string) => {
 
 (async function () {
   const paths = await fg('src/assets/duelyst/units/*.plist');
-  const outDir = path.join(process.cwd(), 'src/assets/cards{m}/generals');
+  const outDir = path.join(process.cwd(), 'src/assets/cards/generals');
   await fs.ensureDir(outDir);
   for (const p of paths) {
     const file = await fs.readFileSync(path.join(process.cwd(), p), {
