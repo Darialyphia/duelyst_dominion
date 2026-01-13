@@ -25,7 +25,6 @@ import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
 import { CARD_EVENTS, CARD_KINDS } from '../card/card.enums';
-import { match } from 'ts-pattern';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
 
 export type PlayerOptions = {
@@ -102,6 +101,8 @@ export class Player
   private _baseMaxMana = 0;
 
   private _resourceActionsDoneThisTurn = 0;
+
+  hasPassedThisRound = false;
 
   constructor(
     game: Game,
@@ -452,5 +453,9 @@ export class Player
 
   async drawForTurn() {
     await this.cardManager.drawFromDeck(this.cardsDrawnForTurn);
+  }
+
+  passTurn() {
+    // TODO
   }
 }

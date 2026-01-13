@@ -25,7 +25,6 @@ import { PlayCardInput } from './inputs/play-card.input';
 import { CancelPlayCardInput } from './inputs/cancel-play-card.input';
 import { SelectSpaceOnBoardInput } from './inputs/select-space-on-board.input';
 import { MoveInput } from './inputs/move.input';
-import { AttackInput } from './inputs/attack.input';
 import { EndTurnInput } from './inputs/end-turn.input';
 import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
@@ -50,7 +49,6 @@ const inputMap = validateinputMap({
   commitSpaceSelection: CommitSpaceSelectionInput,
   chooseCards: ChooseCardsInput,
   move: MoveInput,
-  attack: AttackInput,
   endTurn: EndTurnInput,
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,

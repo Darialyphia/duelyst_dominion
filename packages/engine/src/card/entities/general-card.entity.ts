@@ -14,7 +14,6 @@ import { Ability, type SerializedAbility } from './ability.entity';
 import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import { GENERAL_EVENTS, GeneralUseAbilityEvent } from '../events/general.events';
-import { GAME_EVENTS } from '../../game/game.events';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
@@ -58,16 +57,7 @@ export class GeneralCard extends Card<
     return true;
   }
 
-  get spawnPosition() {
-    return this.player.isPlayer1
-      ? this.game.boardSystem.map.generalPositions[0]
-      : this.game.boardSystem.map.generalPositions[1];
-  }
-
-  async play() {
-    await this.game.unitSystem.addUnit(this, this.spawnPosition);
-    this.game.once(GAME_EVENTS.READY, async () => {});
-  }
+  async play() {}
 
   canUseAbility(id: string) {
     const ability = this.abilities.find(ability => ability.id === id);

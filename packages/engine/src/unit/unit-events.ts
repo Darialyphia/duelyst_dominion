@@ -6,28 +6,26 @@ import type { Damage } from '../utils/damage';
 import type { AnyCard } from '../card/entities/card.entity';
 
 export class UnitBeforeMoveEvent extends TypedSerializableEvent<
-  { unit: Unit; position: Vec2; path: Vec2[] },
-  { unit: string; position: Point; path: Point[] }
+  { unit: Unit; position: Vec2 },
+  { unit: string; position: Point }
 > {
   serialize() {
     return {
       unit: this.data.unit.id,
-      position: this.data.position.serialize(),
-      path: this.data.path.map(vec => vec.serialize())
+      position: this.data.position.serialize()
     };
   }
 }
 
 export class UnitAfterMoveEvent extends TypedSerializableEvent<
-  { unit: Unit; position: Vec2; previousPosition: Vec2; path: Vec2[] },
-  { unit: string; position: Point; previousPosition: Point; path: Point[] }
+  { unit: Unit; position: Vec2; previousPosition: Vec2 },
+  { unit: string; position: Point; previousPosition: Point }
 > {
   serialize() {
     return {
       unit: this.data.unit.id,
       position: this.data.position.serialize(),
-      previousPosition: this.data.previousPosition.serialize(),
-      path: this.data.path.map(vec => vec.serialize())
+      previousPosition: this.data.previousPosition.serialize()
     };
   }
 }

@@ -1,7 +1,6 @@
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import type { GameClient, GameStateEntities } from '../client';
-import type { BoardCellViewModel } from './board-cell.model';
 import type { CardViewModel } from './card.model';
 import type { ModifierViewModel } from './modifier.model';
 import type { PlayerViewModel } from './player.model';
@@ -78,38 +77,16 @@ export class UnitViewModel {
     return this.data.atk;
   }
 
-  get dangerZone() {
-    return this.data.dangerZone;
-  }
-
   get cardId() {
     return this.data.card;
   }
 
+  get canMove() {
+    return this.data.canMove;
+  }
+
   getCard() {
     return this.getEntities()[this.data.card] as CardViewModel;
-  }
-
-  canMoveTo(cell: BoardCellViewModel) {
-    return this.data.moveZone.includes(cell.id);
-  }
-
-  canSprintTo(cell: BoardCellViewModel) {
-    if (this.canMoveTo(cell)) return false;
-
-    return this.data.sprintZone.includes(cell.id);
-  }
-
-  get attackableCells() {
-    return this.data.attackableCells;
-  }
-
-  canAttackAt(cell: BoardCellViewModel) {
-    return this.data.attackableCells.includes(cell.id);
-  }
-
-  isInDangerZone(cell: BoardCellViewModel) {
-    return this.data.dangerZone.includes(cell.id);
   }
 
   getPlayer() {

@@ -14,6 +14,7 @@ import { GameEndPhase } from '../phases/game-end.phase';
 import { MulliganPhase } from '../phases/mulligan.phase';
 import { PlayCardPhase } from '../phases/play-card.phase';
 import { IllegalCardPlayedError } from '../../input/input-errors';
+import { CombatPhase } from '../phases/combat.phase';
 
 export const GAME_PHASE_TRANSITIONS = {
   COMMIT_MULLIGAN: 'commit_mulligan',
@@ -48,6 +49,10 @@ export type GamePhaseContext =
       ctx: PlayCardPhase;
     }
   | {
+      state: BetterExtract<GamePhase, 'combat_phase'>;
+      ctx: CombatPhase;
+    }
+  | {
       state: BetterExtract<GamePhase, 'game_end'>;
       ctx: GameEndPhase;
     };
@@ -64,6 +69,10 @@ export type SerializedGamePhaseContext =
   | {
       state: Extract<GamePhase, 'playing_card_phase'>;
       ctx: ReturnType<PlayCardPhase['serialize']>;
+    }
+  | {
+      state: Extract<GamePhase, 'combat_phase'>;
+      ctx: ReturnType<CombatPhase['serialize']>;
     }
   | {
       state: Extract<GamePhase, 'game_end'>;
@@ -83,6 +92,7 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     [GAME_PHASES.MULLIGAN]: MulliganPhase,
     [GAME_PHASES.MAIN]: MainPhase,
     [GAME_PHASES.PLAYING_CARD]: PlayCardPhase,
+    [GAME_PHASES.COMBAT]: CombatPhase,
     [GAME_PHASES.GAME_END]: GameEndPhase
   };
 

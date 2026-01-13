@@ -1,11 +1,9 @@
-import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
+import { isDefined, type Point, type Serializable } from '@game/shared';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
 import { EntityWithModifiers } from '../utils/entity-with-modifiers';
 import { MovementComponent } from './components/movement.component';
-import { PathfinderComponent } from '../pathfinding/pathfinder.component';
-import { SolidBodyPathfindingStrategy } from '../pathfinding/strategies/solid-pathfinding.strategy';
 import { Interceptable } from '../utils/interceptable';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { Modifier } from '../modifier/modifier.entity';
@@ -35,7 +33,6 @@ import {
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
-import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
 
@@ -60,11 +57,8 @@ export type SerializedUnit = {
   keywords: Array<{ id: string; name: string; description: string }>;
   isExhausted: boolean;
   isDead: boolean;
-  moveZone: string[];
-  sprintZone: string[];
-  dangerZone: string[];
-  attackableCells: string[];
   modifiers: string[];
+  canMove: boolean;
 };
 
 export type UnitInterceptors = {
@@ -105,8 +99,7 @@ export type UnitInterceptors = {
   >;
 
   shouldActivateOnTurnStart: Interceptable<boolean>;
-
-  pathfindingStrategy: Interceptable<PathfindingStrategy>;
+  shouldExhaustAfterMoving: Interceptable<boolean>;
 };
 
 export class Unit
@@ -163,13 +156,11 @@ export class Unit
         { amount: number; source: AnyCard; damage: Damage }
       >(),
 
-      shouldActivateOnTurnStart: new Interceptable<boolean>(),
-
-      pathfindingStrategy: new Interceptable<PathfindingStrategy>()
+      shouldActivateOnTurnStart: new Interceptable(),
+      shouldExhaustAfterMoving: new Interceptable()
     });
     this.movement = new MovementComponent(game, this, {
-      position: options.position,
-      pathfinding: new PathfinderComponent(game, () => this.pathfindingStrategy)
+      position: options.position
     });
 
     this.combat = new CombatComponent(game, this);
@@ -183,13 +174,6 @@ export class Unit
 
   get player() {
     return this.card.player!;
-  }
-
-  get pathfindingStrategy() {
-    return this.interceptors.pathfindingStrategy.getValue(
-      new SolidBodyPathfindingStrategy(this.game, this),
-      {}
-    );
   }
 
   get isGeneral() {
@@ -259,17 +243,6 @@ export class Unit
     return !this.isEnemy(entity);
   }
 
-  get movementReach() {
-    return this.interceptors.movementReach.getValue(
-      this.game.config.UNIT_MOVEMENT_REACH,
-      {}
-    );
-  }
-
-  get sprintReach() {
-    return this.interceptors.sprintReach.getValue(this.game.config.UNIT_SPRINT_REACH, {});
-  }
-
   get maxMovementsPerTurn() {
     return this.interceptors.maxMovementsPerTurn.getValue(
       this.game.config.MAX_MOVEMENT_PER_TURN,
@@ -316,17 +289,16 @@ export class Unit
 
   canMoveTo(point: Point) {
     if (!this.canMove) return false;
-    return this.movement.canMoveTo(point, this.sprintReach);
+    return this.movement.canMoveTo(point);
+  }
+
+  get shouldExhaustAfterMoving() {
+    return this.interceptors.shouldExhaustAfterMoving.getValue(true, {});
   }
 
   async move(to: Point) {
-    const distance = this.game.boardSystem.getDistance(this.position, to);
-
     await this.movement.move(to);
-    if (
-      distance > this.movementReach &&
-      this.movementsMadeThisTurn >= this.maxMovementsPerTurn
-    ) {
+    if (this.shouldExhaustAfterMoving) {
       this.exhaust();
     }
   }
@@ -338,8 +310,7 @@ export class Unit
         UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
         new UnitBeforeMoveEvent({
           unit: this,
-          position: this.position,
-          path: [this.position, Vec2.fromPoint(to)]
+          position: this.position
         })
       );
     }
@@ -352,24 +323,10 @@ export class Unit
         new UnitAfterMoveEvent({
           unit: this,
           position: this.position,
-          previousPosition: prevPosition,
-          path: [this.position, Vec2.fromPoint(to)]
+          previousPosition: prevPosition
         })
       );
     }
-  }
-
-  get getPathTo() {
-    return this.movement.getPathTo.bind(this.movement);
-  }
-
-  getPossibleMoves(max?: number, force = false) {
-    if (!this.canMove && !force) return [];
-
-    return this.movement.getAllPossibleMoves(max ?? this.sprintReach).filter(point => {
-      const cell = this.game.boardSystem.getCellAt(point)!;
-      return !cell.isOccupied;
-    });
   }
 
   get canBeDestroyed(): boolean {
@@ -652,21 +609,6 @@ export class Unit
   }
 
   serialize() {
-    // calculate this upfront as this can be an expensive operation if we call it many times
-    // moves the unit could make provided it was able to move fully
-    const potentialMoves = this.getPossibleMoves(
-      this.sprintReach * this.maxMovementsPerTurn,
-      true
-    ).map(point => this.game.boardSystem.getCellAt(point)!);
-
-    // moves the unit can actually make
-    const possibleSprintMoves = this.getPossibleMoves(this.sprintReach).map(
-      point => this.game.boardSystem.getCellAt(point)!
-    );
-    const possibleMoves = this.getPossibleMoves(this.movementReach).map(
-      point => this.game.boardSystem.getCellAt(point)!
-    );
-
     return {
       id: this.id,
       entityType: 'unit' as const,
@@ -683,19 +625,8 @@ export class Unit
       keywords: [],
       isExhausted: this.isExhausted,
       isDead: !this.isAlive,
-      moveZone: possibleMoves.map(point => point.id),
-      sprintZone: possibleSprintMoves.map(point => point.id),
-      dangerZone: this.game.boardSystem.cells
-        .filter(cell =>
-          potentialMoves
-            .filter(move => cell.isNearby(move))
-            .some(point => this.isWithinDangerZone(cell.position, point))
-        )
-        .map(cell => cell.id),
-      attackableCells: this.game.boardSystem.cells
-        .filter(cell => this.canAttackAt(cell.position))
-        .map(cell => cell.id),
-      modifiers: this.modifiers.list.map(modifier => modifier.id)
+      modifiers: this.modifiers.list.map(modifier => modifier.id),
+      canMove: this.canMove
     };
   }
 }

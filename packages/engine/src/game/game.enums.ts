@@ -4,6 +4,7 @@ export const GAME_PHASES = {
   MULLIGAN: 'mulligan_phase',
   MAIN: 'main_phase',
   PLAYING_CARD: 'playing_card_phase',
+  COMBAT: 'combat_phase',
   GAME_END: 'game_end'
 } as const;
 export type GamePhasesDict = typeof GAME_PHASES;
@@ -34,3 +35,11 @@ export const INTERACTION_STATE_TRANSITIONS = {
   CANCEL_CHOOSING_CARDS: 'cancel_choosing_cards'
 };
 export type InteractionStateTransition = Values<typeof INTERACTION_STATE_TRANSITIONS>;
+
+export const TURN_EVENTS = {
+  TURN_START: 'turn_start',
+  TURN_END: 'turn_end',
+  TURN_INITATIVE_CHANGE: 'turn_initiative_change',
+  TURN_PASS: 'turn_pass'
+} as const;
+export type TurnEventName = Values<typeof TURN_EVENTS>;

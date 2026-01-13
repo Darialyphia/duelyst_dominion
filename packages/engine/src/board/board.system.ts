@@ -1,9 +1,7 @@
 import {
   indexToPoint,
   isDefined,
-  isNumber,
   isString,
-  Vec2,
   type Point,
   type Serializable
 } from '@game/shared';
@@ -68,22 +66,6 @@ export class BoardSystem
 
   get cells() {
     return [...this.cellsMap.values()];
-  }
-
-  get topLeft() {
-    return this.getCellAt(this.map.corners.topLeft)!;
-  }
-
-  get topRight() {
-    return this.getCellAt(this.map.corners.topRight)!;
-  }
-
-  get bottomLeft() {
-    return this.getCellAt(this.map.corners.bottomLeft)!;
-  }
-
-  get bottomRight() {
-    return this.getCellAt(this.map.corners.bottomRight)!;
   }
 
   isInArea(topLeft: Point, size: { width: number; height: number }, point: Point) {

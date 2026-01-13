@@ -4,7 +4,7 @@ import { InputError } from '../input/input-errors';
 import type { SerializedInput } from '../input/input-system';
 import { StarEvent, TypedSerializableEvent } from '../utils/typed-emitter';
 import type { SerializedGame } from './game';
-import { GAME_PHASE_EVENTS } from './game.enums';
+import { GAME_PHASE_EVENTS, TURN_EVENTS } from './game.enums';
 import type { GamePhaseEventMap } from './systems/game-phase.system';
 import {
   MODIFIER_EVENTS,
@@ -24,6 +24,7 @@ import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.eve
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
 import { TILE_EVENTS } from '../tile/tile-enums';
 import type { TileEventMap } from '../tile/tile-events';
+import type { TurnEventMap } from './systems/turn.system';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },
@@ -128,7 +129,8 @@ export type GameEventMap = Prettify<
     MinionEventMap &
     GeneralEventMap &
     TileEventMap &
-    VFXEventMap
+    VFXEventMap &
+    TurnEventMap
 >;
 export type GameEventName = keyof GameEventMap;
 export type GameEvent = Values<GameEventMap>;
@@ -151,7 +153,8 @@ export const GAME_EVENTS = {
   ...MINION_EVENTS,
   ...GENERAL_EVENTS,
   ...VFX_EVENTS,
-  ...TILE_EVENTS
+  ...TILE_EVENTS,
+  ...TURN_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
 
 export type SerializedEvent<T extends keyof typeof GAME_EVENTS> = ReturnType<

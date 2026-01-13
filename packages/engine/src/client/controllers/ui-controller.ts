@@ -9,7 +9,6 @@ import { MoveUnitAction } from '../actions/move-unit';
 import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
 import { SelectUnitAction } from '../actions/select-unit';
 import { UnselectUnitAction } from '../actions/unselect-unit';
-import { AttackAction } from '../actions/attack.action';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
@@ -160,7 +159,6 @@ export class UiController {
       new MoveUnitAction(this.client),
       new SelectSpaceOnBoardAction(this.client),
       new SelectUnitAction(this.client),
-      new AttackAction(this.client),
       new UnselectUnitAction(this.client)
     ];
   }
