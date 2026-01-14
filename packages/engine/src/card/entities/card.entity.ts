@@ -13,13 +13,15 @@ import type { CardBlueprint } from '../card-blueprint';
 import {
   CARD_EVENTS,
   CARD_KINDS,
+  CARD_LOCATIONS,
   type CardKind,
+  type CardLocation,
   type Faction,
   type Rarity
 } from '../card.enums';
 import { CardAddToHandevent, CardDiscardEvent, type CardEventMap } from '../card.events';
 import { match } from 'ts-pattern';
-import { type CardLocation, type DeckCard } from '../components/card-manager.component';
+import { type DeckCard } from '../components/card-manager.component';
 import { KeywordManagerComponent } from '../components/keyword-manager.component';
 import { IllegalGameStateError } from '../../game/game-error';
 
@@ -147,10 +149,10 @@ export abstract class Card<
       return;
     }
     await match(this.location)
-      .with('hand', () => {
+      .with(CARD_LOCATIONS.HAND, () => {
         this.player.cardManager.removeFromHand(this);
       })
-      .with('discardPile', () => {
+      .with(CARD_LOCATIONS.DISCARD_PILE, () => {
         if (!isDeckCard(this)) {
           throw new IllegalGameStateError(
             `Cannot remove card ${this.id} from discard pile when it is not a deck card.`
@@ -158,7 +160,7 @@ export abstract class Card<
         }
         this.player.cardManager.removeFromDiscardPile(this);
       })
-      .with('mainDeck', () => {
+      .with(CARD_LOCATIONS.DECK, () => {
         if (!isDeckCard(this)) {
           throw new IllegalGameStateError(
             `Cannot remove card ${this.id} from main deck when it is not a main deck card.`
@@ -166,7 +168,7 @@ export abstract class Card<
         }
         this.player.cardManager.deck.pluck(this);
       })
-      .with('board', async () => {
+      .with(CARD_LOCATIONS.BOARD, async () => {
         await this.removeFromBoard();
       })
       .exhaustive();

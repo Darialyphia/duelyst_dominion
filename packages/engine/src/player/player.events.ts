@@ -1,3 +1,4 @@
+import type { Rune } from '../card/card.enums';
 import type { DeckCard } from '../card/components/card-manager.component';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { Player, SerializedPlayer } from './player.entity';
@@ -88,26 +89,26 @@ export class PlayerAfterReplaceCardEvent extends TypedSerializableEvent<
   }
 }
 
-export class PlayerBeforeEarnVictoryPointsEvent extends TypedSerializableEvent<
-  { player: Player; amount: number },
-  { player: string; amount: number }
+export class PlayerGainRuneEvent extends TypedSerializableEvent<
+  { player: Player; runes: Partial<Record<Rune, number>> },
+  { player: string; runes: Partial<Record<Rune, number>> }
 > {
   serialize() {
     return {
       player: this.data.player.id,
-      amount: this.data.amount
+      runes: this.data.runes
     };
   }
 }
 
-export class PlayerAfterEarnVictoryPointsEvent extends TypedSerializableEvent<
-  { player: Player; amount: number },
-  { player: string; amount: number }
+export class PlayerLoseRuneEvent extends TypedSerializableEvent<
+  { player: Player; runes: Partial<Record<Rune, number>> },
+  { player: string; runes: Partial<Record<Rune, number>> }
 > {
   serialize() {
     return {
       player: this.data.player.id,
-      amount: this.data.amount
+      runes: this.data.runes
     };
   }
 }
@@ -123,6 +124,8 @@ export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE]: PlayerManaChangeEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_REPLACE_CARD]: PlayerBeforeReplaceCardEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_REPLACE_CARD]: PlayerAfterReplaceCardEvent;
-  [PLAYER_EVENTS.PLAYER_BEFORE_EARN_VICTORY_POINTS]: PlayerBeforeEarnVictoryPointsEvent;
-  [PLAYER_EVENTS.PLAYER_AFTER_EARN_VICTORY_POINTS]: PlayerAfterEarnVictoryPointsEvent;
+  [PLAYER_EVENTS.PLAYER_BEFORE_GAIN_RUNE]: PlayerGainRuneEvent;
+  [PLAYER_EVENTS.PLAYER_AFTER_GAIN_RUNE]: PlayerGainRuneEvent;
+  [PLAYER_EVENTS.PLAYER_BEFORE_LOSE_RUNE]: PlayerLoseRuneEvent;
+  [PLAYER_EVENTS.PLAYER_AFTER_LOSE_RUNE]: PlayerLoseRuneEvent;
 };

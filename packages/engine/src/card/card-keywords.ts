@@ -56,7 +56,7 @@ export const KEYWORDS = {
   CELERITY: {
     id: 'celerity',
     name: 'Celerity',
-    description: 'Can move and attack twice per turn.',
+    description: 'Can move and attack in the same turn.',
     aliases: []
   },
   CLEANSE: {

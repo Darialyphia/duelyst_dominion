@@ -183,7 +183,6 @@ const isDisabled = computed(() => {
   --_y: var(--offset-y);
   transform-origin: 50% 100%;
   transform: translateX(var(--x)) translateY(var(--_y));
-
   z-index: var(--z);
   transition:
     transform 0.2s var(--ease-2),
@@ -194,7 +193,7 @@ const isDisabled = computed(() => {
     filter: brightness(3.5) saturate(2) !important;
   }
   &:hover {
-    --hover-offset: -120px;
+    --hover-offset: -80px;
     z-index: var(--hand-size);
   }
 

@@ -8,6 +8,7 @@ import { PlayerBeforeDrawEvent, PlayerAfterDrawEvent } from '../../player/player
 import { MinionCard } from '../entities/minion-card.entity';
 import { SpellCard } from '../entities/spell-card.entity';
 import { ArtifactCard } from '../entities/artifact-card.entity';
+import { CARD_LOCATIONS, type CardLocation } from '../card.enums';
 
 export type CardManagerComponentOptions = {
   deck: { blueprintId: string; isFoil: boolean }[];
@@ -16,8 +17,6 @@ export type CardManagerComponentOptions = {
 };
 
 export type DeckCard = MinionCard | SpellCard | ArtifactCard;
-
-export type CardLocation = 'hand' | 'mainDeck' | 'discardPile' | 'board';
 
 export class CardManagerComponent {
   private game: Game;
@@ -29,8 +28,6 @@ export class CardManagerComponent {
   readonly discardPile = new Set<DeckCard>();
 
   readonly banishPile = new Set<DeckCard>();
-
-  readonly destinyZone = new Set<DeckCard>();
 
   constructor(
     game: Game,
@@ -84,20 +81,20 @@ export class CardManagerComponent {
     location: CardLocation;
   } | null {
     const card = this.hand.find(card => card.id === id);
-    if (card) return { card: card as T, location: 'hand' };
+    if (card) return { card: card as T, location: CARD_LOCATIONS.HAND };
 
     const deckCard = this.deck.cards.find(card => card.id === id);
-    if (deckCard) return { card: deckCard as T, location: 'mainDeck' };
+    if (deckCard) return { card: deckCard as T, location: CARD_LOCATIONS.DECK };
 
     const discardPileCard = [...this.discardPile].find(card => card.id === id);
-    if (discardPileCard) return { card: discardPileCard as T, location: 'discardPile' };
+    if (discardPileCard)
+      return { card: discardPileCard as T, location: CARD_LOCATIONS.DISCARD_PILE };
 
     const onBoardCard =
       this.player.units.find(unit => unit?.card.id === id)?.card ||
       this.player.artifactManager.artifacts.find(artifact => artifact.card.id === id)
         ?.card;
-    if (onBoardCard) return { card: onBoardCard as T, location: 'board' };
-
+    if (onBoardCard) return { card: onBoardCard as T, location: CARD_LOCATIONS.BOARD };
     return null;
   }
 
@@ -167,14 +164,6 @@ export class CardManagerComponent {
     );
   }
 
-  async drawIntoDestinyZone(amount: number) {
-    const cards = this.deck.draw(amount);
-
-    cards.forEach(card => {
-      this.sendToDestinyZone(card);
-    });
-  }
-
   removeFromHand(card: AnyCard) {
     const index = this.hand.findIndex(handCard => handCard.equals(card));
     if (index === -1) return;
@@ -200,14 +189,6 @@ export class CardManagerComponent {
 
   removeFromBanishPile(card: DeckCard) {
     this.banishPile.delete(card);
-  }
-
-  sendToDestinyZone(card: DeckCard) {
-    this.destinyZone.add(card);
-  }
-
-  removeFromDestinyZone(card: DeckCard) {
-    this.destinyZone.delete(card);
   }
 
   replaceCardAt(index: number, random = true) {

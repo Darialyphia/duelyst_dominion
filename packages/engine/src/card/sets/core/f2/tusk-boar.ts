@@ -38,7 +38,7 @@ export const tuskBoar: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [],
   manaCost: 2,
-  atk: 2,
+  atk: 3,
   maxHp: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

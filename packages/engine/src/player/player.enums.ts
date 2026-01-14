@@ -11,17 +11,17 @@ export const PLAYER_EVENTS = {
   PLAYER_AFTER_PLAY_CARD: 'player:after_play_card',
   PLAYER_BEFORE_MANA_CHANGE: 'player:before_mana_change',
   PLAYER_AFTER_MANA_CHANGE: 'player:after_mana_change',
-  PLAYER_BEFORE_EARN_VICTORY_POINTS: 'player:before_earn_victory_points',
-  PLAYER_AFTER_EARN_VICTORY_POINTS: 'player:after_earn_victory_points'
+  PLAYER_BEFORE_GAIN_RUNE: 'player:before_gain_rune',
+  PLAYER_AFTER_GAIN_RUNE: 'player:after_gain_rune',
+  PLAYER_BEFORE_LOSE_RUNE: 'player:before_lose_rune',
+  PLAYER_AFTER_LOSE_RUNE: 'player:after_lose_rune'
 } as const;
 export type PlayerEvent = Values<typeof PLAYER_EVENTS>;
 
 export const ARTIFACT_EVENTS = {
   ARTIFACT_EQUIPED: 'artifact:equiped',
-
   ARTIFACT_BEFORE_DURABILITY_CHANGE: 'artifact:before_durability_change',
   ARTIFACT_AFTER_DURABILITY_CHANGE: 'artifact:after_durability_change',
-
   ARTIFACT_BEFORE_DESTROY: 'artifact:before_destroy',
   ARTIFACT_AFTER_DESTROY: 'artifact:after_destroy'
 } as const;

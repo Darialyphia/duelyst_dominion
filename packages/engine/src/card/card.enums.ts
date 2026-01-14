@@ -8,12 +8,6 @@ export const CARD_EVENTS = {
 } as const;
 export type CardEvent = Values<typeof CARD_EVENTS>;
 
-export const CARD_DECK_SOURCES = {
-  MAIN_DECK: 'mainDeck',
-  DESTINY_DECK: 'destinyDeck'
-} as const;
-export type CardDeckSource = Values<typeof CARD_DECK_SOURCES>;
-
 export const CARD_KINDS = {
   MINION: 'MINION',
   GENERAL: 'GENERAL',
@@ -58,3 +52,18 @@ export const FACTIONS = {
   NEUTRAL: 'Neutral'
 } as const;
 export type Faction = Values<typeof FACTIONS>;
+
+export const RUNES = {
+  RED: 'red',
+  BLUE: 'blue',
+  YELLOW: 'yellow'
+} as const;
+export type Rune = Values<typeof RUNES>;
+
+export const CARD_LOCATIONS = {
+  HAND: 'hand',
+  DECK: 'deck',
+  DISCARD_PILE: 'discardPile',
+  BOARD: 'board'
+} as const;
+export type CardLocation = Values<typeof CARD_LOCATIONS>;

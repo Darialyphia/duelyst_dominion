@@ -11,9 +11,7 @@ import { CardTrackerComponent } from './components/cards-tracker.component';
 import { Interceptable } from '../utils/interceptable';
 import { GAME_EVENTS } from '../game/game.events';
 import {
-  PlayerAfterEarnVictoryPointsEvent,
   PlayerAfterReplaceCardEvent,
-  PlayerBeforeEarnVictoryPointsEvent,
   PlayerBeforeReplaceCardEvent,
   PlayerManaChangeEvent,
   PlayerPlayCardEvent,
@@ -24,8 +22,9 @@ import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
-import { CARD_EVENTS, CARD_KINDS } from '../card/card.enums';
+import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
+import { RuneManagerComponent } from './components/rune-manager.component';
 
 export type PlayerOptions = {
   id: string;
@@ -52,9 +51,9 @@ export type SerializedPlayer = {
   isActive: boolean;
   equipedArtifacts: string[];
   currentlyPlayedCard: string | null;
-  victoryPoints: number;
   canUseResourceAction: boolean;
   artifacts: SerializedPlayerArtifact[];
+  runes: Partial<Record<Rune, number>>;
 };
 
 export type PlayerInterceptor = {
@@ -86,6 +85,8 @@ export class Player
 
   readonly cardTracker: CardTrackerComponent;
 
+  readonly runeManager: RuneManagerComponent;
+
   private _general!: Unit;
 
   currentlyPlayedCard: Nullable<DeckCard> = null;
@@ -93,8 +94,6 @@ export class Player
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
 
   private _replacesDoneThisTurn = 0;
-
-  private _victoryPoints = 0;
 
   private _mana = 0;
 
@@ -121,6 +120,7 @@ export class Player
     });
     this.modifiers = new ModifierManager<Player>(this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
+    this.runeManager = new RuneManagerComponent(game, this);
   }
 
   async init() {
@@ -155,7 +155,6 @@ export class Player
       handSize: this.cardManager.hand.length,
       discardPile: [...this.cardManager.discardPile].map(card => card.id),
       banishPile: [...this.cardManager.banishPile].map(card => card.id),
-      destinyZone: [...this.cardManager.destinyZone].map(card => card.id),
       remainingCardsInDeck: [...this.cardManager.deck.cards]
         .sort((a, b) => {
           if (a.manaCost === b.manaCost) {
@@ -175,30 +174,10 @@ export class Player
       isActive: this.isActive,
       equipedArtifacts: this.artifactManager.artifacts.map(artifact => artifact.id),
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
-      victoryPoints: this._victoryPoints,
       canUseResourceAction: this.canPerformResourceAction,
-      artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize())
+      artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize()),
+      runes: this.runeManager.runes
     };
-  }
-
-  get victoryPoints() {
-    return this._victoryPoints;
-  }
-
-  async earnVictoryPoints(amount: number) {
-    if (amount <= 0) return;
-
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_BEFORE_EARN_VICTORY_POINTS,
-      new PlayerBeforeEarnVictoryPointsEvent({ player: this, amount })
-    );
-
-    this._victoryPoints += amount;
-
-    return this.game.emit(
-      PLAYER_EVENTS.PLAYER_AFTER_EARN_VICTORY_POINTS,
-      new PlayerAfterEarnVictoryPointsEvent({ player: this, amount })
-    );
   }
 
   get isCurrentPlayer() {
@@ -263,10 +242,6 @@ export class Player
 
   get isTurnPlayer() {
     return this.game.gamePhaseSystem.turnPlayer.equals(this);
-  }
-
-  get influence() {
-    return this.cardManager.hand.length + this.cardManager.destinyZone.size;
   }
 
   get canPerformResourceAction() {
