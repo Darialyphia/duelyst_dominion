@@ -37,7 +37,6 @@ export class GameEventModifierMixin<
   }
 
   private wrappedHandler(event: EventMapWithStarEvent<GameEventMap>[TEvent]) {
-    console.log('wrappedHandler', this.options.eventName);
     if (this.options.filter && !this.options.filter(event)) {
       return;
     }

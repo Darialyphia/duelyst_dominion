@@ -256,6 +256,19 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     await (this._ctx as PlayCardPhase).play(card);
   }
 
+  async deployGeneral(player: Player) {
+    assert(this.getState() === GAME_PHASES.MAIN, new WrongGamePhaseError());
+
+    const canPlay = this.game.turnSystem.initiativePlayer.equals(player);
+    assert(canPlay, new IllegalCardPlayedError());
+
+    const card = player.generalCard;
+    assert(card, new IllegalCardPlayedError());
+    assert(card.canPlay(), new IllegalCardPlayedError());
+    await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);
+    await (this._ctx as PlayCardPhase).play(card);
+  }
+
   async startCombat() {
     assert(
       this.can(GAME_PHASE_TRANSITIONS.START_COMBAT_PHASE),

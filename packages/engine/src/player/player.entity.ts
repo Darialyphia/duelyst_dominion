@@ -58,6 +58,7 @@ export type SerializedPlayer = {
   canUseResourceAction: boolean;
   artifacts: SerializedPlayerArtifact[];
   runes: Partial<Record<Rune, number>>;
+  canDeployGeneral: boolean;
 };
 
 export type PlayerInterceptor = {
@@ -103,8 +104,6 @@ export class Player
   readonly cardTracker: CardTrackerComponent;
 
   readonly runeManager: RuneManagerComponent;
-
-  private _deployedGeneral: Unit | null = null;
 
   generalCard!: GeneralCard;
 
@@ -159,9 +158,7 @@ export class Player
       generalId.blueprintId,
       generalId.isFoil
     );
-    await this.generalCard.play();
 
-    this._deployedGeneral = this.game.unitSystem.getUnitByCard(this.generalCard)!;
     await this.cardManager.init();
   }
 
@@ -203,7 +200,8 @@ export class Player
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
       canUseResourceAction: this.canPerformResourceAction,
       artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize()),
-      runes: this.runeManager.runes
+      runes: this.runeManager.runes,
+      canDeployGeneral: this.generalCard.canPlay()
     };
   }
 
@@ -236,7 +234,7 @@ export class Player
   }
 
   get deployedGeneral() {
-    return this._deployedGeneral;
+    return this.game.unitSystem.getUnitByCard(this.generalCard);
   }
 
   get enemyHero() {

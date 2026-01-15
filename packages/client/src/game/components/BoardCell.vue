@@ -28,6 +28,7 @@ const ui = useGameUi();
     >
       <div
         class="cell"
+        :class="cell.player && 'visible'"
         :id="ui.DOMSelectors.cell(cell.position.x, cell.position.y).id"
       />
     </Sound>
@@ -46,7 +47,7 @@ const ui = useGameUi();
   &:hover {
     filter: brightness(1.5);
   }
-  &::after {
+  &.visible::after {
     content: '';
     position: absolute;
     inset: 3px;

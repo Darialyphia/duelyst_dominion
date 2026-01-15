@@ -31,6 +31,9 @@ export type Config = {
   GENERAL_ABILITY_COOLDOWN: number;
 
   PLAYER_MAX_HP: number;
+
+  GENERAL_DEPLOY_COOLDOWN: number;
+  GENERAL_INITIAL_DEPLOY_COOLDOWN: number;
 };
 
 export const defaultConfig: Config = {
@@ -40,7 +43,7 @@ export const defaultConfig: Config = {
   MAX_MAIN_DECK_SIZE: 40,
   MAX_MAIN_DECK_CARD_COPIES: 3,
   INITIAL_HAND_SIZE: 3,
-  MAX_HAND_SIZE: 7,
+  MAX_HAND_SIZE: 6,
   SHUFFLE_DECK_ON_GAME_START: true,
   CARDS_DRAWN_PER_TURN: 2,
   PLAYER_1_CARDS_DRAWN_ON_FIRST_TURN: 2,
@@ -58,5 +61,8 @@ export const defaultConfig: Config = {
   GENERAL_ABILITY_COOLDOWN: 0,
   MAX_RESOURCE_ACTIONS_PER_TURN: 1,
 
-  PLAYER_MAX_HP: 25
+  PLAYER_MAX_HP: 25,
+
+  GENERAL_DEPLOY_COOLDOWN: 2,
+  GENERAL_INITIAL_DEPLOY_COOLDOWN: 1
 };

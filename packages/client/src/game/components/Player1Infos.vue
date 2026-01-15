@@ -19,7 +19,7 @@ const state = useGameState();
 
 <template>
   <div class="p1-infos">
-    <header>
+    <header :class="{ active: state.turnPlayer === player1.id }">
       <div class="flex flex-col gap-2">
         <div class="flex gap-7 items-center justify-between">
           {{ player1.name }}
@@ -84,6 +84,13 @@ const state = useGameState();
     >
       Replace Card
     </UiButton>
+    <UiButton
+      v-show="player1.canDeployGeneral"
+      class="action-button"
+      @click="client.deployGeneral()"
+    >
+      Deploy General
+    </UiButton>
     <UiButton class="action-button" @click="client.pass()">Pass</UiButton>
   </div>
 </template>
@@ -116,7 +123,11 @@ header {
   padding: var(--size-3);
   border-radius: var(--radius-3);
   backdrop-filter: blur(5px);
+  border: solid var(--border-size-3) transparent;
 
+  &.active {
+    border-color: var(--yellow-6);
+  }
   /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
   svg {
     stroke: black;

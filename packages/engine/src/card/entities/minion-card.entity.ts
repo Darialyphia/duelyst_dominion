@@ -173,45 +173,6 @@ export class MinionCard extends Card<
     await this.playAt(position, targets);
   }
 
-  async summon(position: BoardCell, targets: BoardCell[]) {
-    const aoe = this.getAOE(position, targets);
-    await this.game.emit(
-      MINION_EVENTS.MINION_BEFORE_SUMMON,
-      new MinionBeforeSummonedEvent({
-        card: this,
-        cell: position,
-        targets,
-        aoe
-      })
-    );
-    this.game.unitSystem.addUnit(this, position);
-
-    if (this.hasSummoningSickness) {
-      await this.unit.modifiers.add(new SummoningSicknessModifier(this.game, this));
-      this.unit.exhaust();
-    }
-
-    await this.game.emit(
-      MINION_EVENTS.MINION_AFTER_SUMMON,
-      new MinionAfterSummonedEvent({
-        card: this,
-        unit: this.unit,
-        targets,
-        aoe
-      })
-    );
-    await this.game.vfxSystem.playSequence(
-      this.blueprint.vfx.sequences?.play?.(
-        this.game,
-        this,
-        position.position.serialize(),
-        targets.map(t => t.position.serialize())
-      ) ?? {
-        tracks: []
-      }
-    );
-  }
-
   async playAt(position: BoardCell, targets: BoardCell[]) {
     await this.removeFromCurrentLocation();
     await this.game.emit(

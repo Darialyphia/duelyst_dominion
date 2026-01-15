@@ -29,6 +29,7 @@ import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
 import { UseGeneralAbilityInput } from './inputs/use-general-ability';
 import { PassInput } from './inputs/pass.input';
+import { DeployGeneralInput } from './inputs/deploy-general.input';
 
 type GenericInputMap = Record<string, Constructor<Input<ZodType>>>;
 
@@ -52,7 +53,8 @@ const inputMap = validateinputMap({
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,
   useGeneralAbility: UseGeneralAbilityInput,
-  pass: PassInput
+  pass: PassInput,
+  deployGeneral: DeployGeneralInput
 });
 
 type InputMap = typeof inputMap;

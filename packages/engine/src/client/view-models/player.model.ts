@@ -107,6 +107,10 @@ export class PlayerViewModel {
     return this.data.canReplace;
   }
 
+  get canDeployGeneral() {
+    return this.data.canDeployGeneral;
+  }
+
   getDiscardPile() {
     return this.data.discardPile.map(cardId => {
       return this.getEntities()[cardId] as CardViewModel;

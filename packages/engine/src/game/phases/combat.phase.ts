@@ -1,4 +1,5 @@
 import type { Player } from '../../player/player.entity';
+import type { Unit } from '../../unit/unit.entity';
 import type { Game } from '../game';
 import type { GamePhaseController } from './game-phase';
 import { type EmptyObject, type Serializable } from '@game/shared';
@@ -6,10 +7,20 @@ import { type EmptyObject, type Serializable } from '@game/shared';
 export class CombatPhase implements GamePhaseController, Serializable<EmptyObject> {
   currentPlayer: Player;
 
+  private _currentTarget: Unit | Player | null = null;
+  private _currentAttacker: Unit | null = null;
+
   constructor(private game: Game) {
     this.currentPlayer = game.turnSystem.initiativePlayer;
   }
 
+  get currentAttacker(): Unit | null {
+    return this._currentAttacker;
+  }
+
+  get currentTarget(): Unit | Player | null {
+    return this._currentTarget;
+  }
   async onEnter() {}
 
   async performCombat() {
@@ -32,7 +43,11 @@ export class CombatPhase implements GamePhaseController, Serializable<EmptyObjec
 
       const target = unit.attackTarget;
       if (target) {
+        this._currentAttacker = unit;
+        this._currentTarget = target;
         await unit.attack(target);
+        this._currentAttacker = null;
+        this._currentTarget = null;
       }
     }
   }

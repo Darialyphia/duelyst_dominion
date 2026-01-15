@@ -5,13 +5,10 @@ import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
-import type { Unit } from '../../unit/unit.entity';
+import { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
-import { GameEventModifierMixin } from '../mixins/game-event.mixin';
-import { UNIT_EVENTS } from '../../unit/unit.enums';
-import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   constructor(
@@ -63,16 +60,20 @@ export class BackstabUnitModifier extends Modifier<Unit> {
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',
           interceptor: (value, ctx) => {
-            if (!this.target.player.isTurnPlayer) return value;
-            if (!ctx.target.behind?.unit) return value;
+            if (!this.target.isAttacking) return value;
+            if (!(ctx.target instanceof Unit) || !ctx.target.isAloneOnRow) return value;
 
             return value + this.backstabAmount.getValue(this.options.damageBonus, this);
           }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCounterattackTarget',
-          interceptor: (value, ctx) =>
-            ctx.attacker.behind?.unit?.equals(this.target) ? false : true
+          interceptor: (value, ctx) => {
+            if (!this.target.isAttacking) return value;
+            if (!(ctx.attacker instanceof Unit)) return value;
+
+            return !ctx.attacker.isAloneOnRow;
+          }
         }),
         ...(options.mixins ?? [])
       ]

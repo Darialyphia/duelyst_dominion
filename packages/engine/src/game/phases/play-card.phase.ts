@@ -1,4 +1,6 @@
+import { CARD_KINDS } from '../../card/card.enums';
 import type { DeckCard } from '../../card/components/card-manager.component';
+import type { AnyCard } from '../../card/entities/card.entity';
 import type { Player } from '../../player/player.entity';
 import type { Game } from '../game';
 import { InvalidPlayerError } from '../game-error';
@@ -11,7 +13,7 @@ export class PlayCardPhase
 {
   currentPlayer: Player;
 
-  card!: DeckCard;
+  card!: AnyCard;
 
   constructor(private game: Game) {
     this.currentPlayer = game.turnSystem.initiativePlayer;
@@ -21,14 +23,22 @@ export class PlayCardPhase
 
   async onExit() {}
 
-  async play(card: DeckCard) {
+  async play(card: AnyCard) {
     this.card = card;
-    const result = await this.currentPlayer.playCardFromHand(this.card);
-    await this.game.turnSystem.switchInitiative();
-    if (!result.cancelled) {
+    if (card.kind === CARD_KINDS.GENERAL) {
+      await card.play();
+      await this.game.turnSystem.switchInitiative();
       await this.game.gamePhaseSystem.sendTransition(
         GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
       );
+    } else {
+      const result = await this.currentPlayer.playCardFromHand(this.card as DeckCard);
+      await this.game.turnSystem.switchInitiative();
+      if (!result.cancelled) {
+        await this.game.gamePhaseSystem.sendTransition(
+          GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
+        );
+      }
     }
   }
 

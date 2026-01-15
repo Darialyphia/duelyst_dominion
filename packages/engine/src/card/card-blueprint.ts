@@ -133,6 +133,23 @@ export type GeneralBlueprint = CardBlueprintBase & {
   retaliation: number;
   maxHp: number;
   abilities: AbilityBlueprint<GeneralCard>[];
+  vfx: CardBlueprintBase['vfx'] & {
+    sequences?: {
+      play?: (
+        game: Game,
+        card: GeneralCard,
+        position: Point,
+        targets: Point[]
+      ) => VFXSequence;
+    };
+  };
+  getAoe: (
+    game: Game,
+    card: GeneralCard,
+    position: BoardCell,
+    targets: BoardCell[]
+  ) => GenericAOEShape;
+  getTargets: (game: Game, card: GeneralCard) => Promise<BoardCell[]>;
   onInit: (game: Game, card: GeneralCard) => Promise<void>;
 };
 

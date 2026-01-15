@@ -117,6 +117,10 @@ header {
   padding: var(--size-3);
   border-radius: var(--radius-3);
   backdrop-filter: blur(5px);
+  &.active {
+    border-color: var(--yellow-6);
+  }
+
   /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
   svg {
     stroke: black;

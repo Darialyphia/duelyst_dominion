@@ -31,6 +31,7 @@ import {
 } from './unit-events';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
+import { GAME_PHASES } from '../game/game.enums';
 
 export type UnitOptions = {
   id: string;
@@ -233,6 +234,25 @@ export class Unit
 
   isAlly(entity: Unit | Player) {
     return !this.isEnemy(entity);
+  }
+
+  get isAloneOnRow() {
+    const unitsOnRow = this.game.unitSystem.units.filter(
+      unit => unit.position.y === this.y && !unit.equals(this) && unit.isAlly(this)
+    );
+    return unitsOnRow.length === 0;
+  }
+
+  get isAttacking() {
+    const phaseCtx = this.game.gamePhaseSystem.getContext();
+    if (phaseCtx.state !== GAME_PHASES.COMBAT) return false;
+    return phaseCtx.ctx.currentAttacker?.equals(this) ?? false;
+  }
+
+  get isAttackTarget() {
+    const phaseCtx = this.game.gamePhaseSystem.getContext();
+    if (phaseCtx.state !== GAME_PHASES.COMBAT) return false;
+    return phaseCtx.ctx.currentTarget?.equals(this) ?? false;
   }
 
   get attackTarget(): Unit | Player | null {

@@ -320,4 +320,13 @@ export class GameClient {
       }
     });
   }
+
+  deployGeneral() {
+    this.dispatch({
+      type: 'deployGeneral',
+      payload: {
+        playerId: this.playerId
+      }
+    });
+  }
 }

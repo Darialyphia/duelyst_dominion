@@ -1,3 +1,5 @@
+import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { GeneralBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
@@ -24,8 +26,10 @@ export const kaleosXaan: GeneralBlueprint = {
   tags: [],
   runeCost: {},
   atk: 2,
-  maxHp: 25,
+  maxHp: 7,
   retaliation: 2,
   abilities: [],
+  getTargets: () => Promise.resolve([]),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
   async onInit() {}
 };
