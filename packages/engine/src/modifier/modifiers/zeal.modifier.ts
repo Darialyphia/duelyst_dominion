@@ -43,10 +43,12 @@ export class ZealUnitModifier extends Modifier<Unit> {
   private _isZealed = new Interceptable<boolean>();
 
   get isZealed() {
+    if (!this.target.player.deployedGeneral) return false;
+
     return this._isZealed.getValue(
       this.game.boardSystem.getDistance(
         this.target.position,
-        this.target.player.general.position
+        this.target.player.deployedGeneral.position
       ) === 1,
 
       {}

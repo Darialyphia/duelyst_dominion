@@ -14,7 +14,7 @@ export const scionsCrown: ArtifactBlueprint = {
   id: 'scions-crown',
   name: "Scion's Crown",
   description: dedent`
-  Your general has @Celerity@ and cannot damage generals.
+  Your general has @Celerity@.
   `,
   vfx: { spriteId: 'artifacts/f3_scions-crown' },
   sounds: {},
@@ -24,11 +24,12 @@ export const scionsCrown: ArtifactBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [],
+  runeCost: {},
   manaCost: 3,
   durability: 3,
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
-      override: card.player.general
+      override: card.player.deployedGeneral
     }),
   canPlay: () => true,
   getTargets: anywhereTargetRules.getPreResponseTargets({
@@ -43,12 +44,7 @@ export const scionsCrown: ArtifactBlueprint = {
     const aura = new CelerityUnitModifier(game, card, {
       modifierType: MODIFIER_ID,
       isRemovable: false,
-      mixins: [
-        new UnitInterceptorModifierMixin(game, {
-          key: 'damageDealt',
-          interceptor: (value, { target }) => (target.isGeneral ? 0 : value)
-        })
-      ]
+      mixins: []
     });
 
     await artifact.modifiers.add(
@@ -56,7 +52,8 @@ export const scionsCrown: ArtifactBlueprint = {
         mixins: [
           new UnitAuraModifierMixin(game, {
             isElligible(candidate) {
-              return candidate.equals(card.player.general);
+              if (!card.player.deployedGeneral) return false;
+              return candidate.equals(card.player.deployedGeneral);
             },
             async onGainAura(candidate) {
               await candidate.modifiers.add(aura);

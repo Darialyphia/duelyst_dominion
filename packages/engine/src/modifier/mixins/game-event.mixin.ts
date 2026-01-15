@@ -77,7 +77,7 @@ export class GameEventModifierMixin<
       this.game.on(GAME_EVENTS.PLAYER_END_TURN, this.onPlayerTurnEnd);
     }
     if (isDefined(this.options.frequencyPerGameTurn)) {
-      this.game.on(GAME_EVENTS.GAME_TURN_END, this.onGameTurnEnd);
+      this.game.on(GAME_EVENTS.TURN_END, this.onGameTurnEnd);
     }
   }
 
@@ -87,7 +87,7 @@ export class GameEventModifierMixin<
       this.game.off(GAME_EVENTS.PLAYER_END_TURN, this.onPlayerTurnEnd);
     }
     if (isDefined(this.options.frequencyPerGameTurn)) {
-      this.game.off(GAME_EVENTS.GAME_TURN_END, this.onGameTurnEnd);
+      this.game.off(GAME_EVENTS.TURN_END, this.onGameTurnEnd);
     }
   }
 

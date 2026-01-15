@@ -42,7 +42,6 @@ const emit = defineEmits<{
   restart: [];
   refillMana: [];
   addToHand: [cardId: string];
-  setMaxMana: [amount: number];
   move: [unitId: string, pos: Point, silent: boolean];
   activateUnit: [unitId: string];
   destroyUnit: [unitId: string, silent: boolean];
@@ -76,8 +75,6 @@ const allCards = Object.values(CARDS_DICTIONARY).sort((a, b) =>
   a.name.localeCompare(b.name)
 );
 const units = useUnits();
-
-const maxMana = ref<number>();
 
 const p1 = usePlayer1();
 const triggerEvents = ref(true);
@@ -178,24 +175,6 @@ const damageToDeal = ref(0);
               </AccordionTrigger>
             </AccordionHeader>
             <AccordionContent class="accordion-content">
-              <div class="input-group">
-                <input
-                  id="max-mana-input"
-                  type="number"
-                  min="0"
-                  step="1"
-                  placeholder="Max"
-                  class="number-input"
-                  v-model.number="maxMana"
-                />
-                <button
-                  :disabled="!isDefined(maxMana)"
-                  @click="emit('setMaxMana', maxMana!)"
-                  class="btn btn-flex"
-                >
-                  Set Max Mana
-                </button>
-              </div>
               <button @click="emit('refillMana')" class="btn mt-2">
                 Refill Mana
               </button>
@@ -581,10 +560,6 @@ const damageToDeal = ref(0);
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn-flex {
-  flex: 1;
 }
 
 .checkbox-label {

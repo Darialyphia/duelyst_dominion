@@ -38,7 +38,7 @@ export const ironcliffeGuardian: MinionBlueprint = {
   runeCost: {},
   atk: 3,
   maxHp: 10,
-  speed: 3,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

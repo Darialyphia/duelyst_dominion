@@ -17,7 +17,7 @@ export class UseGeneralAbilityInput extends Input<typeof schema> {
   protected payloadSchema = schema;
 
   async impl() {
-    const generalCard = this.player.general.card as GeneralCard;
+    const generalCard = this.player.generalCard as GeneralCard;
     assert(
       generalCard.canUseAbility(this.payload.abilityId),
       new IllegalCardPlayedError()

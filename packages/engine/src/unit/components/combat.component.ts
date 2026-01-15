@@ -1,4 +1,4 @@
-import { isDefined, Vec2, type Point } from '@game/shared';
+import { isDefined, Vec2 } from '@game/shared';
 import type { Game } from '../../game/game';
 import { CombatDamage, Damage } from '../../utils/damage';
 import {
@@ -6,9 +6,10 @@ import {
   UnitDealDamageEvent,
   UnitReceiveDamageEvent
 } from '../unit-events';
-import type { Unit } from '../unit.entity';
+import { Unit } from '../unit.entity';
 import { UNIT_EVENTS } from '../unit.enums';
 import type { AnyCard } from '../../card/entities/card.entity';
+import { Player } from '../../player/player.entity';
 
 export class CombatComponent {
   private _attacksCount = 0;
@@ -44,7 +45,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_COUNTERATTACK,
       new UnitAttackEvent({
-        target: attacker.position,
+        targetType: 'unit',
+        target: attacker,
         unit: this.unit
       })
     );
@@ -53,7 +55,7 @@ export class CombatComponent {
       .map(point => this.game.unitSystem.getUnitAt(point))
       .filter(isDefined);
 
-    const damage = new CombatDamage(this.unit);
+    const damage = new CombatDamage(this.unit, 'counterattack');
 
     await this.dealDamage(targets, damage);
     this._counterAttacksCount++;
@@ -61,28 +63,45 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_COUNTERATTACK,
       new UnitAttackEvent({
-        target: attacker.position,
+        targetType: 'unit',
+        target: attacker,
         unit: this.unit
       })
     );
   }
 
-  async attack(target: Point) {
+  async attack(target: Unit | Player) {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_ATTACK,
       new UnitAttackEvent({
-        target: Vec2.fromPoint(target),
+        targetType: target instanceof Unit ? 'unit' : 'player',
+        target,
         unit: this.unit
       })
     );
-    const targets = this.unit.attackAOEShape
-      .getArea([target])
-      .map(point => this.game.unitSystem.getUnitAt(point))
-      .filter(isDefined);
-    const damage = new CombatDamage(this.unit);
+    const targets =
+      target instanceof Unit
+        ? this.unit.attackAOEShape
+            .getArea([target])
+            .map(point => this.game.unitSystem.getUnitAt(point))
+            .filter(isDefined)
+        : [target];
+    const damage = new CombatDamage(this.unit, 'attack');
 
     await this.dealDamage(targets, damage);
     this._attacksCount++;
+
+    if (target instanceof Player) {
+      await this.game.emit(
+        UNIT_EVENTS.UNIT_AFTER_ATTACK,
+        new UnitAttackEvent({
+          targetType: 'player',
+          target,
+          unit: this.unit
+        })
+      );
+      return;
+    }
 
     const unit = this.game.unitSystem.getUnitAt(target)!;
     if (!unit) return; // means unit died from attack
@@ -101,7 +120,8 @@ export class CombatComponent {
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_ATTACK,
       new UnitAttackEvent({
-        target: Vec2.fromPoint(target),
+        targetType: 'unit',
+        target,
         unit: this.unit
       })
     );
@@ -111,7 +131,7 @@ export class CombatComponent {
     }
   }
 
-  async dealDamage(targets: Unit[], damage: Damage) {
+  async dealDamage(targets: Array<Unit | Player>, damage: Damage) {
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_DEAL_DAMAGE,
       new UnitDealDamageEvent({ targets, damage, unit: this.unit })

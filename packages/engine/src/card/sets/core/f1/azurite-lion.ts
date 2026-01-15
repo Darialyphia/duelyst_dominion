@@ -35,7 +35,7 @@ export const azuriteLion: MinionBlueprint = {
   runeCost: {},
   atk: 2,
   maxHp: 3,
-  speed: 4,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

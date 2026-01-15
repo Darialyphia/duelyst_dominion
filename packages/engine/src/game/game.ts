@@ -23,6 +23,7 @@ import { VFXSystem } from './systems/vfx.system';
 import type { TileBlueprint } from '../tile/tile-blueprint';
 import { TileSystem } from '../tile/tile.system';
 import { TILES_DICTIONARY } from '../tile/tiles';
+import { TurnSystem } from './systems/turn.system';
 
 export type GameOptions = {
   id: string;
@@ -61,6 +62,8 @@ export class Game implements Serializable<SerializedGame> {
   readonly playerSystem = new PlayerSystem(this);
 
   readonly gamePhaseSystem = new GamePhaseSystem(this);
+
+  readonly turnSystem = new TurnSystem(this);
 
   readonly cardSystem = new CardSystem(this);
 
@@ -144,6 +147,10 @@ export class Game implements Serializable<SerializedGame> {
     );
     now = performance.now();
 
+    await this.turnSystem.initialize();
+    console.log(`Turn system initialized in ${(performance.now() - now).toFixed(0)}ms`);
+    now = performance.now();
+
     await this.inputSystem.initialize();
     console.log(`Input system initialized in ${(performance.now() - now).toFixed(0)}ms`);
     now = performance.now();
@@ -217,6 +224,9 @@ export class Game implements Serializable<SerializedGame> {
     this.emitter.removeAllListeners();
   }
 
+  get winCondition() {
+    return this.options.overrides.winCondition ?? ((game, player) => false);
+  }
   // clone(id: number) {
   //   const game = new Game({
   //     ...this.options,

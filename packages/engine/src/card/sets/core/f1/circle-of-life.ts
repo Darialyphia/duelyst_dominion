@@ -46,6 +46,7 @@ export const circleOfLife: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.LEGENDARY,
   tags: [],
+  runeCost: {},
   manaCost: 5,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
@@ -62,6 +63,6 @@ export const circleOfLife: SpellBlueprint = {
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 5));
-    await card.player.general.heal(card, 5);
+    await card.player.heal(card, 5);
   }
 };

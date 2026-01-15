@@ -11,8 +11,6 @@ export type GamePhasesDict = typeof GAME_PHASES;
 export type GamePhase = Values<typeof GAME_PHASES>;
 
 export const GAME_PHASE_EVENTS = {
-  GAME_TURN_START: 'game_phase_turn_start',
-  GAME_TURN_END: 'game_phase_turn_end',
   BEFORE_CHANGE_PHASE: 'game_phase_before_change_phase',
   AFTER_CHANGE_PHASE: 'game_phase_after_change_phase'
 } as const;

@@ -33,7 +33,7 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
     }
     return (
       this.lastUsedAt + this.blueprint.getCooldown(this.game, this.card) >
-      this.game.gamePhaseSystem.elapsedTurns
+      this.game.turnSystem.elapsedTurns
     );
   }
 
@@ -51,7 +51,7 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
   }
 
   async use() {
-    this.lastUsedAt = this.game.gamePhaseSystem.elapsedTurns;
+    this.lastUsedAt = this.game.turnSystem.elapsedTurns;
     await this.card.player.spendMana(this.blueprint.manaCost);
     const targets = await this.blueprint.getTargets(this.game, this.card);
     const aoe = this.blueprint.getAoe(this.game, this.card, targets);

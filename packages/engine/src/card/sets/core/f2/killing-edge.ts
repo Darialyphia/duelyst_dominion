@@ -67,6 +67,7 @@ export const killingEdge: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.BASIC,
   tags: [],
+  runeCost: {},
   manaCost: 3,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: (game, card) =>

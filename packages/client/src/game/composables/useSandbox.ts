@@ -117,12 +117,6 @@ export const useSandbox = (
         payload: { playerId: client.value.getActivePlayerId() }
       });
     },
-    setMaxMana(amount: number) {
-      worker.postMessage({
-        type: 'setMaxMana',
-        payload: { amount, playerId: client.value.getActivePlayerId() }
-      });
-    },
     moveUnit(
       unitId: string,
       position: { x: number; y: number },

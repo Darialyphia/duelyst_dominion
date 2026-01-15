@@ -4,6 +4,7 @@ import type { Unit } from './unit.entity';
 import type { UNIT_EVENTS } from './unit.enums';
 import type { Damage } from '../utils/damage';
 import type { AnyCard } from '../card/entities/card.entity';
+import type { Player } from '../player/player.entity';
 
 export class UnitBeforeMoveEvent extends TypedSerializableEvent<
   { unit: Unit; position: Vec2 },
@@ -31,13 +32,14 @@ export class UnitAfterMoveEvent extends TypedSerializableEvent<
 }
 
 export class UnitAttackEvent extends TypedSerializableEvent<
-  { unit: Unit; target: Vec2 },
-  { unit: string; target: Point }
+  { unit: Unit; targetType: 'unit' | 'player'; target: Unit | Player },
+  { unit: string; targetType: 'unit' | 'player'; target: string }
 > {
   serialize() {
     return {
       unit: this.data.unit.id,
-      target: this.data.target.serialize()
+      targetType: this.data.targetType,
+      target: this.data.target.id
     };
   }
 
@@ -47,7 +49,7 @@ export class UnitAttackEvent extends TypedSerializableEvent<
 }
 
 export class UnitDealDamageEvent extends TypedSerializableEvent<
-  { unit: Unit; targets: Unit[]; damage: Damage },
+  { unit: Unit; targets: Array<Unit | Player>; damage: Damage },
   { unit: string; targets: Array<{ unit: string; damage: number }> }
 > {
   serialize() {

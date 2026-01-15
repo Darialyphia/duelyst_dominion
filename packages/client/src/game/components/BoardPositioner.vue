@@ -4,8 +4,7 @@ import {
   useBoardCellByPosition,
   useGameClient,
   useGameState,
-  useGameUi,
-  useMyPlayer
+  useGameUi
 } from '../composables/useGameClient';
 import {
   GAME_PHASES,
@@ -23,7 +22,6 @@ const {
 
 const state = useGameState();
 const ui = useGameUi();
-const myPlayer = useMyPlayer();
 
 const isTargetable = computed(() => {
   const interaction = state.value.interaction;
@@ -70,23 +68,6 @@ const canMoveTo = computed(() => {
   return ui.value.selectedUnit.canMoveTo(cell.value);
 });
 
-const canAttack = computed(() => {
-  if (!ui.value.selectedUnit) return false;
-
-  return ui.value.selectedUnit.canAttackAt(cell.value);
-});
-
-const isInDangerZone = computed(() => {
-  if (ui.value.selectedUnit) return false;
-  if (ui.value.selectedCard) return false;
-  const hoveredUnit = ui.value.hoveredCell?.unit;
-  if (!hoveredUnit) return false;
-  const isEnemy = !hoveredUnit.getPlayer()?.equals(myPlayer.value);
-  if (!isEnemy) return false;
-
-  return hoveredUnit.isInDangerZone(cell.value);
-});
-
 const isInAoe = useIsInAoe();
 
 const isSelectedUnitSpace = computed(() => {
@@ -106,7 +87,6 @@ const { client } = useGameClient();
       'is-targetable': isTargetable && !client.isPlayingFx,
       'is-targeted': isTargeted && !client.isPlayingFx,
       'can-move-to': canMoveTo && !client.isPlayingFx,
-      'can-attack': (canAttack || isInDangerZone) && !client.isPlayingFx,
       'is-selected-unit': isSelectedUnitSpace && !client.isPlayingFx
     }"
   >
@@ -159,18 +139,6 @@ const { client } = useGameClient();
       position: absolute;
       inset: 0;
       background-image: url('@/assets/ui/cell-highlight-move-reach.png');
-      background-size: cover;
-      z-index: 1;
-      transition: opacity 0.3s var(--ease-3);
-      @starting-style {
-        opacity: 0;
-      }
-    }
-    &.can-attack::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url('@/assets/ui/cell-highlight-attackable.png');
       background-size: cover;
       z-index: 1;
       transition: opacity 0.3s var(--ease-3);

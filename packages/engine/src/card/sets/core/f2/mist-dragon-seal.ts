@@ -74,6 +74,7 @@ export const mistDragonSeal: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.BASIC,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) => {

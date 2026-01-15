@@ -7,7 +7,7 @@ export class MainPhase implements GamePhaseController, Serializable<EmptyObject>
   currentPlayer: Player;
 
   constructor(private game: Game) {
-    this.currentPlayer = game.gamePhaseSystem.turnPlayer;
+    this.currentPlayer = game.turnSystem.initiativePlayer;
   }
 
   async onEnter() {}

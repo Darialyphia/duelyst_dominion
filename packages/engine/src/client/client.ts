@@ -269,14 +269,6 @@ export class GameClient {
     this.queue.push(...snapshots);
   }
 
-  endTurn() {
-    this.dispatch({
-      type: 'endTurn',
-      payload: { playerId: this.playerId }
-    });
-    this.ui.unselectUnit();
-  }
-
   cancelPlayCard() {
     if (this.state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
 
@@ -316,6 +308,15 @@ export class GameClient {
       payload: {
         playerId: this.playerId,
         index: card.indexInHand
+      }
+    });
+  }
+
+  pass() {
+    this.dispatch({
+      type: 'pass',
+      payload: {
+        playerId: this.playerId
       }
     });
   }

@@ -68,6 +68,14 @@ export class BoardSystem
     return [...this.cellsMap.values()];
   }
 
+  getRow(rowIndex: number) {
+    return this.cells.filter(cell => cell.y === rowIndex);
+  }
+
+  getColumn(colIndex: number) {
+    return this.cells.filter(cell => cell.x === colIndex);
+  }
+
   isInArea(topLeft: Point, size: { width: number; height: number }, point: Point) {
     return (
       point.x >= topLeft.x &&

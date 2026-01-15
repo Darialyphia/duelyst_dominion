@@ -34,7 +34,6 @@ type SandboxWorkerEvent =
       payload: { playerId: string };
     }
   | { type: 'refillMana'; payload: { playerId: string } }
-  | { type: 'setMaxMana'; payload: { playerId: string; amount: number } }
   | {
       type: 'moveUnit';
       payload: { unitId: string; position: Point; silent: boolean };
@@ -151,12 +150,6 @@ self.addEventListener('message', ({ data }) => {
       player.refillMana();
       game.snapshotSystem.takeSnapshot();
     })
-    .with({ type: 'setMaxMana' }, async ({ payload }) => {
-      const player = game.playerSystem.getPlayerById(payload.playerId)!;
-      player.gainMaxMana(payload.amount - player.maxMana);
-      player.refillMana();
-      game.snapshotSystem.takeSnapshot();
-    })
     .with({ type: 'moveUnit' }, async ({ payload }) => {
       const unit = game.unitSystem.getUnitById(payload.unitId);
       if (!unit) {
@@ -178,7 +171,7 @@ self.addEventListener('message', ({ data }) => {
       if (!unit) {
         return;
       }
-      await unit.destroy(unit.player.general.card, payload.silent);
+      await unit.destroy(unit.player.deployedGeneral.card, payload.silent);
       game.snapshotSystem.takeSnapshot();
     })
     .with({ type: 'bounceUnit' }, async ({ payload }) => {

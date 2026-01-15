@@ -42,7 +42,6 @@ const sandbox = useSandbox({
     @restart="sandbox.restart"
     @refillMana="sandbox.refillMana"
     @addToHand="sandbox.addCardToHand"
-    @setMaxMana="sandbox.setMaxMana"
     @move="sandbox.moveUnit"
     @activate-unit="sandbox.activateUnit"
     @destroy-unit="sandbox.destroyUnit"

@@ -18,7 +18,12 @@ const state = useGameState();
   <div class="p2-infos">
     <header>
       <div class="flex flex-col gap-2 items-end">
-        {{ player2.name }}
+        <div class="flex gap-7 items-center justify-between">
+          <div class="hp">
+            {{ player2.currentHp }}
+          </div>
+          {{ player2.name }}
+        </div>
         <div class="flex gap-2 text-1">
           <DiscardPile :player="player2" />
           <UiSimpleTooltip>
@@ -86,6 +91,19 @@ const state = useGameState();
   button {
     pointer-events: auto;
   }
+}
+
+.hp {
+  background: linear-gradient(135deg, var(--red-7) 0%, var(--red-9) 100%);
+  padding: var(--size-3) var(--size-4);
+  font-size: var(--font-size-5);
+  font-weight: bold;
+  -webkit-text-stroke: 2px black;
+  paint-order: stroke fill;
+  min-width: var(--size-9);
+  text-align: center;
+  clip-path: polygon(10% 15%, 90% 15%, 90% 65%, 50% 100%, 10% 65%);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
 header {

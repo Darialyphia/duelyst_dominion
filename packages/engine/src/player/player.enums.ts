@@ -14,7 +14,13 @@ export const PLAYER_EVENTS = {
   PLAYER_BEFORE_GAIN_RUNE: 'player:before_gain_rune',
   PLAYER_AFTER_GAIN_RUNE: 'player:after_gain_rune',
   PLAYER_BEFORE_LOSE_RUNE: 'player:before_lose_rune',
-  PLAYER_AFTER_LOSE_RUNE: 'player:after_lose_rune'
+  PLAYER_AFTER_LOSE_RUNE: 'player:after_lose_rune',
+  PLAYER_BEFORE_PERFORM_RESOURCE_ACTION: 'player:before_perform_resource_action',
+  PLAYER_AFTER_PERFORM_RESOURCE_ACTION: 'player:after_perform_resource_action',
+  PLAYER_BEFORE_TAKE_DAMAGE: 'player:before_player_take_damage',
+  PLAYER_AFTER_TAKE_DAMAGE: 'player:after_player_take_damage',
+  PLAYER_BEFORE_HEAL: 'player:before_player_heal',
+  PLAYER_AFTER_HEAL: 'player:after_player_heal'
 } as const;
 export type PlayerEvent = Values<typeof PLAYER_EVENTS>;
 

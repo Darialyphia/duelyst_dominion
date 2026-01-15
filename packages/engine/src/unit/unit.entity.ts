@@ -8,11 +8,7 @@ import { Interceptable } from '../utils/interceptable';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { Modifier } from '../modifier/modifier.entity';
 import { CARD_KINDS } from '../card/card.enums';
-import {
-  TARGETING_TYPE,
-  type TargetingStrategy,
-  type TargetingType
-} from '../targeting/targeting-strategy';
+import { TARGETING_TYPE, type TargetingType } from '../targeting/targeting-strategy';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { Player } from '../player/player.entity';
 import type { Damage } from '../utils/damage';
@@ -74,15 +70,13 @@ export type UnitInterceptors = {
 
   maxHp: Interceptable<number>;
   atk: Interceptable<number>;
-  movementReach: Interceptable<number>;
-  sprintReach: Interceptable<number>;
+  retaliation: Interceptable<number>;
 
-  attackTargetingPattern: Interceptable<TargetingStrategy>;
+  attackTarget: Interceptable<Unit | null>;
   attackTargetType: Interceptable<TargetingType>;
   attackAOEShape: Interceptable<GenericAOEShape>;
   attackCounterattackParticipants: Interceptable<CounterAttackParticipantStrategy>;
 
-  counterattackTargetingPattern: Interceptable<TargetingStrategy>;
   counterattackTargetType: Interceptable<TargetingType>;
   counterattackAOEShape: Interceptable<GenericAOEShape>;
 
@@ -92,7 +86,7 @@ export type UnitInterceptors = {
 
   player: Interceptable<Player>;
 
-  damageDealt: Interceptable<number, { target: Unit }>;
+  damageDealt: Interceptable<number, { target: Unit | Player }>;
   damageReceived: Interceptable<
     number,
     { amount: number; source: AnyCard; damage: Damage }
@@ -132,15 +126,13 @@ export class Unit
 
       maxHp: new Interceptable(),
       atk: new Interceptable(),
-      movementReach: new Interceptable(),
-      sprintReach: new Interceptable(),
+      retaliation: new Interceptable(),
 
-      attackTargetingPattern: new Interceptable(),
+      attackTarget: new Interceptable(),
       attackTargetType: new Interceptable(),
       attackAOEShape: new Interceptable(),
       attackCounterattackParticipants: new Interceptable(),
 
-      counterattackTargetingPattern: new Interceptable(),
       counterattackTargetType: new Interceptable(),
       counterattackAOEShape: new Interceptable(),
 
@@ -241,6 +233,26 @@ export class Unit
 
   isAlly(entity: Unit | Player) {
     return !this.isEnemy(entity);
+  }
+
+  get attackTarget(): Unit | Player | null {
+    const enemiesOnRow = this.game.boardSystem
+      .getRow(this.y)
+      .filter(cell => cell.player?.equals(this.player.opponent))
+      .map(cell => cell.unit)
+      .filter(isDefined);
+
+    if (enemiesOnRow.length === 0) {
+      return this.player.opponent;
+    }
+
+    const [base] = enemiesOnRow.sort((a, b) => {
+      const distA = Math.abs(a.x - this.x);
+      const distB = Math.abs(b.x - this.x);
+      return distA - distB;
+    });
+
+    return this.interceptors.attackTarget.getValue(base ?? null, {});
   }
 
   get maxMovementsPerTurn() {
@@ -350,8 +362,6 @@ export class Unit
     if (!this.canAttack(target) || !target.canBeAttackedBy(this)) {
       return false;
     }
-
-    return this.attackTargettingPattern.canTargetAt(point);
   }
 
   get isExhausted() {
@@ -372,23 +382,12 @@ export class Unit
     return this.interceptors.canBeCardTarget.getValue(this.isAlive, { card });
   }
 
-  get attackTargettingPattern(): TargetingStrategy {
-    return this.interceptors.attackTargetingPattern.getValue(this.card.attackPattern, {});
-  }
-
   get attackTargetType(): TargetingType {
     return this.interceptors.attackTargetType.getValue(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 
   get attackAOEShape(): GenericAOEShape {
     return this.interceptors.attackAOEShape.getValue(this.card.attackAOEShape, {});
-  }
-
-  get counterattackTargetingPattern(): TargetingStrategy {
-    return this.interceptors.counterattackTargetingPattern.getValue(
-      this.card.counterattackPattern,
-      {}
-    );
   }
 
   get counterattackTargetType(): TargetingType {
@@ -433,10 +432,7 @@ export class Unit
     const target = this.game.unitSystem.getUnitAt(point);
     if (!target) return false;
 
-    return (
-      this.canCounterAttack(target) &&
-      this.counterattackTargetingPattern.canTargetAt(point)
-    );
+    return this.canCounterAttack(target);
   }
 
   get remainingHp() {
@@ -459,8 +455,12 @@ export class Unit
     });
   }
 
-  getDealtDamage(target: Unit) {
+  getAttackDamage(target: Unit) {
     return this.interceptors.damageDealt.getValue(this.atk, { target });
+  }
+
+  getRetaliationDamage(attacker: Unit) {
+    return this.interceptors.damageDealt.getValue(this.retaliation, { target: attacker });
   }
 
   get maxHp() {
@@ -471,7 +471,11 @@ export class Unit
     return this.interceptors.atk.getValue(this.card.atk, {});
   }
 
-  async attack(point: Point) {
+  get retaliation() {
+    return this.interceptors.retaliation.getValue(this.card.retaliation, {});
+  }
+
+  async attack(point: Unit | Player) {
     await this.combat.attack(point);
     if (this.attacksPerformedThisTurn >= this.maxAttacksPerTurn) {
       this.exhaust();
@@ -564,16 +568,6 @@ export class Unit
     this.combat.resetAttackCount();
     this.movement.resetMovementsCount();
     this.wakeUp();
-  }
-
-  // Check if the unit can attack a point if it were in a given position
-  isWithinDangerZone(point: Point, position: Point) {
-    const original = this.position.clone();
-    this.movement.position.x = position.x;
-    this.movement.position.y = position.y;
-    const canAttack = this.attackTargettingPattern.isWithinRange(point);
-    this.movement.position = original;
-    return canAttack;
   }
 
   async bounce(silent = false) {

@@ -1,6 +1,7 @@
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import type { GameClient, GameStateEntities } from '../client';
+import type { BoardCellViewModel } from './board-cell.model';
 import type { CardViewModel } from './card.model';
 import type { ModifierViewModel } from './modifier.model';
 import type { PlayerViewModel } from './player.model';
@@ -83,6 +84,15 @@ export class UnitViewModel {
 
   get canMove() {
     return this.data.canMove;
+  }
+
+  canMoveTo(cell: BoardCellViewModel) {
+    if (cell.player !== this.getPlayer()?.id) {
+      return false;
+    }
+    if (cell.unit) return false;
+
+    return this.canMove;
   }
 
   getCard() {

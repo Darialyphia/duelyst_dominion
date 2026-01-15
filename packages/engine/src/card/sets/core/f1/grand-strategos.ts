@@ -43,7 +43,7 @@ export const grandStrategos: MinionBlueprint = {
   runeCost: {},
   atk: 4,
   maxHp: 6,
-  speed: 3,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

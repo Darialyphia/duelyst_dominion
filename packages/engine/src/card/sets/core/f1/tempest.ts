@@ -79,6 +79,7 @@ export const tempest: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   getAoe: game =>
     new EverywhereAOEShape(TARGETING_TYPE.UNIT, {

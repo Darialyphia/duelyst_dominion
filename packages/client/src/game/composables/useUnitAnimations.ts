@@ -55,51 +55,47 @@ export function useUnitAnimations({
   const latestHealReceived = ref<number>();
 
   const moveAlongPath = async (
-    path: Point[],
+    point: Point,
     previousPosition: Point,
     stepDuration: number,
     ease: gsap.EaseFunction = Power0.easeNone
   ) => {
     const timeline = gsap.timeline();
 
-    path.forEach((point, index) => {
-      const prev = index === 0 ? previousPosition : path[index - 1];
-      const prevScaled = config.CELL.toScreenPosition(prev);
-      const destinationScaled = config.CELL.toScreenPosition(point);
-      const deltaX = destinationScaled.x - prevScaled.x;
-      const deltaY = destinationScaled.y - prevScaled.y;
+    const prev = previousPosition;
+    const prevScaled = config.CELL.toScreenPosition(prev);
+    const destinationScaled = config.CELL.toScreenPosition(point);
+    const deltaX = destinationScaled.x - prevScaled.x;
+    const deltaY = destinationScaled.y - prevScaled.y;
 
-      timeline.to(positionOffset.value, {
-        x: `+=${deltaX}`,
-        y: `+=${deltaY}`,
-        duration: stepDuration,
-        ease
-      });
+    timeline.to(positionOffset.value, {
+      x: `+=${deltaX}`,
+      y: `+=${deltaY}`,
+      duration: stepDuration,
+      ease
     });
 
     timeline.set(positionOffset.value, { x: 0, y: 0 });
 
     await timeline.play();
   };
-  const onMove = async (event: { unit: string; path: Point[] }) => {
+  const onMove = async (event: { unit: string; position: Point }) => {
     if (event.unit !== unit.id) return;
-    const { path } = event;
     const previousPosition = { x: unit.x, y: unit.y };
 
     animationSequence.value = [ANIMATIONS_NAMES.RUN];
 
-    await moveAlongPath(path, previousPosition, 0.5);
+    await moveAlongPath(event.position, previousPosition, 0.5);
 
     animationSequence.value = [defaultAnimation.value];
   };
 
-  const onTeleport = async (event: { unit: string; path: Point[] }) => {
+  const onTeleport = async (event: { unit: string; position: Point }) => {
     if (event.unit !== unit.id) return;
-    const { path } = event;
     const previousPosition = { x: unit.x, y: unit.y };
 
     isTeleporting.value = true;
-    await moveAlongPath(path, previousPosition, 0.3, Power2.easeIn);
+    await moveAlongPath(event.position, previousPosition, 0.3, Power2.easeIn);
     isTeleporting.value = false;
   };
 

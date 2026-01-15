@@ -14,7 +14,7 @@ export class CardTrackerComponent {
     game.on(GAME_EVENTS.CARD_AFTER_PLAY, event => {
       if (!event.data.card.player.equals(this.player)) return;
 
-      const turn = game.gamePhaseSystem.elapsedTurns;
+      const turn = game.turnSystem.elapsedTurns;
       if (!this.cardsPlayedByTurn.has(turn)) {
         this.cardsPlayedByTurn.set(turn, []);
       }
@@ -23,7 +23,7 @@ export class CardTrackerComponent {
   }
 
   get cardsPlayedThisTurn() {
-    return this.cardsPlayedByTurn.get(this.game.gamePhaseSystem.elapsedTurns) ?? [];
+    return this.cardsPlayedByTurn.get(this.game.turnSystem.elapsedTurns) ?? [];
   }
 
   getCardsPlayedThisTurnOfKind<
@@ -35,7 +35,7 @@ export class CardTrackerComponent {
 
   getCardsPlayedSince(turn: number): AnyCard[] {
     const cards: AnyCard[] = [];
-    for (let i = turn; i <= this.game.gamePhaseSystem.elapsedTurns; i++) {
+    for (let i = turn; i <= this.game.turnSystem.elapsedTurns; i++) {
       const turnCards = this.cardsPlayedByTurn.get(i);
       if (turnCards) {
         cards.push(...turnCards);

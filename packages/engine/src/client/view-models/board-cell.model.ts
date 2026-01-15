@@ -36,6 +36,10 @@ export class BoardCellViewModel {
     return this.data.id;
   }
 
+  get player() {
+    return this.data.player;
+  }
+
   get position() {
     return this.data.position;
   }

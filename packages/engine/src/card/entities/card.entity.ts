@@ -195,7 +195,7 @@ export abstract class Card<
   }
 
   protected updatePlayedAt() {
-    this.playedAtTurn = this.game.gamePhaseSystem.elapsedTurns;
+    this.playedAtTurn = this.game.turnSystem.elapsedTurns;
   }
 
   get canReplace() {

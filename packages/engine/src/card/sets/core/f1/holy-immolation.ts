@@ -79,6 +79,7 @@ export const holyImmolation: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
+  runeCost: {},
   manaCost: 4,
   getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { size: 1 }),
   canPlay: (game, card) =>

@@ -4,7 +4,7 @@ import {
 } from '../card/components/card-manager.component';
 import { Entity } from '../entity';
 import { type Game } from '../game/game';
-import { type Nullable, type Serializable } from '@game/shared';
+import { isDefined, type Nullable, type Serializable } from '@game/shared';
 import { ArtifactManagerComponent } from './components/artifact-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
 import { CardTrackerComponent } from './components/cards-tracker.component';
@@ -13,8 +13,11 @@ import { GAME_EVENTS } from '../game/game.events';
 import {
   PlayerAfterReplaceCardEvent,
   PlayerBeforeReplaceCardEvent,
+  PlayerDamageEvent,
+  PlayerHealEvent,
   PlayerManaChangeEvent,
   PlayerPlayCardEvent,
+  PlayerResourceActionEvent,
   PlayerTurnEvent
 } from './player.events';
 import { ModifierManager } from '../modifier/modifier-manager.component';
@@ -25,6 +28,7 @@ import { CardNotFoundError } from '../card/card-errors';
 import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
 import { RuneManagerComponent } from './components/rune-manager.component';
+import type { Damage } from '../utils/damage';
 
 export type PlayerOptions = {
   id: string;
@@ -61,16 +65,29 @@ export type PlayerInterceptor = {
   maxReplacesPerTurn: Interceptable<number>;
   maxManathreshold: Interceptable<number>;
   maxMana: Interceptable<number>;
+  damageReceived: Interceptable<
+    number,
+    { damage: Damage; amount: number; source: AnyCard }
+  >;
 };
 const makeInterceptors = (): PlayerInterceptor => {
   return {
-    cardsDrawnForTurn: new Interceptable<number>(),
-    maxReplacesPerTurn: new Interceptable<number>(),
-    maxMana: new Interceptable<number>(),
-    maxManathreshold: new Interceptable<number>()
+    cardsDrawnForTurn: new Interceptable(),
+    maxReplacesPerTurn: new Interceptable(),
+    maxMana: new Interceptable(),
+    maxManathreshold: new Interceptable(),
+    damageReceived: new Interceptable()
   };
 };
 
+export type ResourceAction =
+  | {
+      type: 'gainRune';
+      rune: Rune;
+    }
+  | {
+      type: 'draw';
+    };
 export class Player
   extends Entity<PlayerInterceptor>
   implements Serializable<SerializedPlayer>
@@ -87,7 +104,9 @@ export class Player
 
   readonly runeManager: RuneManagerComponent;
 
-  private _general!: Unit;
+  private _deployedGeneral: Unit | null = null;
+
+  generalCard!: GeneralCard;
 
   currentlyPlayedCard: Nullable<DeckCard> = null;
 
@@ -102,6 +121,8 @@ export class Player
   private _resourceActionsDoneThisTurn = 0;
 
   hasPassedThisRound = false;
+
+  damageTaken = 0;
 
   constructor(
     game: Game,
@@ -124,10 +145,8 @@ export class Player
   }
 
   async init() {
-    this._baseMaxMana = this.isPlayer1
-      ? this.game.config.PLAYER_1_INITIAL_MANA
-      : this.game.config.PLAYER_2_INITIAL_MANA;
-    this._mana = this._baseMaxMana;
+    this._baseMaxMana = this.game.config.MAX_MANA;
+    this.refillMana();
 
     const generalId = this.options.deck.cards.find(card => {
       const blueprint = this.game.cardSystem.getBlueprint(card.blueprintId);
@@ -136,14 +155,22 @@ export class Player
     if (!generalId) {
       throw new Error(`General card not found in player's deck`);
     }
-    const generalCard = await this.generateCard<GeneralCard>(
+    this.generalCard = await this.generateCard<GeneralCard>(
       generalId.blueprintId,
       generalId.isFoil
     );
-    await generalCard.play();
+    await this.generalCard.play();
 
-    this._general = this.game.unitSystem.getUnitByCard(generalCard)!;
+    this._deployedGeneral = this.game.unitSystem.getUnitByCard(this.generalCard)!;
     await this.cardManager.init();
+  }
+
+  get maxHp() {
+    return this.game.config.PLAYER_MAX_HP;
+  }
+
+  get remainingHp() {
+    return this.maxHp - this.damageTaken;
   }
 
   serialize() {
@@ -165,8 +192,8 @@ export class Player
         .map(card => card.id),
       remainingCountInDeck: this.cardManager.deck.cards.length,
       isPlayer1: this.isPlayer1,
-      maxHp: this._general.maxHp,
-      currentHp: this._general.remainingHp,
+      maxHp: this.maxHp,
+      currentHp: this.remainingHp,
       currentMana: this._mana,
       maxMana: this.maxMana,
       deckSize: this.cardManager.deck.cards.length,
@@ -181,25 +208,19 @@ export class Player
   }
 
   get isCurrentPlayer() {
-    return this.game.gamePhaseSystem.turnPlayer.equals(this);
+    return this.game.turnSystem.initiativePlayer.equals(this);
   }
 
   get cardsDrawnForTurn() {
-    const isFirstTurn = this.game.gamePhaseSystem.elapsedTurns === 0;
+    const isFirstTurn = this.game.turnSystem.elapsedTurns === 0;
 
-    if (isFirstTurn) {
-      return this.interceptors.cardsDrawnForTurn.getValue(
-        this.game.gamePhaseSystem.turnPlayer.isPlayer1
-          ? this.game.config.PLAYER_1_CARDS_DRAWN_ON_FIRST_TURN
-          : this.game.config.PLAYER_2_CARDS_DRAWN_ON_FIRST_TURN,
-        {}
-      );
-    }
+    const base = isFirstTurn
+      ? this.game.turnSystem.initiativePlayer.isPlayer1
+        ? this.game.config.PLAYER_1_CARDS_DRAWN_ON_FIRST_TURN
+        : this.game.config.PLAYER_2_CARDS_DRAWN_ON_FIRST_TURN
+      : this.game.config.CARDS_DRAWN_PER_TURN;
 
-    return this.interceptors.cardsDrawnForTurn.getValue(
-      this.game.config.CARDS_DRAWN_PER_TURN,
-      {}
-    );
+    return this.interceptors.cardsDrawnForTurn.getValue(base, {});
   }
 
   get isPlayer1() {
@@ -207,19 +228,19 @@ export class Player
   }
 
   get isActive() {
-    return this.game.gamePhaseSystem.turnPlayer.equals(this);
+    return this.game.turnSystem.initiativePlayer.equals(this);
   }
 
   get opponent() {
     return this.game.playerSystem.players.find(p => !p.equals(this))!;
   }
 
-  get general() {
-    return this._general;
+  get deployedGeneral() {
+    return this._deployedGeneral;
   }
 
   get enemyHero() {
-    return this.opponent.general;
+    return this.opponent.deployedGeneral;
   }
 
   get minions() {
@@ -229,11 +250,11 @@ export class Player
   }
 
   get units() {
-    return [this.general, ...this.minions];
+    return [this.deployedGeneral, ...this.minions].filter(isDefined);
   }
 
   get enemyUnits() {
-    return [this.enemyHero, ...this.enemyMinions];
+    return [this.enemyHero, ...this.enemyMinions].filter(isDefined);
   }
 
   get enemyMinions() {
@@ -241,7 +262,7 @@ export class Player
   }
 
   get isTurnPlayer() {
-    return this.game.gamePhaseSystem.turnPlayer.equals(this);
+    return this.game.turnSystem.initiativePlayer.equals(this);
   }
 
   get canPerformResourceAction() {
@@ -250,12 +271,35 @@ export class Player
     );
   }
 
-  refillMana() {
-    this._mana = this.maxMana;
+  async performResourceAction(action: ResourceAction) {
+    if (!this.canPerformResourceAction) {
+      throw new Error('No resource actions remaining for this turn');
+    }
+
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_BEFORE_PERFORM_RESOURCE_ACTION,
+      new PlayerResourceActionEvent({ player: this, action })
+    );
+
+    switch (action.type) {
+      case 'draw':
+        await this.cardManager.drawFromDeck(1);
+        break;
+      case 'gainRune':
+        await this.runeManager.gainRune({ [action.rune]: 1 });
+        break;
+    }
+
+    this._resourceActionsDoneThisTurn++;
+
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_PERFORM_RESOURCE_ACTION,
+      new PlayerResourceActionEvent({ player: this, action })
+    );
   }
 
-  get maxManathreshold() {
-    return this.interceptors.maxManathreshold.getValue(this.game.config.MAX_MANA, {});
+  refillMana() {
+    this._mana = this.maxMana;
   }
 
   async startTurn() {
@@ -266,13 +310,8 @@ export class Player
 
     this._replacesDoneThisTurn = 0;
     this._resourceActionsDoneThisTurn = 0;
+    this.hasPassedThisRound = false;
 
-    if (this.game.gamePhaseSystem.elapsedTurns > 0) {
-      this._baseMaxMana = Math.min(
-        this._baseMaxMana + this.game.config.MAX_MANA_INCREASE_PER_TURN,
-        this.maxManathreshold
-      );
-    }
     this.refillMana();
 
     if (this.game.config.DRAW_STEP === 'turn-start') {
@@ -331,17 +370,6 @@ export class Player
     );
   }
 
-  gainMaxMana(amount: number) {
-    this._baseMaxMana = Math.min(this._baseMaxMana + amount, this.maxManathreshold);
-  }
-
-  loseMaxMana(amount: number) {
-    this._baseMaxMana = Math.max(0, this._baseMaxMana - amount);
-    if (this._mana > this.maxMana) {
-      this._mana = this.maxMana;
-    }
-  }
-
   canSpendMana(amount: number) {
     return this.mana >= amount;
   }
@@ -386,13 +414,6 @@ export class Player
     return card;
   }
 
-  async playCardAtIndex(index: number) {
-    const card = this.cardManager.hand[index];
-    if (!card) return;
-
-    await this.playCardFromHand(card);
-  }
-
   private async onBeforePlayFromHand(card: DeckCard) {
     await this.game.emit(
       PLAYER_EVENTS.PLAYER_BEFORE_PLAY_CARD,
@@ -431,6 +452,47 @@ export class Player
   }
 
   passTurn() {
-    // TODO
+    this.hasPassedThisRound = true;
+  }
+
+  getReceivedDamage(damage: Damage, source: AnyCard) {
+    return this.interceptors.damageReceived.getValue(damage.baseAmount, {
+      damage,
+      amount: damage.baseAmount,
+      source
+    });
+  }
+
+  async takeDamage(source: AnyCard, damage: Damage) {
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_BEFORE_TAKE_DAMAGE,
+      new PlayerDamageEvent({
+        player: this,
+        damage,
+        from: source
+      })
+    );
+    const finalDamage = this.getReceivedDamage(damage, source);
+    this.damageTaken += finalDamage;
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_TAKE_DAMAGE,
+      new PlayerDamageEvent({
+        player: this,
+        damage,
+        from: source
+      })
+    );
+  }
+
+  async heal(source: AnyCard, amount: number) {
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_BEFORE_HEAL,
+      new PlayerHealEvent({ player: this, amount, source })
+    );
+    this.damageTaken = Math.max(this.damageTaken - amount, 0);
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_HEAL,
+      new PlayerHealEvent({ player: this, amount, source })
+    );
   }
 }

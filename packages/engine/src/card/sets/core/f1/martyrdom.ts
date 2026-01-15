@@ -60,6 +60,7 @@ export const martyrdom: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
@@ -78,6 +79,6 @@ export const martyrdom: SpellBlueprint = {
     const amounttoHeal = target.remainingHp;
     await target.destroy(card);
 
-    await target.player.general.heal(card, amounttoHeal);
+    await target.player.heal(card, amounttoHeal);
   }
 };

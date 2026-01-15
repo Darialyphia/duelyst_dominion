@@ -14,7 +14,7 @@ export class PlayCardPhase
   card!: DeckCard;
 
   constructor(private game: Game) {
-    this.currentPlayer = game.gamePhaseSystem.turnPlayer;
+    this.currentPlayer = game.turnSystem.initiativePlayer;
   }
 
   async onEnter() {}
@@ -24,6 +24,7 @@ export class PlayCardPhase
   async play(card: DeckCard) {
     this.card = card;
     const result = await this.currentPlayer.playCardFromHand(this.card);
+    await this.game.turnSystem.switchInitiative();
     if (!result.cancelled) {
       await this.game.gamePhaseSystem.sendTransition(
         GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD

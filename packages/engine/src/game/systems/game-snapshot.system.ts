@@ -378,8 +378,8 @@ export class GameSnapshotSystem extends System<{ enabled: boolean }> {
       units: this.game.unitSystem.units.map(unit => unit.id),
       players: this.game.playerSystem.players.map(player => player.id),
       tiles: this.game.tileSystem.tiles.map(tile => tile.id),
-      turnPlayer: this.game.gamePhaseSystem.turnPlayer.id,
-      turnCount: this.game.gamePhaseSystem.elapsedTurns
+      turnPlayer: this.game.turnSystem.initiativePlayer.id,
+      turnCount: this.game.turnSystem.elapsedTurns
     };
   }
 

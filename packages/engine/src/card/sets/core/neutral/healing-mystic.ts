@@ -32,9 +32,11 @@ export const healingMystic: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.BASIC,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 3,
+  retaliation: 2,
   getTargets(game, card) {
     return singleUnitTargetRules.getPreResponseTargets(game, card, {
       required: false,

@@ -32,9 +32,11 @@ export const flamebloodWarlock: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   atk: 3,
   maxHp: 1,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
@@ -42,7 +44,7 @@ export const flamebloodWarlock: MinionBlueprint = {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
         for (const player of game.playerSystem.players) {
-          await player.general?.takeDamage(card, new AbilityDamage(card, 3));
+          await player.deployedGeneral?.takeDamage(card, new AbilityDamage(card, 3));
         }
       })
     );

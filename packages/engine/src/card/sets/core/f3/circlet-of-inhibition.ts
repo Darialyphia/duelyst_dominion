@@ -3,7 +3,6 @@ import type { ArtifactBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { TimelessModifier } from '../../../../modifier/modifiers/timeless.modifier';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { ArtifactEffectModifierMixin } from '../../../../modifier/mixins/artifact-effect.mixin';
 import { PlayerArtifact } from '../../../../player/player-artifact.entity';
@@ -16,7 +15,6 @@ export const circletOfInhibition: ArtifactBlueprint = {
   id: 'circlet-of-inhibition',
   name: 'Circlet of Inhibition',
   description: dedent`
-  @Timeless@.
   When an enemy attacks your general, your opponent must pay 2 or you gain 1 max mana until the end of your next turn.
   `,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
@@ -27,14 +25,13 @@ export const circletOfInhibition: ArtifactBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   durability: 3,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: () => true,
   getTargets: () => Promise.resolve([]),
   async onInit(game, card) {
-    await card.modifiers.add(new TimelessModifier(game, card));
-
     const onAttackModifier = new Modifier<PlayerArtifact>(
       'circlet-of-inhibition-on-attack',
       game,
@@ -44,7 +41,8 @@ export const circletOfInhibition: ArtifactBlueprint = {
           new GameEventModifierMixin(game, {
             eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
             filter(event) {
-              return event?.data.target.equals(card.player.general) ?? false;
+              if (!card.player.deployedGeneral) return false;
+              return event?.data.target.equals(card.player.deployedGeneral) ?? false;
             },
             async handler(event) {
               if (!event) return;

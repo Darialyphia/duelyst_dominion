@@ -6,7 +6,6 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
-import { CelerityUnitModifier } from '../../../../modifier/modifiers/celerity.modifier';
 import { PlayerArtifact } from '../../../../player/player-artifact.entity';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import type { Unit } from '../../../../unit/unit.entity';
@@ -30,11 +29,12 @@ export const arclyteRegalia: ArtifactBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.LEGENDARY,
   tags: [],
+  runeCost: {},
   manaCost: 4,
   durability: 3,
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
-      override: card.player.general
+      override: card.player.deployedGeneral
     }),
   canPlay: () => true,
   getTargets: anywhereTargetRules.getPreResponseTargets({
@@ -66,7 +66,8 @@ export const arclyteRegalia: ArtifactBlueprint = {
           eventName: GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
           filter: event => {
             if (!event) return false;
-            return event.data.unit.equals(card.player.general);
+            if (!card.player.deployedGeneral) return false;
+            return event.data.unit.equals(card.player.deployedGeneral);
           },
           handler() {
             if (hasProccedThisTurn) return;
@@ -87,7 +88,8 @@ export const arclyteRegalia: ArtifactBlueprint = {
         mixins: [
           new UnitAuraModifierMixin(game, {
             isElligible(candidate) {
-              return candidate.equals(card.player.general);
+              if (!card.player.deployedGeneral) return false;
+              return candidate.equals(card.player.deployedGeneral);
             },
             async onGainAura(candidate) {
               await candidate.modifiers.add(buff);

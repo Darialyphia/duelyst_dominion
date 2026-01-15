@@ -37,9 +37,11 @@ export const fourWindsMagus: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 4,
   atk: 4,
   maxHp: 4,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
@@ -56,11 +58,8 @@ export const fourWindsMagus: MinionBlueprint = {
                 return isSpell(event.data.card);
               },
               async handler() {
-                await card.player.opponent.general.takeDamage(
-                  card,
-                  new AbilityDamage(card, 1)
-                );
-                await card.player.general.heal(card, 1);
+                await card.player.opponent.takeDamage(card, new AbilityDamage(card, 1));
+                await card.player.heal(card, 1);
               }
             })
           ]

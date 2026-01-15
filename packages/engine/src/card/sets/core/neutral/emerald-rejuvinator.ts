@@ -8,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const emeraldRejuvinator: MinionBlueprint = {
   id: 'emerald-rejuvinator',
   name: 'Emerald Rejuvinator',
-  description: '@On Enter@: Heal your general for 4.',
+  description: '@On Enter@: Heal your general for 3.',
   vfx: {
     spriteId: 'minions/neutral_emerald-rejuvinator',
     sequences: {
@@ -31,16 +31,18 @@ export const emeraldRejuvinator: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 4,
   atk: 4,
   maxHp: 4,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
-        await card.player.general.heal(card, 4);
+        await card.player.heal(card, 3);
       })
     );
   },

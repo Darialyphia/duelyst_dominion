@@ -2,6 +2,8 @@ import type { Values } from '@game/shared';
 import type { Unit } from '../unit/unit.entity';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { SpellCard } from '../card/entities/spell-card.entity';
+import { match } from 'ts-pattern';
+import type { Player } from '../player/player.entity';
 
 export const DAMAGE_TYPES = {
   COMBAT: 'COMBAT',
@@ -34,7 +36,7 @@ export abstract class Damage {
     return this._baseAmount;
   }
 
-  getFinalAmount(target: Unit): number {
+  getFinalAmount(target: Unit | Player): number {
     return target.getReceivedDamage(this, this.source);
   }
 }
@@ -43,7 +45,10 @@ export class CombatDamage extends Damage {
   private _attacker: Unit;
   private _checkedTarget: Unit | null = null;
 
-  constructor(attacker: Unit) {
+  constructor(
+    attacker: Unit,
+    public kind: 'attack' | 'counterattack'
+  ) {
     super({ baseAmount: attacker.atk, type: DAMAGE_TYPES.COMBAT, source: attacker.card });
     this._attacker = attacker;
   }
@@ -56,7 +61,12 @@ export class CombatDamage extends Damage {
     if (this._checkedTarget === null) {
       return this._baseAmount;
     } else {
-      return this._attacker.getDealtDamage(this._checkedTarget);
+      return match(this.kind)
+        .with('attack', () => this._attacker.getAttackDamage(this._checkedTarget!))
+        .with('counterattack', () =>
+          this._attacker.getRetaliationDamage(this._checkedTarget!)
+        )
+        .exhaustive();
     }
   }
 

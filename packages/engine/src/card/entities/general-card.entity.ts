@@ -26,6 +26,7 @@ export type SerializedGeneralCard = SerializedCard & {
 export type GeneralCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
+  retaliation: Interceptable<number>;
   canUseAbility: Interceptable<boolean, GeneralCard>;
 };
 
@@ -44,6 +45,7 @@ export class GeneralCard extends Card<
         ...makeCardInterceptors(),
         maxHp: new Interceptable(),
         atk: new Interceptable(),
+        retaliation: new Interceptable(),
         canUseAbility: new Interceptable()
       },
       options
@@ -104,30 +106,16 @@ export class GeneralCard extends Card<
     return this.interceptors.atk.getValue(this.blueprint.atk, {});
   }
 
-  get unit() {
-    return this.player.general;
+  get retaliation() {
+    return this.interceptors.retaliation.getValue(this.blueprint.retaliation, {});
   }
 
-  get attackPattern() {
-    return new MeleeTargetingStrategy(
-      this.game,
-      this.unit,
-      this.unit.attackTargetType,
-      false
-    );
+  get unit() {
+    return this.player.deployedGeneral;
   }
 
   get attackAOEShape() {
     return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
-  }
-
-  get counterattackPattern() {
-    return new MeleeTargetingStrategy(
-      this.game,
-      this.unit,
-      this.unit.counterattackTargetType,
-      false
-    );
   }
 
   get counterattackAOEShape() {

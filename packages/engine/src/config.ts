@@ -17,11 +17,7 @@ export type Config = {
 
   MAX_RESOURCE_ACTIONS_PER_TURN: number;
 
-  PLAYER_1_INITIAL_MANA: number;
-  PLAYER_2_INITIAL_MANA: number;
   MAX_MANA: number;
-  MAX_OVERSPENT_MANA: number;
-  MAX_MANA_INCREASE_PER_TURN: number;
 
   MAX_MULLIGANED_CARDS: number;
   MAX_REPLACES_PER_TURN: number;
@@ -33,6 +29,8 @@ export type Config = {
   GENERAL_ABILITY_ENABLED: boolean;
   GENERAL_ABILITY_MAX_USES: number;
   GENERAL_ABILITY_COOLDOWN: number;
+
+  PLAYER_MAX_HP: number;
 };
 
 export const defaultConfig: Config = {
@@ -47,10 +45,7 @@ export const defaultConfig: Config = {
   CARDS_DRAWN_PER_TURN: 2,
   PLAYER_1_CARDS_DRAWN_ON_FIRST_TURN: 2,
   PLAYER_2_CARDS_DRAWN_ON_FIRST_TURN: 2,
-  PLAYER_1_INITIAL_MANA: 5,
-  PLAYER_2_INITIAL_MANA: 5,
   MAX_MANA: 5,
-  MAX_OVERSPENT_MANA: 0,
   MAX_MULLIGANED_CARDS: 0,
   MAX_REPLACES_PER_TURN: 1,
   MAX_MOVEMENT_PER_TURN: 1,
@@ -62,5 +57,6 @@ export const defaultConfig: Config = {
   GENERAL_ABILITY_MAX_USES: 1,
   GENERAL_ABILITY_COOLDOWN: 0,
   MAX_RESOURCE_ACTIONS_PER_TURN: 1,
-  MAX_MANA_INCREASE_PER_TURN: 0
+
+  PLAYER_MAX_HP: 25
 };

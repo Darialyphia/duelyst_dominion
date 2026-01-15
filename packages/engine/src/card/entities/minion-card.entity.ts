@@ -39,6 +39,7 @@ export type SerializedMinionCard = SerializedCard & {
 export type MinionCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
+  retaliation: Interceptable<number>;
   summonTargetingStrategy: Interceptable<TargetingStrategy>;
   canPlay: Interceptable<boolean, MinionCard>;
   hasSummoningSickness: Interceptable<boolean, MinionCard>;
@@ -57,6 +58,7 @@ export class MinionCard extends Card<
         ...makeCardInterceptors(),
         maxHp: new Interceptable(),
         atk: new Interceptable(),
+        retaliation: new Interceptable(),
         summonTargetingStrategy: new Interceptable(),
         canPlay: new Interceptable(),
         hasSummoningSickness: new Interceptable()
@@ -66,8 +68,8 @@ export class MinionCard extends Card<
   }
 
   get hasAvailablePosition() {
-    return this.game.boardSystem.cells.some(cell =>
-      this.summoningTargetingStrategy.canTargetAt(cell)
+    return this.game.boardSystem.cells.some(
+      cell => cell.player?.equals(this.player) && !cell.isOccupied
     );
   }
 
@@ -103,14 +105,7 @@ export class MinionCard extends Card<
     await this.unit.removeFromBoard();
   }
 
-  get summoningTargetingStrategy() {
-    return this.interceptors.summonTargetingStrategy.getValue(
-      new MinionSummonTargetingStrategy(this.game, this),
-      {}
-    );
-  }
-
-  private async selectPosition() {
+  async selectPosition() {
     return new Promise<
       { position: BoardCell; cancelled: false } | { cancelled: true; position?: never }
     >(
@@ -128,7 +123,7 @@ export class MinionCard extends Card<
           source: this,
           getLabel: () => `Select position to summon ${this.blueprint.name}`,
           isElligible: cell => {
-            return this.summoningTargetingStrategy.canTargetAt(cell);
+            return !!(cell.player?.equals(this.player) && !cell.isOccupied);
           },
           canCommit(selectedSlots) {
             return selectedSlots.length === 1;
@@ -290,6 +285,10 @@ export class MinionCard extends Card<
 
   get atk() {
     return this.interceptors.atk.getValue(this.blueprint.atk, {});
+  }
+
+  get retaliation() {
+    return this.interceptors.retaliation.getValue(this.blueprint.retaliation, {});
   }
 
   get unit() {

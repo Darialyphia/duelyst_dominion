@@ -74,10 +74,11 @@ export const magnetize: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => {
-    if (card.player.general.inFront?.isOccupied) return false;
+    if (card.player.deployedGeneral?.inFront?.isOccupied) return false;
 
     return singleMinionTargetRules.canPlay(game, card);
   },
@@ -93,6 +94,6 @@ export const magnetize: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    await target.teleport(card.player.general.inFront!);
+    await target.teleport(card.player.deployedGeneral!.inFront!);
   }
 };

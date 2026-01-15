@@ -30,7 +30,7 @@ export class MoveInput extends Input<typeof schema> {
     assert(this.player.isCurrentPlayer, new NotCurrentPlayerError());
     assert(isDefined(this.unit), new UnknownUnitError(this.payload.unitId));
     assert(
-      this.unit.player.equals(this.game.gamePhaseSystem.turnPlayer),
+      this.unit.player.equals(this.game.turnSystem.initiativePlayer),
       new UnitNotOwnedError()
     );
     assert(this.unit.canMoveTo(this.payload), new IllegalMovementError(this.payload));

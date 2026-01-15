@@ -15,6 +15,7 @@ import { MulliganPhase } from '../phases/mulligan.phase';
 import { PlayCardPhase } from '../phases/play-card.phase';
 import { IllegalCardPlayedError } from '../../input/input-errors';
 import { CombatPhase } from '../phases/combat.phase';
+import { GAME_EVENTS } from '../game.events';
 
 export const GAME_PHASE_TRANSITIONS = {
   COMMIT_MULLIGAN: 'commit_mulligan',
@@ -24,13 +25,12 @@ export const GAME_PHASE_TRANSITIONS = {
   PLAYER_WON: 'player_won',
   START_PLAYING_CARD: 'start_playing_card',
   COMMIT_PLAYING_CARD: 'commit_playing_card',
-  CANCEL_PLAYING_CARD: 'cancel_playing_card'
+  CANCEL_PLAYING_CARD: 'cancel_playing_card',
+  START_COMBAT_PHASE: 'start_combat_phase'
 } as const;
 export type GamePhaseTransition = Values<typeof GAME_PHASE_TRANSITIONS>;
 
 export type GamePhaseEventMap = {
-  [GAME_PHASE_EVENTS.GAME_TURN_START]: GameTurnEvent;
-  [GAME_PHASE_EVENTS.GAME_TURN_END]: GameTurnEvent;
   [GAME_PHASE_EVENTS.BEFORE_CHANGE_PHASE]: GamePhaseBeforeChangeEvent;
   [GAME_PHASE_EVENTS.AFTER_CHANGE_PHASE]: GamePhaseAfterChangeEvent;
 };
@@ -80,13 +80,7 @@ export type SerializedGamePhaseContext =
     };
 
 export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition> {
-  private _winner: Player | null = null;
-
-  private _elapsedTurns = 0;
-
-  private _turnPlayer!: Player;
-
-  private firstPlayer!: Player;
+  private _winners: Player[] | null = null;
 
   readonly ctxDictionary = {
     [GAME_PHASES.MULLIGAN]: MulliganPhase,
@@ -105,6 +99,16 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
       stateTransition(
         GAME_PHASES.MULLIGAN,
         GAME_PHASE_TRANSITIONS.COMMIT_MULLIGAN,
+        GAME_PHASES.MAIN
+      ),
+      stateTransition(
+        GAME_PHASES.MAIN,
+        GAME_PHASE_TRANSITIONS.START_COMBAT_PHASE,
+        GAME_PHASES.COMBAT
+      ),
+      stateTransition(
+        GAME_PHASES.COMBAT,
+        GAME_PHASE_TRANSITIONS.END_TURN,
         GAME_PHASES.MAIN
       ),
       stateTransition(
@@ -136,14 +140,28 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
         GAME_PHASES.PLAYING_CARD,
         GAME_PHASE_TRANSITIONS.PLAYER_WON,
         GAME_PHASES.GAME_END
+      ),
+      stateTransition(
+        GAME_PHASES.COMBAT,
+        GAME_PHASE_TRANSITIONS.PLAYER_WON,
+        GAME_PHASES.GAME_END
       )
     ]);
   }
 
   async initialize() {
-    // const idx = this.game.rngSystem.nextInt(this.game.playerSystem.players.length);
-    this._turnPlayer = this.game.playerSystem.player1;
-    this.firstPlayer = this._turnPlayer;
+    const stop = this.game.on(GAME_EVENTS.NEW_SNAPSHOT, async () => {
+      const winners: Player[] = [];
+      for (const player of this.game.playerSystem.players) {
+        if (this.game.winCondition(this.game, player)) {
+          winners.push(player);
+        }
+      }
+
+      if (!winners.length) return;
+      stop();
+      await this.declareWinner(winners);
+    });
   }
 
   async startGame() {
@@ -163,31 +181,8 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     } as GamePhaseContext & { state: T };
   }
 
-  get winner() {
-    return this._winner;
-  }
-
-  get elapsedTurns() {
-    return this._elapsedTurns;
-  }
-
-  get turnPlayer() {
-    return this._turnPlayer;
-  }
-
-  private startGameTurn() {
-    return this.game.emit(
-      GAME_PHASE_EVENTS.GAME_TURN_START,
-      new GameTurnEvent({ turnCount: this.elapsedTurns })
-    );
-  }
-
-  private endGameTurn() {
-    this._elapsedTurns++;
-    return this.game.emit(
-      GAME_PHASE_EVENTS.GAME_TURN_END,
-      new GameTurnEvent({ turnCount: this.elapsedTurns })
-    );
+  get winners() {
+    return this._winners;
   }
 
   async sendTransition(transition: GamePhaseTransition) {
@@ -218,18 +213,14 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
   }
 
   async endTurn() {
-    await this.turnPlayer.endTurn();
+    assert(this.can(GAME_PHASE_TRANSITIONS.END_TURN), new WrongGamePhaseError());
 
-    const nextPlayer = this._turnPlayer.opponent;
-    if (nextPlayer.equals(this.firstPlayer)) {
-      await this.endGameTurn();
-      this._turnPlayer = nextPlayer;
-      await this.startGameTurn();
-    } else {
-      this._turnPlayer = nextPlayer;
-    }
+    await this.game.turnSystem.endTurn();
 
-    await this._turnPlayer.startTurn();
+    await this.game.inputSystem.schedule(async () => {
+      await this.game.turnSystem.startTurn();
+      await this.sendTransition(GAME_PHASE_TRANSITIONS.END_TURN);
+    });
   }
 
   async commitMulligan() {
@@ -237,23 +228,11 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     await this.sendTransition(GAME_PHASE_TRANSITIONS.COMMIT_MULLIGAN);
   }
 
-  async declareWinner(player: Player) {
+  async declareWinner(players: Player[]) {
     assert(this.can(GAME_PHASE_TRANSITIONS.PLAYER_WON), new WrongGamePhaseError());
-    this._winner = player;
+    this._winners = players;
     await this.sendTransition(GAME_PHASE_TRANSITIONS.PLAYER_WON);
-  }
-
-  async playCard(index: number, player: Player) {
-    assert(this.getState() === GAME_PHASES.MAIN, new WrongGamePhaseError());
-
-    const canPlay = this.game.gamePhaseSystem.turnPlayer.equals(player);
-    assert(canPlay, new IllegalCardPlayedError());
-
-    const card = player.cardManager.getCardInHandAt(index);
-    assert(card, new IllegalCardPlayedError());
-    assert(card.canPlay(), new IllegalCardPlayedError());
-    await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);
-    await (this._ctx as PlayCardPhase).play(card);
+    await this.game.inputSystem.askForPlayerInput();
   }
 
   serialize() {
@@ -263,16 +242,27 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
       ctx: context.ctx.serialize()
     } as SerializedGamePhaseContext;
   }
-}
 
-export class GameTurnEvent extends TypedSerializableEvent<
-  { turnCount: number },
-  { turnCount: number }
-> {
-  serialize(): { turnCount: number } {
-    return {
-      turnCount: this.data.turnCount
-    };
+  async playCard(index: number, player: Player) {
+    assert(this.getState() === GAME_PHASES.MAIN, new WrongGamePhaseError());
+
+    const canPlay = this.game.turnSystem.initiativePlayer.equals(player);
+    assert(canPlay, new IllegalCardPlayedError());
+
+    const card = player.cardManager.getCardInHandAt(index);
+    assert(card, new IllegalCardPlayedError());
+    assert(card.canPlay(), new IllegalCardPlayedError());
+    await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);
+    await (this._ctx as PlayCardPhase).play(card);
+  }
+
+  async startCombat() {
+    assert(
+      this.can(GAME_PHASE_TRANSITIONS.START_COMBAT_PHASE),
+      new WrongGamePhaseError()
+    );
+    await this.sendTransition(GAME_PHASE_TRANSITIONS.START_COMBAT_PHASE);
+    await this.getContext<'combat_phase'>().ctx.performCombat();
   }
 }
 

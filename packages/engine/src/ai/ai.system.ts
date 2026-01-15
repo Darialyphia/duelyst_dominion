@@ -33,7 +33,7 @@ export class AISystem {
         await this.game.dispatch(bestMove.input);
       } else {
         await this.game.dispatch({
-          type: 'endTurn',
+          type: 'pass',
           payload: {
             playerId: this.player.id
           }

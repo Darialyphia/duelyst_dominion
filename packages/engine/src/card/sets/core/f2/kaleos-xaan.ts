@@ -22,8 +22,10 @@ export const kaleosXaan: GeneralBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.BASIC,
   tags: [],
+  runeCost: {},
   atk: 2,
   maxHp: 25,
+  retaliation: 2,
   abilities: [],
   async onInit() {}
 };

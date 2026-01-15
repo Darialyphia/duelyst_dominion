@@ -21,7 +21,12 @@ const state = useGameState();
   <div class="p1-infos">
     <header>
       <div class="flex flex-col gap-2">
-        {{ player1.name }}
+        <div class="flex gap-7 items-center justify-between">
+          {{ player1.name }}
+          <div class="hp">
+            {{ player1.currentHp }}
+          </div>
+        </div>
         <div class="flex gap-2 text-1">
           <DiscardPile :player="player1" />
           <UiSimpleTooltip>
@@ -79,9 +84,7 @@ const state = useGameState();
     >
       Replace Card
     </UiButton>
-    <UiButton class="action-button" @click="client.endTurn()">
-      End Turn
-    </UiButton>
+    <UiButton class="action-button" @click="client.pass()">Pass</UiButton>
   </div>
 </template>
 
@@ -130,6 +133,19 @@ header {
   &.spent {
     background: url('@/assets/ui/mana-spent.png') no-repeat center/contain;
   }
+}
+
+.hp {
+  background: linear-gradient(135deg, var(--red-7) 0%, var(--red-9) 100%);
+  padding: var(--size-3) var(--size-4);
+  font-size: var(--font-size-5);
+  font-weight: bold;
+  -webkit-text-stroke: 2px black;
+  paint-order: stroke fill;
+  min-width: var(--size-9);
+  text-align: center;
+  clip-path: polygon(10% 15%, 90% 15%, 90% 65%, 50% 100%, 10% 65%);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
 .action-button {

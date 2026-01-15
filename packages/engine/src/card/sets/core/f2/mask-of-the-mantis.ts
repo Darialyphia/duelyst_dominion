@@ -25,11 +25,12 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
+  runeCost: {},
   manaCost: 2,
   durability: 3,
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
-      override: card.player.general
+      override: card.player.deployedGeneral
     }),
   canPlay: () => true,
   getTargets: anywhereTargetRules.getPreResponseTargets({
@@ -46,7 +47,8 @@ export const maskOfTheMantis: ArtifactBlueprint = {
             eventName: GAME_EVENTS.UNIT_AFTER_DEAL_DAMAGE,
             filter: event => {
               if (!event) return false;
-              return event.data.unit.equals(card.player.general);
+              if (!card.player.deployedGeneral) return false;
+              return event.data.unit.equals(card.player.deployedGeneral);
             },
             async handler() {
               const enemyMinions = card.player.enemyMinions;
