@@ -1,4 +1,4 @@
-import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
+import { GAME_PHASES } from '../../game/game.enums';
 import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
 import type { GlobalActionRule } from '../controllers/ui-controller';

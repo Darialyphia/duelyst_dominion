@@ -111,10 +111,7 @@ export class CombatComponent {
     const counterAttackParticipants = this.unit
       .getCounterattackParticipants(unit)
       .filter(unit => {
-        return (
-          unit.canCounterAttackAt(this.unit.position) &&
-          this.unit.canBeCounterattackedBy(unit)
-        );
+        return unit.canCounterAttack(this.unit) && this.unit.canBeCounterattackedBy(unit);
       });
 
     await this.game.emit(

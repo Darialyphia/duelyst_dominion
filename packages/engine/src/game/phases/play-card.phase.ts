@@ -33,8 +33,8 @@ export class PlayCardPhase
       );
     } else {
       const result = await this.currentPlayer.playCardFromHand(this.card as DeckCard);
-      await this.game.turnSystem.switchInitiative();
       if (!result.cancelled) {
+        await this.game.turnSystem.switchInitiative();
         await this.game.gamePhaseSystem.sendTransition(
           GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
         );

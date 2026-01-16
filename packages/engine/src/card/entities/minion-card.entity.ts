@@ -152,12 +152,12 @@ export class MinionCard extends Card<
       // eslint-disable-next-line no-async-promise-executor
       async resolve => {
         const { position, cancelled } = await this.selectPosition();
-        if (cancelled) return;
+        if (cancelled) resolve({ cancelled: true });
 
         const targets = await this.selectTargets();
-        if (cancelled) return;
+        if (cancelled) resolve({ cancelled: true });
 
-        resolve({ position, targets, cancelled: false });
+        resolve({ position: position!, targets, cancelled: false });
       }
     );
   }

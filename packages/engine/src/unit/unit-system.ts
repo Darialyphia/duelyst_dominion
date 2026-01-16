@@ -4,7 +4,7 @@ import { Unit } from './unit.entity';
 import { MinionCard } from '../card/entities/minion-card.entity';
 import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Player } from '../player/player.entity';
-import type { AOEShape, GenericAOEShape } from '../aoe/aoe-shape';
+import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { isValidTargetingType } from '../targeting/targeting-strategy';
 
 // eslint-disable-next-line @typescript-eslint/ban-types

@@ -444,17 +444,6 @@ export class Unit
     );
   }
 
-  canCounterAttackAt(point: Point) {
-    if (this.position.equals(point)) {
-      return false;
-    }
-
-    const target = this.game.unitSystem.getUnitAt(point);
-    if (!target) return false;
-
-    return this.canCounterAttack(target);
-  }
-
   get remainingHp() {
     return Math.max(this.maxHp - this.damageTaken, 0);
   }

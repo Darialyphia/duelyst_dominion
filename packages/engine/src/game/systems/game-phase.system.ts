@@ -253,7 +253,7 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     assert(card, new IllegalCardPlayedError());
     assert(card.canPlay(), new IllegalCardPlayedError());
     await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);
-    await (this._ctx as PlayCardPhase).play(card);
+    return (this._ctx as PlayCardPhase).play(card);
   }
 
   async deployGeneral(player: Player) {

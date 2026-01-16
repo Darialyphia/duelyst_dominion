@@ -84,7 +84,7 @@ export const mistDragonSeal: SpellBlueprint = {
   },
   async getTargets(game, card) {
     const first = await singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: () => true,
+      predicate: unit => unit.isAlly(card.player),
       getAoe(selectedSpaces) {
         return card.getAOE(selectedSpaces);
       }
@@ -93,7 +93,7 @@ export const mistDragonSeal: SpellBlueprint = {
       game,
       card,
       {
-        predicate: () => true,
+        predicate: cell => cell.player?.equals(card.player) ?? false,
         getAoe(selectedSpaces) {
           return card.getAOE(selectedSpaces);
         },
