@@ -99,12 +99,12 @@ export abstract class Card<
     interceptors: TInterceptors,
     options: CardOptions<TBlueprint>
   ) {
-    super(options.id, interceptors);
+    super(options.id, game, interceptors);
     this.game = game;
     this.originalPlayer = player;
     this.blueprint = options.blueprint as any;
     this.isFoil = options.isFoil;
-    this.modifiers = new ModifierManager(this);
+    this.modifiers = new ModifierManager(game, this);
   }
 
   async init() {

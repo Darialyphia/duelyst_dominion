@@ -11,7 +11,7 @@ export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  Heal an allied minion for 4 and deal 4 damage to enemies nearby it.`,
+  Heal an allied minion for 4 and deal 4 damage to enemies on the same and adjacent rows.`,
   vfx: {
     spriteId: 'spells/f1_holy-immolation',
     sequences: {

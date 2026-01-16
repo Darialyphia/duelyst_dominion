@@ -16,7 +16,7 @@ const state = useGameState();
 
 <template>
   <div class="p2-infos">
-    <header>
+    <header :class="{ active: state.turnPlayer === player2.id }">
       <div class="flex flex-col gap-2 items-end">
         <div class="flex gap-7 items-center justify-between">
           <div class="hp">
@@ -117,6 +117,8 @@ header {
   padding: var(--size-3);
   border-radius: var(--radius-3);
   backdrop-filter: blur(5px);
+  border: solid var(--border-size-3) transparent;
+
   &.active {
     border-color: var(--yellow-6);
   }

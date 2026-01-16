@@ -6,20 +6,21 @@ import { Modifier } from '../modifier.entity';
 import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
-import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 
-export class CelerityCardModifier<
+export class AnchoredCardModifier<
   T extends MinionCard | GeneralCard
 > extends Modifier<T> {
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
-    super(KEYWORDS.CELERITY.id, game, source, {
+    super(KEYWORDS.ANCHORED.id, game, source, {
       mixins: [
-        new KeywordModifierMixin(game, KEYWORDS.CELERITY),
+        new KeywordModifierMixin(game, KEYWORDS.ANCHORED),
         new UnitEffectModifierMixin(game, {
-          getModifier: () =>
-            new CelerityUnitModifier(game, this.initialSource, { mixins: [] })
+          getModifier: () => {
+            return new AnchoredUnitModifier(game, this.initialSource, { mixins: [] });
+          }
         }),
         ...(options?.mixins ?? [])
       ]
@@ -27,7 +28,7 @@ export class CelerityCardModifier<
   }
 }
 
-export class CelerityUnitModifier extends Modifier<Unit> {
+export class AnchoredUnitModifier extends Modifier<Unit> {
   constructor(
     game: Game,
     source: AnyCard,
@@ -37,18 +38,22 @@ export class CelerityUnitModifier extends Modifier<Unit> {
       isRemovable?: boolean;
     } = {}
   ) {
-    super(options.modifierType ?? KEYWORDS.CELERITY.id, game, source, {
-      name: KEYWORDS.CELERITY.name,
-      description: KEYWORDS.CELERITY.description,
-      icon: 'icons/keyword-celerity',
+    super(options.modifierType ?? KEYWORDS.ANCHORED.id, game, source, {
+      name: KEYWORDS.ANCHORED.name,
+      description: KEYWORDS.ANCHORED.description,
+      icon: 'icons/keyword-locked',
       mixins: [
         new UnitInterceptorModifierMixin(game, {
-          key: 'maxAttacksPerTurn',
-          interceptor: value => value + 1
+          key: 'canMove',
+          interceptor: () => {
+            return false;
+          }
         }),
         new UnitInterceptorModifierMixin(game, {
-          key: 'maxMovementsPerTurn',
-          interceptor: value => value + 1
+          key: 'canBeMoved',
+          interceptor: () => {
+            return false;
+          }
         }),
         ...(options.mixins ?? [])
       ]

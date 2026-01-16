@@ -22,18 +22,12 @@ export class SpawnModifier extends Modifier<MinionCard> {
     super(KEYWORDS.SPAWN.id, game, source, {
       mixins: [
         new UnitEffectModifierMixin(game, {
-          onApplied: async artifact => {
-            await artifact.modifiers.add(
-              new SpawnUnitModifier(game, source, {
-                mixins: [],
-                stacks: options.stacks ?? 0,
-                blueprintId: options.blueprintId ?? ''
-              })
-            );
-          },
-          onRemoved: async artifact => {
-            await artifact.modifiers.remove(SpawnUnitModifier);
-          },
+          getModifier: () =>
+            new SpawnUnitModifier(game, source, {
+              mixins: [],
+              stacks: options.stacks ?? 0,
+              blueprintId: options.blueprintId ?? ''
+            }),
           ...(options?.mixins ?? [])
         })
       ]

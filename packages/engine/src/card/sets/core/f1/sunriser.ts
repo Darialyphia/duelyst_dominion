@@ -12,7 +12,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const sunriser: MinionBlueprint = {
   id: 'sunriser',
   name: 'Sunriser',
-  description: 'After a unit is healed, deal 2 damage to nearby enemies.',
+  description: 'After a unit is healed, deal 2 damage to enemies in this row.',
   vfx: {
     spriteId: 'minions/f1_sunriser',
     sequences: {
@@ -36,7 +36,7 @@ export const sunriser: MinionBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   runeCost: {},
-  manaCost: 4,
+  manaCost: 3,
   atk: 3,
   maxHp: 4,
   retaliation: 2,
@@ -51,7 +51,9 @@ export const sunriser: MinionBlueprint = {
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.UNIT_AFTER_HEAL,
               async handler() {
-                const targets = card.unit.nearbyUnits.filter(u => u.isEnemy(card.unit));
+                const targets = card.unit.unitsOnSameRow.filter(unit =>
+                  unit.isEnemy(card.unit)
+                );
                 for (const target of targets) {
                   await target.takeDamage(card, new AbilityDamage(card, 2));
                 }

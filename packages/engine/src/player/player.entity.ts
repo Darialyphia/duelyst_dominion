@@ -135,7 +135,7 @@ export class Player
       maxHandSize: this.game.config.MAX_HAND_SIZE,
       shouldShuffleDeck: true
     });
-    this.modifiers = new ModifierManager<Player>(this);
+    this.modifiers = new ModifierManager<Player>(game, this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
     this.runeManager = new RuneManagerComponent(game, this);
   }
@@ -165,6 +165,22 @@ export class Player
 
   get remainingHp() {
     return this.maxHp - this.damageTaken;
+  }
+
+  get frontRowIndex() {
+    return this.isPlayer1 ? 1 : 3;
+  }
+
+  get unitsInFrontRow() {
+    return this.units.filter(unit => unit.position.x === this.frontRowIndex);
+  }
+
+  get backRowIndex() {
+    return this.isPlayer1 ? 0 : 4;
+  }
+
+  get unitsInBackRow() {
+    return this.units.filter(unit => unit.position.x === this.backRowIndex);
   }
 
   serialize() {

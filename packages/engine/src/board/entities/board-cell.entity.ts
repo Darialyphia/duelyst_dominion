@@ -34,10 +34,10 @@ export class BoardCell
   private readonly _player: 'p1' | 'p2' | null;
 
   constructor(
-    private game: Game,
+    protected game: Game,
     options: BoardCellOptions
   ) {
-    super(pointToCellId(options.position), {
+    super(pointToCellId(options.position), game, {
       isWalkable: new Interceptable()
     });
     this.position = Vec2.fromPoint(options.position);

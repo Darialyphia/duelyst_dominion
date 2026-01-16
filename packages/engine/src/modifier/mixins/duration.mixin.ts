@@ -19,9 +19,7 @@ export class DurationModifierMixin<T extends ModifierTarget> extends ModifierMix
   async onTurnEnd() {
     this.duration--;
     if (this.duration === 0) {
-      await this.modifier.target.modifiers.remove(this.modifier.modifierType, {
-        force: true
-      });
+      await this.modifier.target.modifiers.remove(this.modifier.modifierType);
     }
   }
 

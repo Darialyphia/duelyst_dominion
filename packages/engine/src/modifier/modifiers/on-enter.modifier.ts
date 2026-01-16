@@ -8,8 +8,6 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { MinionBeforeSummonedEvent } from '../../card/events/minion.events';
-import { UNIT_EVENTS } from '../../unit/unit.enums';
-import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
 export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(

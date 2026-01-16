@@ -39,7 +39,7 @@ export const lightChaser: MinionBlueprint = {
   manaCost: 2,
   atk: 1,
   maxHp: 4,
-  retaliation: 2,
+  retaliation: 1,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

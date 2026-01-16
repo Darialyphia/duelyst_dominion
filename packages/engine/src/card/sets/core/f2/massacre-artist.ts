@@ -1,6 +1,7 @@
 import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import {
+  BackstabAmountModifierMixin,
   BackstabModifier,
   BackstabUnitModifier
 } from '../../../../modifier/modifiers/backstab.modifier';
@@ -12,6 +13,7 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { StealthUnitModifier } from '../../../../modifier/modifiers/stealth.modifier';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
+import type { Unit } from '../../../../unit/unit.entity';
 
 export const massacreArtist: MinionBlueprint = {
   id: 'massacre_artist',
@@ -57,33 +59,23 @@ export const massacreArtist: MinionBlueprint = {
 
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('massacre-artist-ally-backstab', game, card, {
+        modifier: new Modifier<Unit>('massacre-artist-ally-backstab', game, card, {
           mixins: [
-            new UnitAuraModifierMixin(game, {
+            new UnitAuraModifierMixin(game, card, {
               isElligible(candidate) {
                 return (
                   candidate.isAlly(card.unit) &&
                   candidate.modifiers.has(BackstabUnitModifier)
                 );
               },
-              async onGainAura(candidate) {
-                const backstabModifier = candidate.modifiers.get(
-                  BackstabUnitModifier
-                ) as BackstabUnitModifier;
-                backstabModifier.addBackstabAmountInterceptor(interceptor);
-                await candidate.modifiers.add(
-                  new StealthUnitModifier(game, card, {
-                    isRemovable: false
-                  })
-                );
-              },
-              async onLoseAura(candidate) {
-                const backstabModifier = candidate.modifiers.get(
-                  BackstabUnitModifier
-                ) as BackstabUnitModifier;
-                backstabModifier.removeBackstabAmountInterceptor(interceptor);
-                await candidate.modifiers.remove(StealthUnitModifier);
-              }
+              getModifiers: () => [
+                new Modifier('massacre-artist-backstab-bonus', game, card, {
+                  mixins: [new BackstabAmountModifierMixin(game, interceptor)]
+                }),
+                new StealthUnitModifier(game, card, {
+                  isRemovable: false
+                })
+              ]
             })
           ]
         })

@@ -1,14 +1,17 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
+import { RectangleAOEShape } from '../../../../aoe/rectangle.aoe-shape';
+import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
+import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.modifier';
+import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
-  description: dedent`Move an minion to the space in front of your general.`,
+  description: dedent`Give units on the same row as your general @Anchored@ this turn.`,
   vfx: {
     spriteId: 'spells/f1_magnetize',
     sequences: {
@@ -76,24 +79,32 @@ export const magnetize: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
-  canPlay: (game, card) => {
-    if (card.player.deployedGeneral?.inFront?.isOccupied) return false;
-
-    return singleMinionTargetRules.canPlay(game, card);
-  },
-  getTargets(game, card) {
-    return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
-      }
+  getAoe: (game, card) => {
+    if (!card.player.deployedGeneral) return new NoAOEShape(TARGETING_TYPE.ANYWHERE, {});
+    return new RectangleAOEShape(TARGETING_TYPE.UNIT, {
+      width: game.boardSystem.width,
+      height: 1,
+      topLeftOverride: card.player.deployedGeneral.position
     });
   },
+  canPlay: () => true,
+  getTargets: () => Promise.resolve([]),
   async onInit() {},
-  async onPlay(game, card, { targets }) {
-    const target = game.unitSystem.getUnitAt(targets[0]);
-    if (!target) return;
+  async onPlay(game, card, { aoe }) {
+    if (!card.player.deployedGeneral) return;
 
-    await target.teleport(card.player.deployedGeneral!.inFront!);
+    const units = game.unitSystem.getUnitsInAOE(
+      aoe,
+      [card.player.deployedGeneral.position],
+      card.player
+    );
+
+    for (const unit of units) {
+      await unit.modifiers.add(
+        new AnchoredUnitModifier(game, card, {
+          mixins: [new UntilEndOfTurnModifierMixin(game)]
+        })
+      );
+    }
   }
 };

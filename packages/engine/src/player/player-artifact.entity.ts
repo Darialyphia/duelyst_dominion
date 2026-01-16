@@ -46,11 +46,8 @@ export class PlayerArtifact
 
   durability: number;
 
-  constructor(
-    protected game: Game,
-    options: PlayerArtifactOptions
-  ) {
-    super(`${options.playerId}-artifact-${nanoid(6)}`, makeInterceptors());
+  constructor(game: Game, options: PlayerArtifactOptions) {
+    super(`${options.playerId}-artifact-${nanoid(6)}`, game, makeInterceptors());
     this.card = options.card;
     this.durability = this.card.durability;
     this.playerId = options.playerId;

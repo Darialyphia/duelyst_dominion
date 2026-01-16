@@ -39,10 +39,7 @@ export const scionsCrown: ArtifactBlueprint = {
   }),
   async onInit() {},
   async onPlay(game, card, { artifact }) {
-    const MODIFIER_ID = 'scions-crown-aura';
-
     const aura = new CelerityUnitModifier(game, card, {
-      modifierType: MODIFIER_ID,
       isRemovable: false,
       mixins: []
     });
@@ -50,17 +47,12 @@ export const scionsCrown: ArtifactBlueprint = {
     await artifact.modifiers.add(
       new Modifier<PlayerArtifact>('scions-crown', game, card, {
         mixins: [
-          new UnitAuraModifierMixin(game, {
+          new UnitAuraModifierMixin(game, card, {
             isElligible(candidate) {
               if (!card.player.deployedGeneral) return false;
               return candidate.equals(card.player.deployedGeneral);
             },
-            async onGainAura(candidate) {
-              await candidate.modifiers.add(aura);
-            },
-            async onLoseAura(candidate) {
-              await candidate.modifiers.remove(MODIFIER_ID);
-            }
+            getModifiers: () => [aura]
           })
         ]
       })

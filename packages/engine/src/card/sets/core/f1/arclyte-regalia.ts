@@ -44,8 +44,6 @@ export const arclyteRegalia: ArtifactBlueprint = {
   }),
   async onInit() {},
   async onPlay(game, card, { artifact }) {
-    const MODIFIER_ID = 'arclyte-regalia-buff';
-
     let hasProccedThisTurn = false;
     const buff = new Modifier<Unit>('arclyte-regalia-buff', game, card, {
       mixins: [
@@ -86,17 +84,12 @@ export const arclyteRegalia: ArtifactBlueprint = {
     await artifact.modifiers.add(
       new Modifier<PlayerArtifact>('arclyte-regalia', game, card, {
         mixins: [
-          new UnitAuraModifierMixin(game, {
+          new UnitAuraModifierMixin(game, card, {
             isElligible(candidate) {
               if (!card.player.deployedGeneral) return false;
               return candidate.equals(card.player.deployedGeneral);
             },
-            async onGainAura(candidate) {
-              await candidate.modifiers.add(buff);
-            },
-            async onLoseAura(candidate) {
-              await candidate.modifiers.remove(MODIFIER_ID);
-            }
+            getModifiers: () => [buff]
           })
         ]
       })

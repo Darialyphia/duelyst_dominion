@@ -20,6 +20,12 @@ export const KEYWORDS = {
     description: 'Can be summoned anywhere.',
     aliases: []
   },
+  ANCHORED: {
+    id: 'anchored',
+    name: 'Anchored',
+    description: 'This unit cannot move or be moved by any effect.',
+    aliases: []
+  },
   BACKSTAB: {
     id: 'backstab',
     name: 'Backstab (x)',
@@ -195,7 +201,7 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description: 'Stops nearby enemy units from moving. They must attack this first.',
+    description: 'Takes combat damage instead of adjacent allies.',
     aliases: ['provoke']
   },
   PROVOKED: {

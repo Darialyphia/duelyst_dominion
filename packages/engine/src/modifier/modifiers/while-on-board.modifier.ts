@@ -26,12 +26,7 @@ export class WhileOnBoardModifier<
     super(modifierType, game, source, {
       mixins: [
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(modifier);
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(modifier);
-          }
+          getModifier: () => modifier
         }),
         ...mixins
       ]

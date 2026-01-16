@@ -28,17 +28,11 @@ export class MinionOnDestroyModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.ON_DESTROYED),
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(
-              new MinionOnDestroyUnitModifier(game, this.source, {
-                mixins: [],
-                handler: options.handler
-              })
-            );
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(MinionOnDestroyUnitModifier);
-          }
+          getModifier: () =>
+            new MinionOnDestroyUnitModifier(game, this.initialSource, {
+              mixins: [],
+              handler: options.handler
+            })
         }),
         ...(options?.mixins ?? [])
       ]

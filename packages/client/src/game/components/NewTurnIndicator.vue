@@ -2,19 +2,11 @@
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { useFxEvent } from '../composables/useGameClient';
 import { waitFor } from '@game/shared';
-import { GAME_PHASES } from '@game/engine/src/game/game.enums';
 
 const phase = ref<string | null>(null);
 
-useFxEvent(FX_EVENTS.BEFORE_CHANGE_PHASE, async event => {
-  if (
-    event.from === GAME_PHASES.PLAYING_CARD ||
-    event.to === GAME_PHASES.PLAYING_CARD
-  ) {
-    return;
-  }
-
-  phase.value = event.to.replace('_', ' ');
+useFxEvent(FX_EVENTS.TURN_START, async event => {
+  phase.value = `Turn ${event.turnCount + 1}`;
   await waitFor(1250);
   phase.value = null;
   await waitFor(400);

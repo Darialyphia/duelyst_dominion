@@ -4,7 +4,7 @@ import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { TogglableModifierMixin } from '../mixins/togglable.mixin';
-import type { ModifierMixin } from '../modifier-mixin';
+import { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
@@ -23,16 +23,10 @@ export class ZealModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.ZEAL),
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(
-              new ZealUnitModifier(game, source, {
-                mixins: options.mixins
-              })
-            );
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(ZealUnitModifier);
-          }
+          getModifier: () =>
+            new ZealUnitModifier(game, source, {
+              mixins: options.mixins
+            })
         })
       ]
     });
@@ -75,4 +69,29 @@ export class ZealUnitModifier extends Modifier<Unit> {
   removeIsZealedInterceptor(interceptor: (value: boolean) => boolean) {
     this._isZealed.remove(interceptor);
   }
+}
+
+export class IsZealedModifierMixin extends ModifierMixin<Unit> {
+  constructor(
+    game: Game,
+    private readonly interceptor: (value: boolean) => boolean
+  ) {
+    super(game);
+  }
+
+  onApplied(target: Unit): void {
+    const zealModifier = target.modifiers.get(ZealUnitModifier);
+    if (zealModifier) {
+      zealModifier.addIsZealedInterceptor(this.interceptor);
+    }
+  }
+
+  onRemoved(target: Unit): void {
+    const zealModifier = target.modifiers.get(ZealUnitModifier);
+    if (zealModifier) {
+      zealModifier.removeIsZealedInterceptor(this.interceptor);
+    }
+  }
+
+  onReapplied(): void {}
 }

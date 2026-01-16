@@ -19,14 +19,8 @@ export class EphemeralCardModifier<
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.EPHEMERAL),
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(
-              new EphemeralUnitModifier(game, this.source, { mixins: [] })
-            );
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(EphemeralUnitModifier);
-          }
+          getModifier: () =>
+            new EphemeralUnitModifier(game, this.initialSource, { mixins: [] })
         }),
         ...(options?.mixins ?? [])
       ]
@@ -48,7 +42,6 @@ export class EphemeralUnitModifier extends Modifier<Unit> {
       name: KEYWORDS.EPHEMERAL.name,
       description: KEYWORDS.EPHEMERAL.description,
       icon: 'icons/keyword-ephemeral',
-      isRemovable: options.isRemovable ?? true,
       mixins: [
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.TURN_END,

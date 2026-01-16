@@ -1,10 +1,4 @@
-import {
-  isString,
-  type Constructor,
-  type EmptyObject,
-  type Serializable,
-  type Values
-} from '@game/shared';
+import { isFunction, isString, type Serializable, type Values } from '@game/shared';
 import type { ModifierMixin } from './modifier-mixin';
 import { Entity } from '../entity';
 import type { Game } from '../game/game';
@@ -13,31 +7,16 @@ import type { ModifierManager } from './modifier-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
 import { Interceptable } from '../utils/interceptable';
 
-export type ModifierInfos<TCustomEvents extends Record<string, any>> =
-  TCustomEvents extends EmptyObject
-    ? {
-        name?: string;
-        description?: string | (() => string);
-        icon?: string;
-        isUnique?: boolean;
-      }
-    : {
-        name?: string;
-        description?: string;
-        isUnique?: boolean;
-        icon?: string;
-      };
-
-export type ModifierOptions<
-  T extends ModifierTarget,
-  TCustomEvents extends Record<string, any>
-> = ModifierInfos<TCustomEvents> & {
+export type ModifierOptions<T extends ModifierTarget> = {
+  name?: string | (() => string);
+  description?: string | (() => string);
+  icon?: string | (() => string);
+  isUnique?: boolean;
   mixins: ModifierMixin<T>[];
   stacks?: number;
-  isRemovable?: boolean;
 };
 
-class ModifierLifecycleEvent extends TypedSerializableEvent<
+export class ModifierLifecycleEvent extends TypedSerializableEvent<
   Modifier<any>,
   SerializedModifier
 > {
@@ -78,7 +57,7 @@ export type SerializedModifier = {
   name?: string;
   description?: string;
   icon?: string;
-  target: string | null;
+  target: string;
   source: string;
   stacks: number;
   isEnabled: boolean;
@@ -88,10 +67,7 @@ export type ModifierInterceptors = {
   isEnabled: Interceptable<boolean>;
 };
 
-export class Modifier<
-    T extends ModifierTarget,
-    TEventsMap extends ModifierEventMap = ModifierEventMap
-  >
+export class Modifier<T extends ModifierTarget>
   extends Entity<ModifierInterceptors>
   implements Serializable<SerializedModifier>
 {
@@ -99,13 +75,21 @@ export class Modifier<
 
   protected game: Game;
 
-  readonly source: AnyCard;
+  readonly initialSource: AnyCard;
+
+  // A unique modifier of the same type could be applied from different sources (for example auras)
+  // We need to keep track of those so can remove the modifier only when it has no source left
+  _sources = new Set<AnyCard>();
 
   protected _target!: T;
 
   private _isApplied = false;
 
-  readonly infos: { name?: string; description?: string | (() => string); icon?: string };
+  readonly infos: {
+    name?: string | (() => string);
+    description?: string | (() => string);
+    icon?: string | (() => string);
+  };
 
   readonly modifierType: string;
 
@@ -115,30 +99,25 @@ export class Modifier<
 
   private _prevEnabled = true;
 
-  private _isRemovable: boolean;
-
   constructor(
     modifierType: string,
     game: Game,
     source: AnyCard,
-    options: ModifierOptions<
-      T,
-      Record<Exclude<keyof TEventsMap, keyof ModifierEventMap>, boolean>
-    >
+    options: ModifierOptions<T>
   ) {
     super(game.modifierIdFactory(modifierType), {
       isEnabled: new Interceptable()
     });
     this.game = game;
     this.modifierType = modifierType;
-    this.source = source;
+    this._sources.add(source);
+    this.initialSource = source;
     this.mixins = options.mixins;
     this.infos = {
       description: options.description,
       name: options.name,
       icon: options.icon
     };
-    this._isRemovable = options.isRemovable ?? true;
     this._isUnique = options.isUnique ?? false;
     if (options.stacks) {
       this._stacks = options.stacks;
@@ -162,12 +141,8 @@ export class Modifier<
     return this._stacks;
   }
 
-  get isRemovable() {
-    return this._isRemovable;
-  }
-
-  getMixin(ctor: Constructor<ModifierMixin<T>>): ModifierMixin<T>[] {
-    return this.mixins.filter(mixin => mixin instanceof ctor);
+  get sources() {
+    return this._sources;
   }
 
   checkEnabled() {
@@ -239,9 +214,7 @@ export class Modifier<
     );
   }
 
-  async remove({ force }: { force?: boolean } = { force: false }) {
-    if (!force && !this._isRemovable) return;
-
+  async remove() {
     await this.game.emit(
       MODIFIER_EVENTS.MODIFIER_BEFORE_REMOVED,
       new ModifierLifecycleEvent(this)
@@ -254,6 +227,13 @@ export class Modifier<
       MODIFIER_EVENTS.MODIFIER_AFTER_REMOVED,
       new ModifierLifecycleEvent(this)
     );
+  }
+
+  async removeSource(source: AnyCard) {
+    this._sources.delete(source);
+    if (this._sources.size === 0) {
+      return this.remove();
+    }
   }
 
   addStacks(count: number) {
@@ -279,13 +259,13 @@ export class Modifier<
       id: this.id,
       modifierType: this.modifierType,
       entityType: 'modifier' as const,
-      name: this.infos.name,
-      description: isString(this.infos.description)
-        ? this.infos.description
-        : this.infos.description?.(),
-      icon: this.infos.icon,
-      target: this._target?.id ?? null,
-      source: this.source.id,
+      name: isFunction(this.infos.name) ? this.infos.name() : this.infos.name,
+      description: isFunction(this.infos.description)
+        ? this.infos.description()
+        : this.infos.description,
+      icon: isFunction(this.infos.icon) ? this.infos.icon() : this.infos.icon,
+      target: this._target.id,
+      source: this.initialSource.id,
       stacks: this._stacks,
       isEnabled: this.isEnabled
     };

@@ -1,17 +1,29 @@
 import { isString, type Constructor, type Nullable } from '@game/shared';
-import { Modifier, type ModifierTarget } from './modifier.entity';
-import type { AnyCard } from '../card/entities/card.entity';
+import { Modifier, ModifierLifecycleEvent, type ModifierTarget } from './modifier.entity';
+import type { Game } from '../game/game';
+import { GAME_EVENTS } from '../game/game.events';
 
 export class ModifierManager<T extends ModifierTarget> {
   private _modifiers: Modifier<T>[] = [];
 
-  constructor(private target: T) {}
+  constructor(
+    private game: Game,
+    private target: T
+  ) {
+    this.onModifierRemoved = this.onModifierRemoved.bind(this);
+    game.on(GAME_EVENTS.MODIFIER_AFTER_REMOVED, this.onModifierRemoved);
+  }
 
-  has(modifierOrId: string | Modifier<T, any> | Constructor<Modifier<T>>) {
+  cleanup() {
+    this.game.off(GAME_EVENTS.MODIFIER_AFTER_REMOVED, this.onModifierRemoved);
+  }
+
+  has(modifierOrId: string | Modifier<T> | Constructor<Modifier<T>>) {
     if (modifierOrId instanceof Modifier) {
-      return this._modifiers.some(
-        modifier =>
-          modifier.modifierType === modifierOrId.modifierType && modifier.isUnique
+      return this._modifiers.some(modifier =>
+        modifier.modifierType === modifierOrId.modifierType && modifier.isUnique
+          ? true
+          : modifier.equals(modifierOrId)
       );
     } else if (isString(modifierOrId)) {
       return this._modifiers.some(modifier => modifier.modifierType === modifierOrId);
@@ -20,7 +32,7 @@ export class ModifierManager<T extends ModifierTarget> {
     }
   }
 
-  get<TArg extends string | Modifier<T, any> | Constructor<Modifier<T>>>(
+  get<TArg extends string | Modifier<T> | Constructor<Modifier<T>>>(
     modifierOrType: TArg
   ): TArg extends Constructor<Modifier<T>>
     ? Nullable<InstanceType<TArg>>
@@ -46,22 +58,17 @@ export class ModifierManager<T extends ModifierTarget> {
     } else {
       this._modifiers.push(modifier);
       await modifier.applyTo(this.target);
+
       return modifier;
     }
   }
 
-  async remove(
-    modifierOrType: string | Modifier<T> | Constructor<Modifier<T>>,
-    options?: {
-      source?: AnyCard;
-      force?: boolean;
-    }
-  ) {
-    const idx = this._modifiers.findIndex(mod => {
-      if (options?.source && !mod.source.equals(options.source)) {
-        return false;
-      }
+  private onModifierRemoved(event: ModifierLifecycleEvent) {
+    this._modifiers = this._modifiers.filter(mod => !mod.equals(event.data));
+  }
 
+  async remove(modifierOrType: string | Modifier<T> | Constructor<Modifier<T>>) {
+    const modToRemove = this._modifiers.find(mod => {
       if (modifierOrType instanceof Modifier) {
         return mod.equals(modifierOrType);
       } else if (isString(modifierOrType)) {
@@ -70,17 +77,9 @@ export class ModifierManager<T extends ModifierTarget> {
         return mod.constructor === modifierOrType;
       }
     });
-    if (idx < 0) return;
+    if (!modToRemove) return;
 
-    const modifier = this._modifiers[idx];
-
-    const force = options?.force ?? false;
-    if (!force && !modifier.isRemovable) {
-      return;
-    }
-
-    this._modifiers.splice(idx, 1);
-    await modifier.remove({ force: force });
+    await modToRemove.remove();
   }
 
   get list() {

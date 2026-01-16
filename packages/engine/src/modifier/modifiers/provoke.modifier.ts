@@ -11,8 +11,6 @@ import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
-  private unitModifier: Modifier<Unit> | null = null;
-
   constructor(
     game: Game,
     source: AnyCard,
@@ -22,12 +20,7 @@ export class ProvokeModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.PROVOKE),
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(new ProvokeUnitModifier(game, this.source));
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(ProvokeUnitModifier);
-          }
+          getModifier: () => new ProvokeUnitModifier(game, this.initialSource)
         }),
         ...(options?.mixins ?? [])
       ]
@@ -42,18 +35,12 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
-        new UnitAuraModifierMixin(game, {
+        new UnitAuraModifierMixin(game, source, {
           isElligible: candidate => {
             return this.shouldBeProvoked(candidate);
           },
-          onGainAura: async candidate => {
-            await candidate.modifiers.add(new ProvokedModifier(game, this.source));
-          },
-          onLoseAura: async candidate => {
-            await candidate.modifiers.remove(ProvokedModifier, {
-              source: this.source,
-              force: true
-            });
+          getModifiers: () => {
+            return [new ProvokedModifier(game, this.initialSource)];
           }
         })
       ]
@@ -71,7 +58,6 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
 export class ProvokedModifier extends Modifier<Unit> {
   constructor(game: Game, source: AnyCard) {
     super('provoked', game, source, {
-      isRemovable: false,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'canMove',

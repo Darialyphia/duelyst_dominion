@@ -62,7 +62,7 @@ export type SerializedUnit = {
 
 export type UnitInterceptors = {
   canMove: Interceptable<boolean>;
-  canMoveAfterAttacking: Interceptable<boolean>;
+  canBeMoved: Interceptable<boolean>;
   canAttack: Interceptable<boolean, { target: Unit }>;
   canCounterAttack: Interceptable<boolean, { attacker: Unit }>;
   canBeAttackTarget: Interceptable<boolean, { attacker: Unit }>;
@@ -112,13 +112,13 @@ export class Unit
   _isExhausted = false;
 
   constructor(
-    private game: Game,
+    game: Game,
     readonly card: MinionCard | GeneralCard,
     options: UnitOptions
   ) {
-    super(options.id, {
+    super(options.id, game, {
       canMove: new Interceptable(),
-      canMoveAfterAttacking: new Interceptable(),
+      canBeMoved: new Interceptable(),
       canAttack: new Interceptable(),
       canCounterAttack: new Interceptable(),
       canBeAttackTarget: new Interceptable(),
@@ -245,6 +245,34 @@ export class Unit
     return unitsOnRow.length === 0;
   }
 
+  get unitsOnSameRow() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.y === this.y && !unit.equals(this)
+    );
+  }
+
+  get unitsOnRowAbove() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.y === this.y - 1 && !unit.equals(this)
+    );
+  }
+
+  get unitsOnRowBelow() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.y === this.y + 1 && !unit.equals(this)
+    );
+  }
+
+  get unitsOnAdjacentRows() {
+    return [...this.unitsOnRowAbove, ...this.unitsOnRowBelow];
+  }
+
+  get unitsOnSameColumn() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.x === this.x && !unit.equals(this)
+    );
+  }
+
   get isAttacking() {
     const phaseCtx = this.game.gamePhaseSystem.getContext();
     if (phaseCtx.state !== GAME_PHASES.COMBAT) return false;
@@ -310,8 +338,8 @@ export class Unit
     return this.movement.movementsCount;
   }
 
-  get canMoveAfterAttacking() {
-    return this.interceptors.canMoveAfterAttacking.getValue(false, {});
+  get canBeMoved() {
+    return this.interceptors.canBeMoved.getValue(false, {});
   }
 
   get canMove(): boolean {
@@ -338,6 +366,7 @@ export class Unit
   }
 
   async teleport(to: Point, silent = false) {
+    if (!silent && !this.canBeMoved) return;
     // dont trigger events if moving from a source outside of the game (for example sandbox tools)
     if (!silent) {
       await this.game.emit(

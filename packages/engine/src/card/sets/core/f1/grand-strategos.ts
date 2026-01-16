@@ -1,6 +1,9 @@
 import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { ZealUnitModifier } from '../../../../modifier/modifiers/zeal.modifier';
+import {
+  IsZealedModifierMixin,
+  ZealUnitModifier
+} from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -10,6 +13,7 @@ import { Modifier } from '../../../../modifier/modifier.entity';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import type { Unit } from '../../../../unit/unit.entity';
 
 export const grandStrategos: MinionBlueprint = {
   id: 'grand_strategos',
@@ -55,35 +59,27 @@ export const grandStrategos: MinionBlueprint = {
 
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('grand-strategos-aura', game, card, {
+        modifier: new Modifier<Unit>('grand-strategos-aura', game, card, {
           mixins: [
-            new UnitAuraModifierMixin(game, {
+            new UnitAuraModifierMixin(game, card, {
               isElligible(candidate) {
                 return (
                   candidate.modifiers.has(ZealUnitModifier) &&
                   candidate.isAlly(card.player)
                 );
               },
-              async onGainAura(candidate) {
-                const zealModifier = candidate.modifiers.get(ZealUnitModifier)!;
-                zealModifier.addIsZealedInterceptor(ZEAL_INTERCEPTOR);
-
-                await candidate.modifiers.add(
+              getModifiers() {
+                return [
+                  new Modifier('grand-strategos-zeal-interceptor', game, card, {
+                    mixins: [new IsZealedModifierMixin(game, ZEAL_INTERCEPTOR)]
+                  }),
                   new UnitSimpleHealthBuffModifier(HP_BUFF_ID, game, card, {
                     amount: 1
-                  })
-                );
-                await candidate.modifiers.add(
+                  }),
                   new UnitSimpleAttackBuffModifier(ATTACK_BUFF_ID, game, card, {
                     amount: 1
                   })
-                );
-              },
-              async onLoseAura(candidate) {
-                const zealModifier = candidate.modifiers.get(ZealUnitModifier)!;
-                zealModifier.removeIsZealedInterceptor(ZEAL_INTERCEPTOR);
-                await candidate.modifiers.remove(HP_BUFF_ID);
-                await candidate.modifiers.remove(ATTACK_BUFF_ID);
+                ];
               }
             })
           ]

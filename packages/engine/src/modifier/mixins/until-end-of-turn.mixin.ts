@@ -14,9 +14,7 @@ export class UntilEndOfTurnModifierMixin<
   }
 
   async onTurnEnd() {
-    await this.modifier.target.modifiers.remove(this.modifier.id, {
-      force: true
-    });
+    await this.modifier.target.modifiers.remove(this.modifier.id);
   }
 
   onApplied(target: T, modifier: Modifier<T>): void {

@@ -26,9 +26,9 @@ export class SubModifierMixin<
     }
   }
 
-  async onRemoved(t: ModifierTarget, _modifier: Modifier<T>): Promise<void> {
+  async onRemoved(): Promise<void> {
     for (const [target, modifier] of this.subModifierTargets.entries()) {
-      await target.modifiers.remove(modifier, { source: _modifier.source, force: true });
+      await target.modifiers.remove(modifier);
     }
     this.subModifierTargets.clear();
   }

@@ -17,16 +17,10 @@ export class StructureModifier extends Modifier<MinionCard> {
     super(KEYWORDS.STRUCTURE.id, game, source, {
       mixins: [
         new UnitEffectModifierMixin(game, {
-          onApplied: async artifact => {
-            await artifact.modifiers.add(
-              new StructureUnitModifier(game, source, {
-                mixins: []
-              })
-            );
-          },
-          onRemoved: async artifact => {
-            await artifact.modifiers.remove(StructureUnitModifier);
-          },
+          getModifier: () =>
+            new StructureUnitModifier(game, source, {
+              mixins: []
+            }),
           ...(options?.mixins ?? [])
         })
       ]

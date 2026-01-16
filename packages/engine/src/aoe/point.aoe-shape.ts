@@ -1,11 +1,13 @@
-import type { EmptyObject, Nullable, Point } from '@game/shared';
+import type { Nullable, Point } from '@game/shared';
 import type { AOEShape } from './aoe-shape';
 import type { TargetingType } from './aoe.enums';
 
 export type SerializedPointAOE = {
   type: 'point';
   targetingType: TargetingType;
-  params: EmptyObject;
+  params: {
+    override: Point | null;
+  };
 };
 
 type PointAoeShapeOptions = {
@@ -27,7 +29,9 @@ export class PointAOEShape implements AOEShape<SerializedPointAOE> {
     return {
       type: this.type,
       targetingType: this.targetingType,
-      params: {}
+      params: {
+        override: this.options.override ?? null
+      }
     };
   }
 

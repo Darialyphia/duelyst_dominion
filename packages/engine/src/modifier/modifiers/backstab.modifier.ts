@@ -1,7 +1,7 @@
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
-import type { ModifierMixin } from '../modifier-mixin';
+import { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
@@ -9,6 +9,7 @@ import { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
+import { ZealUnitModifier } from './zeal.modifier';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   constructor(
@@ -23,16 +24,10 @@ export class BackstabModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.BACKSTAB),
         new UnitEffectModifierMixin(game, {
-          onApplied: async unit => {
-            await unit.modifiers.add(
-              new BackstabUnitModifier(game, source, {
-                damageBonus: options.damageBonus
-              })
-            );
-          },
-          onRemoved: async unit => {
-            await unit.modifiers.remove(BackstabUnitModifier);
-          }
+          getModifier: () =>
+            new BackstabUnitModifier(game, source, {
+              damageBonus: options.damageBonus
+            })
         }),
         ...(options?.mixins ?? [])
       ]
@@ -88,4 +83,29 @@ export class BackstabUnitModifier extends Modifier<Unit> {
   removeBackstabAmountInterceptor(interceptor: (value: number) => number) {
     this.backstabAmount.remove(interceptor);
   }
+}
+
+export class BackstabAmountModifierMixin extends ModifierMixin<Unit> {
+  constructor(
+    game: Game,
+    private readonly interceptor: (value: number) => number
+  ) {
+    super(game);
+  }
+
+  onApplied(target: Unit): void {
+    const backstabModifier = target.modifiers.get(BackstabUnitModifier);
+    if (backstabModifier) {
+      backstabModifier.addBackstabAmountInterceptor(this.interceptor);
+    }
+  }
+
+  onRemoved(target: Unit): void {
+    const backstabModifier = target.modifiers.get(BackstabUnitModifier);
+    if (backstabModifier) {
+      backstabModifier.removeBackstabAmountInterceptor(this.interceptor);
+    }
+  }
+
+  onReapplied(): void {}
 }
