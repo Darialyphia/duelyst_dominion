@@ -14,6 +14,8 @@ import {
 import { Flip } from 'gsap/Flip';
 import UiButton from '@/ui/components/UiButton.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
+import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
+import GameCard from './GameCard.vue';
 
 const ui = useGameUi();
 const cardRotation = ref({ x: 0, y: 0 });
@@ -124,6 +126,18 @@ const unsub = client.value.onUpdateCompleted(() => {
 onBeforeUnmount(() => {
   unsub();
 });
+
+const draggedCard = computed(() => {
+  if (state.value.phase.state !== GAME_PHASES.PLAYING_CARD) return null;
+
+  const card = state.value.entities[
+    state.value.phase.ctx.card
+  ] as CardViewModel;
+
+  if (!card) return null;
+
+  return card;
+});
 </script>
 
 <template>
@@ -143,7 +157,11 @@ onBeforeUnmount(() => {
         '--y': `${y}px`
       }"
     >
-      <slot />
+      <GameCard
+        v-if="draggedCard"
+        :card-id="draggedCard.id"
+        :is-interactive="false"
+      />
       <Transition>
         <div
           v-if="

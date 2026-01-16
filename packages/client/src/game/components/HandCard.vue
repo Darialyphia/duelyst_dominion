@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Teleport } from 'vue';
 import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 import {
   useGameClient,
@@ -9,10 +8,7 @@ import {
 import GameCard from './GameCard.vue';
 import { usePageLeave } from '@vueuse/core';
 import { Flip } from 'gsap/Flip';
-import {
-  GAME_PHASES,
-  INTERACTION_STATES
-} from '@game/engine/src/game/game.enums';
+import { GAME_PHASES } from '@game/engine/src/game/game.enums';
 import Sound from '@/ui/components/Sound.vue';
 import { useSoundEffect } from '@/shared/composables/useSoundEffect';
 
@@ -28,7 +24,6 @@ const state = useGameState();
 const DRAG_THRESHOLD_PX = 60;
 
 const isOutOfScreen = usePageLeave();
-const isDragging = ref(false);
 
 const isShaking = ref(false);
 const violationWarning = ref('');
@@ -78,7 +73,7 @@ const onMouseDown = (e: MouseEvent) => {
 
   const stopDragging = () => {
     nextTick(() => {
-      isDragging.value = false;
+      ui.value.isDraggingCard = false;
     });
     document.body.removeEventListener('mouseup', onMouseup);
     document.body.removeEventListener('mousemove', onMousemove);
@@ -86,8 +81,8 @@ const onMouseDown = (e: MouseEvent) => {
 
   const onMousemove = (e: MouseEvent) => {
     const deltaY = startY - e.clientY;
-    if (deltaY >= DRAG_THRESHOLD_PX && !isDragging.value) {
-      isDragging.value = true;
+    if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.isDraggingCard) {
+      ui.value.isDraggingCard = true;
       card.play();
     }
   };
@@ -121,16 +116,6 @@ const onMouseDown = (e: MouseEvent) => {
   );
 };
 
-const isDetachedFromHand = computed(() => {
-  if (isDragging.value) return true;
-  return (
-    state.value.phase.state === GAME_PHASES.PLAYING_CARD &&
-    state.value.phase.ctx.card === card.id &&
-    state.value.interaction.state !== INTERACTION_STATES.IDLE &&
-    !card.isSelected
-  );
-});
-
 const isDisabled = computed(() => {
   if (ui.value.isReplacingCard) {
     return !card.canReplace;
@@ -161,15 +146,14 @@ const isDisabled = computed(() => {
       <p class="violation-warning" v-if="violationWarning">
         {{ violationWarning }}
       </p>
-      <component :is="isDetachedFromHand ? Teleport : 'div'" to="#dragged-card">
-        <GameCard
-          :card-id="card.id"
-          actions-side="top"
-          :actions-offset="15"
-          :is-interactive="isInteractive"
-          show-disabled-message
-        />
-      </component>
+
+      <GameCard
+        :card-id="card.id"
+        actions-side="top"
+        :actions-offset="15"
+        :is-interactive="isInteractive"
+        show-disabled-message
+      />
     </div>
   </Sound>
 </template>

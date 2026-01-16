@@ -29,6 +29,7 @@ import { GAME_EVENTS } from '../../game/game.events';
 export type SerializedGeneralCard = SerializedCard & {
   atk: number;
   maxHp: number;
+  retaliation: number;
   abilities: SerializedAbility[];
 };
 
@@ -253,6 +254,7 @@ export class GeneralCard extends Card<
     return {
       ...this.serializeBase(),
       atk: this.atk,
+      retaliation: this.retaliation,
       maxHp: this.maxHp,
       abilities: this.abilities.map(ability => ability.serialize())
     };

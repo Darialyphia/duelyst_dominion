@@ -2,7 +2,7 @@
 
 export const config = {
   CELL: {
-    width: 96,
+    width: 128,
     height: 110,
     toScreenPosition({ x, y }: { x: number; y: number }) {
       return {

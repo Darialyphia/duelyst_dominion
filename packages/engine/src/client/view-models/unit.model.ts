@@ -78,6 +78,14 @@ export class UnitViewModel {
     return this.data.atk;
   }
 
+  get baseRetaliation() {
+    return this.data.baseRetaliation;
+  }
+
+  get retaliation() {
+    return this.data.retaliation;
+  }
+
   get cardId() {
     return this.data.card;
   }

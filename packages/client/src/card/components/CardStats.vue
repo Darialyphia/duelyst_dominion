@@ -4,21 +4,24 @@ import { isDefined } from '@game/shared';
 defineProps<{
   atk?: number | null;
   hp?: number | null;
-  cmd?: number | null;
+  retaliation?: number | null;
 }>();
 </script>
 
 <template>
   <div class="bottom-left parallax">
-    <!-- <div class="stat cmd" :style="{ opacity: isDefined(cmd) ? 1 : 0 }">
-      <span class="dual-text" :data-text="cmd">
-        {{ cmd }}
-      </span>
-    </div> -->
-
     <div class="stat atk" :style="{ opacity: isDefined(atk) ? 1 : 0 }">
       <span class="dual-text" :data-text="atk">
         {{ atk }}
+      </span>
+    </div>
+
+    <div
+      class="stat retaliation"
+      :style="{ opacity: isDefined(retaliation) ? 1 : 0 }"
+    >
+      <span class="dual-text" :data-text="retaliation">
+        {{ retaliation }}
       </span>
     </div>
 
@@ -52,8 +55,8 @@ defineProps<{
   place-items: center;
   padding-right: calc(2px * var(--pixel-scale));
   padding-top: calc(1px * var(--pixel-scale));
-  &.cmd {
-    background-image: url('@/assets/ui/cmd-frame.png');
+  &.retaliation {
+    background-image: url('@/assets/ui/ret-frame.png');
   }
   &.atk {
     background-image: url('@/assets/ui/atk-frame.png');

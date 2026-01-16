@@ -129,6 +129,21 @@ export class CardViewModel {
     return null;
   }
 
+  get retaliation() {
+    if ('retaliation' in this.data) {
+      return this.data.retaliation as number;
+    }
+
+    return null;
+  }
+
+  get baseRetaliation() {
+    if ('baseRetaliation' in this.data) {
+      return this.data.baseRetaliation as number;
+    }
+    return null;
+  }
+
   get maxHp() {
     if ('maxHp' in this.data) {
       return this.data.maxHp as number;

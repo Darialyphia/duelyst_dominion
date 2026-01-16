@@ -11,7 +11,6 @@ import { PointAOEShape } from '../../aoe/point.aoe-shape';
 import { Interceptable } from '../../utils/interceptable';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
-import { MinionSummonTargetingStrategy } from '../../targeting/minion-summon-targeting.strategy';
 import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
@@ -31,6 +30,7 @@ import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-si
 export type SerializedMinionCard = SerializedCard & {
   atk: number;
   maxHp: number;
+  retaliation: number;
   manaCost: number;
   unplayableReason: string | null;
 };
@@ -141,7 +141,24 @@ export class MinionCard extends Card<
   }
 
   async selectTargets() {
-    return await this.blueprint.getTargets(this.game, this);
+    return new Promise<
+      { targets: BoardCell[]; cancelled: false } | { cancelled: true; targets?: never }
+    >(
+      // eslint-disable-next-line no-async-promise-executor
+      async resolve => {
+        let cancelled = false;
+        this.cancelPlay = async () => {
+          cancelled = true;
+          await this.game.interaction.getContext().ctx.cancel(this.player);
+          resolve({ cancelled: true });
+        };
+
+        const targets = await this.blueprint.getTargets(this.game, this);
+
+        if (cancelled) return;
+        resolve({ targets, cancelled: false });
+      }
+    );
   }
 
   private async selectPositionAndTargets() {
@@ -151,13 +168,13 @@ export class MinionCard extends Card<
     >(
       // eslint-disable-next-line no-async-promise-executor
       async resolve => {
-        const { position, cancelled } = await this.selectPosition();
-        if (cancelled) resolve({ cancelled: true });
+        const { position, cancelled: positionCancelled } = await this.selectPosition();
+        if (positionCancelled) resolve({ cancelled: true });
 
-        const targets = await this.selectTargets();
-        if (cancelled) resolve({ cancelled: true });
+        const { targets, cancelled: targetsCancelled } = await this.selectTargets();
+        if (targetsCancelled) resolve({ cancelled: true });
 
-        resolve({ position: position!, targets, cancelled: false });
+        resolve({ position: position!, targets: targets!, cancelled: false });
       }
     );
   }
@@ -234,6 +251,7 @@ export class MinionCard extends Card<
     return {
       ...this.serializeBase(),
       atk: this.atk,
+      retaliation: this.retaliation,
       maxHp: this.maxHp,
       manaCost: this.manaCost,
       unplayableReason: this.unplayableReason

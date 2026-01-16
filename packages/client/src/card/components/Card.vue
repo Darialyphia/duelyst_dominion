@@ -41,7 +41,7 @@ const {
     rarity: Rarity;
     atk?: number | null;
     hp?: number | null;
-    cmd?: number | null;
+    retaliation?: number | null;
     durability?: number | null;
     tags?: string[];
     kind: CardKind;
@@ -166,7 +166,11 @@ const factionBgOpacity = computed(() => {
           <div class="faction" />
         </div>
 
-        <CardStats :atk="card.atk" :hp="card.hp" :cmd="card.cmd" />
+        <CardStats
+          :atk="card.atk"
+          :hp="card.hp"
+          :retaliation="card.retaliation"
+        />
 
         <CardName :name="card.name" />
 

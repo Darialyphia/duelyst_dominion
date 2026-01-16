@@ -46,6 +46,8 @@ export type SerializedUnit = {
   position: Point;
   baseAtk: number;
   atk: number;
+  baseRetaliation: number;
+  retaliation: number;
   baseMaxHp: number;
   maxHp: number;
   currentHp: number;
@@ -619,6 +621,8 @@ export class Unit
       position: this.position.serialize(),
       baseAtk: this.card.blueprint.atk,
       atk: this.atk,
+      baseRetaliation: this.card.blueprint.retaliation,
+      retaliation: this.retaliation,
       baseMaxHp: this.card.blueprint.maxHp,
       maxHp: this.maxHp,
       currentHp: this.remainingHp,

@@ -161,7 +161,7 @@
   --faction-vanar: hsl(230 80% 70%);
   --faction-neutral: transparent;
 
-  --board-cell-width: 96px;
+  --board-cell-width: 128px;
   --board-cell-height: 110px;
   --board-cell-ratio: var(--board-cell-width) / var(--board-cell-height);
 }

@@ -25,6 +25,7 @@ const {
   spriteData,
   displayedModifiers,
   atkBuffState,
+  retaliationBuffState,
   hpBuffState
 } = useUnitDisplay({
   unit: computed(() => unit),
@@ -123,8 +124,10 @@ const isHovered = computed(() => {
 
       <UnitStats
         :atk="unit.atk"
+        :retaliation="unit.retaliation"
         :hp="unit.hp"
         :atk-state="atkBuffState"
+        :retaliation-state="retaliationBuffState"
         :hp-state="hpBuffState"
         :max-hp="unit.maxHp"
       />

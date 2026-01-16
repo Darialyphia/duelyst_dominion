@@ -57,6 +57,8 @@ export class UiController {
 
   isHandExpanded = false;
 
+  isDraggingCard = false;
+
   isPassConfirmationModalOpened = false;
 
   shouldBypassConfirmation = false;

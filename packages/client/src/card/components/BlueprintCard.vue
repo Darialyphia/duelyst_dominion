@@ -24,7 +24,7 @@ const sprite = computed(() => {
         (blueprint as any).atkBonus,
       hp: (blueprint as any).maxHp,
       durability: (blueprint as any).durability,
-      cmd: (blueprint as any).cmd,
+      retaliation: (blueprint as any).retaliation,
       faction: blueprint.faction,
       tags: blueprint.tags
     }"

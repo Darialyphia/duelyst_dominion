@@ -146,7 +146,7 @@ const { width } = useElementBounding(() => ui.value.DOMSelectors.board.element);
 const handWidth = ref(width.value);
 watch(width, v => {
   if (client.value.isPlayingFx) return;
-  handWidth.value = v + 300;
+  handWidth.value = Math.max(v + 200, window.innerWidth * 0.75);
 });
 </script>
 

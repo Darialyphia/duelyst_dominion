@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const { atk, hp, atkState, hpState } = defineProps<{
   atk: number;
+  retaliation: number;
   hp: number;
   maxHp: number;
   atkState: 'normal' | 'buff' | 'debuff';
+  retaliationState: 'normal' | 'buff' | 'debuff';
   hpState: 'normal' | 'buff' | 'debuff';
 }>();
 </script>
@@ -19,6 +21,18 @@ const { atk, hp, atkState, hpState } = defineProps<{
       :data-text="atk"
     >
       {{ atk }}
+    </span>
+  </div>
+  <div class="retaliation">
+    <span
+      class="dual-text"
+      :class="{
+        buff: retaliationState === 'buff',
+        debuff: retaliationState === 'debuff'
+      }"
+      :data-text="retaliation"
+    >
+      {{ retaliation }}
     </span>
   </div>
   <div class="hp">
@@ -76,7 +90,7 @@ const { atk, hp, atkState, hpState } = defineProps<{
   }
 }
 
-:is(.atk, .hp) {
+:is(.atk, .hp, .retaliation) {
   width: 35px;
   height: 30px;
   display: grid;
@@ -89,14 +103,22 @@ const { atk, hp, atkState, hpState } = defineProps<{
 .atk {
   background-image: url('@/assets/ui/atk-frame-textless.png');
   background-size: cover;
-  left: 0;
-  bottom: -5px;
+  left: -5px;
+  bottom: -15px;
+}
+
+.retaliation {
+  background-image: url('@/assets/ui/ret-frame-textless.png');
+  background-size: cover;
+  left: 50%;
+  bottom: -15px;
+  translate: -50% 0;
 }
 
 .hp {
   background-image: url('@/assets/ui/hp-frame-textless.png');
   background-size: cover;
-  right: 0;
-  bottom: -5px;
+  right: -5px;
+  bottom: -15px;
 }
 </style>
