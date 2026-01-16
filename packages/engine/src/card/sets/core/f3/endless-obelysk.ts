@@ -55,8 +55,7 @@ export const endlessObelysk: MinionBlueprint = {
         modifier: new Modifier('endless_obelysk_spawn_charge', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
-              eventName: GAME_EVENTS.PLAYER_START_TURN,
-              filter: event => !!event?.data.player.equals(card.player),
+              eventName: GAME_EVENTS.TURN_START,
               async handler() {
                 const obelysks = card.player.units.filter(u =>
                   u.card.tags.includes(TAGS.OBELYSK)

@@ -6,17 +6,6 @@ import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { Player, ResourceAction, SerializedPlayer } from './player.entity';
 import type { PLAYER_EVENTS } from './player.enums';
 
-export class PlayerTurnEvent extends TypedSerializableEvent<
-  { player: Player },
-  { player: SerializedPlayer }
-> {
-  serialize() {
-    return {
-      player: this.data.player.serialize()
-    };
-  }
-}
-
 export class PlayerBeforeDrawEvent extends TypedSerializableEvent<
   { player: Player; amount: number },
   { player: SerializedPlayer; amount: number }
@@ -154,8 +143,6 @@ export class PlayerHealEvent extends TypedSerializableEvent<
 }
 
 export type PlayerEventMap = {
-  [PLAYER_EVENTS.PLAYER_START_TURN]: PlayerTurnEvent;
-  [PLAYER_EVENTS.PLAYER_END_TURN]: PlayerTurnEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_DRAW]: PlayerBeforeDrawEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_DRAW]: PlayerAfterDrawEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_PLAY_CARD]: PlayerPlayCardEvent;

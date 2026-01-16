@@ -75,7 +75,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
           }
         }),
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.PLAYER_START_TURN,
+          eventName: GAME_EVENTS.TURN_END,
           handler() {
             hasProccedThisTurn = false;
           }

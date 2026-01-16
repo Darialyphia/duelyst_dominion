@@ -46,10 +46,7 @@ export const suntideMaiden: MinionBlueprint = {
       new ZealModifier('suntide-maiden-zeal', game, card, {
         mixins: [
           new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.PLAYER_END_TURN,
-            filter(event) {
-              return !!event?.data.player.equals(card.player);
-            },
+            eventName: GAME_EVENTS.TURN_END,
             handler: async () => {
               await card.unit.heal(card, card.unit.maxHp - card.unit.remainingHp);
             }

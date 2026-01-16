@@ -19,6 +19,7 @@ export const useUnitSounds = (unit: Ref<UnitViewModel>) => {
 
   useFxEvent(FX_EVENTS.MINION_AFTER_SUMMON, async event => {
     if (event.card.id !== unit.value.getCard().id) return;
+    console.log('playing summon sound for', unit.value.getCard().sounds.play);
     sounds.summon.play();
   });
 

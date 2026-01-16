@@ -9,7 +9,6 @@ import { ArtifactManagerComponent } from './components/artifact-manager.componen
 import type { AnyCard } from '../card/entities/card.entity';
 import { CardTrackerComponent } from './components/cards-tracker.component';
 import { Interceptable } from '../utils/interceptable';
-import { GAME_EVENTS } from '../game/game.events';
 import {
   PlayerAfterReplaceCardEvent,
   PlayerBeforeReplaceCardEvent,
@@ -17,12 +16,10 @@ import {
   PlayerHealEvent,
   PlayerManaChangeEvent,
   PlayerPlayCardEvent,
-  PlayerResourceActionEvent,
-  PlayerTurnEvent
+  PlayerResourceActionEvent
 } from './player.events';
 import { ModifierManager } from '../modifier/modifier-manager.component';
 import type { GeneralCard } from '../card/entities/general-card.entity';
-import type { Unit } from '../unit/unit.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
 import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
@@ -301,11 +298,6 @@ export class Player
   }
 
   async startTurn() {
-    await this.game.emit(
-      GAME_EVENTS.PLAYER_START_TURN,
-      new PlayerTurnEvent({ player: this })
-    );
-
     this._replacesDoneThisTurn = 0;
     this._resourceActionsDoneThisTurn = 0;
     this.hasPassedThisRound = false;
@@ -327,11 +319,6 @@ export class Player
     if (this.game.config.DRAW_STEP === 'turn-end') {
       await this.drawForTurn();
     }
-
-    await this.game.emit(
-      GAME_EVENTS.PLAYER_END_TURN,
-      new PlayerTurnEvent({ player: this })
-    );
   }
 
   get mana() {

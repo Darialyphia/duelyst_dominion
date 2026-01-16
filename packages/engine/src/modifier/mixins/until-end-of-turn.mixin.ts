@@ -21,11 +21,11 @@ export class UntilEndOfTurnModifierMixin<
 
   onApplied(target: T, modifier: Modifier<T>): void {
     this.modifier = modifier;
-    this.game.once(GAME_EVENTS.PLAYER_END_TURN, this.onTurnEnd);
+    this.game.once(GAME_EVENTS.TURN_END, this.onTurnEnd);
   }
 
   onRemoved(): void {
-    this.game.off(GAME_EVENTS.PLAYER_END_TURN, this.onTurnEnd);
+    this.game.off(GAME_EVENTS.TURN_END, this.onTurnEnd);
   }
 
   onReapplied(): void {}

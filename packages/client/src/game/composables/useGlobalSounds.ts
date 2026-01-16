@@ -11,7 +11,9 @@ export const useGlobalSounds = () => {
   const { play: playCardSound } = useSoundEffect(cardSoundId);
   useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
     const card = state.value.entities[event.card.id] as CardViewModel;
-    if (card.kind === CARD_KINDS.MINION) return;
+    if (card.kind === CARD_KINDS.MINION || card.kind === CARD_KINDS.GENERAL) {
+      return;
+    }
     cardSoundId.value = card.sounds.play;
     playCardSound();
   });

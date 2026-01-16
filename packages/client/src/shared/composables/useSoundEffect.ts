@@ -34,6 +34,7 @@ export const useSoundEffect = (sound: MaybeRef<string | undefined>) => {
     sound: howl,
     async play() {
       await nextTick();
+
       if (howl.value?.state() === 'loaded') {
         howl.value?.play();
       } else {

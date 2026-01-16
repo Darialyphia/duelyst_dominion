@@ -53,11 +53,7 @@ export const tuskBoar: MinionBlueprint = {
         modifier: new Modifier('tsusk-boar-bounce', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
-              eventName: GAME_EVENTS.PLAYER_START_TURN,
-              filter(event) {
-                if (!event) return false;
-                return event.data.player.equals(card.player);
-              },
+              eventName: GAME_EVENTS.TURN_END,
               async handler() {
                 await card.unit.bounce();
               }

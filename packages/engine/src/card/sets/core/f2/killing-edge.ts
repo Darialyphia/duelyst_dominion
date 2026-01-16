@@ -100,7 +100,7 @@ export const killingEdge: SpellBlueprint = {
     );
 
     if (target.modifiers.has(BackstabUnitModifier)) {
-      game.once(GAME_EVENTS.PLAYER_END_TURN, async () => {
+      game.once(GAME_EVENTS.TURN_END, async () => {
         await card.player.cardManager.drawFromDeck(1);
       });
     }

@@ -27,11 +27,11 @@ export class DurationModifierMixin<T extends ModifierTarget> extends ModifierMix
 
   onApplied(target: T, modifier: Modifier<T>): void {
     this.modifier = modifier;
-    this.game.on(GAME_EVENTS.PLAYER_END_TURN, this.onTurnEnd);
+    this.game.on(GAME_EVENTS.TURN_END, this.onTurnEnd);
   }
 
   onRemoved() {
-    this.game.off(GAME_EVENTS.PLAYER_END_TURN, this.onTurnEnd);
+    this.game.off(GAME_EVENTS.TURN_END, this.onTurnEnd);
   }
 
   onReapplied(): void {

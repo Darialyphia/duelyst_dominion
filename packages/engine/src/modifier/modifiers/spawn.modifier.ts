@@ -59,13 +59,11 @@ export class SpawnUnitModifier extends Modifier<Unit> {
       stacks: options.stacks,
       mixins: [
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.PLAYER_START_TURN,
+          eventName: GAME_EVENTS.TURN_START,
           filter: event => {
             if (!event) return false;
 
-            if (this.nearbyEmptySpaces.length === 0) return false;
-
-            return event?.data.player.equals(this.target.player);
+            return this.nearbyEmptySpaces.length > 0;
           },
           handler: async () => {
             await this.game.emit(
@@ -99,7 +97,7 @@ export class SpawnUnitModifier extends Modifier<Unit> {
             );
 
             const targets = await cardToSpawn.selectTargets();
-            await cardToSpawn.summon(space, targets);
+            await cardToSpawn.playAt(space, targets.targets!);
             await this.removeStacks(1);
           }
         }),

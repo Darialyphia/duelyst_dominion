@@ -51,10 +51,9 @@ export class EphemeralUnitModifier extends Modifier<Unit> {
       isRemovable: options.isRemovable ?? true,
       mixins: [
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.PLAYER_END_TURN,
-          handler: async event => {
-            if (event?.data.player.equals(this.target.player))
-              await this.target.removeFromBoard();
+          eventName: GAME_EVENTS.TURN_END,
+          handler: async () => {
+            await this.target.removeFromBoard();
           }
         }),
         ...(options.mixins ?? [])

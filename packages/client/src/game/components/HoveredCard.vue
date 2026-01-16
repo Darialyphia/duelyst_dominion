@@ -5,12 +5,9 @@ import {
   useOpponentPlayer
 } from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
-import { useGlobalSounds } from '../composables/useGlobalSounds';
 
 const myPlayer = useMyPlayer();
 const opponent = useOpponentPlayer();
-
-useGlobalSounds();
 
 const ui = useGameUi();
 const hoveredCard = computed(() => {

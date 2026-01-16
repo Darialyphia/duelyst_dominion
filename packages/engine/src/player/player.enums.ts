@@ -1,8 +1,6 @@
 import type { Values } from '@game/shared';
 
 export const PLAYER_EVENTS = {
-  PLAYER_START_TURN: 'player:start_turn',
-  PLAYER_END_TURN: 'player:end_turn',
   PLAYER_BEFORE_DRAW: 'player:before_draw',
   PLAYER_AFTER_DRAW: 'player:after_draw',
   PLAYER_BEFORE_REPLACE_CARD: 'player:before_replace_card',

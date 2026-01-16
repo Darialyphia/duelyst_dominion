@@ -1,7 +1,7 @@
 import type { AnyCard } from '../../card/entities/card.entity';
 import { Game } from '../../game/game';
 import { GAME_EVENTS } from '../../game/game.events';
-import type { PlayerTurnEvent } from '../../player/player.events';
+import type { TurnEvent } from '../../game/systems/turn.system';
 import type { Unit } from '../../unit/unit.entity';
 import { ModifierMixin } from '../modifier-mixin';
 import type { Modifier } from '../modifier.entity';
@@ -16,19 +16,17 @@ export class UntilStartOfNextTurnModifierMixin<
     this.onTurnStart = this.onTurnStart.bind(this);
   }
 
-  async onTurnStart(event: PlayerTurnEvent) {
-    if (event.data.player.equals(this.modifier.target.player)) {
-      await this.modifier.target.modifiers.remove(this.modifier.id);
-    }
+  async onTurnStart() {
+    await this.modifier.target.modifiers.remove(this.modifier.id);
   }
 
   onApplied(target: T, modifier: Modifier<T>): void {
     this.modifier = modifier;
-    this.game.once(GAME_EVENTS.PLAYER_START_TURN, this.onTurnStart);
+    this.game.once(GAME_EVENTS.TURN_END, this.onTurnStart);
   }
 
   onRemoved(): void {
-    this.game.off(GAME_EVENTS.PLAYER_START_TURN, this.onTurnStart);
+    this.game.off(GAME_EVENTS.TURN_END, this.onTurnStart);
   }
 
   onReapplied(): void {}
