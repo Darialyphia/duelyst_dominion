@@ -51,7 +51,7 @@ const ui = useGameUi();
     content: '';
     position: absolute;
     inset: 3px;
-    background-color: hsl(0 0% 0% / 0.25);
+    background-color: hsl(0 0% 100% / 0.25);
   }
 }
 </style>

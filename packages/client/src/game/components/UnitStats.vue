@@ -103,8 +103,8 @@ const { atk, hp, atkState, hpState } = defineProps<{
 .atk {
   background-image: url('@/assets/ui/atk-frame-textless.png');
   background-size: cover;
-  left: 0;
-  bottom: -10px;
+  left: 10px;
+  bottom: -15px;
 }
 
 .retaliation {
@@ -118,7 +118,7 @@ const { atk, hp, atkState, hpState } = defineProps<{
 .hp {
   background-image: url('@/assets/ui/hp-frame-textless.png');
   background-size: cover;
-  right: 0;
-  bottom: -10px;
+  right: 10px;
+  bottom: -15px;
 }
 </style>

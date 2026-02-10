@@ -73,7 +73,7 @@ const onMouseDown = (e: MouseEvent) => {
 
   const stopDragging = () => {
     nextTick(() => {
-      ui.value.isDraggingCard = false;
+      ui.value.draggedCard = null;
     });
     document.body.removeEventListener('mouseup', onMouseup);
     document.body.removeEventListener('mousemove', onMousemove);
@@ -81,8 +81,8 @@ const onMouseDown = (e: MouseEvent) => {
 
   const onMousemove = (e: MouseEvent) => {
     const deltaY = startY - e.clientY;
-    if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.isDraggingCard) {
-      ui.value.isDraggingCard = true;
+    if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.draggedCard) {
+      ui.value.draggedCard = card;
       card.play();
     }
   };
@@ -148,6 +148,7 @@ const isDisabled = computed(() => {
       </p>
 
       <GameCard
+        v-if="!ui.draggedCard?.equals(card)"
         :card-id="card.id"
         actions-side="top"
         :actions-offset="15"

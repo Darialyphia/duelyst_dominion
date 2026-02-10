@@ -3,7 +3,7 @@ import type { UnitViewModel } from '@game/engine/src/client/view-models/unit.mod
 import { uniqBy } from 'lodash-es';
 import { isDefined } from '@game/shared';
 import type { SpriteData } from '@/card/composables/useSprite';
-import { useFxEvent } from './useGameClient';
+import { useFxEvent, useMyPlayer } from './useGameClient';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 import { sprites } from '@/assets';
 
@@ -35,7 +35,7 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     flipOverride.value = undefined;
   });
 
-  const isFlipped = computed(() => {
+  const isInverted = computed(() => {
     if (isDefined(flipOverride.value)) {
       return flipOverride.value;
     }
@@ -73,13 +73,17 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     return 'normal';
   });
 
+  const myPlayer = useMyPlayer();
+  const isFlipped = computed(() => !myPlayer.value?.isPlayer1);
+
   return {
     isAlly,
-    isFlipped,
+    isInverted,
     spriteData,
     displayedModifiers,
     atkBuffState,
     hpBuffState,
-    retaliationBuffState
+    retaliationBuffState,
+    isFlipped
   };
 }
