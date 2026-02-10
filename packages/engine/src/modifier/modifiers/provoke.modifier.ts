@@ -9,6 +9,10 @@ import { UnitAuraModifierMixin } from '../mixins/aura.mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
+import { GameEventModifierMixin } from '../mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../game/game.events';
+import { DAMAGE_TYPES } from '../../utils/damage';
+import type { UnitReceiveDamageEvent } from '../../unit/unit-events';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   constructor(
@@ -37,41 +41,59 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
       mixins: [
         new UnitAuraModifierMixin(game, source, {
           isElligible: candidate => {
-            return this.shouldBeProvoked(candidate);
+            return this.shouldBeProtected(candidate);
           },
-          getModifiers: () => {
-            return [new ProvokedModifier(game, this.initialSource)];
+          getModifiers: candidate => {
+            return [
+              new Modifier('provoke-protection', game, source, {
+                mixins: [
+                  new GameEventModifierMixin(game, {
+                    eventName: GAME_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE,
+                    filter: event =>
+                      !!event?.data.unit.equals(candidate) &&
+                      event.data.damage.type === DAMAGE_TYPES.COMBAT,
+                    handler: async event => {
+                      if (!event) return;
+                      return this.onDamageReceived(event, candidate);
+                    }
+                  })
+                ]
+              })
+            ];
           }
         })
       ]
     });
   }
 
-  private shouldBeProvoked(candidate: Unit): boolean {
-    if (candidate.isAlly(this.target)) return false;
-    return (
-      this.game.boardSystem.getDistance(this.target.position, candidate.position) === 1
+  private async onDamageReceived(event: UnitReceiveDamageEvent, candidate: Unit) {
+    if (!event) return;
+    const removeInterceptor = await candidate.addInterceptor(
+      'damageReceived',
+      (value, ctx) => (ctx.damage.type === DAMAGE_TYPES.COMBAT ? 0 : value)
     );
-  }
-}
-
-export class ProvokedModifier extends Modifier<Unit> {
-  constructor(game: Game, source: AnyCard) {
-    super('provoked', game, source, {
-      mixins: [
-        new UnitInterceptorModifierMixin(game, {
-          key: 'canMove',
-          interceptor: () => false
-        }),
-        new UnitInterceptorModifierMixin(game, {
-          key: 'canAttack',
-          interceptor: (value: boolean, { target }: { target: Unit }) => {
-            if (!value) return value;
-
-            return target.modifiers.has(KEYWORDS.PROVOKE.id);
-          }
-        })
-      ]
+    const stop = this.game.on(GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE, async e => {
+      if (e?.data.unit.equals(candidate)) {
+        await removeInterceptor();
+        stop();
+      }
     });
+    const adjacentAlliesWithProvoke = candidate.adjacentUnits.filter(u =>
+      u.modifiers.has(ProvokeUnitModifier)
+    );
+
+    if (adjacentAlliesWithProvoke.length > 0) {
+      const [topMost] = adjacentAlliesWithProvoke.sort((a, b) => a.y - b.y);
+      if (topMost.equals(this.target)) {
+        await this.target.takeDamage(event.data.from, event.data.damage);
+      }
+    } else {
+      await this.target.takeDamage(event.data.from, event.data.damage);
+    }
+  }
+
+  private shouldBeProtected(candidate: Unit): boolean {
+    if (candidate.isEnemy(this.target)) return false;
+    return this.target.adjacentUnits.some(u => u.equals(candidate));
   }
 }

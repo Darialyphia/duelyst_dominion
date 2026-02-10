@@ -1,5 +1,4 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { BLEND_MODES } from '../../../../game/systems/vfx.system';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
@@ -10,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
-  description: '@Zeal@ : +2 Attack.',
+  description: '@Zeal@ : +1 Attack.',
   vfx: {
     spriteId: 'minions/f1_windblade-adept',
     sequences: {
@@ -47,7 +46,7 @@ export const windbladeAdept: MinionBlueprint = {
         mixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',
-            interceptor: value => value + 2
+            interceptor: value => value + 1
           })
         ]
       })

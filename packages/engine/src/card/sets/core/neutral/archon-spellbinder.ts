@@ -53,7 +53,7 @@ export const archonSpellbinder: MinionBlueprint = {
     const aura = new Modifier<MinionCard>('archon-spellbinder-aura', game, card, {
       mixins: [
         new TogglableModifierMixin(game, () => card.location === 'board'),
-        new CardAuraModifierMixin(game, {
+        new CardAuraModifierMixin(game, card, {
           isElligible(targetCard) {
             return (
               isSpell(targetCard) &&
@@ -61,20 +61,12 @@ export const archonSpellbinder: MinionBlueprint = {
               targetCard.location === 'hand'
             );
           },
-          async onGainAura(candidate) {
-            await candidate.modifiers.add(
-              new SimpleManacostModifier(DEBUFF_ID, game, card, {
-                isRemovable: true,
-                amount: 1
-              })
-            );
-          },
-          async onLoseAura(candidate) {
-            await candidate.modifiers.remove(DEBUFF_ID, {
-              source: card,
-              force: true
-            });
-          }
+          getModifiers: () => [
+            new SimpleManacostModifier(DEBUFF_ID, game, card, {
+              isRemovable: true,
+              amount: 1
+            })
+          ]
         })
       ]
     });

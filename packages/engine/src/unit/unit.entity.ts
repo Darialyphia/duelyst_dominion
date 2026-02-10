@@ -245,6 +245,14 @@ export class Unit
     return unitsOnRow.length === 0;
   }
 
+  get adjacentUnits() {
+    return [
+      ...this.unitsOnRowAbove.filter(unit => unit.x === this.x),
+      ...this.unitsOnRowBelow.filter(unit => unit.x === this.x),
+      ...this.unitsOnSameRow.filter(unit => Math.abs(unit.x - this.x) === 1)
+    ];
+  }
+
   get unitsOnSameRow() {
     return this.game.unitSystem.units.filter(
       unit => unit.position.y === this.y && !unit.equals(this)

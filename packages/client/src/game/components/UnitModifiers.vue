@@ -58,7 +58,7 @@ const { playerId } = useGameClient();
 <style scoped lang="postcss">
 .modifiers {
   position: absolute;
-  top: var(--size-2);
+  top: var(--size-4);
   right: 0;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
