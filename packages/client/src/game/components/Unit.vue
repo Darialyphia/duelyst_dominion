@@ -21,6 +21,7 @@ const myPlayer = useMyPlayer();
 
 const {
   isAlly,
+  isInverted,
   isFlipped,
   spriteData,
   displayedModifiers,
@@ -93,7 +94,7 @@ const isHovered = computed(() => {
       :sprite-height="activeFrameRect.height"
       :sheet-width="spriteData.sheetSize.w"
       :sheet-height="spriteData.sheetSize.h"
-      :is-flipped="isFlipped"
+      :is-flipped="isInverted"
     />
     <div
       class="unit"
@@ -103,6 +104,7 @@ const isHovered = computed(() => {
           'in-aoe': isInAoe({ x: unit.x, y: unit.y }),
           'is-exhausted': unit.isExhausted,
           'is-selected': ui.selectedUnit?.equals(unit),
+          'is-inverted': isInverted,
           'is-flipped': isFlipped
         }
       ]"
@@ -147,7 +149,7 @@ const isHovered = computed(() => {
       <SpriteFX
         v-if="showDamageEffects"
         class="fx-container"
-        :class="{ 'is-flipped': isFlipped }"
+        :class="{ 'is-inverted': isInverted }"
         :sprites="damageEffects"
       />
 
@@ -181,13 +183,17 @@ const isHovered = computed(() => {
   width: 100%;
   height: 100%;
   bottom: 0;
-  transform: translateZ(10px) translateY(-15px)
-    rotateX(calc(var(--board-angle-X) * -1))
-    rotateY(calc(var(--board-angle-Y) * -1));
+  transform: translateZ(15px) translateY(-60px) translateX(-45px)
+    rotateY(-60deg) rotateX(-0deg) rotateZ(90deg);
   transform-origin: bottom center;
 
-  &.is-flipped :deep(.sprite-wrapper) {
+  &.is-inverted :deep(.sprite-wrapper) {
     scale: -2 2;
+  }
+
+  &.is-flipped {
+    transform: translateZ(15px) translateY(-60px) translateX(40px)
+      rotateY(60deg) rotateX(0deg) rotateZ(-90deg);
   }
 }
 
@@ -240,7 +246,7 @@ const isHovered = computed(() => {
 .fx-container {
   position: absolute;
   inset: 0;
-  &.is-flipped {
+  &.is-inverted {
     scale: -1 1;
   }
 }

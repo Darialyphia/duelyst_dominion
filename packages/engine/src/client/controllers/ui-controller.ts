@@ -57,7 +57,7 @@ export class UiController {
 
   isHandExpanded = false;
 
-  isDraggingCard = false;
+  draggedCard: CardViewModel | null = null;
 
   isPassConfirmationModalOpened = false;
 

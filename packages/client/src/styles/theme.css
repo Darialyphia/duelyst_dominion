@@ -162,7 +162,7 @@
   --faction-neutral: transparent;
 
   --board-cell-width: 128px;
-  --board-cell-height: 110px;
+  --board-cell-height: 120px;
   --board-cell-ratio: var(--board-cell-width) / var(--board-cell-height);
 }
 

@@ -93,7 +93,7 @@ const isSettingsOpened = ref(false);
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
-  perspective: 1500px;
+  perspective: 2000px;
   /* background: url(@/assets/backgrounds/battle-bg2.png);
   background-repeat: no-repeat;
   background-size: cover;

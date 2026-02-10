@@ -3,6 +3,7 @@ import {
   useFxEvent,
   useGameState,
   useGameUi,
+  useMyPlayer,
   useUnits
 } from '../composables/useGameClient';
 import { config } from '@/utils/config';
@@ -17,10 +18,12 @@ const units = useUnits();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 
+const DEFAULT_ANGLE = { x: 40, y: -0, z: -90 };
+
 const camera = ref({
   origin: { x: 0, y: 0 },
   scale: 1,
-  angle: { x: 30, y: 0, z: 0 },
+  angle: { x: 40, y: -0, z: -90 },
   offset: { x: 0, y: -7 }
 });
 
@@ -49,8 +52,9 @@ const zoomIn = async (origin: Point, duration: number) => {
     duration,
     ease: Power2.easeOut,
     scale: 1.5,
-    angleX: 45,
-    angleZ: 0,
+    angleX: DEFAULT_ANGLE.x,
+    angleY: DEFAULT_ANGLE.y,
+    angleZ: DEFAULT_ANGLE.z,
     onUpdate: () => {
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
@@ -71,8 +75,9 @@ const zoomOut = async (duration: number) => {
     duration,
     ease: Power2.easeOut,
     scale: 1,
-    angleX: 30,
-    angleY: 0,
+    angleX: DEFAULT_ANGLE.x,
+    angleY: DEFAULT_ANGLE.y,
+    angleZ: DEFAULT_ANGLE.z,
     onUpdate: () => {
       camera.value.scale = proxy.scale;
       camera.value.angle.x = proxy.angleX;
@@ -80,7 +85,6 @@ const zoomOut = async (duration: number) => {
       camera.value.angle.z = proxy.angleZ;
     },
     onComplete: () => {
-      camera.value.angle.z = 0;
       camera.value.origin = { x: 0, y: 0 };
     }
   });
@@ -128,6 +132,8 @@ const boardStyle = computed(() => ({
   // '--board-angle-X': `${(y.value / height.value - 0.5) * -180}deg`,
   // '--board-angle-Y': `${(x.value / width.value - 0.5) * 180}deg`
 }));
+
+const myPlayer = useMyPlayer();
 </script>
 
 <template>
@@ -140,6 +146,7 @@ const boardStyle = computed(() => ({
   >
     <div
       class="camera-rotate"
+      :class="{ 'is-flipped': !myPlayer.isPlayer1 }"
       :style="{
         '--board-angle-X': `${camera.angle.x}deg`,
         '--board-angle-Y': `${camera.angle.y}deg`,
@@ -163,10 +170,6 @@ const boardStyle = computed(() => ({
   position: absolute;
   pointer-events: none;
   transform-style: preserve-3d;
-  background:
-    url(@/assets/backgrounds/battle-bg-midground.png),
-    linear-gradient(to bottom, hsl(0 0 0 / 0.2)),
-    url(@/assets/backgrounds/battle-bg-background.png);
   background-repeat: no-repeat;
   background-size: cover, cover, 450px;
   background-position:
@@ -175,6 +178,28 @@ const boardStyle = computed(() => ({
     top left;
   height: 100%;
   width: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    top: -4%;
+    left: -4%;
+    width: 108%;
+    height: 108%;
+    background:
+      url(@/assets/backgrounds/battle-bg-midground.png),
+      linear-gradient(to bottom, hsl(0 0 0 / 0.2)),
+      url(@/assets/backgrounds/battle-bg-background.png);
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: cover, cover, 450px;
+    background-position:
+      center center,
+      center center,
+      top left;
+    transform: translateZ(-120px);
+  }
 }
 
 .camera-rotate {
@@ -182,9 +207,15 @@ const boardStyle = computed(() => ({
   height: 100dvh;
   position: absolute;
   pointer-events: auto;
+  --base-rotate-z: 0deg;
   transform: translateZ(200px) scale(0.87) rotateY(var(--board-angle-Y))
-    rotateX(var(--board-angle-X)) rotateZ(var(--board-angle-Z));
+    rotateX(var(--board-angle-X))
+    rotateZ(calc(var(--board-angle-Z) + var(--base-rotate-z)));
   transform-style: preserve-3d;
+
+  &.is-flipped {
+    --base-rotate-z: 180deg;
+  }
 }
 
 .camera-viewport {
