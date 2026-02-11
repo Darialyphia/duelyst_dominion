@@ -84,28 +84,20 @@ export class UiController {
     board: new DOMSelector('board'),
     effectChain: new DOMSelector('effect-chain'),
     playedCardZone: new DOMSelector('played-card'),
+    cardInPlayedCardZone: (cardId: string) =>
+      new DOMSelector(cardId, this.DOMSelectors.playedCardZone.selector),
     heroHealthIndicator: (playerId: string) =>
       new DOMSelector(`hero-health-indicator-${playerId}`),
     hand: (playerId: string) => new DOMSelector(`hand-${playerId}`),
-    destinyZone: (playerId: string) => new DOMSelector(`destiny-zone-${playerId}`),
-    discardPile: (playerId: string) => new DOMSelector(`discard-pile-${playerId}`),
-    banishPile: (playerId: string) => new DOMSelector(`banish-pile-${playerId}`),
-    destinyDeck: (playerId: string) => new DOMSelector(`destiny-deck-${playerId}`),
     unit: (unitId: string) =>
       new DOMSelector(`unit-${unitId}`, this.DOMSelectors.board.selector),
     cardOnBoard: (cardId: string) =>
       new DOMSelector(cardId, this.DOMSelectors.board.selector),
     cardInHand: (cardId: string, playerId: string) =>
       new DOMSelector(cardId, this.DOMSelectors.hand(playerId).selector),
-    cardInEffectChain: (cardId: string) =>
-      new DOMSelector(cardId, this.DOMSelectors.effectChain.selector),
-    cardInDestinyZone: (cardId: string, playerId: string) =>
-      new DOMSelector(cardId, this.DOMSelectors.destinyZone(playerId).selector),
     hero: (playerId: string) => new DOMSelector(`${playerId}-hero-sprite`),
     cardAction: (cardId: string, actionId: string) =>
       new DOMSelector(`${cardId}-action-${actionId}`),
-    frontRow: (playerId: string) => new DOMSelector(`${playerId}-front-row`),
-    backRow: (playerId: string) => new DOMSelector(`${playerId}-back-row`),
     actionButton: (actionId: string) => new DOMSelector(`action-button-${actionId}`),
     globalActionButtons: new DOMSelector('global-action-buttons')
   };
@@ -254,31 +246,13 @@ export class UiController {
   }
 
   selectUnit(unit: UnitViewModel) {
+    console.log('Selecting unit', unit.id);
     this._selectedUnit = unit;
   }
 
   unselectUnit() {
+    console.log('Unselecting unit');
     this._selectedUnit = null;
-  }
-
-  getPlayedCardZoneDOMSelector() {
-    return `#played-card`;
-  }
-
-  getDestinyZoneDOMSelector(playerId: string) {
-    return `#destiny-zone-${playerId}`;
-  }
-
-  getCardDOMSelector(cardId: string) {
-    return `#${cardId}`;
-  }
-
-  getCardDOMSelectorInPLayedCardZone(cardId: string) {
-    return `${this.getPlayedCardZoneDOMSelector()} ${this.getCardDOMSelector(cardId)}`;
-  }
-
-  getCardDOMSelectorInDestinyZone(cardId: string, playerId: string) {
-    return `${this.getDestinyZoneDOMSelector(playerId)} ${this.getCardDOMSelector(cardId)}`;
   }
 
   get explainerMessage() {

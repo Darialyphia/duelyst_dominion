@@ -20,7 +20,7 @@ export const useFxAdapter = (): FxAdapter => {
 
     onCancelPlayCard(card, client) {
       const flipState = Flip.getState(
-        client.ui.getCardDOMSelectorInPLayedCardZone(card.id)
+        client.ui.DOMSelectors.cardInPlayedCardZone(card.id).selector
       );
 
       window.requestAnimationFrame(() => {

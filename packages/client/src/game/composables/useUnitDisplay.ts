@@ -17,8 +17,6 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     () => unit.value.getPlayer()?.id === myPlayerId.value
   );
 
-  const isP2 = computed(() => !unit.value.getPlayer()?.isPlayer1);
-
   const flipOverride = ref<boolean>();
 
   useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, () => {
@@ -35,11 +33,12 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     flipOverride.value = undefined;
   });
 
+  const myPlayer = useMyPlayer();
   const isInverted = computed(() => {
     if (isDefined(flipOverride.value)) {
       return flipOverride.value;
     }
-    return isP2.value;
+    return unit.value.getPlayer()?.id !== myPlayer.value?.id;
   });
 
   const spriteData = computed<SpriteData>(
@@ -73,7 +72,6 @@ export function useUnitDisplay({ unit, myPlayerId }: UseUnitDisplayOptions) {
     return 'normal';
   });
 
-  const myPlayer = useMyPlayer();
   const isFlipped = computed(() => !myPlayer.value?.isPlayer1);
 
   return {

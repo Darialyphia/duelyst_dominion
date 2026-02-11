@@ -10,7 +10,7 @@ export class MoveUnitAction implements BoardCellClickRule {
   canMove(cell: BoardCellViewModel) {
     if (!this.client.ui.selectedUnit) return false;
 
-    return this.client.ui.selectedUnit.canMove;
+    return this.client.ui.selectedUnit.canMoveTo(cell);
   }
 
   predicate(cell: BoardCellViewModel, state: GameClientState) {

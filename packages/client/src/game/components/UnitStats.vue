@@ -111,7 +111,7 @@ const { atk, hp, atkState, hpState } = defineProps<{
   background-image: url('@/assets/ui/ret-frame-textless.png');
   background-size: cover;
   left: 50%;
-  bottom: -10px;
+  bottom: -15px;
   translate: -50% 0;
 }
 

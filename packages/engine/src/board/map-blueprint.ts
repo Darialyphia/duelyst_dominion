@@ -31,11 +31,11 @@ export const defaultMap: MapBlueprint = {
   rows: 5,
   // prettier-ignore
   cells: [
-    p1, p1, neutral, p2, p2,
-    p1, p1, neutral, p2, p2,
-    p1, p1, neutral, p2, p2,
-    p1, p1, neutral, p2, p2,
-    p1, p1, neutral, p2, p2,
+    p2,p2,p2,p2,p2,
+    p2,p2,p2,p2,p2,
+    neutral,neutral,neutral,neutral,neutral,
+    p1,p1,p1,p1,p1,
+    p1,p1,p1,p1,p1
   ],
 
   async onInit() {}

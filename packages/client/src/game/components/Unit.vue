@@ -94,7 +94,7 @@ const isHovered = computed(() => {
       :sprite-height="activeFrameRect.height"
       :sheet-width="spriteData.sheetSize.w"
       :sheet-height="spriteData.sheetSize.h"
-      :is-flipped="isInverted"
+      :is-inverted="isInverted"
     />
     <div
       class="unit"
@@ -183,8 +183,8 @@ const isHovered = computed(() => {
   width: 100%;
   height: 100%;
   bottom: 0;
-  transform: translateZ(15px) translateY(-60px) translateX(-45px)
-    rotateY(-60deg) rotateX(-0deg) rotateZ(90deg);
+  transform: translateZ(15px) translateY(-25px) translateX(-0px) rotateY(-0deg)
+    rotateX(calc(-1 * var(--board-angle-X)));
   transform-origin: bottom center;
 
   &.is-inverted :deep(.sprite-wrapper) {
@@ -192,8 +192,9 @@ const isHovered = computed(() => {
   }
 
   &.is-flipped {
-    transform: translateZ(15px) translateY(-60px) translateX(40px)
-      rotateY(60deg) rotateX(0deg) rotateZ(-90deg);
+    transform: translateZ(15px) translateY(-105px) translateX(-0px)
+      rotateY(-0deg) rotateX(calc(-1 * var(--board-angle-X) + 270deg))
+      scaleX(-1);
   }
 }
 

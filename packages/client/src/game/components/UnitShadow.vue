@@ -13,7 +13,7 @@ const {
   spriteHeight,
   sheetWidth,
   sheetHeight,
-  isFlipped
+  isInverted
 } = defineProps<{
   unit: UnitViewModel;
   bgPosition: string;
@@ -22,7 +22,7 @@ const {
   spriteHeight: number;
   sheetWidth: number;
   sheetHeight: number;
-  isFlipped: boolean;
+  isInverted: boolean;
 }>();
 const ui = useGameUi();
 const unitPosition = computed(() => {
@@ -66,7 +66,7 @@ const skewX = computed(() => {
     [-maxDistanceX, maxDistanceX],
     [-35, 35]
   );
-  return isFlipped ? -angle : angle;
+  return isInverted ? -angle : angle;
 });
 const scaleY = computed(() => {
   return mapRange(distance.value, [0, maxdistance], [0.75, 1.1]) * -1;
@@ -76,7 +76,7 @@ const scaleY = computed(() => {
   <div
     class="shadow-wrapper"
     :class="{
-      'is-flipped': isFlipped
+      'is-inverted': isInverted
     }"
     :style="{
       '--parallax-factor': 0.5,
@@ -105,7 +105,7 @@ const scaleY = computed(() => {
   scale: 2;
   transform-origin: bottom center;
   transform-style: preserve-3d;
-  &.is-flipped {
+  &.is-inverted {
     transform: scaleX(-1);
   }
 }

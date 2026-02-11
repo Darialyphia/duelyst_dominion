@@ -18,12 +18,12 @@ const units = useUnits();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 
-const DEFAULT_ANGLE = { x: 40, y: -0, z: -90 };
+const DEFAULT_ANGLE = { x: 40, y: -0, z: 0 };
 
 const camera = ref({
   origin: { x: 0, y: 0 },
   scale: 1,
-  angle: { x: 40, y: -0, z: -90 },
+  angle: { x: DEFAULT_ANGLE.x, y: DEFAULT_ANGLE.y, z: DEFAULT_ANGLE.z },
   offset: { x: 0, y: -7 }
 });
 
