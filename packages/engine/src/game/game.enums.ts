@@ -4,7 +4,6 @@ export const GAME_PHASES = {
   MULLIGAN: 'mulligan_phase',
   MAIN: 'main_phase',
   PLAYING_CARD: 'playing_card_phase',
-  COMBAT: 'combat_phase',
   GAME_END: 'game_end'
 } as const;
 export type GamePhasesDict = typeof GAME_PHASES;

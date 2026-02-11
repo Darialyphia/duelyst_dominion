@@ -95,6 +95,7 @@ const isHovered = computed(() => {
       :sheet-width="spriteData.sheetSize.w"
       :sheet-height="spriteData.sheetSize.h"
       :is-inverted="isInverted"
+      :is-flipped="isFlipped"
     />
     <div
       class="unit"

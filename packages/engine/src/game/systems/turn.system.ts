@@ -46,7 +46,7 @@ export class TurnSystem extends System<never> {
       p => p.hasPassedThisRound
     );
     if (allPlayersPassed) {
-      await this.game.gamePhaseSystem.startCombat();
+      await this.game.gamePhaseSystem.endTurn();
     } else {
       this._initiativePlayer = this._initiativePlayer.opponent;
       await this.game.emit(

@@ -24,6 +24,7 @@ import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-si
 import { CARD_EVENTS } from '../card.enums';
 import { CardBeforePlayEvent, CardAfterPlayEvent } from '../card.events';
 import { GAME_EVENTS } from '../../game/game.events';
+import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedGeneralCard = SerializedCard & {
@@ -280,8 +281,26 @@ export class GeneralCard extends Card<
     return this.player.deployedGeneral;
   }
 
+  get attackPattern() {
+    return new MeleeTargetingStrategy(
+      this.game,
+      this.unit!,
+      this.unit!.attackTargetType,
+      false
+    );
+  }
+
   get attackAOEShape() {
     return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
+  }
+
+  get counterattackPattern() {
+    return new MeleeTargetingStrategy(
+      this.game,
+      this.unit!,
+      this.unit!.counterattackTargetType,
+      false
+    );
   }
 
   get counterattackAOEShape() {

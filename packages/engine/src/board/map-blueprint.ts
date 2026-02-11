@@ -1,4 +1,4 @@
-import { Vec2, type Nullable } from '@game/shared';
+import { type Nullable } from '@game/shared';
 import type { Game } from '../game/game';
 
 export type MapBlueprint = {

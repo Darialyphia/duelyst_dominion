@@ -55,20 +55,16 @@ export class BackstabUnitModifier extends Modifier<Unit> {
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',
           interceptor: (value, ctx) => {
-            if (!this.target.isAttacking) return value;
-            if (!(ctx.target instanceof Unit) || !ctx.target.isAloneOnRow) return value;
+            if (!this.target.player.isTurnPlayer) return value;
+            if (!ctx.target.behind?.unit) return value;
 
             return value + this.backstabAmount.getValue(this.options.damageBonus, this);
           }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCounterattackTarget',
-          interceptor: (value, ctx) => {
-            if (!this.target.isAttacking) return value;
-            if (!(ctx.attacker instanceof Unit)) return value;
-
-            return !ctx.attacker.isAloneOnRow;
-          }
+          interceptor: (value, ctx) =>
+            ctx.attacker.behind?.unit?.equals(this.target) ? false : true
         }),
         ...(options.mixins ?? [])
       ]

@@ -21,7 +21,6 @@ import VFX from './VFX.vue';
 import HoveredCard from './HoveredCard.vue';
 import UiModal from '@/ui/components/UiModal.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
-import GamePhaseIndicator from './GamePhaseIndicator.vue';
 import NewTurnIndicator from './NewTurnIndicator.vue';
 
 const boardCells = useBoardCells();
@@ -54,7 +53,6 @@ const isSettingsOpened = ref(false);
     </Camera>
 
     <VFX />
-    <GamePhaseIndicator />
     <NewTurnIndicator />
     <div class="hand">
       <Hand :player-id="myPlayer.id" :key="myPlayer.id" />
