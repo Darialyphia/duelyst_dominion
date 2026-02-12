@@ -103,6 +103,14 @@ export class UnitViewModel {
     return this.canMove;
   }
 
+  get attackableCells() {
+    return this.data.attackableCells;
+  }
+
+  canAttackAt(cell: BoardCellViewModel) {
+    return this.data.attackableCells.includes(cell.id);
+  }
+
   getCard() {
     return this.getEntities()[this.data.card] as CardViewModel;
   }

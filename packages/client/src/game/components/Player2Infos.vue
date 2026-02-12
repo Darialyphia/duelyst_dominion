@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  useFxEvent,
   useGameClient,
   useGameState,
   usePlayer2
@@ -8,10 +9,25 @@ import EquipedArtifact from './EquipedArtifact.vue';
 import DiscardPile from './DiscardPile.vue';
 import { Icon } from '@iconify/vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
+import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
 const player2 = usePlayer2();
 const { playerId } = useGameClient();
 const state = useGameState();
+
+useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
+  const newHP = player2.value.currentHp - event.amount;
+  const count = { value: player2.value.currentHp };
+  gsap.to(count, {
+    value: newHP,
+    duration: 0.5,
+    snap: 'value',
+    ease: Power1.easeOut,
+    onUpdate: () => {
+      player2.value.update({ currentHp: count.value });
+    }
+  });
+});
 </script>
 
 <template>

@@ -2,6 +2,7 @@ import {
   isDefined,
   type EmptyObject,
   type MaybePromise,
+  type Point,
   type Values
 } from '@game/shared';
 import type { InputDispatcher, SerializedInput } from '../input/input-system';
@@ -326,6 +327,18 @@ export class GameClient {
       type: 'deployGeneral',
       payload: {
         playerId: this.playerId
+      }
+    });
+  }
+
+  attack(unitId: string, { x, y }: Point) {
+    this.dispatch({
+      type: 'attack',
+      payload: {
+        playerId: this.playerId,
+        unitId,
+        x,
+        y
       }
     });
   }

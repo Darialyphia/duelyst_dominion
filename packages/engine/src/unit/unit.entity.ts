@@ -4,8 +4,6 @@ import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
 import { EntityWithModifiers } from '../utils/entity-with-modifiers';
 import { MovementComponent } from './components/movement.component';
-import { PathfinderComponent } from '../pathfinding/pathfinder.component';
-import { SolidBodyPathfindingStrategy } from '../pathfinding/strategies/solid-pathfinding.strategy';
 import { Interceptable } from '../utils/interceptable';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { Modifier } from '../modifier/modifier.entity';
@@ -35,7 +33,6 @@ import {
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
-import type { PathfindingStrategy } from '../pathfinding/strategies/pathinding-strategy';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
 
@@ -64,13 +61,14 @@ export type SerializedUnit = {
   isDead: boolean;
   modifiers: string[];
   canMove: boolean;
+  attackableCells: string[];
 };
 
 export type UnitInterceptors = {
   canMove: Interceptable<boolean>;
   canBeMoved: Interceptable<boolean>;
   canMoveAfterAttacking: Interceptable<boolean>;
-  canAttack: Interceptable<boolean, { target: Unit }>;
+  canAttack: Interceptable<boolean, { target: Unit | Player }>;
   canCounterAttack: Interceptable<boolean, { attacker: Unit }>;
   canBeAttackTarget: Interceptable<boolean, { attacker: Unit }>;
   canBeCounterattackTarget: Interceptable<boolean, { attacker: Unit }>;
@@ -105,6 +103,8 @@ export type UnitInterceptors = {
 
   shouldActivateOnTurnStart: Interceptable<boolean>;
   shouldExhaustAfterMoving: Interceptable<boolean>;
+  shouldSwitchInitiativeafterMoving: Interceptable<boolean>;
+  shouldSwitchInitiativeafterAttacking: Interceptable<boolean>;
 };
 
 export class Unit
@@ -156,13 +156,12 @@ export class Unit
       player: new Interceptable(),
 
       damageDealt: new Interceptable(),
-      damageReceived: new Interceptable<
-        number,
-        { amount: number; source: AnyCard; damage: Damage }
-      >(),
+      damageReceived: new Interceptable(),
 
       shouldActivateOnTurnStart: new Interceptable<boolean>(),
-      shouldExhaustAfterMoving: new Interceptable<boolean>()
+      shouldExhaustAfterMoving: new Interceptable<boolean>(),
+      shouldSwitchInitiativeafterMoving: new Interceptable<boolean>(),
+      shouldSwitchInitiativeafterAttacking: new Interceptable<boolean>()
     });
     this.movement = new MovementComponent(game, this, {
       position: options.position
@@ -207,34 +206,6 @@ export class Unit
 
   get isAt() {
     return this.movement.isAt.bind(this.movement);
-  }
-
-  get inFront(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.player.isPlayer1 ? this.x + 1 : this.x - 1,
-      y: this.y
-    });
-  }
-
-  get behind(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.player.isPlayer1 ? this.x - 1 : this.x + 1,
-      y: this.y
-    });
-  }
-
-  get above(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.x,
-      y: this.y - 1
-    });
-  }
-
-  get below(): BoardCell | null {
-    return this.game.boardSystem.getCellAt({
-      x: this.x,
-      y: this.y + 1
-    });
   }
 
   isEnemy(entity: Unit | Player) {
@@ -289,47 +260,49 @@ export class Unit
     return this.interceptors.canBeMoved.getValue(false, {});
   }
 
-  get isAloneOnRow() {
+  get isAloneOnColumn() {
     const unitsOnRow = this.game.unitSystem.units.filter(
-      unit => unit.position.y === this.y && !unit.equals(this) && unit.isAlly(this)
+      unit => unit.position.x === this.x && !unit.equals(this) && unit.isAlly(this)
     );
     return unitsOnRow.length === 0;
   }
 
   get adjacentUnits() {
     return [
-      ...this.unitsOnRowAbove.filter(unit => unit.x === this.x),
-      ...this.unitsOnRowBelow.filter(unit => unit.x === this.x),
-      ...this.unitsOnSameRow.filter(unit => Math.abs(unit.x - this.x) === 1)
+      ...this.unitsOnLeftColumn.filter(unit => unit.x === this.x),
+      ...this.unitsOnRightColumn.filter(unit => unit.x === this.x),
+      ...this.unitsOnSameColumn.filter(unit => Math.abs(unit.x - this.x) === 1)
     ];
-  }
-
-  get unitsOnSameRow() {
-    return this.game.unitSystem.units.filter(
-      unit => unit.position.y === this.y && !unit.equals(this)
-    );
-  }
-
-  get unitsOnRowAbove() {
-    return this.game.unitSystem.units.filter(
-      unit => unit.position.y === this.y - 1 && !unit.equals(this)
-    );
-  }
-
-  get unitsOnRowBelow() {
-    return this.game.unitSystem.units.filter(
-      unit => unit.position.y === this.y + 1 && !unit.equals(this)
-    );
-  }
-
-  get unitsOnAdjacentRows() {
-    return [...this.unitsOnRowAbove, ...this.unitsOnRowBelow];
   }
 
   get unitsOnSameColumn() {
     return this.game.unitSystem.units.filter(
       unit => unit.position.x === this.x && !unit.equals(this)
     );
+  }
+
+  get enemiesOnSameColumn() {
+    return this.unitsOnSameColumn.filter(unit => unit.isEnemy(this));
+  }
+
+  get alliesOnSameColumn() {
+    return this.unitsOnSameColumn.filter(unit => unit.isAlly(this));
+  }
+
+  get unitsOnLeftColumn() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.x === this.x - 1 && !unit.equals(this)
+    );
+  }
+
+  get unitsOnRightColumn() {
+    return this.game.unitSystem.units.filter(
+      unit => unit.position.x === this.x + 1 && !unit.equals(this)
+    );
+  }
+
+  get unitsOnAdjacentRows() {
+    return [...this.unitsOnLeftColumn, ...this.unitsOnRightColumn];
   }
 
   get canMove(): boolean {
@@ -348,10 +321,17 @@ export class Unit
     return this.interceptors.shouldExhaustAfterMoving.getValue(true, {});
   }
 
+  get shouldSwitchInitiativeafterMoving() {
+    return this.interceptors.shouldSwitchInitiativeafterMoving.getValue(true, {});
+  }
+
   async move(to: Point) {
     await this.movement.move(to);
     if (this.shouldExhaustAfterMoving) {
       this.exhaust();
+    }
+    if (this.shouldSwitchInitiativeafterMoving) {
+      await this.game.turnSystem.switchInitiative();
     }
   }
 
@@ -362,7 +342,7 @@ export class Unit
         UNIT_EVENTS.UNIT_BEFORE_TELEPORT,
         new UnitBeforeMoveEvent({
           unit: this,
-          position: this.position
+          position: Vec2.fromPoint(to)
         })
       );
     }
@@ -385,10 +365,10 @@ export class Unit
     return this.interceptors.canBeDestroyed.getValue(true, {});
   }
 
-  canAttack(unit: Unit): boolean {
+  canAttack(target: Unit | Player): boolean {
     return this.interceptors.canAttack.getValue(
       this.attacksPerformedThisTurn < this.maxAttacksPerTurn && !this.isExhausted,
-      { target: unit }
+      { target }
     );
   }
 
@@ -396,14 +376,16 @@ export class Unit
     if (this.position.equals(point)) {
       return false;
     }
-    const target = this.game.unitSystem.getUnitAt(point);
-    if (!target) return false;
+    const target = this.game.unitSystem.getUnitAt(point) ?? this.player.opponent;
+    const canBeAttacked =
+      target instanceof Unit ? target.canBeAttackedBy(this) : this.isEnemy(target);
 
-    if (!this.canAttack(target) || !target.canBeAttackedBy(this)) {
+    if (!this.canAttack(target) || !canBeAttacked) {
       return false;
     }
 
-    return this.attackTargettingPattern.canTargetAt(point);
+    const result = this.attackTargettingPattern.canTargetAt(point);
+    return result;
   }
 
   get isExhausted() {
@@ -531,12 +513,20 @@ export class Unit
     return this.interceptors.retaliation.getValue(this.card.retaliation, {});
   }
 
-  async attack(point: Unit | Player) {
-    await this.combat.attack(point);
+  get shouldSwitchInitiativeafterAttacking() {
+    return this.interceptors.shouldSwitchInitiativeafterAttacking.getValue(true, {});
+  }
+
+  async attack(point: Point) {
+    const target = this.game.unitSystem.getUnitAt(point) ?? this.player.opponent;
+    await this.combat.attack(target);
     if (this.attacksPerformedThisTurn >= this.maxAttacksPerTurn) {
       this.exhaust();
     }
     await this.game.emit(UNIT_EVENTS.UNIT_AFTER_COMBAT, new UnitAfterCombatEvent({}));
+    if (this.shouldSwitchInitiativeafterAttacking) {
+      await this.game.turnSystem.switchInitiative();
+    }
   }
 
   async counterAttack(unit: Unit) {
@@ -626,16 +616,6 @@ export class Unit
     this.wakeUp();
   }
 
-  // Check if the unit can attack a point if it were in a given position
-  isWithinDangerZone(point: Point, position: Point) {
-    const original = this.position.clone();
-    this.movement.position.x = position.x;
-    this.movement.position.y = position.y;
-    const canAttack = this.attackTargettingPattern.isWithinRange(point);
-    this.movement.position = original;
-    return canAttack;
-  }
-
   async bounce(silent = false) {
     if (!silent) {
       await this.game.emit(
@@ -688,7 +668,10 @@ export class Unit
       isExhausted: this.isExhausted,
       isDead: !this.isAlive,
       modifiers: this.modifiers.list.map(modifier => modifier.id),
-      canMove: this.canMove
+      canMove: this.canMove,
+      attackableCells: this.game.boardSystem.cells
+        .filter(cell => this.canAttackAt(cell.position))
+        .map(cell => cell.id)
     };
   }
 }

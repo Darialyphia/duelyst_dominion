@@ -56,7 +56,7 @@ export class MovementComponent {
       UNIT_EVENTS.UNIT_BEFORE_MOVE,
       new UnitBeforeMoveEvent({
         unit: this.unit,
-        position: this.position
+        position: Vec2.fromPoint(to)
       })
     );
     const currentPosition = this.position;

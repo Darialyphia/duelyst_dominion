@@ -68,13 +68,12 @@ const canMoveTo = computed(() => {
   return ui.value.selectedUnit.canMoveTo(cell.value);
 });
 
+const canAttack = computed(() => {
+  if (!ui.value.selectedUnit) return false;
+  return ui.value.selectedUnit.canAttackAt(cell.value);
+});
 const isInAoe = useIsInAoe();
 
-const isSelectedUnitSpace = computed(() => {
-  const selectedUnit = ui.value.selectedUnit;
-  if (!selectedUnit) return false;
-  return selectedUnit.x === x && selectedUnit.y === y;
-});
 const { client } = useGameClient();
 </script>
 
@@ -87,7 +86,7 @@ const { client } = useGameClient();
       'is-targetable': isTargetable && !client.isPlayingFx,
       'is-targeted': isTargeted && !client.isPlayingFx,
       'can-move-to': canMoveTo && !client.isPlayingFx,
-      'is-selected-unit': isSelectedUnitSpace && !client.isPlayingFx
+      'can-attack': canAttack && !client.isPlayingFx
     }"
   >
     <slot />
@@ -139,6 +138,18 @@ const { client } = useGameClient();
       position: absolute;
       inset: 0;
       background-image: url('@/assets/ui/cell-highlight-move-reach.png');
+      background-size: cover;
+      z-index: 1;
+      transition: opacity 0.3s var(--ease-3);
+      @starting-style {
+        opacity: 0;
+      }
+    }
+    &.can-attack::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('@/assets/ui/cell-highlight-attackable.png');
       background-size: cover;
       z-index: 1;
       transition: opacity 0.3s var(--ease-3);

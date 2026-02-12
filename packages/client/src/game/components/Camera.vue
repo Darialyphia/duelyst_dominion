@@ -18,7 +18,7 @@ const units = useUnits();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 
-const DEFAULT_ANGLE = { x: 40, y: -20, z: 0 };
+const DEFAULT_ANGLE = { x: 40, y: -0, z: 0 };
 
 const camera = ref({
   origin: { x: 0, y: 0 },

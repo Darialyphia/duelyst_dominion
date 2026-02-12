@@ -55,37 +55,64 @@ export function useUnitAnimations({
   const latestHealReceived = ref<number>();
 
   const moveAlongPath = async (
-    point: Point,
+    path: Point[],
     previousPosition: Point,
     stepDuration: number,
     ease: gsap.EaseFunction = Power0.easeNone
   ) => {
     const timeline = gsap.timeline();
 
-    const prev = previousPosition;
-    const prevScaled = config.CELL.toScreenPosition(prev);
-    const destinationScaled = config.CELL.toScreenPosition(point);
-    const deltaX = destinationScaled.x - prevScaled.x;
-    const deltaY = destinationScaled.y - prevScaled.y;
+    path.forEach((point, index) => {
+      const prev = index === 0 ? previousPosition : path[index - 1];
+      const prevScaled = config.CELL.toScreenPosition(prev);
+      const destinationScaled = config.CELL.toScreenPosition(point);
+      const deltaX = destinationScaled.x - prevScaled.x;
+      const deltaY = destinationScaled.y - prevScaled.y;
 
-    timeline.to(positionOffset.value, {
-      x: `+=${deltaX}`,
-      y: `+=${deltaY}`,
-      duration: stepDuration,
-      ease
+      timeline.to(positionOffset.value, {
+        x: `+=${deltaX}`,
+        y: `+=${deltaY}`,
+        duration: stepDuration,
+        ease
+      });
     });
 
     timeline.set(positionOffset.value, { x: 0, y: 0 });
 
     await timeline.play();
   };
+
+  const buildPath = (from: Point, to: Point) => {
+    const path: Point[] = [];
+    let currentX = from.x;
+    let currentY = from.y;
+
+    // Walk along x-axis first
+    while (currentX !== to.x) {
+      currentX += Math.sign(to.x - from.x);
+      path.push({ x: currentX, y: currentY });
+    }
+
+    // Then walk along y-axis
+    while (currentY !== to.y) {
+      currentY += Math.sign(to.y - from.y);
+      path.push({ x: currentX, y: currentY });
+    }
+    return path;
+  };
+
   const onMove = async (event: { unit: string; position: Point }) => {
     if (event.unit !== unit.id) return;
+
     const previousPosition = { x: unit.x, y: unit.y };
 
     animationSequence.value = [ANIMATIONS_NAMES.RUN];
 
-    await moveAlongPath(event.position, previousPosition, 0.5);
+    await moveAlongPath(
+      buildPath(previousPosition, event.position),
+      previousPosition,
+      0.3
+    );
 
     animationSequence.value = [defaultAnimation.value];
   };
@@ -95,14 +122,19 @@ export function useUnitAnimations({
     const previousPosition = { x: unit.x, y: unit.y };
 
     isTeleporting.value = true;
-    await moveAlongPath(event.position, previousPosition, 0.3, Power2.easeIn);
+    await moveAlongPath(
+      buildPath(previousPosition, event.position),
+      previousPosition,
+      0.3,
+      Power2.easeIn
+    );
     isTeleporting.value = false;
   };
 
   useFxEvent(FX_EVENTS.UNIT_BEFORE_MOVE, onMove);
   useFxEvent(FX_EVENTS.UNIT_BEFORE_TELEPORT, onTeleport);
 
-  const onAttack = async (event: { unit: string; target: Point }) => {
+  const onAttack = async (event: { unit: string }) => {
     if (event.unit !== unit.id) return;
     return new Promise<void>(resolve => {
       isAttacking.value = true;

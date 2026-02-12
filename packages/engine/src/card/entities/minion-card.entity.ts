@@ -275,12 +275,7 @@ export class MinionCard extends Card<
   }
 
   get attackPattern() {
-    return new MeleeTargetingStrategy(
-      this.game,
-      this.unit,
-      this.unit.attackTargetType,
-      false
-    );
+    return new MeleeTargetingStrategy(this.game, this.unit, this.unit.attackTargetType);
   }
 
   get attackAOEShape() {
@@ -291,8 +286,7 @@ export class MinionCard extends Card<
     return new MeleeTargetingStrategy(
       this.game,
       this.unit,
-      this.unit.counterattackTargetType,
-      false
+      this.unit.counterattackTargetType
     );
   }
 
