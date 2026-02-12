@@ -71,6 +71,8 @@ export class CombatComponent {
   }
 
   async attack(target: Unit | Player) {
+    const position = target instanceof Unit ? target.position.clone() : null;
+
     await this.game.emit(
       UNIT_EVENTS.UNIT_BEFORE_ATTACK,
       new UnitAttackEvent({
@@ -79,31 +81,36 @@ export class CombatComponent {
         unit: this.unit
       })
     );
+    // if target is unit, we want to get the actual target on the board in case it moved since the attack was declared (ex: provoke)
+    const actualTarget =
+      target instanceof Unit ? this.game.unitSystem.getUnitAt(position!) : target;
+    if (!actualTarget) return; // means target died or was removed from board since attack was declared
+
     const targets =
-      target instanceof Unit
+      actualTarget instanceof Unit
         ? this.unit.attackAOEShape
-            .getArea([target])
+            .getArea([actualTarget])
             .map(point => this.game.unitSystem.getUnitAt(point))
             .filter(isDefined)
-        : [target];
+        : [actualTarget];
     const damage = new CombatDamage(this.unit, 'attack');
 
     await this.dealDamage(targets, damage);
     this._attacksCount++;
 
-    if (target instanceof Player) {
+    if (actualTarget instanceof Player) {
       await this.game.emit(
         UNIT_EVENTS.UNIT_AFTER_ATTACK,
         new UnitAttackEvent({
           targetType: 'player',
-          target,
+          target: actualTarget,
           unit: this.unit
         })
       );
       return;
     }
 
-    const unit = this.game.unitSystem.getUnitAt(target)!;
+    const unit = this.game.unitSystem.getUnitAt(actualTarget)!;
     if (!unit) return; // means unit died from attack
 
     // we check counterattack before emitting AFTER_ATTACK event to enable effects that would prevent counter attack for one attack only

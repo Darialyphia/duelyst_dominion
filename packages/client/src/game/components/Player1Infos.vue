@@ -19,6 +19,8 @@ const ui = useGameUi();
 const state = useGameState();
 
 useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
+  if (event.player !== player1.value.id) return;
+
   const newHP = player1.value.currentHp - event.amount;
   const count = { value: player1.value.currentHp };
   gsap.to(count, {
@@ -75,13 +77,14 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
         </div>
       </div>
     </header>
-    <div class="flex gap-2">
+    <div class="flex gap-2 items-center">
       <div
         v-for="i in Math.max(player1.maxMana, player1.mana)"
         :key="i"
         class="mana"
-        :class="{ spent: i <= player1.spentMana }"
+        :class="{ spent: i > player1.mana }"
       />
+      (+ {{ player1.manaRegen }} )
     </div>
 
     <div class="flex flex-col gap-2">
@@ -99,13 +102,6 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
       @click="ui.isReplacingCard = !ui.isReplacingCard"
     >
       Replace Card
-    </UiButton>
-    <UiButton
-      v-show="player1.canDeployGeneral"
-      class="action-button"
-      @click="client.deployGeneral()"
-    >
-      Deploy General
     </UiButton>
     <UiButton class="action-button" @click="client.pass()">Pass</UiButton>
   </div>

@@ -68,7 +68,8 @@ export const isDeckCard = (card: AnyCard): card is DeckCard => {
   return (
     card.blueprint.kind === CARD_KINDS.MINION ||
     card.blueprint.kind === CARD_KINDS.SPELL ||
-    card.blueprint.kind === CARD_KINDS.ARTIFACT
+    card.blueprint.kind === CARD_KINDS.ARTIFACT ||
+    card.blueprint.kind === CARD_KINDS.GENERAL
   );
 };
 

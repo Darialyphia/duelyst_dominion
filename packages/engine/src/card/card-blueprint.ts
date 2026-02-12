@@ -129,6 +129,7 @@ export type AbilityBlueprint<T extends AnyCard> = {
 
 export type GeneralBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.GENERAL>;
+  manaCost: number;
   atk: number;
   retaliation: number;
   maxHp: number;

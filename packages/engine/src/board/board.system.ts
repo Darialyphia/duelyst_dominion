@@ -9,6 +9,7 @@ import { BoardCell } from './entities/board-cell.entity';
 import { pointToCellId } from './board-utils';
 import { System } from '../system';
 import type { MapBlueprint } from './map-blueprint';
+import type { Player } from '../player/player.entity';
 
 export type BoardSystemOptions = {
   map: MapBlueprint;
@@ -40,7 +41,7 @@ export class BoardSystem
       const position = indexToPoint(this.map.cols, index);
       const cell = new BoardCell(this.game, {
         position,
-        player: cellBlueprint.player
+        ...cellBlueprint
       });
       this.cellsMap.set(cell.id, cell);
     });
@@ -76,6 +77,14 @@ export class BoardSystem
     return this.cells.filter(cell => cell.x === colIndex);
   }
 
+  getBackRowForPlayer(player: Player) {
+    return this.cells.filter(cell => cell.player?.equals(player) && cell.isBackRow);
+  }
+
+  getFrontRowForPlayer(player: Player) {
+    return this.cells.filter(cell => cell.player?.equals(player) && cell.isFrontRow);
+  }
+
   isInArea(topLeft: Point, size: { width: number; height: number }, point: Point) {
     return (
       point.x >= topLeft.x &&
@@ -85,7 +94,7 @@ export class BoardSystem
     );
   }
 
-  getCellAt(posOrKey: string | Point) {
+  getCellAt(posOrKey: string | Point): BoardCell | null {
     if (isString(posOrKey)) {
       return this.cellsMap.get(posOrKey) ?? null;
     }

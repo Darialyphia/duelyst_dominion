@@ -201,6 +201,8 @@ export function useUnitAnimations({
       });
     };
 
+    unit.update({ currentHp: unit.hp - event.damage });
+
     await Promise.all([animation, damageIndicator()]);
   });
 

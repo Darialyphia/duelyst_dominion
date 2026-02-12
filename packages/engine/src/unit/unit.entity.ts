@@ -33,7 +33,6 @@ import {
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
-import type { BoardCell } from '../board/entities/board-cell.entity';
 import { isGeneral } from '../card/card-utils';
 
 export type UnitOptions = {
@@ -268,11 +267,10 @@ export class Unit
   }
 
   get adjacentUnits() {
-    return [
-      ...this.unitsOnLeftColumn.filter(unit => unit.x === this.x),
-      ...this.unitsOnRightColumn.filter(unit => unit.x === this.x),
-      ...this.unitsOnSameColumn.filter(unit => Math.abs(unit.x - this.x) === 1)
-    ];
+    return this.game.boardSystem
+      .getCellAt(this.position)!
+      .adjacent.map(cell => cell.unit)
+      .filter(isDefined);
   }
 
   get unitsOnSameColumn() {

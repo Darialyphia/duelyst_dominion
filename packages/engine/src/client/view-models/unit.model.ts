@@ -24,7 +24,7 @@ export class UnitViewModel {
     return this.id === unit.id;
   }
 
-  update(data: Partial<SerializedModifier>) {
+  update(data: Partial<SerializedUnit>) {
     Object.assign(this.data, data);
 
     return this;

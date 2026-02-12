@@ -8,11 +8,11 @@ import type { ModifierMixin } from '../modifier-mixin';
 import { UnitAuraModifierMixin } from '../mixins/aura.mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
-import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
 import { DAMAGE_TYPES } from '../../utils/damage';
 import type { UnitReceiveDamageEvent } from '../../unit/unit-events';
+import { Player } from '../../player/player.entity';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   constructor(
@@ -39,27 +39,23 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
-        new UnitAuraModifierMixin(game, source, {
-          isElligible: candidate => {
-            return this.shouldBeProtected(candidate);
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
+          filter: event => {
+            if (!event) return false;
+            if (event.data.target instanceof Player) return false;
+            if (event.data.target.isEnemy(this.target)) return false;
+            return this.target.adjacentUnits.some(u => u.equals(event.data.target));
           },
-          getModifiers: candidate => {
-            return [
-              new Modifier('provoke-protection', game, source, {
-                mixins: [
-                  new GameEventModifierMixin(game, {
-                    eventName: GAME_EVENTS.UNIT_BEFORE_RECEIVE_DAMAGE,
-                    filter: event =>
-                      !!event?.data.unit.equals(candidate) &&
-                      event.data.damage.type === DAMAGE_TYPES.COMBAT,
-                    handler: async event => {
-                      if (!event) return;
-                      return this.onDamageReceived(event, candidate);
-                    }
-                  })
-                ]
-              })
-            ];
+          handler: async event => {
+            if (!event) return;
+            const target = event.data.target as Unit;
+            const { x: targetX, y: targetY } = target.position;
+            const { x, y } = this.target.position;
+            this.target.position.x = targetX;
+            this.target.position.y = targetY;
+            target.position.x = x;
+            target.position.y = y;
           }
         })
       ]

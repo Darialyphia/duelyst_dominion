@@ -24,6 +24,7 @@ export const argeonHighmane: GeneralBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.BASIC,
   tags: [],
+  manaCost: 3,
   runeCost: {},
   atk: 2,
   maxHp: 7,

@@ -3,7 +3,11 @@ import type { Game } from '../../game/game';
 import { pointToCellId } from '../board-utils';
 import { EntityWithModifiers } from '../../utils/entity-with-modifiers';
 import { Interceptable } from '../../utils/interceptable';
+import { BOARD_ROWS, type BoardRow } from '../map-blueprint';
+import { match } from 'ts-pattern';
+import type { Player } from '../../player/player.entity';
 import type { Unit } from '../../unit/unit.entity';
+import type { Tile } from '../../tile/tile.entity';
 
 export type BoardCellInterceptors = {
   isWalkable: Interceptable<boolean>;
@@ -22,8 +26,7 @@ export type SerializedCell = {
 
 export type BoardCellOptions = {
   position: Point;
-  player: 'p1' | 'p2' | null;
-};
+} & ({ player: 'p1' | 'p2'; row: BoardRow } | { player: null });
 
 export class BoardCell
   extends EntityWithModifiers<BoardCellInterceptors>
@@ -31,17 +34,14 @@ export class BoardCell
 {
   readonly position: Vec2;
 
-  private readonly _player: 'p1' | 'p2' | null;
-
   constructor(
     protected game: Game,
-    options: BoardCellOptions
+    private options: BoardCellOptions
   ) {
     super(pointToCellId(options.position), game, {
       isWalkable: new Interceptable()
     });
     this.position = Vec2.fromPoint(options.position);
-    this._player = options.player;
   }
 
   get x() {
@@ -52,21 +52,21 @@ export class BoardCell
     return this.position.y;
   }
 
-  get player() {
-    if (this._player === 'p1') {
+  get player(): Player | null {
+    if (this.options.player === 'p1') {
       return this.game.playerSystem.player1;
-    } else if (this._player === 'p2') {
+    } else if (this.options.player === 'p2') {
       return this.game.playerSystem.player2;
     } else {
       return null;
     }
   }
 
-  get unit() {
+  get unit(): Unit | null {
     return this.game.unitSystem.getUnitAt(this);
   }
 
-  get tiles() {
+  get tiles(): Tile | null {
     return this.game.tileSystem.getTileAt(this);
   }
 
@@ -82,24 +82,79 @@ export class BoardCell
     return !this.isOccupied;
   }
 
+  get row() {
+    if (!this.options.player) return null;
+    return this.options.row;
+  }
+
+  get inFront(): BoardCell | null {
+    if (!this.player) return null;
+    if (!this.row) return null;
+    const player = this.player;
+    const row = this.row;
+
+    return match(row)
+      .with(BOARD_ROWS.FRONT, () => {
+        return (
+          this.game.boardSystem.cells.find(
+            c => c.player?.equals(player.opponent) && c.row === BOARD_ROWS.FRONT
+          ) ?? null
+        );
+      })
+      .with(BOARD_ROWS.BACK, () => {
+        return (
+          this.game.boardSystem.cells.find(
+            c => c.player?.equals(player) && c.row === BOARD_ROWS.FRONT
+          ) ?? null
+        );
+      })
+      .exhaustive();
+  }
+
+  get behind(): BoardCell | null {
+    if (!this.player) return null;
+    if (!this.row) return null;
+    const player = this.player;
+    const row = this.row;
+
+    return match(row)
+      .with(BOARD_ROWS.FRONT, () => {
+        return (
+          this.game.boardSystem.cells.find(
+            c => c.player?.equals(player) && c.row === BOARD_ROWS.BACK
+          ) ?? null
+        );
+      })
+      .with(BOARD_ROWS.BACK, () => {
+        return null;
+      })
+      .exhaustive();
+  }
+
+  get left() {
+    return this.game.boardSystem.cells.find(c => c.y === this.y && c.x === this.x - 1);
+  }
+
+  get right() {
+    return this.game.boardSystem.cells.find(c => c.y === this.y && c.x === this.x + 1);
+  }
+
+  get adjacent() {
+    return [this.left, this.right, this.inFront, this.behind].filter(isDefined);
+  }
+
   isNearby(point: Point) {
     return this.game.boardSystem.getDistance(this.position, point) === 1;
   }
 
-  isInFront(unit: Unit) {
-    return unit.inFront?.equals(this);
+  get isFrontRow() {
+    if (!this.options.player) return false;
+    return this.options.row === BOARD_ROWS.FRONT;
   }
 
-  isBehind(unit: Unit) {
-    return unit.behind?.equals(this);
-  }
-
-  isAbove(unit: Unit) {
-    return unit.above?.equals(this);
-  }
-
-  isBelow(unit: Unit) {
-    return unit.below?.equals(this);
+  get isBackRow() {
+    if (!this.options.player) return false;
+    return this.options.row === BOARD_ROWS.BACK;
   }
 
   serialize(): SerializedCell {
@@ -107,7 +162,7 @@ export class BoardCell
       id: this.id,
       entityType: 'cell',
       position: this.position,
-      player: this._player,
+      player: this.options.player,
       unit: this.unit ? this.unit.id : null,
       tile: this.tiles ? this.tiles.id : null
     };

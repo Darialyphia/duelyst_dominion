@@ -63,6 +63,10 @@ export class PlayerViewModel {
     return this.data.maxMana;
   }
 
+  get manaRegen() {
+    return this.data.manaRegen;
+  }
+
   get handSize() {
     return this.data.handSize;
   }

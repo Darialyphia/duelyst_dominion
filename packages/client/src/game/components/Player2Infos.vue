@@ -16,6 +16,8 @@ const { playerId } = useGameClient();
 const state = useGameState();
 
 useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
+  if (event.player !== player2.value.id) return;
+
   const newHP = player2.value.currentHp - event.amount;
   const count = { value: player2.value.currentHp };
   gsap.to(count, {
@@ -72,7 +74,8 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
         </div>
       </div>
     </header>
-    <div class="flex gap-2 justify-end">
+    <div class="flex gap-2 justify-end items-center">
+      (+ {{ player2.manaRegen }} )
       <div
         v-for="i in Math.max(player2.maxMana, player2.mana)"
         :key="i"

@@ -248,12 +248,10 @@ export class UiController {
   }
 
   selectUnit(unit: UnitViewModel) {
-    console.log('Selecting unit', unit.id);
     this._selectedUnit = unit;
   }
 
   unselectUnit() {
-    console.log('Unselecting unit');
     this._selectedUnit = null;
   }
 

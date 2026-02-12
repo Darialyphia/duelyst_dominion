@@ -62,7 +62,8 @@ export const KEYWORDS = {
   CELERITY: {
     id: 'celerity',
     name: 'Celerity',
-    description: 'Can move and attack in the same turn.',
+    description:
+      'Can move and attack in the same turn. Does not pass initiative after moving.',
     aliases: []
   },
   CLEANSE: {
@@ -201,7 +202,8 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description: 'Takes combat damage instead of adjacent allies.',
+    description:
+      'While this is awake, when an adjacent ally is attacked, swap position with the attack target and intercept the attack.',
     aliases: ['provoke']
   },
   PROVOKED: {

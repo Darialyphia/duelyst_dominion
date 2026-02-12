@@ -56,6 +56,7 @@ export type SerializedPlayer = {
   artifacts: SerializedPlayerArtifact[];
   runes: Partial<Record<Rune, number>>;
   canDeployGeneral: boolean;
+  manaRegen: number;
 };
 
 export type PlayerInterceptor = {
@@ -63,6 +64,7 @@ export type PlayerInterceptor = {
   maxReplacesPerTurn: Interceptable<number>;
   maxManathreshold: Interceptable<number>;
   maxMana: Interceptable<number>;
+  manaRegen: Interceptable<number>;
   damageReceived: Interceptable<
     number,
     { damage: Damage; amount: number; source: AnyCard }
@@ -73,6 +75,7 @@ const makeInterceptors = (): PlayerInterceptor => {
     cardsDrawnForTurn: new Interceptable(),
     maxReplacesPerTurn: new Interceptable(),
     maxMana: new Interceptable(),
+    manaRegen: new Interceptable(),
     maxManathreshold: new Interceptable(),
     damageReceived: new Interceptable()
   };
@@ -155,6 +158,7 @@ export class Player
       generalId.blueprintId,
       generalId.isFoil
     );
+    await this.generalCard.addToHand();
 
     await this.cardManager.init();
   }
@@ -206,6 +210,7 @@ export class Player
       currentHp: this.remainingHp,
       currentMana: this._mana,
       maxMana: this.maxMana,
+      manaRegen: this.manaRegen,
       deckSize: this.cardManager.deck.cards.length,
       canReplace: this.canReplaceCard(),
       isActive: this.isActive,
@@ -310,7 +315,7 @@ export class Player
   }
 
   refillMana() {
-    this._mana = this.maxMana;
+    this._mana = Math.min(this._mana + this.manaRegen, this.maxMana);
   }
 
   async startTurn() {
@@ -343,6 +348,10 @@ export class Player
 
   get maxMana() {
     return this.interceptors.maxMana.getValue(this._baseMaxMana, {});
+  }
+
+  get manaRegen() {
+    return this.interceptors.manaRegen.getValue(this.game.config.MANA_REGEN_PER_TURN, {});
   }
 
   async spendMana(amount: number) {

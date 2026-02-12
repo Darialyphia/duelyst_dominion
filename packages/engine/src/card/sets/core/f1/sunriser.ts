@@ -51,7 +51,7 @@ export const sunriser: MinionBlueprint = {
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.UNIT_AFTER_HEAL,
               async handler() {
-                const targets = card.unit.unitsOnSameColum.filter(unit =>
+                const targets = card.unit.unitsOnSameColumn.filter(unit =>
                   unit.isEnemy(card.unit)
                 );
                 for (const target of targets) {

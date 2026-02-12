@@ -43,12 +43,12 @@ export class CelerityUnitModifier extends Modifier<Unit> {
       icon: 'icons/keyword-celerity',
       mixins: [
         new UnitInterceptorModifierMixin(game, {
-          key: 'maxAttacksPerTurn',
-          interceptor: value => value + 1
+          key: 'shouldExhaustAfterMoving',
+          interceptor: () => false
         }),
         new UnitInterceptorModifierMixin(game, {
-          key: 'maxMovementsPerTurn',
-          interceptor: value => value + 1
+          key: 'shouldSwitchInitiativeafterMoving',
+          interceptor: () => false
         }),
         ...(options.mixins ?? [])
       ]

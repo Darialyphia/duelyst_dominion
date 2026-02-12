@@ -322,15 +322,6 @@ export class GameClient {
     });
   }
 
-  deployGeneral() {
-    this.dispatch({
-      type: 'deployGeneral',
-      payload: {
-        playerId: this.playerId
-      }
-    });
-  }
-
   attack(unitId: string, { x, y }: Point) {
     this.dispatch({
       type: 'attack',

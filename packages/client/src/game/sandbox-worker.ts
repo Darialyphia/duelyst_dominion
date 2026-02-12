@@ -171,7 +171,8 @@ self.addEventListener('message', ({ data }) => {
       if (!unit) {
         return;
       }
-      await unit.destroy(unit.player.deployedGeneral.card, payload.silent);
+
+      await unit.destroy(unit.card, payload.silent);
       game.snapshotSystem.takeSnapshot();
     })
     .with({ type: 'bounceUnit' }, async ({ payload }) => {

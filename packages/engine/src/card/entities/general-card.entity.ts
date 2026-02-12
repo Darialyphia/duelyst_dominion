@@ -30,8 +30,10 @@ import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy'
 export type SerializedGeneralCard = SerializedCard & {
   atk: number;
   maxHp: number;
+  manaCost: number;
   retaliation: number;
   abilities: SerializedAbility[];
+  unplayableReason: string | null;
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -81,13 +83,26 @@ export class GeneralCard extends Card<
     );
   }
 
-  get isAlreadyDeployed() {
-    return this.game.unitSystem.units.some(unit => unit.card.equals(this));
+  get canAfford() {
+    return this.player.canSpendMana(this.manaCost);
+  }
+
+  get unplayableReason() {
+    if (!this.hasAvailablePosition) {
+      return 'No available position to play this card.';
+    }
+    if (!this.canAfford) {
+      return "You don't have enough mana.";
+    }
+    if (this.deployCooldown > 0) {
+      return `On cooldown for ${this.deployCooldown} more turn${this.deployCooldown === 1 ? '' : 's'}.`;
+    }
+    return this.canPlay() ? null : 'You cannot play this card.';
   }
 
   canPlay(): boolean {
     return this.interceptors.canPlay.getValue(
-      !this.isAlreadyDeployed && this.hasAvailablePosition && this.deployCooldown === 0,
+      this.canAfford && this.hasAvailablePosition && this.deployCooldown === 0,
       {}
     );
   }
@@ -159,11 +174,11 @@ export class GeneralCard extends Card<
         if (!event.data.unit.equals(this.unit!)) return;
 
         this.deployCooldown = this.game.config.GENERAL_DEPLOY_COOLDOWN;
+        await this.addToHand();
         cleanups.forEach(cleanup => cleanup());
       }),
       this.game.on(GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE, async event => {
         if (!event.data.unit.equals(this.unit!)) return;
-
         await this.player.takeDamage(event.data.from, event.data.damage);
       })
     ];
@@ -250,14 +265,15 @@ export class GeneralCard extends Card<
       new GeneralUseAbilityEvent({ card: this, abilityId: id })
     );
   }
-
   serialize() {
     return {
       ...this.serializeBase(),
       atk: this.atk,
       retaliation: this.retaliation,
       maxHp: this.maxHp,
-      abilities: this.abilities.map(ability => ability.serialize())
+      manaCost: this.blueprint.manaCost,
+      abilities: this.abilities.map(ability => ability.serialize()),
+      unplayableReason: this.unplayableReason
     };
   }
 
