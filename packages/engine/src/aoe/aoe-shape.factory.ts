@@ -9,6 +9,7 @@ import { NoAOEShape } from './no-aoe.aoe-shape';
 import { EverywhereAOEShape } from './everywhere.aoe-shape';
 import { RowAOEShape } from './row.aoe-shape';
 import { ColumnAOEShape } from './column.aoe-shape';
+import { CleaveAOEShape } from './cleave.aoe-shape';
 
 const dict = {
   point: () => PointAOEShape,
@@ -18,7 +19,8 @@ const dict = {
   noAOE: () => NoAOEShape,
   everywhere: () => EverywhereAOEShape,
   row: () => RowAOEShape,
-  column: () => ColumnAOEShape
+  column: () => ColumnAOEShape,
+  cleave: () => CleaveAOEShape
 } as const;
 
 export type AOEType = keyof typeof dict;

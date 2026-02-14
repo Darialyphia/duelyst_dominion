@@ -148,7 +148,7 @@ export const multipleUnitsTargetRules = {
         getLabel = selected =>
           `${card.blueprint.name} : Select targets (${selected} / ${max})`
       }: {
-        predicate?: (unit: Unit) => boolean;
+        predicate?: (candidate: Unit, selected: Unit[]) => boolean;
         getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
         getLabel?: (selectedSpaces: BoardCell[]) => string;
       }
@@ -168,7 +168,10 @@ export const multipleUnitsTargetRules = {
             (allowRepeat
               ? true
               : !selectedCards.some(selected => selected.equals(candidate))) &&
-            predicate(candidate.unit)
+            predicate(
+              candidate.unit,
+              selectedCards.map(c => c.unit!)
+            )
           );
         },
         canCommit(selectedCards) {

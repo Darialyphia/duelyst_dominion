@@ -2,7 +2,6 @@ import type { MaybePromise } from '@game/shared';
 import { KEYWORDS } from '../../card/card-keywords';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { Game } from '../../game/game';
-import { GAME_EVENTS } from '../../game/game.events';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
@@ -50,7 +49,6 @@ export class MinionOnDestroyUnitModifier extends Modifier<Unit> {
       modifierType?: string;
     }
   ) {
-    console.log('create on destroy modifier');
     super(options.modifierType ?? KEYWORDS.ON_DESTROYED.id, game, source, {
       name: KEYWORDS.ON_DESTROYED.name,
       description: KEYWORDS.CELERITY.description,
@@ -60,11 +58,7 @@ export class MinionOnDestroyUnitModifier extends Modifier<Unit> {
           eventName: UNIT_EVENTS.UNIT_AFTER_DESTROY,
           filter: event => {
             if (!event) return false;
-            console.log(
-              this.target,
-              event.data.unit,
-              this.target.equals(event.data.unit)
-            );
+
             return event.data.unit.equals(this.target);
           },
           handler: event => {

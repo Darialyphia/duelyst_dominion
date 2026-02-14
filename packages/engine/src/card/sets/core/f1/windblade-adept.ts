@@ -34,7 +34,7 @@ export const windbladeAdept: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 2,
-  atk: 1,
+  atk: 2,
   maxHp: 4,
   retaliation: 1,
   getTargets: () => Promise.resolve([]),

@@ -10,13 +10,14 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 import { AbilityDamage } from '../../../../utils/damage';
 import dedent from 'dedent';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
+import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.modifier';
 
 export const flamewreath: MinionBlueprint = {
   id: 'flamewreath',
   name: 'Flamewreath',
   description: dedent`
   @Rush@, @Celerity@.
-  After this moves or teleport, deal 1 damage to enemies in the same column as this.
+  After this moves or teleport, deal 2 damage to enemies in the same column as this.
   `,
   vfx: {
     spriteId: 'minions/f2_flamewreath',
@@ -50,12 +51,13 @@ export const flamewreath: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RushModifier(game, card));
+    await card.modifiers.add(new CelerityCardModifier(game, card));
 
     const dealDamage = async () => {
       const targets = card.unit.unitsOnSameColumn.filter(u => u.isEnemy(card.player));
 
       for (const target of targets) {
-        await target.takeDamage(card, new AbilityDamage(card, 1));
+        await target.takeDamage(card, new AbilityDamage(card, 2));
       }
     };
 

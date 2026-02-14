@@ -12,6 +12,7 @@ import { UNIT_EVENTS } from '../../unit/unit.enums';
 import type { UnitAttackEvent } from '../../unit/unit-events';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { TogglableModifierMixin } from '../mixins/togglable.mixin';
+import type { Nullable } from '@game/shared';
 
 export class StealthModifier extends Modifier<MinionCard> {
   constructor(
@@ -70,7 +71,7 @@ export class StealthUnitModifier extends Modifier<Unit> {
     });
   }
 
-  private async onAfterAttack(event?: UnitAttackEvent) {
+  private async onAfterAttack(event: Nullable<UnitAttackEvent>) {
     if (!event) return;
     const unit = event.data.unit;
     if (!unit.equals(this.target)) return;

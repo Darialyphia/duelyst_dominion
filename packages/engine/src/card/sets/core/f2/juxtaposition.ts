@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { isSpell, multipleUnitsTargetRules } from '../../../card-utils';
+import { multipleUnitsTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
 import dedent from 'dedent';
@@ -33,7 +33,7 @@ export const juxtaposition: SpellBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   runeCost: {},
-  manaCost: 2,
+  manaCost: 1,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
   getTargets(game, card) {
@@ -42,7 +42,12 @@ export const juxtaposition: SpellBlueprint = {
       max: 2,
       allowRepeat: false
     })(game, card, {
-      getAoe: targets => card.getAOE(targets)
+      getAoe: targets => card.getAOE(targets),
+      predicate(candidate, selected) {
+        if (!candidate.isMinion) return false;
+        if (!selected.length) return true;
+        return candidate.isAlly(selected[0]);
+      }
     });
   },
   async onInit(game, card) {

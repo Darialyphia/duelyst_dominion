@@ -31,7 +31,7 @@ export const mistWalking: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
-  manaCost: 2,
+  manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
   canPlay: (game, card) => {
     return (

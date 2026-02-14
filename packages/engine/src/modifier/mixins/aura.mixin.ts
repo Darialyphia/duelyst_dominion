@@ -43,10 +43,10 @@ class AuraModifierMixin<
 
       if (!shouldGetAura && hasAura) {
         const modifierstoRemove = this.affectedCards.get(candidate.id)!;
+        this.affectedCards.delete(candidate.id);
         for (const mod of modifierstoRemove) {
           await mod.removeSource(this.source);
         }
-        this.affectedCards.delete(candidate.id);
         continue;
       }
 

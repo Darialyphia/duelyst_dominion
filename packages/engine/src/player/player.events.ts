@@ -130,14 +130,14 @@ export class PlayerDamageEvent extends TypedSerializableEvent<
 }
 
 export class PlayerHealEvent extends TypedSerializableEvent<
-  { player: Player; amount: number; source: any },
-  { player: string; amount: number; source: any }
+  { player: Player; amount: number; source: AnyCard },
+  { player: string; amount: number; source: string }
 > {
   serialize() {
     return {
       player: this.data.player.id,
       amount: this.data.amount,
-      source: this.data.source
+      source: this.data.source.id
     };
   }
 }

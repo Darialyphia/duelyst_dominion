@@ -14,12 +14,13 @@ import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import type { Unit } from '../../../../unit/unit.entity';
+import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 
 export const grandStrategos: MinionBlueprint = {
   id: 'grand_strategos',
   name: 'Grand Strategos',
   description: dedent`
-  Your minions with @Zeal@ have +1/+1 and are always Zealed.
+  Your minions with @Zeal@ have +1/+1/+1 and are always Zealed.
   `,
   vfx: {
     spriteId: 'minions/f1_grand-strategos',
@@ -54,6 +55,7 @@ export const grandStrategos: MinionBlueprint = {
   async onInit(game, card) {
     const HP_BUFF_ID = 'grand-strategos-hp-buff';
     const ATTACK_BUFF_ID = 'grand-strategos-attack-buff';
+    const RETALIATION_BUFF_ID = 'grand-strategos-retaliation-buff';
 
     const ZEAL_INTERCEPTOR = () => true;
 
@@ -77,6 +79,9 @@ export const grandStrategos: MinionBlueprint = {
                     amount: 1
                   }),
                   new UnitSimpleAttackBuffModifier(ATTACK_BUFF_ID, game, card, {
+                    amount: 1
+                  }),
+                  new UnitSimpleRetaliationBuffModifier(RETALIATION_BUFF_ID, game, card, {
                     amount: 1
                   })
                 ];

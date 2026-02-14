@@ -10,7 +10,7 @@ export const gotatsu: SpellBlueprint = {
   name: 'Gotatsu',
   description: 'Deal 1 damage to a minion. Draw a card.',
   vfx: {
-    spriteId: 'spells/f2_phoenix-fire',
+    spriteId: 'spells/f2_gotatsu',
     sequences: {
       play(game, card, options) {
         return {

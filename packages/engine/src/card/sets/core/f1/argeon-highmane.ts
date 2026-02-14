@@ -7,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
-  description: '@Intimidate@',
+  description: '@Intimidate@.',
   vfx: {
     spriteId: 'generals/f1_argeon-highmane'
   },

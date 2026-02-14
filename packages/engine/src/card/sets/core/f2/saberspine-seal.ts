@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { singleEnemyTargetRules } from '../../../card-utils';
+import { singleEnemyTargetRules, singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
@@ -33,9 +33,9 @@ export const saberspineSeal: SpellBlueprint = {
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: (game, card) =>
-    singleEnemyTargetRules.canPlay(game, card, c => c.isAlly(card.player) && c.isMinion),
+    singleUnitTargetRules.canPlay(game, card, c => c.isAlly(card.player) && c.isMinion),
   getTargets(game, card) {
-    return singleEnemyTargetRules.getPreResponseTargets(game, card, {
+    return singleUnitTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isAlly(card.player) && c.isMinion,
       getAoe() {
         return new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {});

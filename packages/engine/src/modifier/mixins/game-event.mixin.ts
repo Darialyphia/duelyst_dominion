@@ -1,21 +1,30 @@
-import { isDefined } from '@game/shared';
+import { isDefined, type Nullable } from '@game/shared';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { Game } from '../../game/game';
 import { GAME_EVENTS, type GameEventMap } from '../../game/game.events';
 import type { EventMapWithStarEvent } from '../../utils/typed-emitter';
 import { ModifierMixin } from '../modifier-mixin';
+import type { Modifier, ModifierTarget } from '../modifier.entity';
 
 export class GameEventModifierMixin<
-  TEvent extends keyof EventMapWithStarEvent<GameEventMap>
-> extends ModifierMixin<AnyCard> {
+  TEvent extends keyof EventMapWithStarEvent<GameEventMap>,
+  TCard extends ModifierTarget
+> extends ModifierMixin<TCard> {
   private occurencesThisGameTurn = 0;
+  private modifier!: Modifier<TCard>;
 
   constructor(
     game: Game,
     private options: {
       eventName: TEvent;
-      handler: (event?: EventMapWithStarEvent<GameEventMap>[TEvent]) => void;
-      filter?: (event?: EventMapWithStarEvent<GameEventMap>[TEvent]) => boolean;
+      handler: (
+        event: Nullable<EventMapWithStarEvent<GameEventMap>[TEvent]>,
+        modifier: Modifier<TCard>
+      ) => void;
+      filter?: (
+        event: Nullable<EventMapWithStarEvent<GameEventMap>[TEvent]>,
+        modifier: Modifier<TCard>
+      ) => boolean;
       frequencyPerGameTurn?: number;
     }
   ) {
@@ -25,7 +34,7 @@ export class GameEventModifierMixin<
   }
 
   triggerManually() {
-    return this.options.handler();
+    return this.options.handler(null, this.modifier);
   }
 
   get eventName() {
@@ -33,7 +42,7 @@ export class GameEventModifierMixin<
   }
 
   private wrappedHandler(event: EventMapWithStarEvent<GameEventMap>[TEvent]) {
-    if (this.options.filter && !this.options.filter(event)) {
+    if (this.options.filter && !this.options.filter(event, this.modifier)) {
       return;
     }
 
@@ -46,14 +55,15 @@ export class GameEventModifierMixin<
 
     this.occurencesThisGameTurn++;
 
-    return this.options.handler(event);
+    return this.options.handler(event, this.modifier);
   }
 
   private onGameTurnEnd() {
     this.occurencesThisGameTurn = 0;
   }
 
-  onApplied(): void {
+  onApplied(target: TCard, modifier: Modifier<TCard>): void {
+    this.modifier = modifier;
     this.game.on(this.options.eventName, this.wrappedHandler as any);
 
     if (isDefined(this.options.frequencyPerGameTurn)) {

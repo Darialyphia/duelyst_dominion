@@ -13,7 +13,7 @@ export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
   description:
-    'Give an allied minion +3/+2. If it has @Backstab@, draw a card at the end of the turn.',
+    'Give an allied minion +3 Attack. If it has @Backstab@, give it +2 Health as well.',
   vfx: {
     spriteId: 'spells/f2_killing-edge',
     sequences: {
@@ -92,17 +92,13 @@ export const killingEdge: SpellBlueprint = {
       })
     );
 
-    await target.modifiers.add(
-      new UnitSimpleHealthBuffModifier('killing-edge-hp-buff', game, card, {
-        name: 'Killing Edge Health Buff',
-        amount: 2
-      })
-    );
-
     if (target.modifiers.has(BackstabUnitModifier)) {
-      game.once(GAME_EVENTS.TURN_END, async () => {
-        await card.player.cardManager.drawFromDeck(1);
-      });
+      await target.modifiers.add(
+        new UnitSimpleHealthBuffModifier('killing-edge-hp-buff', game, card, {
+          name: 'Killing Edge Health Buff',
+          amount: 2
+        })
+      );
     }
   }
 };

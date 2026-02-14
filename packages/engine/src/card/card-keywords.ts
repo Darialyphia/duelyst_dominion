@@ -30,7 +30,7 @@ export const KEYWORDS = {
     id: 'backstab',
     name: 'Backstab (x)',
     description:
-      'This can attack enemies in the back row. When it does, it is immune to retaliation and deals X additional damage',
+      'Can attack enemies in the back row. When it does, it is immune to retaliation and deals X additional damage',
     aliases: [/^backstab$/, /backstab \([0-9]+\)/]
   },
   BATTLE_PET: {
@@ -149,11 +149,11 @@ export const KEYWORDS = {
     description: 'can move two more spaces and can move through units and shrines.',
     aliases: []
   },
-  FRENZY: {
-    id: 'frenzy',
-    name: 'Frenzy',
+  CLEAVE: {
+    id: 'cleave',
+    name: 'Cleave',
     description:
-      'When attacking a nearby enemy, deal its attack damage to other nearby enemies.',
+      'When attacking while on the front row, deal its attack damage to adjacent enemies on the same row.',
     aliases: ['frenzy']
   },
   FROZEN: {
@@ -214,7 +214,8 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description: 'While this is awake,adjacent allies cannot be attacked.',
+    description:
+      'While this is awake on the front row,adjacent allies cannot be attacked.',
     aliases: ['provoke']
   },
   PROVOKED: {
@@ -226,14 +227,15 @@ export const KEYWORDS = {
   RANGED: {
     id: 'ranged',
     name: 'Ranged',
-    description: 'Can attack any enemy regardless of distance.',
+    description:
+      'When this unit is on the back row, it can attack enemies in the back row, and is immune to retaliation from non ranged units.',
     aliases: []
   },
   REBIRTH: {
     id: 'rebirth',
     name: 'Rebirth',
     description:
-      'When destroyed, summon an egg on this space that hatches into a copy of it at the end of your next turn.',
+      'When destroyed, summon an egg on this space that hatches into a copy of it at the end of the next turn.',
     aliases: []
   },
   RUSH: {
@@ -264,7 +266,7 @@ export const KEYWORDS = {
   STUNNED: {
     id: 'stunned',
     name: 'Stunned',
-    description: 'This unit skips it next turn.',
+    description: 'This unit cannot move or attack until the end of the turn.',
     aliases: ['stun']
   },
   SUMMONING_SICKNESS: {

@@ -60,7 +60,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   position: absolute;
   width: calc(var(--pixel-scale) * var(--width));
   height: calc(var(--pixel-scale) * var(--height));
-  /* pointer-events: none; */
+  pointer-events: none;
   bottom: calc(105px * var(--pixel-scale));
   left: 50%;
   transform: translateX(-50%);

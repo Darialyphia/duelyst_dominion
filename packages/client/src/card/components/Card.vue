@@ -64,6 +64,7 @@ const {
   parallaxMultiplier?: number;
   hasBacklighting?: boolean;
 }>();
+
 const rarityBg = computed(() => {
   if (
     [RARITIES.BASIC, RARITIES.COMMON, RARITIES.TOKEN].includes(

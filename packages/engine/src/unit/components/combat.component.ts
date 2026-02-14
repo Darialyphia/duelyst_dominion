@@ -1,4 +1,4 @@
-import { isDefined, Vec2 } from '@game/shared';
+import { isDefined } from '@game/shared';
 import type { Game } from '../../game/game';
 import { CombatDamage, Damage } from '../../utils/damage';
 import {

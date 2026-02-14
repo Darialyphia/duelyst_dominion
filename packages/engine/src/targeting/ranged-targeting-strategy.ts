@@ -23,11 +23,21 @@ export class RangedTargetingStrategy implements TargetingStrategy {
     if (!cell.unit && this.unit.enemiesOnSameColumn.length === 0) {
       return true; //attack player directly
     }
+
+    const closestEnemy = this.unit.enemiesOnSameColumn.sort((a, b) => {
+      const distA = Math.abs(a.position.x - this.unit.position.x);
+      const distB = Math.abs(b.position.x - this.unit.position.x);
+      return distA - distB;
+    })[0];
+
+    if (this.unit.isOnFrontRow) return cell.unit?.equals(closestEnemy) ?? false;
+
     return true;
   }
 
   canTargetAt(point: Point3D) {
     if (!this.isWithinRange(point)) return false;
+
     const unit = this.game.unitSystem.getUnitAt(point);
     if (!unit) return true;
 

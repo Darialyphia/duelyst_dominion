@@ -54,6 +54,14 @@ import { healingMystic } from './core/neutral/healing-mystic';
 import { primusShieldmaster } from './core/neutral/primus-shieldmaster';
 import { saberspineTiger } from './core/neutral/saberspine-tiger';
 import { voidHunter } from './core/neutral/void-hunter';
+import { hailstoneGolem } from './core/neutral/hailstone-golem';
+import { brightmossGolem } from './core/neutral/brightmoss-golem';
+import { sojourner } from './core/neutral/sojourner';
+import { dioltas } from './core/neutral/dioltas';
+import { ghostLynx } from './core/neutral/ghost-lynx';
+import { miniJax } from './core/neutral/mini-jax';
+import { jaxi } from './core/neutral/jaxi';
+import { jaxTruesight } from './core/neutral/jax-truesight';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -112,6 +120,16 @@ export const coreSet: CardSet = {
     juxtaposition,
     gotatsu,
     mistWalking,
-    saberspineSeal
+    saberspineSeal,
+    hailstoneGolem,
+    brightmossGolem,
+    hailstoneGolem,
+    brightmossGolem,
+    sojourner,
+    dioltas,
+    ghostLynx,
+    miniJax,
+    jaxi,
+    jaxTruesight
   ]
 };

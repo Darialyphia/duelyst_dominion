@@ -9,6 +9,7 @@ import { UnitAuraModifierMixin } from '../mixins/aura.mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
+import { TogglableModifierMixin } from '../mixins/togglable.mixin';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   constructor(
@@ -35,6 +36,10 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
+        new TogglableModifierMixin(
+          game,
+          () => !this.target.isExhausted && this.target.isOnFrontRow
+        ),
         new UnitAuraModifierMixin(game, source, {
           isElligible: candidate => {
             return this.shouldBeProtected(candidate);
@@ -45,9 +50,8 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
                 mixins: [
                   new UnitInterceptorModifierMixin(game, {
                     key: 'canBeAttackTarget',
-                    interceptor: value => {
-                      if (!value) return false;
-                      return this.target.isExhausted ? value : false;
+                    interceptor: () => {
+                      return false;
                     }
                   })
                 ]

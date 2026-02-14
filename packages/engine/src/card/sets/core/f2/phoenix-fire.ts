@@ -9,7 +9,8 @@ import { lightOverlay } from '../../../card-vfx-sequences';
 export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
-  description: 'Deal 3 damage to an enemy.',
+  description:
+    'Deal 3 damage to an enemy. If it dies, add a @Phoenix Fire@ to your hand.',
   vfx: {
     spriteId: 'spells/f2_phoenix-fire',
     sequences: {
@@ -80,8 +81,9 @@ export const phoenixFire: SpellBlueprint = {
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
-    // if (target.isAlive) return;
+    if (target.isAlive) return;
 
-    // await card.player.gainMana(1);
+    const phoenixFireCard = await card.player.generateCard('phoenix-fire', card.isFoil);
+    await phoenixFireCard.addToHand();
   }
 };

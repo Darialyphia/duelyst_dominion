@@ -92,28 +92,28 @@ const ORIGIN_OFFSET = {
   x: 30,
   y: 50
 };
-useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
-  const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
-  return zoomIn(
-    { x: origin.x + ORIGIN_OFFSET.x * unit.x, y: origin.y + ORIGIN_OFFSET.y },
-    0.4
-  );
-});
+// useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
+//   const unit = units.value.find(u => u.id === event.unit)!;
+//   const origin = config.CELL.toScreenPosition(unit);
+//   return zoomIn(
+//     { x: origin.x + ORIGIN_OFFSET.x * unit.x, y: origin.y + ORIGIN_OFFSET.y },
+//     0.4
+//   );
+// });
 
-useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
-  const unit = units.value.find(u => u.id === event.unit)!;
-  const origin = config.CELL.toScreenPosition(unit);
-  return zoomIn(
-    {
-      x: origin.x + ORIGIN_OFFSET.x * unit.x,
-      y: origin.y + ORIGIN_OFFSET.y
-    },
-    0.3
-  );
-});
+// useFxEvent(FX_EVENTS.UNIT_BEFORE_COUNTERATTACK, event => {
+//   const unit = units.value.find(u => u.id === event.unit)!;
+//   const origin = config.CELL.toScreenPosition(unit);
+//   return zoomIn(
+//     {
+//       x: origin.x + ORIGIN_OFFSET.x * unit.x,
+//       y: origin.y + ORIGIN_OFFSET.y
+//     },
+//     0.3
+//   );
+// });
 
-useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => zoomOut(0.6));
+// useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => zoomOut(0.6));
 
 watch(
   () => state.value.interaction.state,

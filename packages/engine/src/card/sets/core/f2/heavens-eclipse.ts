@@ -47,7 +47,7 @@ export const heavensEclipse: SpellBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   runeCost: {},
-  manaCost: 4,
+  manaCost: 3,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
   getTargets(game, card) {

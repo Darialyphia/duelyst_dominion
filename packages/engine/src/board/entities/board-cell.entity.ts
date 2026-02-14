@@ -97,14 +97,17 @@ export class BoardCell
       .with(BOARD_ROWS.FRONT, () => {
         return (
           this.game.boardSystem.cells.find(
-            c => c.player?.equals(player.opponent) && c.row === BOARD_ROWS.FRONT
+            c =>
+              c.player?.equals(player.opponent) &&
+              c.row === BOARD_ROWS.FRONT &&
+              c.x == this.x
           ) ?? null
         );
       })
       .with(BOARD_ROWS.BACK, () => {
         return (
           this.game.boardSystem.cells.find(
-            c => c.player?.equals(player) && c.row === BOARD_ROWS.FRONT
+            c => c.player?.equals(player) && c.row === BOARD_ROWS.FRONT && c.x === this.x
           ) ?? null
         );
       })
@@ -121,7 +124,7 @@ export class BoardCell
       .with(BOARD_ROWS.FRONT, () => {
         return (
           this.game.boardSystem.cells.find(
-            c => c.player?.equals(player) && c.row === BOARD_ROWS.BACK
+            c => c.player?.equals(player) && c.row === BOARD_ROWS.BACK && c.x === this.x
           ) ?? null
         );
       })
