@@ -36,7 +36,7 @@ export const healingMystic: MinionBlueprint = {
   manaCost: 2,
   atk: 2,
   maxHp: 3,
-  retaliation: 2,
+  retaliation: 1,
   getTargets(game, card) {
     return singleUnitTargetRules.getPreResponseTargets(game, card, {
       required: false,

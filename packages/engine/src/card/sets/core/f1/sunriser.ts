@@ -12,7 +12,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const sunriser: MinionBlueprint = {
   id: 'sunriser',
   name: 'Sunriser',
-  description: 'After a unit is healed, deal 2 damage to enemies in this row.',
+  description: 'After a unit is healed, deal 2 damage to enemies in this column',
   vfx: {
     spriteId: 'minions/f1_sunriser',
     sequences: {
@@ -38,7 +38,7 @@ export const sunriser: MinionBlueprint = {
   runeCost: {},
   manaCost: 3,
   atk: 3,
-  maxHp: 4,
+  maxHp: 5,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

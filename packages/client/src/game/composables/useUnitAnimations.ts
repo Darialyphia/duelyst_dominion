@@ -123,7 +123,7 @@ export function useUnitAnimations({
 
     isTeleporting.value = true;
     await moveAlongPath(
-      buildPath(previousPosition, event.position),
+      [previousPosition, event.position],
       previousPosition,
       0.3,
       Power2.easeIn

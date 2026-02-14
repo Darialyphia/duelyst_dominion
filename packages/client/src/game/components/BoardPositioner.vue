@@ -75,6 +75,9 @@ const canAttack = computed(() => {
 const isInAoe = useIsInAoe();
 
 const { client } = useGameClient();
+
+// hack to add a separation between players, Ill figure a cleaner way enngine side later
+const offsetedY = computed(() => (y >= state.value.board.rows / 2 ? y + 1 : y));
 </script>
 
 <template>
@@ -97,7 +100,8 @@ const { client } = useGameClient();
 .board-positioner {
   position: absolute;
   transform: translateX(calc(var(--board-cell-width) * v-bind(x)))
-    translateY(calc(var(--board-cell-height) * v-bind(y))) translateZ(0.1px);
+    translateY(calc(var(--board-cell-height) * v-bind(offsetedY)))
+    translateZ(0.1px);
   pointer-events: none;
   width: var(--board-cell-width);
   height: var(--board-cell-height);

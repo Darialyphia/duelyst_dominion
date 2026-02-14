@@ -11,7 +11,7 @@ export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  Heal an allied minion for 4 and deal 4 damage to enemies on the same and adjacent rows.`,
+  Heal an allied minion on the front row for 4, and deal 4 damage to enemies in front of it and on adjacent columns.`,
   vfx: {
     spriteId: 'spells/f1_holy-immolation',
     sequences: {
@@ -81,7 +81,7 @@ export const holyImmolation: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 4,
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { size: 1 }),
+  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),
   getTargets(game, card) {

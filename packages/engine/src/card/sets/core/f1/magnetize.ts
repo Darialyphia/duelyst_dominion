@@ -1,17 +1,16 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { RectangleAOEShape } from '../../../../aoe/rectangle.aoe-shape';
 import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
 import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.modifier';
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
+import { ColumnAOEShape } from '../../../../aoe/column.aoe-shape';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
-  description: dedent`Give units on the same row as your general @Anchored@ this turn.`,
+  description: dedent`Give units on the same column as your general @Anchored@ this turn.`,
   vfx: {
     spriteId: 'spells/f1_magnetize',
     sequences: {
@@ -81,10 +80,10 @@ export const magnetize: SpellBlueprint = {
   manaCost: 1,
   getAoe: (game, card) => {
     if (!card.player.deployedGeneral) return new NoAOEShape(TARGETING_TYPE.ANYWHERE, {});
-    return new RectangleAOEShape(TARGETING_TYPE.UNIT, {
-      width: game.boardSystem.width,
-      height: 1,
-      topLeftOverride: card.player.deployedGeneral.position
+    return new ColumnAOEShape(TARGETING_TYPE.UNIT, {
+      width: 1,
+      height: game.boardSystem.height,
+      columnOverride: card.player.deployedGeneral.position.x
     });
   },
   canPlay: () => true,

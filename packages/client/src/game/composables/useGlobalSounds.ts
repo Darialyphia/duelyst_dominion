@@ -18,10 +18,16 @@ export const useGlobalSounds = () => {
     playCardSound();
   });
 
+  const unitSummonedSoundId = ref();
+  const { play: playUnitSummonSound } = useSoundEffect(unitSummonedSoundId);
+  useFxEvent(FX_EVENTS.MINION_AFTER_SUMMON, async event => {
+    unitSummonedSoundId.value = event.card.sounds.play;
+    playUnitSummonSound();
+  });
+
   const effectTriggeredsound = useSoundEffect(
     'sfx_loot_crate_card_reward_reveal_0'
   );
-
   useFxEvent(FX_EVENTS.UNIT_EFFECT_TRIGGERED, async () => {
     effectTriggeredsound.play();
   });

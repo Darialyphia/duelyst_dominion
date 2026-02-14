@@ -3,7 +3,6 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { AirdropModifier } from '../../../../modifier/modifiers/airdrop.modifier';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 
@@ -11,7 +10,7 @@ export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
   description: dedent`
-  @Airdrop@, @Provoke@.`,
+  @Provoke@.`,
   vfx: {
     spriteId: 'minions/f1_ironcliffe-guardian',
     sequences: {
@@ -36,15 +35,14 @@ export const ironcliffeGuardian: MinionBlueprint = {
   tags: [],
   manaCost: 5,
   runeCost: {},
-  atk: 3,
-  maxHp: 10,
-  retaliation: 2,
+  atk: 2,
+  maxHp: 7,
+  retaliation: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));
-    await card.modifiers.add(new AirdropModifier(game, card));
   },
   async onPlay() {}
 };

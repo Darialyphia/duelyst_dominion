@@ -35,7 +35,7 @@ export const primusShieldmaster: MinionBlueprint = {
   manaCost: 4,
   atk: 3,
   maxHp: 6,
-  retaliation: 2,
+  retaliation: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

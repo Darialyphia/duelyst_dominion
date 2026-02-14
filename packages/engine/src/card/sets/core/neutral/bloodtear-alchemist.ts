@@ -34,10 +34,10 @@ export const bloodtearAlchemist: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
-  manaCost: 2,
+  manaCost: 1,
   atk: 2,
   maxHp: 1,
-  retaliation: 2,
+  retaliation: 1,
   getTargets(game, card) {
     return singleEnemyTargetRules.getPreResponseTargets(game, card, { required: false });
   },

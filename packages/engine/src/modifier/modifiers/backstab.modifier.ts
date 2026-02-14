@@ -10,6 +10,8 @@ import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
 import { ZealUnitModifier } from './zeal.modifier';
+import { BackstabTargetingStrategy } from '../../targeting/backstab-targeting-strategy';
+import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   constructor(
@@ -53,17 +55,25 @@ export class BackstabUnitModifier extends Modifier<Unit> {
       icon: 'icons/keyword-backstab',
       mixins: [
         new UnitInterceptorModifierMixin(game, {
+          key: 'attackTargetingPattern',
+          interceptor: () =>
+            new BackstabTargetingStrategy(game, this.target, TARGETING_TYPE.ENEMY_UNIT)
+        }),
+        new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
-            // if (!ctx.target.behind?.unit) return value;
-
+            if (ctx.target.isOnFrontRow) return value;
             return value + this.backstabAmount.getValue(this.options.damageBonus, this);
           }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCounterattackTarget',
-          interceptor: (value, ctx) => false
+          interceptor: (value, ctx) => {
+            if (!this.target.player.isTurnPlayer) return value;
+            if (ctx.attacker.isOnFrontRow) return value;
+            return false;
+          }
         }),
         ...(options.mixins ?? [])
       ]

@@ -8,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const voidHunter: MinionBlueprint = {
   id: 'void-hunter',
   name: 'Void Hunter',
-  description: '@Dying Wish@ : Draw 2 cards..',
+  description: '@Dying Wish@ : Draw 2 cards.',
   vfx: {
     spriteId: 'minions/neutral_void-hunter',
     sequences: {
@@ -33,9 +33,9 @@ export const voidHunter: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 3,
-  atk: 4,
-  maxHp: 2,
-  retaliation: 2,
+  atk: 2,
+  maxHp: 4,
+  retaliation: 1,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

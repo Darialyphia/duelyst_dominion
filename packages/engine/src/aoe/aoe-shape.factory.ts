@@ -7,6 +7,8 @@ import { RingAOEShape } from './ring.aoe-shape';
 import { RectangleAOEShape } from './rectangle.aoe-shape';
 import { NoAOEShape } from './no-aoe.aoe-shape';
 import { EverywhereAOEShape } from './everywhere.aoe-shape';
+import { RowAOEShape } from './row.aoe-shape';
+import { ColumnAOEShape } from './column.aoe-shape';
 
 const dict = {
   point: () => PointAOEShape,
@@ -14,7 +16,9 @@ const dict = {
   ring: () => RingAOEShape,
   rectangle: () => RectangleAOEShape,
   noAOE: () => NoAOEShape,
-  everywhere: () => EverywhereAOEShape
+  everywhere: () => EverywhereAOEShape,
+  row: () => RowAOEShape,
+  column: () => ColumnAOEShape
 } as const;
 
 export type AOEType = keyof typeof dict;

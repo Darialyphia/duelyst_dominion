@@ -1,28 +1,20 @@
 import { isDefined, type Point } from '@game/shared';
 import type { AOEShape } from './aoe-shape';
 import type { TargetingType } from './aoe.enums';
-import { defineHex, Grid, Orientation, rectangle, spiral } from 'honeycomb-grid';
 
 export type SerializedRingAOE = {
   type: 'ring';
   targetingType: TargetingType;
-  params: { size: number };
+  params: {
+    override: Point | null;
+    includeCenter: boolean;
+  };
 };
 
 type RingAoeShapeOptions = {
-  size: number;
   override?: Point;
+  includeCenter?: boolean;
 };
-
-export const RingHex = defineHex({
-  dimensions: {
-    width: 10,
-    height: 10
-  },
-  orientation: Orientation.FLAT
-});
-
-const ringGrid = new Grid(RingHex, rectangle({ width: 30, height: 30 }));
 
 export class RingAOEShape implements AOEShape<SerializedRingAOE> {
   static fromJSON(type: TargetingType, options: RingAoeShapeOptions): RingAOEShape {
@@ -41,23 +33,24 @@ export class RingAOEShape implements AOEShape<SerializedRingAOE> {
       type: this.type,
       targetingType: this.targetingType,
       params: {
-        size: this.options.size
+        override: this.options.override ?? null,
+        includeCenter: this.options.includeCenter ?? false
       }
     };
   }
 
   getArea([point]: [Point]): Point[] {
-    if (!isDefined(point)) return [];
+    const area: Point[] = [];
+    if (!point) return area;
+    const center = this.options.override ?? point;
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        if (!this.options.includeCenter && dx === 0 && dy === 0) continue;
 
-    return ringGrid
-      .traverse(
-        spiral({ radius: this.options.size, start: { col: point.x, row: point.y } })
-      )
-      .toArray()
-      .map(hex => {
-        if (hex.col === point.x && hex.row === point.y) return null;
-        return { x: hex.col, y: hex.row };
-      })
-      .filter(isDefined);
+        const newPoint = { x: center.x + dx, y: center.y + dy };
+        area.push(newPoint);
+      }
+    }
+    return area;
   }
 }

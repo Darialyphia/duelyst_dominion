@@ -171,14 +171,14 @@ export class GeneralCard extends Card<
   private addUnitListeners() {
     const cleanups = [
       this.game.on(GAME_EVENTS.UNIT_AFTER_DESTROY, async event => {
-        if (!event.data.unit.equals(this.unit!)) return;
+        if (!event.data.unit.card.equals(this)) return;
 
         this.deployCooldown = this.game.config.GENERAL_DEPLOY_COOLDOWN;
         await this.addToHand();
         cleanups.forEach(cleanup => cleanup());
       }),
       this.game.on(GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE, async event => {
-        if (!event.data.unit.equals(this.unit!)) return;
+        if (!event.data.unit.card.equals(this)) return;
         await this.player.takeDamage(event.data.from, event.data.damage);
       })
     ];

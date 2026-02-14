@@ -37,12 +37,11 @@ const neutral: CellBlueprint = {
 export const defaultMap: MapBlueprint = {
   id: 'default-map',
   cols: 5,
-  rows: 5,
+  rows: 4,
   // prettier-ignore
   cells: [
     p2(BOARD_ROWS.BACK),p2(BOARD_ROWS.BACK),p2(BOARD_ROWS.BACK),p2(BOARD_ROWS.BACK),p2(BOARD_ROWS.BACK),
     p2(BOARD_ROWS.FRONT),p2(BOARD_ROWS.FRONT),p2(BOARD_ROWS.FRONT),p2(BOARD_ROWS.FRONT),p2(BOARD_ROWS.FRONT),
-    neutral,neutral,neutral,neutral,neutral,
     p1(BOARD_ROWS.FRONT),p1(BOARD_ROWS.FRONT),p1(BOARD_ROWS.FRONT),p1(BOARD_ROWS.FRONT),p1(BOARD_ROWS.FRONT),
     p1(BOARD_ROWS.BACK),p1(BOARD_ROWS.BACK),p1(BOARD_ROWS.BACK),p1(BOARD_ROWS.BACK),p1(BOARD_ROWS.BACK)
   ],

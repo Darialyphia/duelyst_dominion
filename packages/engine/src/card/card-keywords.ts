@@ -30,7 +30,7 @@ export const KEYWORDS = {
     id: 'backstab',
     name: 'Backstab (x)',
     description:
-      'When attacking an enemy alone on a row, deal X extra damage and cannot be counterattacked.',
+      'This can attack enemies in the back row. When it does, it is immune to retaliation and deals X additional damage',
     aliases: [/^backstab$/, /backstab \([0-9]+\)/]
   },
   BATTLE_PET: {
@@ -202,8 +202,7 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description:
-      'While this is awake, when an adjacent ally is attacked, swap position with the attack target and intercept the attack.',
+    description: 'While this is awake,adjacent allies cannot be attacked.',
     aliases: ['provoke']
   },
   PROVOKED: {

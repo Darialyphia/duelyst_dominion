@@ -8,11 +8,16 @@ import { GAME_EVENTS } from '../../../../game/game.events';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
+import dedent from 'dedent';
+import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 
 export const flamewreath: MinionBlueprint = {
   id: 'flamewreath',
   name: 'Flamewreath',
-  description: 'After this moves or teleport, deal 1 damage to nearby enemies.',
+  description: dedent`
+  @Rush@, @Celerity@.
+  After this moves or teleport, deal 1 damage to enemies in the same column as this.
+  `,
   vfx: {
     spriteId: 'minions/f2_flamewreath',
     sequences: {
@@ -39,21 +44,24 @@ export const flamewreath: MinionBlueprint = {
   manaCost: 4,
   atk: 2,
   maxHp: 3,
-  retaliation: 2,
+  retaliation: 1,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
+    await card.modifiers.add(new RushModifier(game, card));
+
     const dealDamage = async () => {
-      const targets = card.unit.nearbyUnits.filter(u => u.isEnemy(card.unit));
+      const targets = card.unit.unitsOnSameColumn.filter(u => u.isEnemy(card.player));
 
       for (const target of targets) {
         await target.takeDamage(card, new AbilityDamage(card, 1));
       }
     };
+
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('rythmweaver', game, card, {
+        modifier: new Modifier('flamewreath', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.UNIT_AFTER_MOVE,

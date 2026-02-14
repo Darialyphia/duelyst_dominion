@@ -7,7 +7,7 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 export const sundropElixir: SpellBlueprint = {
   id: 'sundrop-elixir',
   name: 'Sundrop Elixir',
-  description: 'Heal a unit for 4.',
+  description: 'Heal a unit for 3.',
   vfx: {
     spriteId: 'spells/f1_sundrop-elixir',
     sequences: {
@@ -74,6 +74,6 @@ export const sundropElixir: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    await target.heal(card, 4);
+    await target.heal(card, 3);
   }
 };

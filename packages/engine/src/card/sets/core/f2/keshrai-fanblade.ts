@@ -21,7 +21,14 @@ export const keshraiFanblade: MinionBlueprint = {
       }
     }
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_unit_deploy_2',
+    walk: 'sfx_neutral_ladylocke_attack_impact',
+    attack: 'sfx_f1_elyxstormblade_attack_swing',
+    takeDamage: 'sfx_f1_elyxstormblade_hit',
+    dealDamage: 'sfx_f1_elyxstormblade_attack_impact',
+    death: 'sfx_f1_elyxstormblade_death'
+  },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
@@ -30,9 +37,9 @@ export const keshraiFanblade: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 5,
-  atk: 5,
-  maxHp: 4,
-  retaliation: 2,
+  atk: 4,
+  maxHp: 5,
+  retaliation: 3,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,

@@ -4,7 +4,7 @@ import {
   useGameClient,
   useGameState,
   useGameUi,
-  usePlayer1
+  useMyPlayer
 } from '../composables/useGameClient';
 import UiButton from '@/ui/components/UiButton.vue';
 import EquipedArtifact from './EquipedArtifact.vue';
@@ -13,23 +13,23 @@ import { Icon } from '@iconify/vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
-const player1 = usePlayer1();
+const player = useMyPlayer();
 const { client, playerId } = useGameClient();
 const ui = useGameUi();
 const state = useGameState();
 
 useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
-  if (event.player !== player1.value.id) return;
+  if (event.player !== player.value.id) return;
 
-  const newHP = player1.value.currentHp - event.amount;
-  const count = { value: player1.value.currentHp };
+  const newHP = player.value.currentHp - event.amount;
+  const count = { value: player.value.currentHp };
   gsap.to(count, {
     value: newHP,
     duration: 0.5,
     snap: 'value',
     ease: Power1.easeOut,
     onUpdate: () => {
-      player1.value.update({ currentHp: count.value });
+      player.value.update({ currentHp: count.value });
     }
   });
 });
@@ -37,66 +37,66 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 
 <template>
   <div class="p1-infos">
-    <header :class="{ active: state.turnPlayer === player1.id }">
+    <header :class="{ active: state.turnPlayer === player.id }">
       <div class="flex flex-col gap-2">
         <div class="flex gap-7 items-center justify-between">
-          {{ player1.name }}
+          {{ player.name }}
           <div class="hp">
-            {{ player1.currentHp }}
+            {{ player.currentHp }}
           </div>
         </div>
         <div class="flex gap-2 text-1">
-          <DiscardPile :player="player1" />
+          <DiscardPile :player="player" />
           <UiSimpleTooltip>
             <template #trigger>
               <div class="pointer-events-auto flex gap-2">
                 <Icon icon="mdi:cards-outline" />
-                ({{ player1.handSize }})
+                ({{ player.handSize }})
               </div>
             </template>
-            {{ player1.handSize }}/{{ state.config.MAX_HAND_SIZE }} card{{
-              player1.handSize !== 1 ? 's' : ''
+            {{ player.handSize }}/{{ state.config.MAX_HAND_SIZE }} card{{
+              player.handSize !== 1 ? 's' : ''
             }}
             in
-            {{ player1.id === playerId ? 'your' : "opponent's" }} hand
+            {{ player.id === playerId ? 'your' : "opponent's" }} hand
           </UiSimpleTooltip>
 
           <UiSimpleTooltip>
             <template #trigger>
               <div class="pointer-events-auto flex gap-2">
                 <Icon icon="tabler:stack-3-filled" />
-                ({{ player1.remainingCardsInDeck.length }})
+                ({{ player.remainingCardsInDeck.length }})
               </div>
             </template>
-            {{ player1.remainingCardsInDeck.length }} card{{
-              player1.remainingCardsInDeck.length !== 1 ? 's' : ''
+            {{ player.remainingCardsInDeck.length }} card{{
+              player.remainingCardsInDeck.length !== 1 ? 's' : ''
             }}
             remaining in
-            {{ player1.id === playerId ? 'your' : "opponent's" }} deck
+            {{ player.id === playerId ? 'your' : "opponent's" }} deck
           </UiSimpleTooltip>
         </div>
       </div>
     </header>
     <div class="flex gap-2 items-center">
       <div
-        v-for="i in Math.max(player1.maxMana, player1.mana)"
+        v-for="i in Math.max(player.maxMana, player.mana)"
         :key="i"
         class="mana"
-        :class="{ spent: i > player1.mana }"
+        :class="{ spent: i > player.mana }"
       />
-      (+ {{ player1.manaRegen }} )
+      (+ {{ player.manaRegen }} )
     </div>
 
     <div class="flex flex-col gap-2">
       <EquipedArtifact
-        v-for="artifact in player1.artifacts"
+        v-for="artifact in player.artifacts"
         :key="artifact.id"
         :artifact="artifact"
       />
     </div>
 
     <UiButton
-      v-show="player1.canReplace"
+      v-show="player.canReplace"
       class="action-button mt-9"
       :class="{ 'is-replacing': ui.isReplacingCard }"
       @click="ui.isReplacingCard = !ui.isReplacingCard"

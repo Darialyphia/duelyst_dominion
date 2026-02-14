@@ -9,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const flamebloodWarlock: MinionBlueprint = {
   id: 'flameblood-warlock',
   name: 'Flameblood Warlock',
-  description: '@On Enter@: Deal 3 damage to all generals.',
+  description: '@On Enter@: Deal 2 damage to all generals.',
   vfx: {
     spriteId: 'minions/neutral_flameblood-warlock',
     sequences: {
@@ -34,8 +34,8 @@ export const flamebloodWarlock: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 2,
-  atk: 3,
-  maxHp: 1,
+  atk: 2,
+  maxHp: 2,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
@@ -44,7 +44,7 @@ export const flamebloodWarlock: MinionBlueprint = {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
         for (const player of game.playerSystem.players) {
-          await player.deployedGeneral?.takeDamage(card, new AbilityDamage(card, 3));
+          await player.takeDamage(card, new AbilityDamage(card, 2));
         }
       })
     );

@@ -13,7 +13,7 @@ export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
   description:
-    'Give an allied minion +1/+1. If it has @Backstab@, draw a card at the end of the turn.',
+    'Give an allied minion +3/+2. If it has @Backstab@, draw a card at the end of the turn.',
   vfx: {
     spriteId: 'spells/f2_killing-edge',
     sequences: {
@@ -88,7 +88,7 @@ export const killingEdge: SpellBlueprint = {
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('killing-edge-attack-buff', game, card, {
         name: 'Killing Edge Attack Buff',
-        amount: 4
+        amount: 3
       })
     );
 

@@ -9,6 +9,7 @@ import { Modifier } from '../modifier.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
+import { isDefined } from '@game/shared';
 
 export class ZealModifier extends Modifier<MinionCard> {
   constructor(
@@ -37,13 +38,12 @@ export class ZealUnitModifier extends Modifier<Unit> {
   private _isZealed = new Interceptable<boolean>();
 
   get isZealed() {
-    if (!this.target.player.deployedGeneral) return false;
-
     return this._isZealed.getValue(
-      this.game.boardSystem.getDistance(
-        this.target.position,
-        this.target.player.deployedGeneral.position
-      ) === 1,
+      this.target.adjacentUnits.some(
+        adjacent =>
+          isDefined(this.target.player.deployedGeneral) &&
+          adjacent.equals(this.target.player.deployedGeneral)
+      ),
 
       {}
     );

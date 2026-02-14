@@ -266,6 +266,14 @@ export class Unit
     return unitsOnRow.length === 0;
   }
 
+  get isOnBackRow() {
+    return this.game.boardSystem.getCellAt(this.position)!.isBackRow;
+  }
+
+  get isOnFrontRow() {
+    return this.game.boardSystem.getCellAt(this.position)!.isFrontRow;
+  }
+
   get adjacentUnits() {
     return this.game.boardSystem
       .getCellAt(this.position)!

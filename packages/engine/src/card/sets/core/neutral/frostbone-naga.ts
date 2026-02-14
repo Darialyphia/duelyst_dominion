@@ -9,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
-  description: '@On Enter@: Deal 2 damage to nearby units.',
+  description: '@On Enter@: Deal 2 damage to all nearby units.',
   vfx: {
     spriteId: 'minions/neutral_frostbone-naga',
     sequences: {
@@ -35,10 +35,10 @@ export const frostboneNaga: MinionBlueprint = {
   runeCost: {},
   manaCost: 4,
   atk: 3,
-  maxHp: 3,
-  retaliation: 2,
+  maxHp: 4,
+  retaliation: 1,
   getTargets: () => Promise.resolve([]),
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.UNIT, { size: 1 }),
+  getAoe: () => new RingAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

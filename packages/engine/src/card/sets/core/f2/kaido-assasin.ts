@@ -34,7 +34,7 @@ export const kaidoAssassin: MinionBlueprint = {
   runeCost: {},
   manaCost: 2,
   atk: 2,
-  maxHp: 3,
+  maxHp: 4,
   retaliation: 1,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),

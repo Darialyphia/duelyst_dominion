@@ -3,7 +3,7 @@ import {
   useFxEvent,
   useGameClient,
   useGameState,
-  usePlayer2
+  useOpponentPlayer
 } from '../composables/useGameClient';
 import EquipedArtifact from './EquipedArtifact.vue';
 import DiscardPile from './DiscardPile.vue';
@@ -11,22 +11,22 @@ import { Icon } from '@iconify/vue';
 import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
-const player2 = usePlayer2();
+const player = useOpponentPlayer();
 const { playerId } = useGameClient();
 const state = useGameState();
 
 useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
-  if (event.player !== player2.value.id) return;
+  if (event.player !== player.value.id) return;
 
-  const newHP = player2.value.currentHp - event.amount;
-  const count = { value: player2.value.currentHp };
+  const newHP = player.value.currentHp - event.amount;
+  const count = { value: player.value.currentHp };
   gsap.to(count, {
     value: newHP,
     duration: 0.5,
     snap: 'value',
     ease: Power1.easeOut,
     onUpdate: () => {
-      player2.value.update({ currentHp: count.value });
+      player.value.update({ currentHp: count.value });
     }
   });
 });
@@ -34,59 +34,59 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 
 <template>
   <div class="p2-infos">
-    <header :class="{ active: state.turnPlayer === player2.id }">
+    <header :class="{ active: state.turnPlayer === player.id }">
       <div class="flex flex-col gap-2 items-end">
         <div class="flex gap-7 items-center justify-between">
           <div class="hp">
-            {{ player2.currentHp }}
+            {{ player.currentHp }}
           </div>
-          {{ player2.name }}
+          {{ player.name }}
         </div>
         <div class="flex gap-2 text-1">
-          <DiscardPile :player="player2" />
+          <DiscardPile :player="player" />
           <UiSimpleTooltip>
             <template #trigger>
               <div class="pointer-events-auto flex gap-2">
                 <Icon icon="mdi:cards-outline" />
-                ({{ player2.handSize }})
+                ({{ player.handSize }})
               </div>
             </template>
-            {{ player2.handSize }}/{{ state.config.MAX_HAND_SIZE }} card{{
-              player2.handSize !== 1 ? 's' : ''
+            {{ player.handSize }}/{{ state.config.MAX_HAND_SIZE }} card{{
+              player.handSize !== 1 ? 's' : ''
             }}
             in
-            {{ player2.id === playerId ? 'your' : "opponent's" }} hand
+            {{ player.id === playerId ? 'your' : "opponent's" }} hand
           </UiSimpleTooltip>
 
           <UiSimpleTooltip>
             <template #trigger>
               <div class="pointer-events-auto flex gap-2">
                 <Icon icon="tabler:stack-3-filled" />
-                ({{ player2.remainingCardsInDeck.length }})
+                ({{ player.remainingCardsInDeck.length }})
               </div>
             </template>
-            {{ player2.remainingCardsInDeck.length }} card{{
-              player2.remainingCardsInDeck.length !== 1 ? 's' : ''
+            {{ player.remainingCardsInDeck.length }} card{{
+              player.remainingCardsInDeck.length !== 1 ? 's' : ''
             }}
             remaining in
-            {{ player2.id === playerId ? 'your' : "opponent's" }} deck
+            {{ player.id === playerId ? 'your' : "opponent's" }} deck
           </UiSimpleTooltip>
         </div>
       </div>
     </header>
     <div class="flex gap-2 justify-end items-center">
-      (+ {{ player2.manaRegen }} )
+      (+ {{ player.manaRegen }} )
       <div
-        v-for="i in Math.max(player2.maxMana, player2.mana)"
+        v-for="i in Math.max(player.maxMana, player.mana)"
         :key="i"
         class="mana"
-        :class="{ spent: i <= player2.spentMana }"
+        :class="{ spent: i <= player.spentMana }"
       />
     </div>
 
     <div class="flex flex-col items-end gap-2">
       <EquipedArtifact
-        v-for="artifact in player2.artifacts"
+        v-for="artifact in player.artifacts"
         :key="artifact.id"
         :artifact="artifact"
       />
@@ -128,6 +128,7 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 header {
   font-size: var(--font-size-4);
   display: grid;
+  align-self: end;
   grid-gap: var(--size-2);
   justify-items: end;
   -webkit-text-stroke: 4px black;

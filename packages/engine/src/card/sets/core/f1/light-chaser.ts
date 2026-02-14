@@ -12,7 +12,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const lightChaser: MinionBlueprint = {
   id: 'light_chaser',
   name: 'Light Chaser',
-  description: 'When a unit is healed, this gains +2/0',
+  description: 'When a unit is healed, this gains +1 Attack.',
   vfx: {
     spriteId: 'minions/f1_lightchaser',
     sequences: {
@@ -39,7 +39,7 @@ export const lightChaser: MinionBlueprint = {
   manaCost: 2,
   atk: 1,
   maxHp: 4,
-  retaliation: 1,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
@@ -53,8 +53,8 @@ export const lightChaser: MinionBlueprint = {
               async handler() {
                 await card.unit.modifiers.add(
                   new UnitSimpleAttackBuffModifier('light-chaser-buff', game, card, {
-                    amount: 2,
-                    name: 'Lightchaser Health Buff'
+                    amount: 1,
+                    name: 'Lightchaser Attack Buff'
                   })
                 );
               }
