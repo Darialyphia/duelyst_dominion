@@ -40,6 +40,12 @@ export const KEYWORDS = {
       'This unit cannot be controlled. It moves and attacks the closest enemy at the start of your turn.',
     aliases: []
   },
+  BURST: {
+    id: 'burst',
+    name: 'Burst',
+    description: 'You do not lose initiative after playing this card.',
+    aliases: []
+  },
   SHIELD: {
     id: 'barrier',
     name: 'Barrier',
@@ -107,7 +113,7 @@ export const KEYWORDS = {
     id: 'elusive',
     name: 'Elusive',
     description:
-      'The first time this is attacked each turn, this teleports behind the attacker if possible instead of counterattacking. If it does, this unit takes no damage from the attack.',
+      'When this unit is attacked  for the first time in a turn, it moves to a adjacent position on the same rowif possible  (favor left). When it does, prevent all combat damage that would be dealt to and dealt by this creature.',
     aliases: []
   },
   EPHEMERAL: {
@@ -167,6 +173,12 @@ export const KEYWORDS = {
     name: 'Infiltrate',
     description:
       "Has an additional effect when on the opponent's side of the battlefield",
+    aliases: []
+  },
+  INTIMIDATE: {
+    id: 'intimidate',
+    name: 'Intimidate',
+    description: "Minions attacked by this unit don't counterattack.",
     aliases: []
   },
   LONE_WOLF: {

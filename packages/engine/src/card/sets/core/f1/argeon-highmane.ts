@@ -1,4 +1,5 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { IntimidateCardModifier } from '../../../../modifier/modifiers/intimidate.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { GeneralBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -6,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
-  description: '',
+  description: '@Intimidate@',
   vfx: {
     spriteId: 'generals/f1_argeon-highmane'
   },
@@ -32,5 +33,7 @@ export const argeonHighmane: GeneralBlueprint = {
   abilities: [],
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
-  async onInit() {}
+  async onInit(game, card) {
+    await card.modifiers.add(new IntimidateCardModifier(game, card));
+  }
 };

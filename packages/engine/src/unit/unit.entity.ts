@@ -295,6 +295,14 @@ export class Unit
     return this.unitsOnSameColumn.filter(unit => unit.isAlly(this));
   }
 
+  get left() {
+    return this.game.boardSystem.getCellAt(this.position)!.left;
+  }
+
+  get right() {
+    return this.game.boardSystem.getCellAt(this.position)!.right;
+  }
+
   get unitsOnLeftColumn() {
     return this.game.unitSystem.units.filter(
       unit => unit.position.x === this.x - 1 && !unit.equals(this)
@@ -365,6 +373,12 @@ export class Unit
         })
       );
     }
+  }
+
+  async swapPositionWith(target: Unit) {
+    const targetPosition = target.position.clone();
+    await this.teleport(targetPosition);
+    await target.teleport(this.position);
   }
 
   get canBeDestroyed(): boolean {

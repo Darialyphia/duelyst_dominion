@@ -77,6 +77,10 @@ export class GeneralCard extends Card<
     });
   }
 
+  get canReplace() {
+    return false;
+  }
+
   get hasAvailablePosition() {
     return this.game.boardSystem.cells.some(
       cell => cell.player?.equals(this.player) && !cell.isOccupied

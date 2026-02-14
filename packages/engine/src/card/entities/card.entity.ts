@@ -36,12 +36,14 @@ export type CardInterceptors = {
   manaCost: Interceptable<number>;
   player: Interceptable<Player>;
   canReplace: Interceptable<boolean>;
+  shouldPassInitiativeAfterPlay: Interceptable<boolean>;
 };
 
 export const makeCardInterceptors = (): CardInterceptors => ({
   manaCost: new Interceptable(),
   player: new Interceptable(),
-  canReplace: new Interceptable()
+  canReplace: new Interceptable(),
+  shouldPassInitiativeAfterPlay: new Interceptable()
 });
 
 export type SerializedCard = {
@@ -126,6 +128,10 @@ export abstract class Card<
 
   get blueprintId() {
     return this.blueprint.id;
+  }
+
+  get shouldPassInitiativeAfterPlay() {
+    return this.interceptors.shouldPassInitiativeAfterPlay.getValue(true, {});
   }
 
   get location() {

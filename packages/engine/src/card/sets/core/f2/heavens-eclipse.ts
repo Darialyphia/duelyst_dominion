@@ -37,7 +37,9 @@ export const heavensEclipse: SpellBlueprint = {
       }
     }
   },
-  sounds: {},
+  sounds: {
+    play: 'sfx_spell_immolation_a'
+  },
   kind: CARD_KINDS.SPELL,
   collectable: true,
   setId: CARD_SETS.CORE,

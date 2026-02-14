@@ -25,21 +25,15 @@ export class PlayCardPhase
 
   async play(card: AnyCard) {
     this.card = card;
-    if (card.kind === CARD_KINDS.GENERAL) {
-      await card.play();
+
+    const result = await this.currentPlayer.playCardFromHand(this.card as DeckCard);
+    if (result.cancelled) return;
+    if (this.card.shouldPassInitiativeAfterPlay) {
       await this.game.turnSystem.switchInitiative();
-      await this.game.gamePhaseSystem.sendTransition(
-        GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
-      );
-    } else {
-      const result = await this.currentPlayer.playCardFromHand(this.card as DeckCard);
-      if (!result.cancelled) {
-        await this.game.turnSystem.switchInitiative();
-        await this.game.gamePhaseSystem.sendTransition(
-          GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
-        );
-      }
     }
+    await this.game.gamePhaseSystem.sendTransition(
+      GAME_PHASE_TRANSITIONS.COMMIT_PLAYING_CARD
+    );
   }
 
   async cancel(player: Player) {

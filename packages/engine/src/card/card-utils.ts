@@ -127,12 +127,12 @@ export const singleMinionTargetRules = {
   }
 };
 
-export const multipleEnemyTargetRules = {
+export const multipleUnitsTargetRules = {
   canPlay:
     (min: number) =>
     (game: Game, card: AnyCard, predicate: (unit: Unit) => boolean = () => true) => {
       return (
-        card.player.enemyUnits.filter(
+        game.unitSystem.units.filter(
           unit => unit.canBeTargetedBy(card) && predicate(unit)
         ).length > min
       );
@@ -146,7 +146,7 @@ export const multipleEnemyTargetRules = {
         predicate = () => true,
         getAoe,
         getLabel = selected =>
-          `${card.blueprint.name} : Select enemy units (${selected} / ${max})`
+          `${card.blueprint.name} : Select targets (${selected} / ${max})`
       }: {
         predicate?: (unit: Unit) => boolean;
         getAoe: (selectedSpaces: BoardCell[]) => GenericAOEShape | null;
@@ -162,11 +162,8 @@ export const multipleEnemyTargetRules = {
           if (!candidate.unit) {
             return false;
           }
-          if (card.isAlly(candidate.unit.card)) {
-            return false;
-          }
+
           return (
-            card.player.enemyUnits.some(enemy => enemy.equals(candidate)) &&
             candidate.unit.canBeTargetedBy(card) &&
             (allowRepeat
               ? true

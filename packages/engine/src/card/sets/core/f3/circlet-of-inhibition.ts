@@ -8,14 +8,12 @@ import { ArtifactEffectModifierMixin } from '../../../../modifier/mixins/artifac
 import { PlayerArtifact } from '../../../../player/player-artifact.entity';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
-import { PlayerInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
-import { DurationModifierMixin } from '../../../../modifier/mixins/duration.mixin';
 
 export const circletOfInhibition: ArtifactBlueprint = {
   id: 'circlet-of-inhibition',
   name: 'Circlet of Inhibition',
   description: dedent`
-  When an enemy attacks your general, your opponent must pay 2 or you gain 1 max mana until the end of your next turn.
+  When an enemy attacks your general, your opponent must pay 2 or you gain 1 mana.
   `,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},
@@ -48,19 +46,8 @@ export const circletOfInhibition: ArtifactBlueprint = {
               if (!event) return;
               const opponent = event.data.unit.player;
               if (opponent.mana < 2) {
-                await card.player.modifiers.add(
-                  new Modifier('circlet-of-inhibition-mana-bonus', game, card, {
-                    mixins: [
-                      new PlayerInterceptorModifierMixin(game, {
-                        key: 'maxMana',
-                        interceptor: value => value + 1
-                      }),
-                      new DurationModifierMixin(game, 2)
-                    ]
-                  })
-                );
+                await card.player.gainMana(1);
               } else {
-                console.log('spend mana');
                 await opponent.spendMana(2);
               }
             }

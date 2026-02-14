@@ -24,8 +24,10 @@ import { chakriAvatar } from './core/f2/chakri-avatar';
 import { flamewreath } from './core/f2/flamewreath';
 import { fourWindsMagus } from './core/f2/four-winds-magus';
 import { ghostLightning } from './core/f2/ghost-lightning';
+import { gotatsu } from './core/f2/gotatsu';
 import { heavensEclipse } from './core/f2/heavens-eclipse';
 import { jadeMonk } from './core/f2/jade-monk';
+import { juxtaposition } from './core/f2/juxtaposition';
 import { kaidoAssassin } from './core/f2/kaido-assasin';
 import { kaleosXaan } from './core/f2/kaleos-xaan';
 import { keshraiFanblade } from './core/f2/keshrai-fanblade';
@@ -33,8 +35,10 @@ import { killingEdge } from './core/f2/killing-edge';
 import { maskOfTheMantis } from './core/f2/mask-of-the-mantis';
 import { massacreArtist } from './core/f2/massacre-artist';
 import { mistDragonSeal } from './core/f2/mist-dragon-seal';
+import { mistWalking } from './core/f2/mist-walking';
 import { phoenixFire } from './core/f2/phoenix-fire';
 import { rythmweaver } from './core/f2/rythmweaver';
+import { saberspineSeal } from './core/f2/saberspine-seal';
 import { tuskBoar } from './core/f2/tusk-boar';
 import { circletOfInhibition } from './core/f3/circlet-of-inhibition';
 import { endlessObelysk } from './core/f3/endless-obelysk';
@@ -104,6 +108,10 @@ export const coreSet: CardSet = {
     grandStrategos,
     windDervish,
     etherealObelysk,
-    endlessObelysk
+    endlessObelysk,
+    juxtaposition,
+    gotatsu,
+    mistWalking,
+    saberspineSeal
   ]
 };
