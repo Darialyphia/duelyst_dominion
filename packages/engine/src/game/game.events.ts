@@ -25,6 +25,7 @@ import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events
 import { TILE_EVENTS } from '../tile/tile-enums';
 import type { TileEventMap } from '../tile/tile-events';
 import type { TurnEventMap } from './systems/turn.system';
+import type { Player } from '../player/player.entity';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },
@@ -100,6 +101,17 @@ export class GameModifierEvent extends TypedSerializableEvent<
   }
 }
 
+export class GameOverEvent extends TypedSerializableEvent<
+  { winners: Player[] },
+  { winners: string[] }
+> {
+  serialize() {
+    return {
+      winners: this.data.winners.map(p => p.id)
+    };
+  }
+}
+
 export type SerializedStarEvent = Values<{
   [Name in Exclude<GameEventName, '*'>]: {
     eventName: Name;
@@ -114,6 +126,7 @@ type GameEventsBase = {
   'game.input-required': GameInputRequiredEvent;
   'game.error': GameErrorEvent;
   'game.ready': GameReadyEvent;
+  'game.over': GameOverEvent;
   'game.modifier-event': GameModifierEvent;
   'game.new-snapshot': GameNewSnapshotEvent;
 };
@@ -142,6 +155,7 @@ export const GAME_EVENTS = {
   FLUSHED: 'game.input-queue-flushed',
   INPUT_START: 'game.input-start',
   INPUT_END: 'game.input-end',
+  GAME_OVER: 'game.over',
   INPUT_REQUIRED: 'game.input-required',
   NEW_SNAPSHOT: 'game.new-snapshot',
   ...GAME_PHASE_EVENTS,

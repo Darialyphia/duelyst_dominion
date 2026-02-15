@@ -53,7 +53,7 @@ const isTargeted = computed(() => {
 
   if (phase.state === GAME_PHASES.PLAYING_CARD) {
     const card = state.value.entities[phase.ctx.card] as CardViewModel;
-
+    if (!card) return false;
     return card.spacesToHighlight.some(point =>
       Vec2.fromPoint(point).equals({ x, y })
     );

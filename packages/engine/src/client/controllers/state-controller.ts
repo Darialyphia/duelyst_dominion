@@ -92,6 +92,7 @@ export class ClientStateController {
   private buildentities = (entities: EntityDictionary): GameClientState['entities'] => {
     const dict: GameClientState['entities'] = this.state?.entities ?? {};
     for (const [id, entity] of Object.entries(entities)) {
+      if (!entity.entityType) continue; // receivd a partial update, skip it
       dict[id] = this.buildViewModel(entity);
     }
     return dict;
@@ -104,6 +105,7 @@ export class ClientStateController {
     for (const id of newState.addedEntities) {
       const entity = newState.entities[id];
 
+      if (!entity.entityType) continue; // receivd a partial update, skip it
       this.state.entities[id] = this.buildViewModel(entity as SerializedEntity);
     }
   }
@@ -114,7 +116,7 @@ export class ClientStateController {
     for (const [id, entity] of Object.entries(entities)) {
       if (this.state.entities[id]) {
         this.state.entities[id] = this.state.entities[id].update(entity as any).clone();
-      } else {
+      } else if (entity.entityType) {
         this.state.entities[id] = this.buildViewModel(entity as any);
       }
     }

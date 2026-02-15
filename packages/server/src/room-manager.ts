@@ -5,6 +5,7 @@ import { api, type GameId, type UserId } from '@game/api';
 import type { Redis } from '@upstash/redis';
 import { REDIS_KEYS } from './redis';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
+import type { Game } from '@game/engine';
 
 export class RoomManager {
   static INJECTION_KEY = 'roomManager' as const;
@@ -74,14 +75,28 @@ export class RoomManager {
         winnerId: winnerId as UserId | null,
         apiKey: process.env.CONVEX_API_KEY!
       });
-      await this.ctx.redis.del(REDIS_KEYS.GAME_HISTORY(id));
-      await this.destroyRoom(id);
-      this.ctx.io.in(id).disconnectSockets();
+
+      await this.cleanupRoom(id);
     });
 
     room.on(ROOM_EVENTS.CLOCK_TICK, clocks => {
       this.ctx.io.in(id).emit('clockUpdate', clocks);
     });
+
+    room.on(ROOM_EVENTS.ERROR, async () => {
+      await this.ctx.convexHttpClient.mutation(api.games.cancel, {
+        gameId: id,
+        apiKey: process.env.CONVEX_API_KEY!
+      });
+
+      await this.cleanupRoom(id);
+    });
+  }
+
+  async cleanupRoom(id: GameId) {
+    await this.ctx.redis.del(REDIS_KEYS.GAME_HISTORY(id));
+    await this.destroyRoom(id);
+    this.ctx.io.in(id).disconnectSockets();
   }
 
   async destroyRoom(id: string) {

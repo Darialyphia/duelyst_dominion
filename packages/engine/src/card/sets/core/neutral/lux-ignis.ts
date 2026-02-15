@@ -8,6 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { Modifier } from '../../../../modifier/modifier.entity';
+import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 
 export const luxIgnis: MinionBlueprint = {
   id: 'lux-ignis',
@@ -48,22 +49,24 @@ export const luxIgnis: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
-      new Modifier('lux-ignis-heal', game, card, {
-        mixins: [
-          new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.TURN_END,
-            async handler() {
-              if (card.unit.isExhausted) return;
+      new WhileOnBoardModifier(game, card, {
+        modifier: new Modifier('lux-ignis-heal', game, card, {
+          mixins: [
+            new GameEventModifierMixin(game, {
+              eventName: GAME_EVENTS.TURN_END,
+              async handler() {
+                if (card.unit.isExhausted) return;
 
-              const alliesToHeal = await card.unit.adjacentUnits.filter(u =>
-                u.isAlly(card.player)
-              );
-              for (const ally of alliesToHeal) {
-                await ally.heal(card, 2);
+                const alliesToHeal = await card.unit.adjacentUnits.filter(u =>
+                  u.isAlly(card.player)
+                );
+                for (const ally of alliesToHeal) {
+                  await ally.heal(card, 2);
+                }
               }
-            }
-          })
-        ]
+            })
+          ]
+        })
       })
     );
   },

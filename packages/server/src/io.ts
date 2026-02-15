@@ -14,21 +14,22 @@ type SocketData = {
   sessionId: string;
 };
 
+export type ClockUpdate = Record<
+  UserId,
+  {
+    max: number;
+    remaining: number;
+    isActive: boolean;
+  }
+>;
+
 export type EmittedEvents = {
   gameInitialState: (data: {
     snapshot: GameStateSnapshot<SerializedPlayerState | SerializedOmniscientState>;
     history: SerializedInput[];
   }) => void;
   gameSnapshot: (snapshot: GameStateSnapshot<SnapshotDiff>) => void;
-  clockUpdate: (
-    clocks: Record<
-      UserId,
-      {
-        turn: { max: number; remaining: number; isActive: boolean };
-        action: { max: number; remaining: number; isActive: boolean };
-      }
-    >
-  ) => void;
+  clockUpdate: (clocks: ClockUpdate) => void;
   error: (message: string) => void;
 };
 

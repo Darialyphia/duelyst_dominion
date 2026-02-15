@@ -10,6 +10,15 @@ import type { SerializedInput } from '@game/engine/src/input/input-system';
 import { until } from '@vueuse/core';
 import { io, type Socket } from 'socket.io-client';
 
+export type ClockUpdate = Record<
+  UserId,
+  {
+    max: number;
+    remaining: number;
+    isActive: boolean;
+  }
+>;
+
 export type ServerToClientEvents = {
   gameInitialState: (data: {
     snapshot: GameStateSnapshot<
@@ -19,15 +28,7 @@ export type ServerToClientEvents = {
   }) => void;
   gameSnapshot: (snapshot: GameStateSnapshot<SnapshotDiff>) => void;
   error: (message: string) => void;
-  clockUpdate: (
-    clocks: Record<
-      UserId,
-      {
-        turn: { max: number; remaining: number; isActive: boolean };
-        action: { max: number; remaining: number; isActive: boolean };
-      }
-    >
-  ) => void;
+  clockUpdate: (clocks: ClockUpdate) => void;
 };
 
 export type ClientToServerEvents = {

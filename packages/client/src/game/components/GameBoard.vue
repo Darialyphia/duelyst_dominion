@@ -22,6 +22,7 @@ import HoveredCard from './HoveredCard.vue';
 import UiModal from '@/ui/components/UiModal.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import NewTurnIndicator from './NewTurnIndicator.vue';
+import GameErrorModal from './GameErrorModal.vue';
 
 const boardCells = useBoardCells();
 const tiles = useTiles();
@@ -82,6 +83,8 @@ const isSettingsOpened = ref(false);
         <slot name="menu" />
       </div>
     </UiModal>
+
+    <GameErrorModal />
   </div>
 </template>
 

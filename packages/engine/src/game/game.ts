@@ -24,6 +24,7 @@ import type { TileBlueprint } from '../tile/tile-blueprint';
 import { TileSystem } from '../tile/tile.system';
 import { TILES_DICTIONARY } from '../tile/tiles';
 import { TurnSystem } from './systems/turn.system';
+import { CARDS_DICTIONARY } from '../card/sets';
 
 export type GameOptions = {
   id: string;
@@ -93,8 +94,9 @@ export class Game implements Serializable<SerializedGame> {
     this.id = options.id;
     this.config = Object.assign({}, defaultConfig, options.overrides.config);
     this.isSimulation = options.isSimulation ?? false;
-    this.cardPool = options.overrides.cardPool ?? {};
+    this.cardPool = options.overrides.cardPool ?? CARDS_DICTIONARY;
     this.tilesPool = options.overrides.tilesPool ?? TILES_DICTIONARY;
+    console.log(this.cardPool);
   }
 
   async initialize() {
@@ -218,6 +220,19 @@ export class Game implements Serializable<SerializedGame> {
 
   dispatch(input: SerializedInput) {
     return this.inputSystem.dispatch(input);
+  }
+
+  get activePlayer() {
+    return this.interaction.getContext().ctx.player;
+  }
+
+  onActivePlayerChange(cb: (player: Player) => void) {
+    let current = this.activePlayer;
+    this.on(GAME_EVENTS.NEW_SNAPSHOT, () => {
+      if (this.activePlayer.equals(current)) return;
+      current = this.activePlayer;
+      cb(this.activePlayer);
+    });
   }
 
   shutdown() {

@@ -1,6 +1,6 @@
 import { useAuth } from '@/auth/composables/useAuth';
 import { useMe } from '@/auth/composables/useMe';
-import { type GameId, type UserId } from '@game/api';
+import { type GameId } from '@game/api';
 import type {
   GameStateSnapshot,
   SerializedPlayerState,
@@ -10,6 +10,7 @@ import type {
 import type { SerializedInput } from '@game/engine/src/input/input-system';
 import { until } from '@vueuse/core';
 import { io, type Socket } from 'socket.io-client';
+import type { ClockUpdate } from './useSpectatorSocket';
 
 export type ServerToClientEvents = {
   gameInitialState: (data: {
@@ -20,15 +21,7 @@ export type ServerToClientEvents = {
   }) => void;
   gameSnapshot: (snapshot: GameStateSnapshot<SnapshotDiff>) => void;
   error: (message: string) => void;
-  clockUpdate: (
-    clocks: Record<
-      UserId,
-      {
-        turn: { max: number; remaining: number; isActive: boolean };
-        action: { max: number; remaining: number; isActive: boolean };
-      }
-    >
-  ) => void;
+  clockUpdate: (clocks: ClockUpdate) => void;
 };
 
 export type ClientToServerEvents = {
@@ -65,9 +58,7 @@ export const useGameSocket = () => {
           type: 'player'
         });
       }, 2000);
-      socket.value.on('gameInitialState', data => {
-        console.log('Received initial game state from server', data);
-      });
+
       socket.value.on('connect_error', err => {
         socketError.value = err.message;
       });

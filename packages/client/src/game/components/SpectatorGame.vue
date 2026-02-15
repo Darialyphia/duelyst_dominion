@@ -5,7 +5,10 @@ import { useFxAdapter } from '../composables/useFxAdapter';
 import GameBoard from './GameBoard.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import type { GameInfos } from '@game/api';
-import { useSpectatorSocket } from '../composables/useSpectatorSocket';
+import {
+  useSpectatorSocket,
+  type ClockUpdate
+} from '../composables/useSpectatorSocket';
 
 const { game } = defineProps<{ game: GameInfos }>();
 
@@ -35,12 +38,7 @@ socket.value.on('gameInitialState', async state => {
   await client.value.initialize(state.snapshot, state.history);
 });
 
-const clocks = ref<{
-  [playerId: string]: {
-    turn: { max: number; remaining: number; isActive: boolean };
-    action: { max: number; remaining: number; isActive: boolean };
-  };
-}>({});
+const clocks = ref<ClockUpdate>({});
 
 socket.value.on('clockUpdate', updatedClocks => {
   clocks.value = updatedClocks;

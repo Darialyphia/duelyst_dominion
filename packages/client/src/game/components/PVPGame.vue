@@ -8,6 +8,7 @@ import { useMe } from '@/auth/composables/useMe';
 import GameBoard from './GameBoard.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import UiModal from '@/ui/components/UiModal.vue';
+import type { ClockUpdate } from '../composables/useSpectatorSocket';
 
 const { data: me } = useMe();
 const { socket, socketError } = useGameSocket();
@@ -35,16 +36,10 @@ const { client } = provideGameClient({
 });
 
 socket.value.on('gameInitialState', async state => {
-  console.log('Received initial game state', state);
   await client.value.initialize(state.snapshot, state.history);
 });
 
-const clocks = ref<{
-  [playerId: string]: {
-    turn: { max: number; remaining: number; isActive: boolean };
-    action: { max: number; remaining: number; isActive: boolean };
-  };
-}>({});
+const clocks = ref<ClockUpdate>({});
 
 socket.value.on('clockUpdate', updatedClocks => {
   clocks.value = updatedClocks;

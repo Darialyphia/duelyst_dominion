@@ -416,7 +416,7 @@ export class GameSnapshotSystem extends System<{ enabled: boolean }> {
         return;
       }
 
-      cardsToRemove.push(card.id);
+      // cardsToRemove.push(card.id);
     });
 
     cardsToRemove.forEach(cardId => {

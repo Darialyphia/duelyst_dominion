@@ -115,6 +115,7 @@ export function useUnitAnimations({
     );
 
     animationSequence.value = [defaultAnimation.value];
+    unit.update({ position: event.position });
   };
 
   const onTeleport = async (event: { unit: string; position: Point }) => {
@@ -128,6 +129,8 @@ export function useUnitAnimations({
       0.3,
       Power2.easeIn
     );
+    unit.update({ position: event.position });
+
     isTeleporting.value = false;
   };
 

@@ -26,7 +26,7 @@ export type GetGameInfosOutput = {
       id: UserId;
       username: string;
       deck: {
-        cards: Array<{ blueprintId: string }>;
+        cards: Array<{ blueprintId: string; isFoil: boolean }>;
       };
     };
   }>;
@@ -106,7 +106,8 @@ export class GetGameInfosUseCase
     const cardPromises = deckCards.map(async ({ cardId, copies }) => {
       const card = await this.ctx.cardReadRepo.getById(cardId);
       return Array.from({ length: copies }).map(() => ({
-        blueprintId: card!.blueprintId
+        blueprintId: card!.blueprintId,
+        isFoil: card!.isFoil
       }));
     });
 
