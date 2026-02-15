@@ -62,6 +62,12 @@ import { ghostLynx } from './core/neutral/ghost-lynx';
 import { miniJax } from './core/neutral/mini-jax';
 import { jaxi } from './core/neutral/jaxi';
 import { jaxTruesight } from './core/neutral/jax-truesight';
+import { songweaver } from './core/neutral/songweaver';
+import { repulsorBeast } from './core/neutral/repulsor-beast';
+import { primusFist } from './core/neutral/primus-fist';
+import { fireSpitter } from './core/neutral/fire-spitter';
+import { luxIgnis } from './core/neutral/lux-ignis';
+import { lanternFox } from './core/f2/lantern-fox';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -130,6 +136,12 @@ export const coreSet: CardSet = {
     ghostLynx,
     miniJax,
     jaxi,
-    jaxTruesight
+    jaxTruesight,
+    songweaver,
+    repulsorBeast,
+    primusFist,
+    fireSpitter,
+    luxIgnis,
+    lanternFox
   ]
 };

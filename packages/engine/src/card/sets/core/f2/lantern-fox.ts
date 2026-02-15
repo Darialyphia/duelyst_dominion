@@ -3,19 +3,20 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
+import { songhaiSpawn } from '../../../card-vfx-sequences';
+import dedent from 'dedent';
+import { phoenixFire } from './phoenix-fire';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
-import { isSpell } from '../../../card-utils';
-import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
-import { AbilityDamage } from '../../../../utils/damage';
 
-export const fourWindsMagus: MinionBlueprint = {
-  id: 'four-winds-magus',
-  name: 'Four Winds Magus',
-  description: 'When you play a spell, deal 1 damage to the enemy player and heal for 1.',
+export const lanternFox: MinionBlueprint = {
+  id: 'lantern-fox',
+  name: 'Lantern Fox',
+  description: dedent`
+  When this takes damage, add a @${phoenixFire.name}@ to your hand.`,
   vfx: {
-    spriteId: 'minions/f2_four-winds-magus',
+    spriteId: 'minions/f2_lantern-fox',
     sequences: {
       play(game, card, position) {
         return songhaiSpawn(position);
@@ -24,21 +25,21 @@ export const fourWindsMagus: MinionBlueprint = {
   },
   sounds: {
     play: 'sfx_spell_deathstrikeseal',
-    walk: 'sfx_neutral_ladylocke_attack_impact',
-    attack: 'sfx_f2_mage4winds_attack_swing',
-    takeDamage: 'sfx_f2_mage4winds_hit',
-    dealDamage: 'sfx_f2_mage4winds_impact',
-    death: 'sfx_f2_mage4winds_death'
+    walk: 'sfx_unit_physical_4',
+    attack: 'sfx_f2_lanternfox_attack_swing',
+    takeDamage: 'sfx_f2_lanternfox_hit',
+    dealDamage: 'sfx_f2_lanternfox_attack_impact',
+    death: 'sfx_f2_lanternfox_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F2,
-  rarity: RARITIES.RARE,
+  rarity: RARITIES.EPIC,
   tags: [],
   runeCost: {},
-  manaCost: 4,
-  atk: 3,
+  manaCost: 3,
+  atk: 2,
   maxHp: 5,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),
@@ -47,18 +48,16 @@ export const fourWindsMagus: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('rythmweaver', game, card, {
+        modifier: new Modifier('lantern-fox', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
-              eventName: GAME_EVENTS.CARD_AFTER_PLAY,
-              filter: event => {
-                if (!event) return false;
-                if (!event.data.card.player.equals(card.player)) return false;
-                return isSpell(event.data.card);
+              eventName: GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
+              filter(event) {
+                return !!event?.data.unit.equals(card.unit);
               },
               async handler() {
-                await card.player.opponent.takeDamage(card, new AbilityDamage(card, 1));
-                await card.player.heal(card, 1);
+                const pf = await card.player.generateCard(phoenixFire.id, card.isFoil);
+                await pf.addToHand();
               }
             })
           ]

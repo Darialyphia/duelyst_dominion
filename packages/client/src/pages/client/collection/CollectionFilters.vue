@@ -7,9 +7,9 @@ import {
   type Faction
 } from '@game/engine/src/card/card.enums';
 import { uppercaseFirstLetter } from '@game/shared';
-import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { useCollectionPage } from './useCollectionPage';
 import { assets } from '@/assets';
+import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from 'reka-ui';
 
 const {
   textFilter,
@@ -18,7 +18,7 @@ const {
   hasFactionFilter,
   toggleFactionFilter,
   clearFactionFilter,
-  viewMode
+  cardScale
 } = useCollectionPage();
 
 const cardKinds: Array<{
@@ -56,37 +56,23 @@ const factions: Array<{
         class="search-input"
       />
     </section>
-    <section class="flex gap-3 items-center">
+    <section class="flex gap-3 flex-col">
       <h4>Display</h4>
-      <UiSimpleTooltip>
-        <template #trigger>
-          <label class="view-toggle">
-            <Icon icon="material-symbols-light:view-column-2" width="1.5rem" />
-            <input
-              v-model="viewMode"
-              type="radio"
-              value="expanded"
-              class="sr-only"
-            />
-          </label>
-        </template>
-        Normal view
-      </UiSimpleTooltip>
-
-      <UiSimpleTooltip>
-        <template #trigger>
-          <label class="view-toggle">
-            <Icon icon="heroicons:squares-2x2-16-solid" width="1.5rem" />
-            <input
-              v-model="viewMode"
-              type="radio"
-              value="compact"
-              class="sr-only"
-            />
-          </label>
-        </template>
-        Compact view
-      </UiSimpleTooltip>
+      <div class="flex">
+        <Icon icon="material-symbols:zoom-in" width="1.5rem" />
+        <SliderRoot
+          v-model="cardScale"
+          :min="0.5"
+          :max="2"
+          :step="0.25"
+          class="card-scale"
+        >
+          <SliderTrack class="card-scale-track">
+            <SliderRange class="card-scale-range" />
+          </SliderTrack>
+          <SliderThumb class="card-scale-thumb" />
+        </SliderRoot>
+      </div>
     </section>
 
     <section>
@@ -209,5 +195,42 @@ aside {
     border-color: #ffb270;
     outline: none;
   }
+}
+
+.card-scale {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 200px;
+  height: 20px;
+  z-index: 1;
+}
+
+.card-scale-track {
+  background-color: var(--red-5);
+  position: relative;
+  flex-grow: 1;
+  border-radius: var(--radius-pill);
+  height: 3px;
+}
+
+.card-scale-range {
+  position: absolute;
+  background-color: white;
+  border-radius: var(--radius-pill);
+  height: 100%;
+}
+
+.card-scale-thumb {
+  display: block;
+  width: var(--size-4);
+  height: var(--size-4);
+  background-color: white;
+  border-radius: var(--radius-3);
+}
+.card-scale-thumb:hover {
+  background-color: var(--primary);
 }
 </style>

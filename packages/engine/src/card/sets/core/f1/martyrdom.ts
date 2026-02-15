@@ -61,7 +61,7 @@ export const martyrdom: SpellBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   runeCost: {},
-  manaCost: 3,
+  manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
   getTargets(game, card) {

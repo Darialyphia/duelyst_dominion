@@ -66,7 +66,13 @@ export const cards = {
 "ghost-lynx": "ghost-lynx",
 "mini-jax": "mini-jax",
 "jaxi": "jaxi",
-"jax-truesight": "jax-truesight"
+"jax-truesight": "jax-truesight",
+"songweaver": "songweaver",
+"repulsor-beast": "repulsor-beast",
+"primus-fist": "primus-fist",
+"fire-spitter": "fire-spitter",
+"lux-ignis": "lux-ignis",
+"lantern-fox": "lantern-fox"
 } as const;
 
 export const collectableCards = {
@@ -129,7 +135,13 @@ export const collectableCards = {
 "dioltas": "dioltas",
 "ghost-lynx": "ghost-lynx",
 "jaxi": "jaxi",
-"jax-truesight": "jax-truesight"
+"jax-truesight": "jax-truesight",
+"songweaver": "songweaver",
+"repulsor-beast": "repulsor-beast",
+"primus-fist": "primus-fist",
+"fire-spitter": "fire-spitter",
+"lux-ignis": "lux-ignis",
+"lantern-fox": "lantern-fox"
 } as const;
 
 type CardSet = Array<{id: string; collectable: boolean; rarity: Rarity; }>;
@@ -138,12 +150,12 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "argeon-highmane",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "healing-mystic",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "archon-spellbinder",
@@ -153,7 +165,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "primus-shieldmaster",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "bloodtear-alchemist",
@@ -218,7 +230,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "true-strike",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "war-surge",
@@ -243,7 +255,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "kaleos-xaan",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "circlet-of-inhibition",
@@ -278,7 +290,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "phoenix-fire",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "massacre_artist",
@@ -298,12 +310,12 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "mist-dragon-seal",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "killing-edge",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": "heavens-eclipse",
@@ -318,7 +330,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "sundrop-elixir",
     "collectable": true,
-    "rarity": "basic"
+    "rarity": "common"
   },
   {
     "id": " augury",
@@ -453,7 +465,37 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "jax-truesight",
     "collectable": true,
+    "rarity": "legendary"
+  },
+  {
+    "id": "songweaver",
+    "collectable": true,
     "rarity": "rare"
+  },
+  {
+    "id": "repulsor-beast",
+    "collectable": true,
+    "rarity": "common"
+  },
+  {
+    "id": "primus-fist",
+    "collectable": true,
+    "rarity": "common"
+  },
+  {
+    "id": "fire-spitter",
+    "collectable": true,
+    "rarity": "common"
+  },
+  {
+    "id": "lux-ignis",
+    "collectable": true,
+    "rarity": "epic"
+  },
+  {
+    "id": "lantern-fox",
+    "collectable": true,
+    "rarity": "epic"
   }
 ]
 };
@@ -520,7 +562,13 @@ export const cardShortIds: Record<string, number> = {
 "ghost-lynx": 59,
 "mini-jax": 60,
 "jaxi": 61,
-"jax-truesight": 62
+"jax-truesight": 62,
+"songweaver": 63,
+"repulsor-beast": 64,
+"primus-fist": 66,
+"fire-spitter": 67,
+"lux-ignis": 68,
+"lantern-fox": 69
 } as const;
 
 export const cardIdByShortId: Record<number, string> = {
@@ -585,5 +633,11 @@ export const cardIdByShortId: Record<number, string> = {
 "59": "ghost-lynx",
 "60": "mini-jax",
 "61": "jaxi",
-"62": "jax-truesight"
+"62": "jax-truesight",
+"63": "songweaver",
+"64": "repulsor-beast",
+"66": "primus-fist",
+"67": "fire-spitter",
+"68": "lux-ignis",
+"69": "lantern-fox"
 } as const;

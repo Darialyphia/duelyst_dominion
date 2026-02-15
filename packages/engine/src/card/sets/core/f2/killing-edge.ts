@@ -65,7 +65,7 @@ export const killingEdge: SpellBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F2,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
   manaCost: 3,

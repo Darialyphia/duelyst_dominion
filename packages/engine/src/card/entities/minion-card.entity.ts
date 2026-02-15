@@ -140,7 +140,7 @@ export class MinionCard extends Card<
     );
   }
 
-  async selectTargets() {
+  async selectTargets(position: BoardCell) {
     return new Promise<
       { targets: BoardCell[]; cancelled: false } | { cancelled: true; targets?: never }
     >(
@@ -153,7 +153,7 @@ export class MinionCard extends Card<
           resolve({ cancelled: true });
         };
 
-        const targets = await this.blueprint.getTargets(this.game, this);
+        const targets = await this.blueprint.getTargets(this.game, this, position);
 
         if (cancelled) return;
         resolve({ targets, cancelled: false });
@@ -171,7 +171,9 @@ export class MinionCard extends Card<
         const { position, cancelled: positionCancelled } = await this.selectPosition();
         if (positionCancelled) resolve({ cancelled: true });
 
-        const { targets, cancelled: targetsCancelled } = await this.selectTargets();
+        const { targets, cancelled: targetsCancelled } = await this.selectTargets(
+          position!
+        );
         if (targetsCancelled) resolve({ cancelled: true });
 
         resolve({ position: position!, targets: targets!, cancelled: false });

@@ -23,7 +23,7 @@ export const kaleosXaan: GeneralBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F2,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 3,
   runeCost: {},

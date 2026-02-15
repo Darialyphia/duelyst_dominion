@@ -8,7 +8,6 @@ import { Modifier } from '../../../../modifier/modifier.entity';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { CelerityUnitModifier } from '../../../../modifier/modifiers/celerity.modifier';
 import { PlayerArtifact } from '../../../../player/player-artifact.entity';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 
 export const scionsCrown: ArtifactBlueprint = {
   id: 'scions-crown',
@@ -25,7 +24,7 @@ export const scionsCrown: ArtifactBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   runeCost: {},
-  manaCost: 3,
+  manaCost: 1,
   durability: 3,
   getAoe: (game, card) =>
     new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {

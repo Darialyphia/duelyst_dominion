@@ -57,7 +57,7 @@ export class RangedUnitModifier extends Modifier<Unit> {
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
             if (this.target.isOnBackRow) return value;
-            return false;
+            return ctx.attacker.modifiers.has(RangedUnitModifier);
           }
         }),
         ...(options.mixins ?? [])

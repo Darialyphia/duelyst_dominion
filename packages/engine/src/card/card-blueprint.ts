@@ -70,7 +70,7 @@ export type MinionBlueprint = CardBlueprintBase & {
   atk: number;
   retaliation: number;
   maxHp: number;
-  getTargets: (game: Game, card: MinionCard) => Promise<BoardCell[]>;
+  getTargets: (game: Game, card: MinionCard, position: BoardCell) => Promise<BoardCell[]>;
   getAoe: (
     game: Game,
     card: MinionCard,

@@ -13,7 +13,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
   id: 'circlet-of-inhibition',
   name: 'Circlet of Inhibition',
   description: dedent`
-  When an enemy attacks your general, your opponent must pay 2 or you gain 1 mana.
+  When an enemy attacks your general, your opponent must pay 1 or you gain 1 mana.
   `,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},

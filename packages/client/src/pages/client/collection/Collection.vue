@@ -4,7 +4,7 @@ import { useCollectionPage } from './useCollectionPage';
 import CollectionCard from './CollectionCard.vue';
 import { useIntersectionObserver } from '@vueuse/core';
 
-const { cards, viewMode, isLoading } = useCollectionPage();
+const { cards, cardScale, isLoading } = useCollectionPage();
 
 const listRoot = useTemplateRef('card-list');
 const visibleCards = ref(new Set<string>());
@@ -35,6 +35,8 @@ useIntersectionObserver(
     threshold: 0
   }
 );
+
+const pixelScale = computed(() => cardScale.value[0] + 0.01); // avoides artifacts on some sprites);
 </script>
 
 <template>
@@ -43,8 +45,8 @@ useIntersectionObserver(
     <ul
       ref="card-list"
       class="cards fancy-scrollbar"
-      :class="viewMode"
       v-else-if="cards.length"
+      :style="{ '--pixel-scale': `${pixelScale}` }"
     >
       <li
         v-for="card in cards"
@@ -83,7 +85,7 @@ useIntersectionObserver(
   /* padding-inline: var(--size-4); */
   padding-bottom: var(--size-10);
   padding-top: var(--size-3);
-  --pixel-scale: 1.501; /* avoids artifacts on a few sprites*/
+
   li {
     position: relative;
     transform-style: preserve-3d;
@@ -101,23 +103,15 @@ useIntersectionObserver(
       aspect-ratio: var(--card-small-ratio);
     }
   }
-
-  &.compact {
-    --pixel-scale: 1;
-    li {
-      width: calc(var(--card-width) * var(--pixel-scale));
-      aspect-ratio: var(--card-ratio);
-    }
-  }
 }
 
-.card.disabled {
+/* .card.disabled {
   filter: grayscale(100%);
 }
 
 .card:not(.disabled):hover {
   cursor: url('@/assets/ui/cursor-hover.png'), auto;
-}
+} */
 
 .v-enter-active,
 .v-leave-active {

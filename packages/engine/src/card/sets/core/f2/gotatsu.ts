@@ -29,7 +29,7 @@ export const gotatsu: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
-  manaCost: 2,
+  manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
     singleEnemyTargetRules.canPlay(game, card, c => c.isEnemy(card.player) && c.isMinion),

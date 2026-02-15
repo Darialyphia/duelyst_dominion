@@ -16,7 +16,7 @@ class AuraModifierMixin<
 > extends ModifierMixin<T> {
   protected modifier!: Modifier<T>;
 
-  private affectedCards = new Map<string, Modifier<TCandidate>[]>();
+  private affectedCandidates = new Map<string, Modifier<TCandidate>[]>();
   // we need to track this variable because of how the event emitter works
   // basically if we have an event that says "after unit moves, remove this aura modifier"
   // It will not clean up aura's "after unit move" event before all the current listeners have been ran
@@ -39,11 +39,11 @@ class AuraModifierMixin<
     for (const candidate of this.options.getCandidates()) {
       const shouldGetAura = this.options.isElligible(candidate);
 
-      const hasAura = this.affectedCards.has(candidate.id);
+      const hasAura = this.affectedCandidates.has(candidate.id);
 
       if (!shouldGetAura && hasAura) {
-        const modifierstoRemove = this.affectedCards.get(candidate.id)!;
-        this.affectedCards.delete(candidate.id);
+        const modifierstoRemove = this.affectedCandidates.get(candidate.id)!;
+        this.affectedCandidates.delete(candidate.id);
         for (const mod of modifierstoRemove) {
           await mod.removeSource(this.source);
         }
@@ -52,7 +52,7 @@ class AuraModifierMixin<
 
       if (shouldGetAura && !hasAura) {
         const modifiers = this.options.getModifiers(candidate);
-        this.affectedCards.set(candidate.id, modifiers);
+        this.affectedCandidates.set(candidate.id, modifiers);
         for (const mod of modifiers) {
           await candidate.modifiers.add(mod);
         }
@@ -63,13 +63,10 @@ class AuraModifierMixin<
 
   private async cleanup() {
     this.game.off('*', this.checkAura);
+    for (const id of this.affectedCandidates.keys()) {
+      const modifierstoRemove = this.affectedCandidates.get(id)!;
+      this.affectedCandidates.delete(id);
 
-    for (const id of this.affectedCards.keys()) {
-      const card = this.game.cardSystem.getCardById(id);
-      if (!card) return;
-
-      this.affectedCards.delete(id);
-      const modifierstoRemove = this.affectedCards.get(card.id)!;
       for (const mod of modifierstoRemove) {
         await mod.removeSource(this.source);
       }
@@ -84,6 +81,7 @@ class AuraModifierMixin<
   }
 
   async onRemoved() {
+    console.log('cleanup aura');
     this.isApplied = false;
     await this.cleanup();
   }

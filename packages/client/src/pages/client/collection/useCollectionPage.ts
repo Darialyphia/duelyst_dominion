@@ -30,6 +30,7 @@ export type CollectionContext = CardListContext & {
   isSaving: Ref<boolean>;
   deleteDeck: () => void;
   isDeleting: Ref<boolean>;
+  cardScale: Ref<[number]>;
 };
 
 export const CollectionInjectionKey = Symbol(
@@ -141,6 +142,7 @@ export const provideCollectionPage = () => {
     isDeleting: isDeletingDeck,
     deckBuilder,
     decks,
+    cardScale: ref([1.5]),
     createDeck: () => createDeck({}),
     editDeck: id => {
       selectedDeckId.value = id;

@@ -30,7 +30,7 @@ export const healingMystic: MinionBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.NEUTRAL,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
   manaCost: 2,
@@ -69,7 +69,7 @@ export const healingMystic: MinionBlueprint = {
 //     collectable: true,
 //     setId: CARD_SETS.CORE,
 //     faction: FACTIONS.NEUTRAL,
-//     rarity: RARITIES.BASIC,
+//     rarity: RARITIES.COMMON,
 //     tags: [],
 //     manaCost: 2,
 //     runeCost: {

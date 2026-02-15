@@ -23,9 +23,9 @@ export class MeleeTargetingStrategy implements TargetingStrategy {
     if (!cell.unit && this.unit.enemiesOnSameColumn.length === 0) {
       return true; //attack player directly
     }
-    const closestEnemy = this.unit.enemiesOnSameColumn.sort((a, b) => {
-      const distA = Math.abs(a.position.x - this.unit.position.x);
-      const distB = Math.abs(b.position.x - this.unit.position.x);
+    const closestEnemy = this.unit.enemiesOnSameColumn.toSorted((a, b) => {
+      const distA = Math.abs(a.position.y - this.unit.position.y);
+      const distB = Math.abs(b.position.y - this.unit.position.y);
       return distA - distB;
     })[0];
 

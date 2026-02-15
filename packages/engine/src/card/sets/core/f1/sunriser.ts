@@ -37,7 +37,7 @@ export const sunriser: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 3,
-  atk: 3,
+  atk: 2,
   maxHp: 5,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),

@@ -377,8 +377,8 @@ export class Unit
 
   async swapPositionWith(target: Unit) {
     const targetPosition = target.position.clone();
-    await this.teleport(targetPosition);
     await target.teleport(this.position);
+    await this.teleport(targetPosition);
   }
 
   get canBeDestroyed(): boolean {
@@ -399,7 +399,6 @@ export class Unit
     const target = this.game.unitSystem.getUnitAt(point) ?? this.player.opponent;
     const canBeAttacked =
       target instanceof Unit ? target.canBeAttackedBy(this) : this.isEnemy(target);
-
     if (!this.canAttack(target) || !canBeAttacked) {
       return false;
     }

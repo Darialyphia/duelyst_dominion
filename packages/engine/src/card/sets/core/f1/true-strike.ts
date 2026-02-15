@@ -53,7 +53,7 @@ export const trueStrike: SpellBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.BASIC,
+  rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
   manaCost: 1,

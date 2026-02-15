@@ -35,7 +35,7 @@ const getCountByKind = (kind: CardKind) => {
 <style scoped lang="postcss">
 .counts {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--size-2);
   justify-items: center;
   font-size: var(--font-size-00);
