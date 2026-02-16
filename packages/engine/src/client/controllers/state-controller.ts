@@ -1,6 +1,5 @@
 import type { Override } from '@game/shared';
 import type {
-  EntityDictionary,
   SerializedOmniscientState,
   SerializedPlayerState,
   SnapshotDiff
@@ -27,6 +26,7 @@ import {
   type SerializedEvent,
   type SerializedStarEvent
 } from '../../game/game.events';
+import type { EntityDictionary } from '../../game/systems/game-serializer';
 
 export type GameClientState = Override<
   SerializedOmniscientState | SerializedPlayerState,
