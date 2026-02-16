@@ -3,7 +3,7 @@ import {
   type Control
 } from '@/shared/composables/useKeyboardControl';
 import { useSettingsStore } from '@/shared/composables/useSettings';
-import { useGameUi, useMyPlayer, useOpponentPlayer } from './useGameClient';
+import { useGameUi, useMyPlayer } from './useGameClient';
 import { keyToString } from 'key-display-names';
 
 export const useGameKeyboardControls = () => {
@@ -11,7 +11,6 @@ export const useGameKeyboardControls = () => {
 
   const ui = useGameUi();
   const myPlayer = useMyPlayer();
-  const opponentPlayer = useOpponentPlayer();
 
   useKeyboardControl(
     'keyup',
@@ -41,50 +40,6 @@ export const useGameKeyboardControls = () => {
       }
     );
   }
-
-  useKeyboardControl(
-    'keyup',
-    settings.settings.bindings.toggleDiscardPile.control,
-    () => {
-      ui.value.DOMSelectors.discardPile(myPlayer.value.id).element?.click();
-    }
-  );
-
-  useKeyboardControl(
-    'keyup',
-    settings.settings.bindings.toggleBanishPile.control,
-    () => {
-      ui.value.DOMSelectors.banishPile(myPlayer.value.id).element?.click();
-    }
-  );
-
-  useKeyboardControl(
-    'keyup',
-    settings.settings.bindings.toggleDestinyDeck.control,
-    () => {
-      ui.value.DOMSelectors.destinyDeck(myPlayer.value.id).element?.click();
-    }
-  );
-
-  useKeyboardControl(
-    'keyup',
-    settings.settings.bindings.toggleOpponentDiscardPile.control,
-    () => {
-      ui.value.DOMSelectors.discardPile(
-        opponentPlayer.value.id
-      ).element?.click();
-    }
-  );
-
-  useKeyboardControl(
-    'keyup',
-    settings.settings.bindings.toggleOpponentBanishPile.control,
-    () => {
-      ui.value.DOMSelectors.banishPile(
-        opponentPlayer.value.id
-      ).element?.click();
-    }
-  );
 };
 
 export const useKeybordShortcutLabel = () => {

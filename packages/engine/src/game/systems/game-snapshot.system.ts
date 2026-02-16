@@ -390,23 +390,8 @@ export class GameSnapshotSystem extends System<{ enabled: boolean }> {
         // @ts-expect-error
         .toSorted((a, b) => (a.data.event.__id - b.data.event.__id) as unknown as number)
         .map((event: GameStarEvent) => event.serialize());
-      const previousId = this.nextId - 1;
       const id = this.nextId++;
       const omnisicientState = this.serializer.serializeOmniscientState();
-
-      if (events.length === 0 && previousId > 0) {
-        const previousSnapshot = this.getOmniscientSnapshotAt(previousId);
-        if (previousSnapshot.kind === 'state') {
-          const prevJSON = JSON.stringify(previousSnapshot.state);
-          const currentJSON = JSON.stringify(omnisicientState);
-          if (prevJSON === currentJSON) {
-            this.nextId--;
-            this.eventsSinceLastSnapshot = [];
-
-            return;
-          }
-        }
-      }
 
       this.omniscientCache.push({
         kind: 'state',
