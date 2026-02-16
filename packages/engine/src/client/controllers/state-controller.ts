@@ -102,6 +102,11 @@ export class ClientStateController {
   // prepopulate the state with new entities because they could be used by the fx events
   preupdate(newState: PatchBasedSnapshotDiff) {
     if (!this.state) return;
+
+    for (const entity of Object.values(newState.addedEntities)) {
+      if (!entity.entityType) continue; // receivd a partial update, skip it
+      this.state.entities[entity.id] = this.buildViewModel(entity as SerializedEntity);
+    }
   }
 
   update(newState: PatchBasedSnapshotDiff): void {
@@ -112,6 +117,18 @@ export class ClientStateController {
     removedEntities.forEach(id => {
       delete this.state.entities[id];
     });
+
+    // Apply entity patches to view models
+    for (const [entityId, patches] of Object.entries(entityPatches)) {
+      const viewModel = this.state.entities[entityId];
+      if (!viewModel) continue;
+
+      for (const patch of patches) {
+        viewModel.applyPatch(patch);
+      }
+
+      this.state.entities[entityId] = viewModel.clone();
+    }
 
     this.state = {
       ...this.state,

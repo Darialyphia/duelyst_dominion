@@ -1,5 +1,7 @@
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
+import type { PatchOperation } from '../../game/systems/patch-types';
+import { applyPatchToData } from '../utils/apply-patch';
 import type { GameClient, GameStateEntities } from '../client';
 import type { BoardCellViewModel } from './board-cell.model';
 import type { CardViewModel } from './card.model';
@@ -27,6 +29,11 @@ export class UnitViewModel {
   update(data: Partial<SerializedUnit>) {
     Object.assign(this.data, data);
 
+    return this;
+  }
+
+  applyPatch(patch: PatchOperation) {
+    applyPatchToData(this.data, patch);
     return this;
   }
 

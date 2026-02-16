@@ -1,5 +1,7 @@
 import type { SerializedTile } from '../../tile/tile.entity';
 import type { GameClient, GameStateEntities } from '../client';
+import type { PatchOperation } from '../../game/systems/patch-types';
+import { applyPatchToData } from '../utils/apply-patch';
 import type { PlayerViewModel } from './player.model';
 
 export class TileViewModel {
@@ -23,6 +25,11 @@ export class TileViewModel {
   update(data: Partial<SerializedTile>) {
     Object.assign(this.data, data);
 
+    return this;
+  }
+
+  applyPatch(patch: PatchOperation) {
+    applyPatchToData(this.data, patch);
     return this;
   }
 

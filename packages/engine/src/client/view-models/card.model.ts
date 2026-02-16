@@ -1,5 +1,7 @@
 import type { SerializedArtifactCard } from '../../card/entities/artifact-card.entity';
 import type { SerializedCard } from '../../card/entities/card.entity';
+import type { PatchOperation } from '../../game/systems/patch-types';
+import { applyPatchToData } from '../utils/apply-patch';
 import type { SerializedSpellCard } from '../../card/entities/spell-card.entity';
 import type { GameClient, GameStateEntities } from '../client';
 import type { PlayerViewModel } from './player.model';
@@ -45,6 +47,11 @@ export class CardViewModel {
   update<T extends CardKind>(data: Partial<CardData & { kind: T }>) {
     Object.assign(this.data, data);
 
+    return this;
+  }
+
+  applyPatch(patch: PatchOperation) {
+    applyPatchToData(this.data, patch);
     return this;
   }
 
