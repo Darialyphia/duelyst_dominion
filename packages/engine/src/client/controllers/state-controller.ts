@@ -1,5 +1,6 @@
 import type { Override } from '@game/shared';
 import type {
+  PatchBasedSnapshotDiff,
   SerializedOmniscientState,
   SerializedPlayerState,
   SnapshotDiff
@@ -99,27 +100,14 @@ export class ClientStateController {
   };
 
   // prepopulate the state with new entities because they could be used by the fx events
-  preupdate(newState: SnapshotDiff) {
+  preupdate(newState: PatchBasedSnapshotDiff) {
     if (!this.state) return;
-
-    for (const id of newState.addedEntities) {
-      const entity = newState.entities[id];
-
-      if (!entity.entityType) continue; // receivd a partial update, skip it
-      this.state.entities[id] = this.buildViewModel(entity as SerializedEntity);
-    }
   }
 
-  update(newState: SnapshotDiff): void {
+  update(newState: PatchBasedSnapshotDiff): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { entities, config, board, addedEntities, removedEntities, ...rest } = newState;
-    for (const [id, entity] of Object.entries(entities)) {
-      if (this.state.entities[id]) {
-        this.state.entities[id] = this.state.entities[id].update(entity as any).clone();
-      } else if (entity.entityType) {
-        this.state.entities[id] = this.buildViewModel(entity as any);
-      }
-    }
+    const { entityPatches, config, board, addedEntities, removedEntities, ...rest } =
+      newState;
 
     removedEntities.forEach(id => {
       delete this.state.entities[id];

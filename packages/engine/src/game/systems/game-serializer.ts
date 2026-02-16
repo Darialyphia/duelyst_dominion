@@ -237,7 +237,7 @@ export class GameSerializer {
         return;
       }
 
-      // cardsToRemove.push(card.id);
+      cardsToRemove.push(card.id);
     });
 
     cardsToRemove.forEach(cardId => {
