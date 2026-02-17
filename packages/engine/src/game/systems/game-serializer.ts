@@ -18,6 +18,7 @@ import type { SerializedSpellCard } from '../../card/entities/spell-card.entity'
 import type { SerializedTile } from '../../tile/tile.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import { areArraysIdentical } from '../../utils/helpers';
+import { INTERACTION_STATES } from '../game.enums';
 
 export type EntityDictionary = Record<
   string,
@@ -209,6 +210,16 @@ export class GameSerializer {
 
     // Remove entities that the player shouldn't have access to in order to prevent cheating
     const hasBeenPlayed = (cardId: string) => {
+      if (state.interaction.ctx.player === playerId) {
+        // add card from choices since they could come from a hidden source (like deck or opponent's hand)
+        if (state.interaction.state === INTERACTION_STATES.CHOOSING_CARDS) {
+          const choices = state.interaction.ctx.choices;
+          if (choices.includes(cardId)) {
+            return true;
+          }
+        }
+      }
+
       return eventsSinceLastSnapshot.some(e => {
         const event = e.data.event;
         if (
