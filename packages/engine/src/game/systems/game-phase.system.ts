@@ -222,13 +222,13 @@ export class GamePhaseSystem extends StateMachine<GamePhase, GamePhaseTransition
     } as SerializedGamePhaseContext;
   }
 
-  async playCard(index: number, player: Player) {
+  async playCard(id: string, player: Player) {
     assert(this.getState() === GAME_PHASES.MAIN, new WrongGamePhaseError());
 
     const canPlay = this.game.turnSystem.initiativePlayer.equals(player);
     assert(canPlay, new IllegalCardPlayedError());
 
-    const card = player.cardManager.getCardInHandAt(index);
+    const card = player.cardManager.getCardInHandById(id);
     assert(card, new IllegalCardPlayedError());
     assert(card.canPlay(), new IllegalCardPlayedError());
     await this.sendTransition(GAME_PHASE_TRANSITIONS.START_PLAYING_CARD);

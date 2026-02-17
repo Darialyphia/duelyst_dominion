@@ -142,6 +142,30 @@ export class PlayerHealEvent extends TypedSerializableEvent<
   }
 }
 
+export class PlayerLevelUpEvent extends TypedSerializableEvent<
+  { player: Player; newLevel: number },
+  { player: string; newLevel: number }
+> {
+  serialize() {
+    return {
+      player: this.data.player.id,
+      newLevel: this.data.newLevel
+    };
+  }
+}
+
+export class PlayerGainExpEvent extends TypedSerializableEvent<
+  { player: Player; amount: number },
+  { player: string; amount: number }
+> {
+  serialize() {
+    return {
+      player: this.data.player.id,
+      amount: this.data.amount
+    };
+  }
+}
+
 export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_BEFORE_DRAW]: PlayerBeforeDrawEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_DRAW]: PlayerAfterDrawEvent;
@@ -161,4 +185,6 @@ export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_AFTER_TAKE_DAMAGE]: PlayerDamageEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_HEAL]: PlayerHealEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_HEAL]: PlayerHealEvent;
+  [PLAYER_EVENTS.PLAYER_LEVEL_UP]: PlayerLevelUpEvent;
+  [PLAYER_EVENTS.PLAYER_GAIN_EXP]: PlayerGainExpEvent;
 };

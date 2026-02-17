@@ -14,7 +14,7 @@ import UiSimpleTooltip from '@/ui/components/UiSimpleTooltip.vue';
 import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
 
 const player = useMyPlayer();
-const { client, playerId } = useGameClient();
+const { playerId } = useGameClient();
 const ui = useGameUi();
 const state = useGameState();
 
@@ -43,6 +43,12 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
           {{ player.name }}
           <div class="hp">
             {{ player.currentHp }}
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <div>Lvl {{ player.level }}</div>
+          <div v-if="player.level < player.maxLevel">
+            EXP {{ player.exp }}/{{ state.config.EXP_PER_LEVEL }}
           </div>
         </div>
         <div class="flex gap-2 text-1">
@@ -95,23 +101,26 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
       />
     </div>
 
-    <UiButton
-      v-show="player.canReplace"
-      class="action-button mt-9"
-      :class="{ 'is-replacing': ui.isReplacingCard }"
-      @click="ui.isReplacingCard = !ui.isReplacingCard"
-    >
-      Replace Card
-    </UiButton>
-    <UiButton class="action-button" @click="client.pass()">Pass</UiButton>
+    <div class="mt-9 flex flex-col gap-4">
+      <UiButton
+        v-for="action in ui.globalActions"
+        :key="action.id"
+        :disabled="action.isDisabled"
+        :class="action.id"
+        class="w-full"
+        @click="action.onClick"
+      >
+        {{ action.label }}
+      </UiButton>
+    </div>
   </div>
 </template>
 
 <style scoped lang="postcss">
 .p1-infos {
   position: fixed;
-  top: var(--size-9);
-  left: var(--size-13);
+  top: min(var(--size-9), 5vh);
+  left: min(var(--size-13), 8vw);
   color: white;
   font-weight: bold;
   display: flex;

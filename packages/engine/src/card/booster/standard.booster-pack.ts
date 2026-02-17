@@ -1,5 +1,4 @@
-import type { CardBlueprint } from '../card-blueprint';
-import type { BoosterPack } from './booster';
+import type { BoosterPack, BoosterPackOptions } from './booster';
 import { RARITIES, type Rarity } from '../card.enums';
 
 const DROP_RATES: Record<string, Record<string, number>> = {
@@ -9,7 +8,7 @@ const DROP_RATES: Record<string, Record<string, number>> = {
     [RARITIES.EPIC]: 4,
     [RARITIES.LEGENDARY]: 1
   },
-  guaranteed_rare: {
+  guaranteedRare: {
     [RARITIES.COMMON]: 0,
     [RARITIES.RARE]: 80,
     [RARITIES.EPIC]: 15,
@@ -17,12 +16,17 @@ const DROP_RATES: Record<string, Record<string, number>> = {
   }
 };
 
-const FOIL_CHANCE = 0.05;
-
+type BlueprintPoolEntry = {
+  id: string;
+  collectable: boolean;
+  rarity: Rarity;
+};
 export class StandardBoosterPack implements BoosterPack {
-  private cardsByRarity: Map<Rarity, CardBlueprint[]> = new Map();
+  static dropRates = DROP_RATES;
 
-  constructor(private blueprintPool: CardBlueprint[]) {
+  private cardsByRarity: Map<Rarity, BlueprintPoolEntry[]> = new Map();
+
+  constructor(private blueprintPool: BlueprintPoolEntry[]) {
     this.organizePool();
   }
 
@@ -40,17 +44,15 @@ export class StandardBoosterPack implements BoosterPack {
     }
   }
 
-  getContents(options: {
-    packSize: number;
-    blueprintWeightModifier: (blueprintId: string) => number;
-    rarityWeightModifier: (rarity: Rarity) => number;
-  }) {
+  getContents(options: BoosterPackOptions) {
     const result: Array<{ blueprintId: string; isFoil: boolean }> = [];
     const pickedIds = new Set<string>();
 
     for (let i = 0; i < options.packSize; i++) {
       const isHeroSlot = i === 0;
-      const rates = isHeroSlot ? DROP_RATES.guaranteed_rare : DROP_RATES.standard;
+      const rates = isHeroSlot
+        ? StandardBoosterPack.dropRates.guaranteedRare
+        : StandardBoosterPack.dropRates.standard;
       const rarity = this.rollRarity(rates, options.rarityWeightModifier);
       let card = this.pickCard(rarity, pickedIds, options.blueprintWeightModifier);
 
@@ -62,7 +64,7 @@ export class StandardBoosterPack implements BoosterPack {
         pickedIds.add(card.id);
         result.unshift({
           blueprintId: card.id,
-          isFoil: Math.random() < FOIL_CHANCE
+          isFoil: Math.random() < options.foilChance
         });
       }
     }
@@ -97,7 +99,7 @@ export class StandardBoosterPack implements BoosterPack {
     rarity: Rarity,
     excludeIds: Set<string>,
     weightModifier: (id: string) => number
-  ): CardBlueprint | null {
+  ): BlueprintPoolEntry | null {
     const bucket = this.cardsByRarity.get(rarity) || [];
     const candidates = bucket.filter(c => !excludeIds.has(c.id));
 
@@ -123,7 +125,7 @@ export class StandardBoosterPack implements BoosterPack {
     return candidates[candidates.length - 1];
   }
 
-  private pickFallbackCard(rarity: Rarity): CardBlueprint | null {
+  private pickFallbackCard(rarity: Rarity): BlueprintPoolEntry | null {
     const bucket = this.cardsByRarity.get(rarity) || [];
     return bucket[Math.floor(Math.random() * bucket.length)];
   }

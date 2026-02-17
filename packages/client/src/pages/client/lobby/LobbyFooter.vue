@@ -20,12 +20,7 @@ const { mutate: start, isLoading: isStarting } = useAuthedMutation(
 );
 
 const { mutate: leaveLobby, isLoading: isLeaving } = useAuthedMutation(
-  api.lobbies.leave,
-  {
-    onSuccess() {
-      router.push({ name: 'Lobbies' });
-    }
-  }
+  api.lobbies.leave
 );
 
 const isReady = computed(() => {
@@ -51,7 +46,12 @@ const isReady = computed(() => {
     <UiButton
       :is-loading="isLeaving"
       class="error-button ml-auto"
-      @click="leaveLobby({ lobbyId: lobby.id })"
+      @click="
+        () => {
+          leaveLobby({ lobbyId: lobby.id });
+          router.push({ name: 'Lobbies' });
+        }
+      "
     >
       Leave lobby
     </UiButton>

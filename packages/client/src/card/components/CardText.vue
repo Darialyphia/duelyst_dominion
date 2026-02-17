@@ -82,10 +82,10 @@ const tokens = computed<Token[]>(() => {
     if (part.startsWith('[durability]')) {
       return { type: 'durability' };
     }
-    if (part.startsWith('[level]')) {
+    if (part.startsWith('[lvl]')) {
       return {
         type: 'level-bonus',
-        text: part.replace('[level] ', 'Level ')
+        text: part.replace('[lvl] ', 'Level ')
       };
     }
     if (part.startsWith('[lineage]')) {
@@ -230,7 +230,8 @@ const tokens = computed<Token[]>(() => {
 .token-level-bonus,
 .token-lineage-bonus {
   font-weight: var(--font-weight-7);
-  text-decoration: underline;
+  font-style: italic;
+  color: hsl(from #efef9f calc(h + 60) s calc(l - 15));
 }
 .token-card {
   color: var(--lime-4);

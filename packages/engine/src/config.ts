@@ -35,6 +35,10 @@ export type Config = {
 
   GENERAL_DEPLOY_COOLDOWN: number;
   GENERAL_INITIAL_DEPLOY_COOLDOWN: number;
+
+  PLAYER_MAX_LEVEL: number;
+  EXP_PER_LEVEL: number;
+  EXP_GAIN_PER_TURN: number;
 };
 
 export const defaultConfig: Config = {
@@ -66,5 +70,9 @@ export const defaultConfig: Config = {
   PLAYER_MAX_HP: 25,
 
   GENERAL_DEPLOY_COOLDOWN: 2,
-  GENERAL_INITIAL_DEPLOY_COOLDOWN: 1
+  GENERAL_INITIAL_DEPLOY_COOLDOWN: 1,
+
+  PLAYER_MAX_LEVEL: 3,
+  EXP_PER_LEVEL: 3,
+  EXP_GAIN_PER_TURN: 1
 };

@@ -26,6 +26,8 @@ import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
 import { RuneManagerComponent } from './components/rune-manager.component';
 import type { Damage } from '../utils/damage';
+import { LevelManagerComponent } from './components/level-manager.component';
+import { max } from 'lodash-es';
 
 export type PlayerOptions = {
   id: string;
@@ -55,8 +57,11 @@ export type SerializedPlayer = {
   canUseResourceAction: boolean;
   artifacts: SerializedPlayerArtifact[];
   runes: Partial<Record<Rune, number>>;
-  canDeployGeneral: boolean;
   manaRegen: number;
+  exp: number;
+  level: number;
+  expToNextLevel: number;
+  maxLevel: number;
 };
 
 export type PlayerInterceptor = {
@@ -105,6 +110,8 @@ export class Player
 
   readonly runeManager: RuneManagerComponent;
 
+  readonly levelManager: LevelManagerComponent;
+
   generalCard!: GeneralCard;
 
   currentlyPlayedCard: Nullable<DeckCard> = null;
@@ -141,6 +148,7 @@ export class Player
     this.modifiers = new ModifierManager<Player>(game, this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
     this.runeManager = new RuneManagerComponent(game, this);
+    this.levelManager = new LevelManagerComponent(game, this);
   }
 
   async init() {
@@ -219,7 +227,13 @@ export class Player
       canUseResourceAction: this.canPerformResourceAction,
       artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize()),
       runes: this.runeManager.runes,
-      canDeployGeneral: this.generalCard.canPlay()
+      exp: this.levelManager.exp,
+      level: this.levelManager.level,
+      maxLevel: this.game.config.PLAYER_MAX_LEVEL,
+      expToNextLevel:
+        this.levelManager.level < this.game.config.PLAYER_MAX_LEVEL
+          ? this.game.config.EXP_PER_LEVEL - this.levelManager.exp
+          : 0
     };
   }
 
@@ -334,6 +348,8 @@ export class Player
         unit.activate();
       }
     }
+
+    await this.levelManager.gainExp(this.game.config.EXP_GAIN_PER_TURN);
   }
 
   async endTurn() {

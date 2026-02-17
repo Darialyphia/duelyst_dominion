@@ -102,6 +102,10 @@ export class CardManagerComponent {
     return [...this.hand][index];
   }
 
+  getCardInHandById(id: string) {
+    return this.hand.find(card => card.id === id);
+  }
+
   async drawFromDeck(amount: number) {
     if (this.isHandFull) return;
 

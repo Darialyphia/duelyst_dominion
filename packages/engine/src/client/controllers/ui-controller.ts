@@ -10,6 +10,8 @@ import { SelectSpaceOnBoardAction } from '../actions/select-space-on-board';
 import { SelectUnitAction } from '../actions/select-unit';
 import { UnselectUnitAction } from '../actions/unselect-unit';
 import { AttackAction } from '../actions/attack';
+import { PassGlobalAction } from '../actions/pass';
+import { ReplaceGlobalAction } from '../actions/replace';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
@@ -161,10 +163,8 @@ export class UiController {
 
   private buildGlobalActionRules() {
     this.globalActionRules = [
-      new CancelPlayCardGlobalAction(this.client)
-      // new CommitMinionSlotSelectionGlobalAction(this.client),
-      // new CommitCardSelectionGlobalAction(this.client),
-      // new PassGlobalAction(this.client)
+      new ReplaceGlobalAction(this.client),
+      new PassGlobalAction(this.client)
     ];
   }
 

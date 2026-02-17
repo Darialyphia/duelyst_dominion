@@ -18,19 +18,25 @@ const { data: gameInfos } = useGameInfos(
 
 <template>
   <p v-if="!me">Loading player data...</p>
-  <div v-else-if="!me?.currentGame">
+  <div v-else-if="!me?.currentGame" class="wrapper">
     You have no ongoing game.
     <RouterLink :to="{ name: 'ClientHome' }" custom v-slot="{ navigate, href }">
       <FancyButton :href="href" text="Back to Home" @click="navigate" />
     </RouterLink>
   </div>
-  <div v-else-if="me.currentGame.status === GAME_STATUS.CANCELLED">
+  <div
+    v-else-if="me.currentGame.status === GAME_STATUS.CANCELLED"
+    class="wrapper"
+  >
     The game was cancelled.
     <RouterLink :to="{ name: 'ClientHome' }" custom v-slot="{ navigate, href }">
       <FancyButton :href="href" text="Back to Home" @click="navigate" />
     </RouterLink>
   </div>
-  <div v-else-if="me.currentGame.status === GAME_STATUS.FINISHED">
+  <div
+    v-else-if="me.currentGame.status === GAME_STATUS.FINISHED"
+    class="wrapper"
+  >
     <p v-if="gameInfos?.winnerId === me.id">
       Congratulations! You won the game!
     </p>
@@ -43,3 +49,14 @@ const { data: gameInfos } = useGameInfos(
   </div>
   <PVPGame v-else :key="me?.currentGame?.id" />
 </template>
+
+<style lang="postcss" scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-3);
+  height: 100dvh;
+}
+</style>

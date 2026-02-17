@@ -118,8 +118,20 @@ export class PlayerViewModel {
     return this.data.canReplace;
   }
 
-  get canDeployGeneral() {
-    return this.data.canDeployGeneral;
+  get level() {
+    return this.data.level;
+  }
+
+  get exp() {
+    return this.data.exp;
+  }
+
+  get expToNextLevel() {
+    return this.data.expToNextLevel;
+  }
+
+  get maxLevel() {
+    return this.data.maxLevel;
   }
 
   getDiscardPile() {
@@ -144,7 +156,7 @@ export class PlayerViewModel {
       type: 'playCard',
       payload: {
         playerId: this.data.id,
-        index: index
+        id: card.id
       }
     });
   }

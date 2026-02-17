@@ -83,10 +83,14 @@ export const holyImmolation: SpellBlueprint = {
   manaCost: 4,
   getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
-    singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),
+    singleMinionTargetRules.canPlay(
+      game,
+      card,
+      c => c.isAlly(card.player) && c.isOnFrontRow
+    ),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isAlly(card.player),
+      predicate: c => c.isAlly(card.player) && c.isOnFrontRow,
       getAoe(spaces) {
         return card.blueprint.getAoe(game, card, spaces);
       }

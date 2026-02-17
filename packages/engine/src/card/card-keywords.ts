@@ -181,6 +181,12 @@ export const KEYWORDS = {
     description: "Minions attacked by this unit don't counterattack.",
     aliases: []
   },
+  LEVEL_BONUS: {
+    id: 'level-bonus',
+    name: 'Level X Bonus',
+    description: "This card has a bonus effect if its owner's Hero is at least level X.",
+    aliases: [/level [0-9] bonus/]
+  },
   LONE_WOLF: {
     id: 'lone_wolf',
     name: 'Lone wolf',

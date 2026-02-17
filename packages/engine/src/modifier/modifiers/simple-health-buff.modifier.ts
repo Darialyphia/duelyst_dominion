@@ -1,3 +1,4 @@
+import { isFunction } from '@game/shared';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
@@ -15,22 +16,35 @@ export class UnitSimpleHealthBuffModifier<T extends Unit> extends Modifier<T> {
     game: Game,
     card: AnyCard,
     options: {
-      amount: number;
-      name?: string;
+      amount: number | (() => number);
+      name?: string | (() => string);
       mixins?: ModifierMixin<T>[];
       isRemovable?: boolean;
     }
   ) {
     super(modifierType, game, card, {
       isUnique: true,
-      icon: options.amount > 0 ? 'icons/keyword-hp-buff' : 'icons/keyword-hp-debuff',
-      name: options.name ?? (options.amount > 0 ? 'Health Buff' : 'Health Debuff'),
-      description: `${options.amount > 0 ? '+' : '-'}${options.amount} Health`,
+      icon: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'keyword-hp-buff' : 'keyword-hp-debuff';
+      },
+      name: () => {
+        const name = isFunction(options.name) ? options.name() : options.name;
+        if (name) return name;
+
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'Health Buff' : 'Health Debuff';
+      },
+      description: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return `${amount > 0 ? '+' : '-'}${amount} Health`;
+      },
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'maxHp',
           interceptor: value => {
-            return value + options.amount * this.stacks;
+            const amount = isFunction(options.amount) ? options.amount() : options.amount;
+            return Math.max(0, value + amount * this._stacks);
           }
         }),
         ...(options.mixins ?? [])
@@ -45,20 +59,33 @@ export class MinionSimpleHealthBuffModifier<T extends MinionCard> extends Modifi
     game: Game,
     card: AnyCard,
     options: {
-      amount: number;
-      name?: string;
+      amount: number | (() => number);
+      name?: string | (() => string);
       mixins?: ModifierMixin<T>[];
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-hp-buff' : 'keyword-hp-debuff',
-      name: (options.name ?? options.amount > 0) ? 'Health Buff' : 'Health Debuff',
-      description: `${options.amount > 0 ? '+' : '-'}${options.amount} Health`,
+      icon: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'keyword-hp-buff' : 'keyword-hp-debuff';
+      },
+      name: () => {
+        const name = isFunction(options.name) ? options.name() : options.name;
+        if (name) return name;
+
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'Health Buff' : 'Health Debuff';
+      },
+      description: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return `${amount > 0 ? '+' : '-'}${amount} Health`;
+      },
       mixins: [
         new MinionInterceptorModifierMixin(game, {
           key: 'maxHp',
           interceptor: value => {
-            return value + options.amount * this.stacks;
+            const amount = isFunction(options.amount) ? options.amount() : options.amount;
+            return Math.max(0, value + amount * this._stacks);
           }
         }),
         ...(options.mixins ?? [])

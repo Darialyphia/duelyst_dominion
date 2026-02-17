@@ -251,7 +251,7 @@ watchEffect(() => {
                     <span class="option-title">Disable turn timers</span>
                   </label>
                   <p class="option-description">
-                    Players will have unlimited time to perform actions
+                    Players will have unlimited time to perform actions.
                   </p>
                 </div>
 
@@ -261,8 +261,7 @@ watchEffect(() => {
                     <span class="option-title">Teaching mode</span>
                   </label>
                   <p class="option-description">
-                    Both players can see each other's hand, destiny zone and
-                    destiny deck
+                    Both players can see each other's hand.
                   </p>
                 </div>
               </div>

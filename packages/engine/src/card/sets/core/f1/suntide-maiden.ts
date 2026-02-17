@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
@@ -6,11 +7,18 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
+import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
+import { MinionSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 
 export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
-  description: '@Zeal@ : fully heal this unit at the end of your turn.',
+  description: dedent`
+  @Zeal@ : fully heal this unit at the end of your turn.
+  @[lvl] 2 Bonus@: this has +1/+1/+0.
+  `,
   vfx: {
     spriteId: 'minions/f1_suntide-maiden',
     sequences: {
@@ -35,9 +43,9 @@ export const suntideMaiden: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 4,
-  atk: 3,
+  atk: 2,
   maxHp: 6,
-  retaliation: 3,
+  retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
@@ -53,6 +61,28 @@ export const suntideMaiden: MinionBlueprint = {
           })
         ]
       })
+    );
+
+    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
+    const levelMod = card.modifiers.get(LevelBonusModifier)!;
+
+    await card.modifiers.add(
+      new MinionSimpleAttackBuffModifier('suntide-maiden-lvl-bonus-atk', game, card, {
+        amount: 1,
+        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
+      })
+    );
+
+    await card.modifiers.add(
+      new MinionSimpleRetaliationBuffModifier(
+        'suntide-maiden-lvl-bonus-ret',
+        game,
+        card,
+        {
+          amount: 1,
+          mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
+        }
+      )
     );
   },
   async onPlay() {}

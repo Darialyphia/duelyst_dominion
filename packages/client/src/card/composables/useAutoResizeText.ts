@@ -3,29 +3,38 @@ import { until, useResizeObserver, unrefElement } from '@vueuse/core';
 
 export function useAutoResizeText(
   target: MaybeRefOrGetter<HTMLElement | null | undefined>,
-  options: { min: number; max: number }
+  options: { min: number; max: number; ideal: number }
 ) {
   const fontSize = ref(options.max);
 
-  const setVariableFontSize = (
-    box: HTMLElement,
-    sizeRef: Ref<number>,
-    min: number
-  ) => {
+  const setVariableFontSize = (box: HTMLElement, sizeRef: Ref<number>) => {
     const inner = box.firstChild as HTMLElement;
-    if (!inner) return;
-
     const outerHeight = box.clientHeight;
+
     let innerHeight = inner.clientHeight;
+    if (innerHeight > outerHeight) {
+      while (innerHeight > outerHeight) {
+        sizeRef.value -= 0.5;
+        box.style.fontSize = `${sizeRef.value}px`;
 
-    while (innerHeight > outerHeight) {
-      sizeRef.value -= 0.5;
-      box.style.fontSize = `${sizeRef.value}px`;
+        innerHeight = inner.clientHeight;
 
-      innerHeight = inner.clientHeight;
+        if (sizeRef.value <= options.min) {
+          box.style.fontSize = '';
+          break;
+        }
+      }
+    } else if (innerHeight < outerHeight && sizeRef.value < options.ideal) {
+      while (innerHeight < outerHeight) {
+        sizeRef.value += 0.5;
+        box.style.fontSize = `${sizeRef.value}px`;
 
-      if (sizeRef.value <= min) {
-        break;
+        innerHeight = inner.clientHeight;
+
+        if (sizeRef.value >= options.max) {
+          box.style.fontSize = '';
+          break;
+        }
       }
     }
   };
@@ -34,12 +43,12 @@ export function useAutoResizeText(
     .toBeTruthy()
     .then(el => {
       const box = el as HTMLElement;
-      setVariableFontSize(box, fontSize, options.min);
+      setVariableFontSize(box, fontSize);
 
       const child = box.firstChild as HTMLElement;
       if (child) {
         useResizeObserver(child, () => {
-          setVariableFontSize(box, fontSize, options.min);
+          setVariableFontSize(box, fontSize);
         });
       }
     });

@@ -1,4 +1,5 @@
 import type { Values } from '@game/shared';
+import { P } from 'ts-pattern';
 
 export const PLAYER_EVENTS = {
   PLAYER_BEFORE_DRAW: 'player:before_draw',
@@ -18,7 +19,9 @@ export const PLAYER_EVENTS = {
   PLAYER_BEFORE_TAKE_DAMAGE: 'player:before_player_take_damage',
   PLAYER_AFTER_TAKE_DAMAGE: 'player:after_player_take_damage',
   PLAYER_BEFORE_HEAL: 'player:before_player_heal',
-  PLAYER_AFTER_HEAL: 'player:after_player_heal'
+  PLAYER_AFTER_HEAL: 'player:after_player_heal',
+  PLAYER_LEVEL_UP: 'player:level_up',
+  PLAYER_GAIN_EXP: 'player:gain_exp'
 } as const;
 export type PlayerEvent = Values<typeof PLAYER_EVENTS>;
 

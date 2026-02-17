@@ -42,6 +42,12 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
           </div>
           {{ player.name }}
         </div>
+        <div class="flex gap-3">
+          <div>Lvl {{ player.level }}</div>
+          <div v-if="player.level < player.maxLevel">
+            EXP {{ player.exp }}/{{ state.config.EXP_PER_LEVEL }}
+          </div>
+        </div>
         <div class="flex gap-2 text-1">
           <DiscardPile :player="player" />
           <UiSimpleTooltip>
@@ -97,8 +103,8 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 <style scoped lang="postcss">
 .p2-infos {
   position: fixed;
-  top: var(--size-9);
-  right: var(--size-13);
+  top: min(var(--size-9), 5vh);
+  right: min(var(--size-13), 8vw);
   color: white;
   font-weight: bold;
   display: flex;

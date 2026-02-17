@@ -6,14 +6,17 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { BackstabUnitModifier } from '../../../../modifier/modifiers/backstab.modifier';
-import { GAME_EVENTS } from '../../../../game/game.events';
 import { lightOverlay } from '../../../card-vfx-sequences';
+import dedent from 'dedent';
+import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 
 export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
-  description:
-    'Give an allied minion +3 Attack. If it has @Backstab@, give it +2 Health as well.',
+  description: dedent`
+    Give an allied minion +2 Attack. If it has @Backstab@, give it +2 Health as well.
+    @[lvl] 2 bonus@: Give it +3 Attack instead, and +2 Health regardless of Backstab.
+  `,
   vfx: {
     spriteId: 'spells/f2_killing-edge',
     sequences: {
@@ -80,19 +83,22 @@ export const killingEdge: SpellBlueprint = {
       }
     });
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
+  },
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
+    const levelMod = card.modifiers.get(LevelBonusModifier)!;
 
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('killing-edge-attack-buff', game, card, {
         name: 'Killing Edge Attack Buff',
-        amount: 3
+        amount: levelMod.isActive ? 3 : 2
       })
     );
 
-    if (target.modifiers.has(BackstabUnitModifier)) {
+    if (target.modifiers.has(BackstabUnitModifier) || levelMod.isActive) {
       await target.modifiers.add(
         new UnitSimpleHealthBuffModifier('killing-edge-hp-buff', game, card, {
           name: 'Killing Edge Health Buff',

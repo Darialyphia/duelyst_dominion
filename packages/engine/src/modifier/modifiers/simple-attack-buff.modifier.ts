@@ -1,3 +1,4 @@
+import { isFunction } from '@game/shared';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { Game } from '../../game/game';
@@ -15,23 +16,35 @@ export class UnitSimpleAttackBuffModifier<T extends Unit> extends Modifier<T> {
     game: Game,
     card: AnyCard,
     options: {
-      amount: number;
-      name?: string;
+      amount: number | (() => number);
+      name?: string | (() => string);
       mixins?: ModifierMixin<T>[];
       isRemovable?: boolean;
     }
   ) {
     super(modifierType, game, card, {
-      icon:
-        options.amount > 0 ? 'icons/keyword-attack-buff' : 'icons/keyword-attack-debuff',
-      name: options.name ?? (options.amount > 0 ? 'Attack Buff' : 'Attack Debuff'),
-      description: `${options.amount > 0 ? '+' : '-'}${options.amount} Attack`,
+      icon: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'keyword-attack-buff' : 'keyword-attack-debuff';
+      },
+      name: () => {
+        const name = isFunction(options.name) ? options.name() : options.name;
+        if (name) return name;
+
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'Attack Buff' : 'Attack Debuff';
+      },
+      description: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return `${amount > 0 ? '+' : '-'}${options.amount} Attack`;
+      },
       isUnique: true,
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'atk',
           interceptor: value => {
-            return value + options.amount * this.stacks;
+            const amount = isFunction(options.amount) ? options.amount() : options.amount;
+            return Math.max(0, value + amount * this._stacks);
           }
         }),
         ...(options.mixins ?? [])
@@ -46,20 +59,29 @@ export class MinionSimpleAttackBuffModifier<T extends MinionCard> extends Modifi
     game: Game,
     card: AnyCard,
     options: {
-      amount: number;
-      name?: string;
+      amount: number | (() => number);
+      name?: string | (() => string);
       mixins?: ModifierMixin<T>[];
     }
   ) {
     super(modifierType, game, card, {
-      icon: options.amount > 0 ? 'keyword-attack-buff' : 'keyword-attack-debuff',
-      name: (options.name ?? options.amount > 0) ? 'Attack Buff' : 'Attack Debuff',
-      description: `${options.amount > 0 ? '+' : '-'}${options.amount} Attack`,
+      name: () => {
+        const name = isFunction(options.name) ? options.name() : options.name;
+        if (name) return name;
+
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return amount > 0 ? 'Attack Buff' : 'Attack Debuff';
+      },
+      description: () => {
+        const amount = isFunction(options.amount) ? options.amount() : options.amount;
+        return `${amount > 0 ? '+' : '-'}${amount} Attack`;
+      },
       mixins: [
         new MinionInterceptorModifierMixin(game, {
           key: 'atk',
           interceptor: value => {
-            return value + options.amount * this.stacks;
+            const amount = isFunction(options.amount) ? options.amount() : options.amount;
+            return value + amount * this.stacks;
           }
         }),
         ...(options.mixins ?? [])

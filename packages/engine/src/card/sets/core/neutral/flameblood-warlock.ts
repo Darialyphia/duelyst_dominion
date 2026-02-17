@@ -9,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const flamebloodWarlock: MinionBlueprint = {
   id: 'flameblood-warlock',
   name: 'Flameblood Warlock',
-  description: '@On Enter@: Deal 2 damage to all generals.',
+  description: '@On Enter@: Deal 2 damage to all players.',
   vfx: {
     spriteId: 'minions/neutral_flameblood-warlock',
     sequences: {
