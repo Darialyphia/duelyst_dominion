@@ -112,7 +112,7 @@ export class GameSerializer {
     return result;
   }
 
-  diffSnapshotsWithPatches(
+  diffSnapshots(
     state: SerializedOmniscientState,
     prevState: SerializedOmniscientState
   ): PatchBasedSnapshotDiff {
@@ -208,7 +208,6 @@ export class GameSerializer {
   ): SerializedPlayerState {
     const state = this.serializeOmniscientState();
 
-    // Remove entities that the player shouldn't have access to in order to prevent cheating
     const hasBeenPlayed = (cardId: string) => {
       if (state.interaction.ctx.player === playerId) {
         // add card from choices since they could come from a hidden source (like deck or opponent's hand)
@@ -262,33 +261,5 @@ export class GameSerializer {
     });
 
     return state;
-  }
-
-  diffSnapshots(
-    state: SerializedOmniscientState,
-    prevState: SerializedOmniscientState
-  ): SnapshotDiff {
-    const entities: EntityDiffDictionary = {};
-    for (const [key, entity] of Object.entries(state.entities)) {
-      entities[key] = this.getObjectDiff(entity, prevState.entities[key]);
-    }
-    return {
-      entities,
-      removedEntities: Object.keys(prevState.entities).filter(
-        key => !(key in state.entities)
-      ),
-      addedEntities: Object.keys(state.entities).filter(
-        key => !(key in prevState.entities)
-      ),
-      config: this.getObjectDiff(state.config, prevState.config),
-      phase: state.phase,
-      interaction: state.interaction,
-      board: this.getObjectDiff(state.board, prevState.board),
-      turnCount: state.turnCount - prevState.turnCount,
-      turnPlayer: state.turnPlayer,
-      players: state.players,
-      tiles: state.tiles,
-      units: state.units
-    };
   }
 }

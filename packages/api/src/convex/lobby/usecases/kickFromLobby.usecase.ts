@@ -20,7 +20,7 @@ export class KickFromLobbyUseCase {
 
   async execute(input: KickFromLobbyInput): Promise<KickFromLobbyOutput> {
     const lobbyUser = await this.ctx.lobbyUserRepo.getByUserId(input.userId);
-    if (!lobbyUser) return { success: true };
+    if (!lobbyUser || !lobbyUser.length) return { success: true };
 
     const lobby = await this.ctx.lobbyRepo.getById(lobbyUser[0].lobbyId);
     if (!lobby) return { success: true };

@@ -250,7 +250,6 @@ export class Room {
       this.callbackSubscriptionsBysocket.set(playerSocket, []);
     }
     const onInput = async (input: SerializedInput) => {
-      console.log(input);
       input.payload.playerId = playerSocket.data.user.id; // Ensure playerId is set correctly to prevent cheating
       await this.engine.inputSystem.dispatch(input);
     };

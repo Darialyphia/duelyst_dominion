@@ -7,8 +7,7 @@ import { type BetterOmit, type IndexedRecord, type Serializable } from '@game/sh
 import {
   GameSnapshotSystem,
   type GameStateSnapshot,
-  type PatchBasedSnapshotDiff,
-  type SnapshotDiff
+  type PatchBasedSnapshotDiff
 } from './systems/game-snapshot.system';
 import { PlayerSystem } from '../player/player.system';
 import { GAME_EVENTS, GameReadyEvent, type GameEventMap } from './game.events';
@@ -199,7 +198,7 @@ export class Game implements Serializable<SerializedGame> {
 
   subscribeOmniscient(cb: (snapshot: GameStateSnapshot<PatchBasedSnapshotDiff>) => void) {
     this.on(GAME_EVENTS.NEW_SNAPSHOT, e =>
-      cb(this.snapshotSystem.getOmniscientPatchDiffSnapshotAt(e.data.id))
+      cb(this.snapshotSystem.getOmniscientDiffSnapshotAt(e.data.id))
     );
   }
 
@@ -208,7 +207,7 @@ export class Game implements Serializable<SerializedGame> {
     cb: (snapshot: GameStateSnapshot<PatchBasedSnapshotDiff>) => void
   ) {
     this.on(GAME_EVENTS.NEW_SNAPSHOT, e =>
-      cb(this.snapshotSystem.getPatchDiffSnapshotForPlayerAt(e.data.id, id))
+      cb(this.snapshotSystem.getDiffSnapshotForPlayerAt(e.data.id, id))
     );
   }
 
