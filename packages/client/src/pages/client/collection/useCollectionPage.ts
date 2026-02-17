@@ -48,7 +48,8 @@ export const provideCollectionPage = () => {
     hasFactionFilter,
     toggleFactionFilter,
     clearFactionFilter,
-    textFilter
+    textFilter,
+    includeUnowned
   } = provideCardList();
 
   const { data: decks, isLoading: isLoadingDecks } = useDecks();
@@ -135,6 +136,7 @@ export const provideCollectionPage = () => {
     hasFactionFilter,
     toggleFactionFilter,
     clearFactionFilter,
+    includeUnowned,
     textFilter,
     viewMode,
     isEditingDeck,

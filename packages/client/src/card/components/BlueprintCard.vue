@@ -5,11 +5,6 @@ import { sprites } from '@/assets';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
 const sprite = computed(() => {
-  console.log(
-    blueprint.vfx.spriteId,
-    sprites[`cards/${blueprint.vfx.spriteId}`],
-    sprites
-  );
   return sprites[`cards/${blueprint.vfx.spriteId}`];
 });
 </script>

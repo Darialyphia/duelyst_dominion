@@ -10,6 +10,7 @@ import { uppercaseFirstLetter } from '@game/shared';
 import { useCollectionPage } from './useCollectionPage';
 import { assets } from '@/assets';
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from 'reka-ui';
+import UiSwitch from '@/ui/components/UiSwitch.vue';
 
 const {
   textFilter,
@@ -18,7 +19,8 @@ const {
   hasFactionFilter,
   toggleFactionFilter,
   clearFactionFilter,
-  cardScale
+  cardScale,
+  includeUnowned
 } = useCollectionPage();
 
 const cardKinds: Array<{
@@ -72,6 +74,10 @@ const factions: Array<{
           </SliderTrack>
           <SliderThumb class="card-scale-thumb" />
         </SliderRoot>
+      </div>
+      <div class="filter-title flex gap-3 items-center">
+        <UiSwitch v-model="includeUnowned" />
+        Include unowned cards
       </div>
     </section>
 

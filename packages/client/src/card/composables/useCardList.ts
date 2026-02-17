@@ -10,7 +10,7 @@ import {
 import { CARD_SET_DICTIONARY } from '@game/engine/src/card/sets';
 import { isString } from '@game/shared';
 import type { Ref, ComputedRef, InjectionKey } from 'vue';
-import { api } from '@game/api';
+import { api, type CardId } from '@game/api';
 import { useAuthedQuery } from '@/auth/composables/useAuth';
 
 export type CardListContext = {
@@ -24,6 +24,7 @@ export type CardListContext = {
       copiesOwned: number;
     }>
   >;
+  includeUnowned: Ref<boolean>;
   cardPool: CardBlueprint[];
   textFilter: Ref<string, string>;
 
@@ -59,13 +60,33 @@ export const provideCardList = () => {
   const kindFilter = ref(new Set<CardKind>());
   const factionFilter = ref(new Set<Faction>());
   const textFilter = ref('');
+  const includeUnowned = ref(false);
 
   const allBlueprints = Object.values(CARD_SET_DICTIONARY).flatMap(
     set => set.cards
   );
   const cards = computed(() => {
     if (!myCollection.value) return [];
-    return myCollection.value
+
+    const base = includeUnowned.value
+      ? myCollection.value.concat(
+          allBlueprints
+            .filter(bp => {
+              return (
+                bp.collectable &&
+                !myCollection.value!.some(c => c.blueprintId === bp.id)
+              );
+            })
+            .map(bp => ({
+              id: `unowned-${bp.id}` as CardId,
+              blueprintId: bp.id,
+              isFoil: false,
+              copiesOwned: 0
+            }))
+        )
+      : myCollection.value;
+
+    return base
       .map(c => {
         return {
           ...c,
@@ -148,6 +169,7 @@ export const provideCardList = () => {
     cards,
     cardPool: allBlueprints,
     textFilter,
+    includeUnowned,
 
     hasKindFilter(kind: CardKind) {
       return kindFilter.value.has(kind);
