@@ -14,6 +14,7 @@ import type { GameId } from '../../game/entities/game.entity';
 import type { GameReadRepository } from '../../game/repositories/game.repository';
 import type { LobbyId } from '../../lobby/entities/lobby.entity';
 import type { LobbyReadRepository } from '../../lobby/repositories/lobby.repository';
+import type { WalletReadRepository } from '../../currency/repositories/wallet-read.repository';
 
 export interface LoginInput {
   email: Email;
@@ -36,6 +37,10 @@ export interface GetSessionUserput {
     options: { teachingMode: boolean };
   }>;
   currentLobby: Nullable<{ id: LobbyId; name: string }>;
+  wallet: {
+    gold: number;
+    craftingShards: number;
+  };
 }
 
 export class GetSessionUserUseCase implements UseCase<never, GetSessionUserput> {
@@ -49,6 +54,7 @@ export class GetSessionUserUseCase implements UseCase<never, GetSessionUserput> 
       session: AuthSession | null;
       gameReadRepo: GameReadRepository;
       lobbyReadRepo: LobbyReadRepository;
+      walletReadRepo: WalletReadRepository;
     }
   ) {}
 
@@ -64,11 +70,14 @@ export class GetSessionUserUseCase implements UseCase<never, GetSessionUserput> 
     const currentGame = await this.ctx.gameReadRepo.getByUserId(user._id);
 
     const currentLobby = await this.ctx.lobbyReadRepo.getByUserId(user._id);
+    const wallet = await this.ctx.walletReadRepo.getBalances(user._id);
+
     return {
       sessionId: this.ctx.session!._id,
       id: user._id,
       username: user.username,
       mmr: user.mmr,
+      wallet,
       currentJoinedMatchmaking: matchmaking
         ? {
             id: matchmaking._id,

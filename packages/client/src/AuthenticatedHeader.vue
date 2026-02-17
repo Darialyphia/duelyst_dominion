@@ -2,18 +2,25 @@
 import { useLogout } from './auth/composables/useLogout';
 import { useMe } from './auth/composables/useMe';
 import { useLeaveMatchmaking } from '@/matchmaking/composables';
-import { useAuthedMutation, useAuthedQuery } from '@/auth/composables/useAuth';
+import { useAuthedQuery } from '@/auth/composables/useAuth';
 import MatchmakingTimer from './matchmaking/components/MatchmakingTimer.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import { api, GIFT_STATES } from '@game/api';
+import PlayerBadge from './player/components/PlayerBadge.vue';
+import GodlIcon from './player/components/GodlIcon.vue';
+import { type RouterLinkProps } from 'vue-router';
+import CraftignShardIcon from './player/components/CraftignShardIcon.vue';
+import { useLeaveLobby } from './lobby/composables/useLobby';
+import { Icon } from '@iconify/vue';
 
+const { backTo = { name: 'ClientHome' } } = defineProps<{
+  backTo?: RouterLinkProps['to'];
+}>();
 const { mutate: logout } = useLogout();
 const { data: me } = useMe();
 const { mutate: leaveMatchmaking, isLoading: isLeavingMatchmaking } =
   useLeaveMatchmaking();
-const { mutate: leaveLobby, isLoading: isLeavingLobby } = useAuthedMutation(
-  api.lobbies.leave
-);
+const { mutate: leaveLobby, isLoading: isLeavingLobby } = useLeaveLobby();
 
 const { data: gifts } = useAuthedQuery(api.gifts.list, {});
 
@@ -32,7 +39,7 @@ const router = useRouter();
       v-if="router.currentRoute.value.name !== 'ClientHome'"
       text="Back"
       size="md"
-      @click="router.go(-1)"
+      :to="backTo"
     />
     <div class="welcome-section">
       <div v-if="me?.currentJoinedMatchmaking" class="matchmaking-status">
@@ -74,30 +81,51 @@ const router = useRouter();
     <nav class="ml-auto">
       <ul class="flex gap-4">
         <li>
-          <RouterLink :to="{ name: 'SelectMode' }">Play</RouterLink>
+          <RouterLink :to="{ name: 'SelectMode' }">
+            <Icon icon="material-symbols:swords-outline" width="1.5rem" />
+            Play
+          </RouterLink>
+        </li>
+        <li class="hot">
+          <RouterLink :to="{ name: 'Shop' }">
+            <Icon icon="solar:shop-2-bold" width="1.5rem" />
+            Shop
+          </RouterLink>
         </li>
         <li>
-          <RouterLink :to="{ name: 'Collection' }">Collection</RouterLink>
+          <RouterLink :to="{ name: 'Collection' }">
+            <Icon
+              icon="material-symbols-light:book-ribbon-rounded"
+              width="1.5rem"
+            />
+            Collection
+          </RouterLink>
         </li>
         <li>
           <RouterLink :to="{ name: 'Gifts' }">
+            <Icon icon="ant-design:gift-outlined" width="1.5rem" />
             Gifts
-            <span
-              v-if="unclaimedGiftsCount > 0"
-              class="ml-1 px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded-full"
-            >
+            <span v-if="unclaimedGiftsCount > 0" class="gift-chip">
               {{ unclaimedGiftsCount }}
             </span>
           </RouterLink>
         </li>
         <li>
-          <RouterLink :to="{ name: 'TutorialHome' }">How To Play</RouterLink>
-        </li>
-        <li>
-          <button @click="logout({})">Logout</button>
+          <button @click="logout({})">
+            <Icon icon="material-symbols:logout" width="1.5rem" />
+            Logout
+          </button>
         </li>
       </ul>
     </nav>
+
+    <div class="currencies" v-if="me">
+      <GodlIcon />
+      {{ me.wallet.gold }}
+      <CraftignShardIcon />
+      {{ me.wallet.craftingShards }}
+    </div>
+    <PlayerBadge v-if="me" :name="me.username" />
   </header>
 </template>
 
@@ -155,21 +183,64 @@ const router = useRouter();
 
 li {
   border-radius: var(--radius-2);
-  font-weight: var(--font-weight-5);
   display: grid;
 }
 
-li a {
+li > :is(a, button) {
   padding: var(--size-3);
+  text-align: center;
+  display: flex;
+  gap: var(--size-2);
 }
 
 li:hover {
   background: hsl(40 60% 60% / 0.15);
 }
 
+li.hot {
+  position: relative;
+  &::after {
+    content: 'HOT!';
+    position: absolute;
+    top: var(--size-2);
+    right: 0;
+    transform: translate(50%, -50%);
+    background-color: var(--red-8);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: var(--font-weight-7);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-2);
+  }
+}
+
 @media (max-width: 768px) {
   .welcome-section {
     display: none;
   }
+}
+
+.gift-chip {
+  margin-left: var(--size-1);
+  padding-left: var(--size-2);
+  padding-right: var(--size-2);
+  padding-top: var(--size-05);
+  padding-bottom: var(--size-05);
+  font-size: var(--font-size-0);
+  font-weight: 500;
+  background-color: var(--red-8);
+  color: white;
+  border-radius: var(--radius-round);
+}
+
+.currencies {
+  --pixel-scale: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  font-weight: var(--font-weight-3);
+  padding: var(--size-2) var(--size-3);
+  border-left: 1px solid #9f938f;
+  border-right: 1px solid #9f938f;
 }
 </style>

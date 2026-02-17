@@ -6,6 +6,15 @@ export { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from './convex/auth/auth.con
 export { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from './convex/users/username';
 export type { DeckId } from './convex/deck/entities/deck.entity';
 export type { CardId } from './convex/card/entities/card.entity';
+export type { BoosterPackId } from './convex/card/entities/booster-pack.entity';
+export {
+  BOOSTER_PACKS_CATALOG,
+  type BoosterPackCatalogEntry,
+  CRAFTING_COST_PER_RARITY,
+  DECRAFTING_REWARD_PER_RARITY,
+  FOIL_DECRAFTING_REWARD_MULTIPLIER,
+  FOIL_CRAFTING_COST_MULTIPLIER
+} from './convex/card/card.constants';
 export type { MatchmakingId } from './convex/matchmaking/entities/matchmaking.entity';
 export type { UserId } from './convex/users/entities/user.entity';
 export { GAME_STATUS, type GameStatus } from './convex/game/game.constants';
@@ -25,3 +34,14 @@ export {
   GIFT_STATES,
   type GiftState
 } from './convex/gift/gift.constants';
+export type { WalletId } from './convex/currency/entities/wallet.entity';
+export type { TransactionId } from './convex/currency/entities/transaction.entity';
+export type { CurrencyTransaction } from './convex/currency/entities/transaction.entity';
+export {
+  CURRENCY_SOURCES,
+  CURRENCY_TYPES,
+  CURRENCY_REWARDS,
+  type CurrencySource,
+  type CurrencyType
+} from './convex/currency/currency.constants';
+export type { OpenBoosterPackOutput } from './convex/card/usecases/openBoosterPack.usecase';

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { CARD_KINDS, RARITIES } from '@game/engine/src/card/card.enums';
+import { RARITIES } from '@game/engine/src/card/card.enums';
 import BlueprintCard from './BlueprintCard.vue';
 import {
   provideBoosterPack,
   type BoosterPackCardEntry
 } from '../composables/useBoosterPack';
-import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 
 const props = defineProps<{
   cards: BoosterPackCardEntry[];
@@ -53,13 +52,6 @@ const cardsWithParticles = computed(() => {
     };
   });
 });
-
-const getAnimationSequence = (card: CardBlueprint) => {
-  if (card.kind === CARD_KINDS.GENERAL || card.kind === CARD_KINDS.MINION) {
-    return ['breathing'];
-  }
-  return ['default'];
-};
 </script>
 
 <template>
@@ -96,9 +88,7 @@ const getAnimationSequence = (card: CardBlueprint) => {
               class="booster-card"
               :class="`booster-card-${card.blueprint.rarity.toLocaleLowerCase()}`"
               :blueprint="card.blueprint"
-              :is-tiltable="false"
               :is-foil="isRevealed(index) ? card.isFoil : false"
-              :animation-sequence="getAnimationSequence(card.blueprint)"
             />
 
             <div class="god-rays" />
@@ -123,10 +113,12 @@ const getAnimationSequence = (card: CardBlueprint) => {
         </Transition>
         <Transition name="done">
           <div
-            v-if="dealingStatus === 'done' && allRevealed"
+            v-if="
+              !cardStyles.length || (dealingStatus === 'done' && allRevealed)
+            "
             class="absolute bottom-7"
           >
-            <slot name="done"></slot>
+            <slot name="done" :dealing-status="dealingStatus"></slot>
           </div>
         </Transition>
       </div>
@@ -171,8 +163,6 @@ const getAnimationSequence = (card: CardBlueprint) => {
   align-items: center;
   min-height: 800px; /* Ensure enough space */
   max-width: 100vw;
-  background: url(@/assets/backgrounds/booster-opening.png) center/cover
-    no-repeat;
 
   &.is-shaking::after {
     content: '';

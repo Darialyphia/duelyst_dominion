@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { useAuthedQuery } from '@/auth/composables/useAuth';
 import AuthenticatedHeader from '@/AuthenticatedHeader.vue';
-import BoosterPackContent from '@/card/components/BoosterPackContent.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import UiButton from '@/ui/components/UiButton.vue';
 import { api, GIFT_STATES } from '@game/api';
-import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
-import { StandardBoosterPack } from '@game/engine/src/card/booster/standard.booster-pack';
-import { coreSet } from '@game/engine/src/card/sets/core.set';
-import type { BoosterPackOptions } from '@game/engine/src/card/booster/booster';
+import { useMe } from '@/auth/composables/useMe';
 
 definePage({
   name: 'ClientHome',
@@ -25,69 +21,32 @@ const unclaimedGiftsCount = computed(() => {
   );
 });
 
-const packs = ref<Array<{ blueprintId: string; isFoil: boolean }[]>>([]);
-const currentPackContent = computed(() => {
-  if (!packs.value.length) return null;
-  return packs.value[0].map(card => ({
-    blueprint: CARDS_DICTIONARY[card.blueprintId],
-    isFoil: card.isFoil
-  }));
-});
-const isOpeningPacks = ref(false);
-const boosterPackFactory = new StandardBoosterPack(coreSet.cards);
-const packOptions: BoosterPackOptions = {
-  packSize: 5,
-  blueprintWeightModifier: () => 1,
-  rarityWeightModifier: () => 1
-};
+const { data: me } = useMe();
+const { data: unopenedPacks, isLoading: isLoadingUnopenedPacks } =
+  useAuthedQuery(api.cards.unopenedPacks, {});
 </script>
 
 <template>
   <div class="client-home-page">
-    <AuthenticatedHeader v-if="!isOpeningPacks" />
-    <div class="surface gifts-notification" v-if="unclaimedGiftsCount > 0">
-      You have some unclaimed gifts waiting for you !
-      <UiButton :to="{ name: 'Gifts' }" class="primary-button">
-        View Gifts
-      </UiButton>
-    </div>
+    <AuthenticatedHeader />
+    <div class="container">
+      <div class="surface gifts-notification" v-if="unclaimedGiftsCount > 0">
+        You have some unclaimed gifts waiting for you !
+        <UiButton :to="{ name: 'Gifts' }" class="primary-button">
+          View Gifts
+        </UiButton>
+      </div>
+      <p v-else>You do not have any gift</p>
 
-    <BoosterPackContent
-      v-if="isOpeningPacks && currentPackContent"
-      :cards="currentPackContent"
-      class="h-screen"
-    >
-      <template #done>
+      <template v-if="me">
+        <p v-if="isLoadingUnopenedPacks">Loading unopened packs...</p>
+        <p v-else-if="!unopenedPacks.packs.length">You have no pack to open</p>
         <FancyButton
-          class="primary-button"
-          size="lg"
-          :text="
-            packs.length > 1
-              ? `Next Pack (${packs.length - 1} remaining)`
-              : 'Done'
-          "
-          @click="
-            packs.shift();
-            if (packs.length === 0) {
-              isOpeningPacks = false;
-            }
-          "
+          v-else
+          :text="`Open packs (${unopenedPacks.packs.length})`"
+          :to="{ name: 'Boosters' }"
         />
       </template>
-    </BoosterPackContent>
-
-    <div class="flex justify-center gap-5 mt-5" v-else>
-      <FancyButton
-        text="Buy Pack"
-        size="lg"
-        @click="packs.push(boosterPackFactory.getContents(packOptions))"
-      />
-      <FancyButton
-        :text="`Open Packs (${packs.length})`"
-        size="lg"
-        :disabled="packs.length === 0"
-        @click="isOpeningPacks = true"
-      />
     </div>
   </div>
 </template>
