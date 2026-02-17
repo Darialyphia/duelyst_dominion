@@ -5,7 +5,6 @@ import { api, type GameId, type UserId } from '@game/api';
 import type { Redis } from '@upstash/redis';
 import { REDIS_KEYS } from './redis';
 import type { SerializedInput } from '@game/engine/src/input/input-system';
-import type { Game } from '@game/engine';
 
 export class RoomManager {
   static INJECTION_KEY = 'roomManager' as const;
@@ -41,7 +40,7 @@ export class RoomManager {
         if (room) {
           await room.join(socket, type);
         } else {
-          socket.emit('error', 'Room not found');
+          socket.emit('error', 'Room not found lalalala');
         }
       });
     });

@@ -96,7 +96,6 @@ export class Game implements Serializable<SerializedGame> {
     this.isSimulation = options.isSimulation ?? false;
     this.cardPool = options.overrides.cardPool ?? CARDS_DICTIONARY;
     this.tilesPool = options.overrides.tilesPool ?? TILES_DICTIONARY;
-    console.log(this.cardPool);
   }
 
   async initialize() {
@@ -240,7 +239,10 @@ export class Game implements Serializable<SerializedGame> {
   }
 
   get winCondition() {
-    return this.options.overrides.winCondition ?? ((game, player) => false);
+    return (
+      this.options.overrides.winCondition ??
+      ((game, player) => player.opponent.remainingHp === 0)
+    );
   }
   // clone(id: number) {
   //   const game = new Game({

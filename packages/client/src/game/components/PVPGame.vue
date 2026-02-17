@@ -55,7 +55,17 @@ socket.value.on('clockUpdate', updatedClocks => {
     }"
   >
     <template #menu>
-      <FancyButton text="Surrender" variant="error" class="w-full" />
+      <FancyButton
+        text="Surrender"
+        variant="error"
+        class="w-full"
+        @click="
+          networkAdapter.dispatch({
+            type: 'surrender',
+            payload: { playerId: me.id }
+          })
+        "
+      />
     </template>
   </GameBoard>
   <p v-else>Waiting for initial state...</p>
