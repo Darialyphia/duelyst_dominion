@@ -1,4 +1,4 @@
-import { isDefined, type Point } from '@game/shared';
+import { type Point } from '@game/shared';
 import type { AOEShape } from './aoe-shape';
 import type { TargetingType } from './aoe.enums';
 
@@ -8,12 +8,14 @@ export type SerializedRingAOE = {
   params: {
     override: Point | null;
     includeCenter: boolean;
+    includeDiagonals: boolean;
   };
 };
 
 type RingAoeShapeOptions = {
   override?: Point;
   includeCenter?: boolean;
+  includeDiagonals?: boolean;
 };
 
 export class RingAOEShape implements AOEShape<SerializedRingAOE> {
@@ -34,7 +36,8 @@ export class RingAOEShape implements AOEShape<SerializedRingAOE> {
       targetingType: this.targetingType,
       params: {
         override: this.options.override ?? null,
-        includeCenter: this.options.includeCenter ?? false
+        includeCenter: this.options.includeCenter ?? false,
+        includeDiagonals: this.options.includeDiagonals ?? false
       }
     };
   }
@@ -46,6 +49,7 @@ export class RingAOEShape implements AOEShape<SerializedRingAOE> {
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         if (!this.options.includeCenter && dx === 0 && dy === 0) continue;
+        if (!this.options.includeDiagonals && Math.abs(dx) === Math.abs(dy)) continue;
 
         const newPoint = { x: center.x + dx, y: center.y + dy };
         area.push(newPoint);

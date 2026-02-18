@@ -1,4 +1,4 @@
-import { RingAOEShape } from '../../../../aoe/ring.aoe-shape';
+import { ColumnAOEShape } from '../../../../aoe/column.aoe-shape';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
@@ -9,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
-  description: '@On Enter@: Deal 2 damage to all nearby units.',
+  description: '@On Enter@: Deal 2 damage to other units in the same column as this.',
   vfx: {
     spriteId: 'minions/neutral_frostbone-naga',
     sequences: {
@@ -38,7 +38,10 @@ export const frostboneNaga: MinionBlueprint = {
   maxHp: 4,
   retaliation: 1,
   getTargets: () => Promise.resolve([]),
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.UNIT, {}),
+  getAoe: game =>
+    new ColumnAOEShape(TARGETING_TYPE.UNIT, {
+      height: game.boardSystem.map.rows
+    }),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

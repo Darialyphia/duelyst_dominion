@@ -9,8 +9,7 @@ import { lightOverlay } from '../../../card-vfx-sequences';
 export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
-  description:
-    'Deal 3 damage to an enemy. If it dies, add a @Phoenix Fire@ to your hand.',
+  description: 'Deal 3 damage to an enemy and 1 damage to adjacent units.',
   vfx: {
     spriteId: 'spells/f2_phoenix-fire',
     sequences: {
@@ -70,8 +69,8 @@ export const phoenixFire: SpellBlueprint = {
   getTargets(game, card) {
     return singleEnemyTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isEnemy(card.player),
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
+      getAoe(targets) {
+        return card.getAOE(targets);
       }
     });
   },
@@ -81,9 +80,5 @@ export const phoenixFire: SpellBlueprint = {
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
-    if (target.isAlive) return;
-
-    const phoenixFireCard = await card.player.generateCard('phoenix-fire', card.isFoil);
-    await phoenixFireCard.addToHand();
   }
 };

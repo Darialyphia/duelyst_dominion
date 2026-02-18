@@ -9,7 +9,6 @@ export type SerializedColumnAOE = {
 };
 
 type ColumnAoeShapeOptions = {
-  width: number;
   height: number;
   columnOverride?: number;
 };
@@ -44,7 +43,6 @@ export class ColumnAOEShape implements AOEShape<SerializedColumnAOE> {
     for (let y = 0; y < this.options.height; y++) {
       area.push({ x, y });
     }
-
     return area;
   }
 }

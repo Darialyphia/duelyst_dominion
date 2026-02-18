@@ -8,10 +8,7 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { Unit } from '../../unit/unit.entity';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
-import {
-  InterceptorModifierMixin,
-  UnitInterceptorModifierMixin
-} from '../mixins/interceptor.mixin';
+import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
 import { isDefined } from '@game/shared';
@@ -49,7 +46,7 @@ export class ElusiveUnitModifier extends Modifier<Unit> {
     super(options.modifierType ?? KEYWORDS.ELUSIVE.id, game, source, {
       name: KEYWORDS.ELUSIVE.name,
       description: KEYWORDS.ELUSIVE.description,
-      icon: 'icons/keyword-locked',
+      icon: 'icons/keyword-elusive',
       mixins: [
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,

@@ -64,6 +64,7 @@ const { playerId } = useGameClient();
   grid-template-rows: 1fr 1fr 1fr;
   grid-auto-flow: column;
   direction: rtl;
+  transform: translateZ(0px);
 }
 
 .modifier-image {

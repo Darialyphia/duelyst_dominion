@@ -81,7 +81,7 @@ export const holyImmolation: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 4,
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
+  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { includeDiagonals: true }),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(
       game,
