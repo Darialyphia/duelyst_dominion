@@ -41,7 +41,7 @@ export const archonSpellbinder: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 6,
-  atk: 5,
+  atk: 4,
   maxHp: 7,
   retaliation: 3,
   getTargets: () => Promise.resolve([]),

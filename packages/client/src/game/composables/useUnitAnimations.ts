@@ -30,13 +30,14 @@ export function useUnitAnimations({
   );
 
   const animationSequence = ref([defaultAnimation.value]);
-
+  const repeat = ref(true);
   const { activeFrameRect, bgPosition, imageBg, ...spriteControls } = useSprite(
     {
       animationSequence: computed(() => animationSequence.value),
       sprite: spriteData,
       kind: computed(() => unit.getCard().kind),
-      scale: 1
+      scale: 1,
+      repeat: true
     }
   );
 
@@ -251,11 +252,9 @@ export function useUnitAnimations({
     if (event.unit !== unit.id) return;
 
     return new Promise<void>(resolve => {
-      isAttacking.value = true;
+      repeat.value = false;
       animationSequence.value = [ANIMATIONS_NAMES.DEATH];
       const unsub = spriteControls.on('sequenceEnd', () => {
-        animationSequence.value = [defaultAnimation.value];
-        isAttacking.value = false;
         unsub();
         resolve();
       });

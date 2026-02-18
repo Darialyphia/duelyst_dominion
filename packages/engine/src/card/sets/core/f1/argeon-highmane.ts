@@ -28,7 +28,7 @@ export const argeonHighmane: GeneralBlueprint = {
   manaCost: 3,
   runeCost: {},
   atk: 2,
-  maxHp: 7,
+  maxHp: 5,
   retaliation: 2,
   abilities: [],
   getTargets: () => Promise.resolve([]),

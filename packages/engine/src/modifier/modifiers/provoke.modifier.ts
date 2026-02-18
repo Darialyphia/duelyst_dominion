@@ -50,7 +50,7 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
                 mixins: [
                   new UnitInterceptorModifierMixin(game, {
                     key: 'canBeAttackTarget',
-                    interceptor: () => {
+                    interceptor: (val, ctx) => {
                       return false;
                     }
                   })

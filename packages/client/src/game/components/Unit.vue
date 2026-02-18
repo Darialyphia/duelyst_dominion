@@ -133,6 +133,8 @@ const isHovered = computed(() => {
         :retaliation-state="retaliationBuffState"
         :hp-state="hpBuffState"
         :max-hp="unit.maxHp"
+        :is-mine="isAlly"
+        :is-back-row="unit.isBackRow"
       />
 
       <div
@@ -184,6 +186,7 @@ const isHovered = computed(() => {
   width: 100%;
   height: 100%;
   bottom: 0;
+  transform-style: preserve-3d;
   transform: translateZ(15px) translateY(-25px) translateX(-0px) rotateY(-0deg)
     rotateX(calc(-1 * var(--board-angle-X)));
   transform-origin: bottom center;

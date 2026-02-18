@@ -16,17 +16,18 @@ const { playerId } = useGameClient();
 const state = useGameState();
 
 useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
-  if (event.player !== player.value.id) return;
+  const p = player.value;
+  if (event.player !== p.id) return;
 
-  const newHP = player.value.currentHp - event.amount;
-  const count = { value: player.value.currentHp };
+  const newHP = p.currentHp - event.amount;
+  const count = { value: p.currentHp };
   gsap.to(count, {
     value: newHP,
     duration: 0.5,
     snap: 'value',
     ease: Power1.easeOut,
     onUpdate: () => {
-      player.value.update({ currentHp: count.value });
+      p.update({ currentHp: count.value });
     }
   });
 });

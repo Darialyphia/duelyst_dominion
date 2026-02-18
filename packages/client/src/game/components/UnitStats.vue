@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { atk, hp, atkState, hpState } = defineProps<{
+const { atk, hp, atkState, hpState, isBackRow, isMine } = defineProps<{
   atk: number;
   retaliation: number;
   hp: number;
@@ -7,11 +7,15 @@ const { atk, hp, atkState, hpState } = defineProps<{
   atkState: 'normal' | 'buff' | 'debuff';
   retaliationState: 'normal' | 'buff' | 'debuff';
   hpState: 'normal' | 'buff' | 'debuff';
+  isMine: boolean;
+  isBackRow: boolean;
 }>();
+console.log(isBackRow, isMine);
+const isTop = computed(() => isBackRow && !isMine);
 </script>
 
 <template>
-  <div class="atk">
+  <div class="atk" :class="{ 'is-top': isTop }">
     <span
       class="dual-text"
       :class="{
@@ -23,7 +27,7 @@ const { atk, hp, atkState, hpState } = defineProps<{
       {{ atk }}
     </span>
   </div>
-  <div class="retaliation">
+  <div class="retaliation" :class="{ 'is-top': isTop }">
     <span
       class="dual-text"
       :class="{
@@ -35,7 +39,7 @@ const { atk, hp, atkState, hpState } = defineProps<{
       {{ retaliation }}
     </span>
   </div>
-  <div class="hp">
+  <div class="hp" :class="{ 'is-top': isTop }">
     <span
       class="dual-text"
       :class="{
@@ -98,20 +102,25 @@ const { atk, hp, atkState, hpState } = defineProps<{
   font-weight: var(--font-weight-7);
   font-size: 17px;
   position: absolute;
+
+  &:not(.is-top) {
+    bottom: -15px;
+  }
+  &.is-top {
+    bottom: 80px;
+  }
 }
 
 .atk {
   background-image: url('@/assets/ui/atk-frame-textless.png');
   background-size: cover;
   left: 10px;
-  bottom: -15px;
 }
 
 .retaliation {
   background-image: url('@/assets/ui/ret-frame-textless.png');
   background-size: cover;
   left: 50%;
-  bottom: -15px;
   translate: -50% 0;
 }
 
@@ -119,6 +128,5 @@ const { atk, hp, atkState, hpState } = defineProps<{
   background-image: url('@/assets/ui/hp-frame-textless.png');
   background-size: cover;
   right: 10px;
-  bottom: -15px;
 }
 </style>

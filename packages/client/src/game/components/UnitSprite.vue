@@ -69,7 +69,7 @@ useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
   width: calc(var(--pixel-scale) * var(--width));
   height: calc(var(--pixel-scale) * var(--height));
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   left: 50%;
   translate: -50% 0;
   scale: 2;

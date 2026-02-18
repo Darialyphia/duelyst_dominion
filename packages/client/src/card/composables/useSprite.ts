@@ -27,14 +27,14 @@ export function useSprite({
   animationSequence,
   kind,
   scale = 1,
-  repeat = true,
+  repeat,
   scalePositionByPixelScale = false
 }: {
   sprite: MaybeRefOrGetter<SpriteData | null>;
   animationSequence: MaybeRefOrGetter<string[] | undefined>;
   kind: MaybeRefOrGetter<CardKind>;
   scale?: number;
-  repeat?: boolean;
+  repeat: MaybeRefOrGetter<boolean>;
   scalePositionByPixelScale?: boolean;
 }) {
   const emitter = new TypedEventEmitter<{
@@ -98,7 +98,7 @@ export function useSprite({
           }
         } else {
           currentFrame.value = startFrame;
-          if (!repeat) {
+          if (!toValue(repeat)) {
             isDone.value = true;
             return;
           }

@@ -36,7 +36,7 @@ export const songweaver: MinionBlueprint = {
   runeCost: {},
   manaCost: 3,
   atk: 2,
-  maxHp: 4,
+  maxHp: 5,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),

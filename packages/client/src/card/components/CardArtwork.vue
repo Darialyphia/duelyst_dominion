@@ -27,7 +27,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   sprite: toRef(props, 'sprite'),
   kind: toRef(props, 'kind'),
   scale: 2,
-  scalePositionByPixelScale: true
+  scalePositionByPixelScale: true,
+  repeat: true
 });
 </script>
 

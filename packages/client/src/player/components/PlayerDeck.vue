@@ -51,7 +51,8 @@ const sprite = computed(() =>
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.GENERAL,
   sprite: sprite,
-  animationSequence: undefined
+  animationSequence: undefined,
+  repeat: true
 });
 </script>
 

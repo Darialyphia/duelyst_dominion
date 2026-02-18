@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import {
-  useFxEvent,
   useGameState,
   useGameUi,
-  useMyPlayer,
-  useUnits
+  useMyPlayer
 } from '../composables/useGameClient';
 import { config } from '@/utils/config';
-import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
-import type { Point } from '@game/shared';
-import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
+// import type { Point } from '@game/shared';
+// import { INTERACTION_STATES } from '@game/engine/src/game/game.enums';
 // import { useMouse, useWindowSize } from '@vueuse/core';
 
 const state = useGameState();
 const ui = useGameUi();
-const units = useUnits();
+// const units = useUnits();
 // const { x, y } = useMouse();
 // const { width, height } = useWindowSize();
 
@@ -26,72 +23,72 @@ const camera = ref({
   offset: { x: 0, y: -7 }
 });
 
-const zoomIn = async (origin: Point, duration: number) => {
-  const proxy = {
-    scale: camera.value.scale,
-    angleX: camera.value.angle.x,
-    angleY: camera.value.angle.y,
-    angleZ: camera.value.angle.z,
-    originX: camera.value.origin.x,
-    originY: camera.value.origin.y
-  };
+// const zoomIn = async (origin: Point, duration: number) => {
+//   const proxy = {
+//     scale: camera.value.scale,
+//     angleX: camera.value.angle.x,
+//     angleY: camera.value.angle.y,
+//     angleZ: camera.value.angle.z,
+//     originX: camera.value.origin.x,
+//     originY: camera.value.origin.y
+//   };
 
-  await gsap.to(proxy, {
-    duration: duration / 2,
-    ease: Power2.easeOut,
-    originX: origin.x + config.CELL.width * 3,
-    originY: origin.y,
-    onUpdate: () => {
-      camera.value.origin.x = proxy.originX;
-      camera.value.origin.y = proxy.originY;
-    }
-  });
+//   await gsap.to(proxy, {
+//     duration: duration / 2,
+//     ease: Power2.easeOut,
+//     originX: origin.x + config.CELL.width * 3,
+//     originY: origin.y,
+//     onUpdate: () => {
+//       camera.value.origin.x = proxy.originX;
+//       camera.value.origin.y = proxy.originY;
+//     }
+//   });
 
-  await gsap.to(proxy, {
-    duration,
-    ease: Power2.easeOut,
-    scale: 1.5,
-    angleX: DEFAULT_ANGLE.x,
-    angleY: DEFAULT_ANGLE.y,
-    angleZ: DEFAULT_ANGLE.z,
-    onUpdate: () => {
-      camera.value.scale = proxy.scale;
-      camera.value.angle.x = proxy.angleX;
-      camera.value.angle.y = proxy.angleY;
-      camera.value.angle.z = proxy.angleZ;
-    }
-  });
-};
+//   await gsap.to(proxy, {
+//     duration,
+//     ease: Power2.easeOut,
+//     scale: 1.5,
+//     angleX: DEFAULT_ANGLE.x,
+//     angleY: DEFAULT_ANGLE.y,
+//     angleZ: DEFAULT_ANGLE.z,
+//     onUpdate: () => {
+//       camera.value.scale = proxy.scale;
+//       camera.value.angle.x = proxy.angleX;
+//       camera.value.angle.y = proxy.angleY;
+//       camera.value.angle.z = proxy.angleZ;
+//     }
+//   });
+// };
 
-const zoomOut = async (duration: number) => {
-  const proxy = {
-    scale: camera.value.scale,
-    angleX: camera.value.angle.x,
-    angleY: camera.value.angle.y,
-    angleZ: camera.value.angle.z
-  };
-  await gsap.to(proxy, {
-    duration,
-    ease: Power2.easeOut,
-    scale: 1,
-    angleX: DEFAULT_ANGLE.x,
-    angleY: DEFAULT_ANGLE.y,
-    angleZ: DEFAULT_ANGLE.z,
-    onUpdate: () => {
-      camera.value.scale = proxy.scale;
-      camera.value.angle.x = proxy.angleX;
-      camera.value.angle.y = proxy.angleY;
-      camera.value.angle.z = proxy.angleZ;
-    },
-    onComplete: () => {
-      camera.value.origin = { x: 0, y: 0 };
-    }
-  });
-};
-const ORIGIN_OFFSET = {
-  x: 30,
-  y: 50
-};
+// const zoomOut = async (duration: number) => {
+//   const proxy = {
+//     scale: camera.value.scale,
+//     angleX: camera.value.angle.x,
+//     angleY: camera.value.angle.y,
+//     angleZ: camera.value.angle.z
+//   };
+//   await gsap.to(proxy, {
+//     duration,
+//     ease: Power2.easeOut,
+//     scale: 1,
+//     angleX: DEFAULT_ANGLE.x,
+//     angleY: DEFAULT_ANGLE.y,
+//     angleZ: DEFAULT_ANGLE.z,
+//     onUpdate: () => {
+//       camera.value.scale = proxy.scale;
+//       camera.value.angle.x = proxy.angleX;
+//       camera.value.angle.y = proxy.angleY;
+//       camera.value.angle.z = proxy.angleZ;
+//     },
+//     onComplete: () => {
+//       camera.value.origin = { x: 0, y: 0 };
+//     }
+//   });
+// };
+// const ORIGIN_OFFSET = {
+//   x: 30,
+//   y: 50
+// };
 // useFxEvent(FX_EVENTS.PRE_UNIT_BEFORE_ATTACK, async event => {
 //   const unit = units.value.find(u => u.id === event.unit)!;
 //   const origin = config.CELL.toScreenPosition(unit);
@@ -115,14 +112,14 @@ const ORIGIN_OFFSET = {
 
 // useFxEvent(FX_EVENTS.UNIT_AFTER_COMBAT, async () => zoomOut(0.6));
 
-watch(
-  () => state.value.interaction.state,
-  async newState => {
-    if (newState !== INTERACTION_STATES.IDLE) {
-      await zoomOut(0.6);
-    }
-  }
-);
+// watch(
+//   () => state.value.interaction.state,
+//   async newState => {
+//     if (newState !== INTERACTION_STATES.IDLE) {
+//       await zoomOut(0.6);
+//     }
+//   }
+// );
 
 const boardStyle = computed(() => ({
   width: `${state.value.board.columns * config.CELL.width}px`,

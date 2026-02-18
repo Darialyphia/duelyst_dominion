@@ -159,4 +159,11 @@ const isSettingsOpened = ref(false);
     width: 100%;
   }
 }
+
+#unit-stats-teleport {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
 </style>

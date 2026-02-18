@@ -24,7 +24,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.ARTIFACT,
   sprite: spriteData,
   scale: 1.5,
-  animationSequence: [ANIMATIONS_NAMES.DEFAULT]
+  animationSequence: [ANIMATIONS_NAMES.DEFAULT],
+  repeat: true
 });
 </script>
 

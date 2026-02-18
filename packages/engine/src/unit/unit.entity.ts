@@ -61,6 +61,8 @@ export type SerializedUnit = {
   modifiers: string[];
   canMove: boolean;
   attackableCells: string[];
+  isBackRow: boolean;
+  isFrontRow: boolean;
 };
 
 export type UnitInterceptors = {
@@ -690,7 +692,9 @@ export class Unit
       canMove: this.canMove,
       attackableCells: this.game.boardSystem.cells
         .filter(cell => this.canAttackAt(cell.position))
-        .map(cell => cell.id)
+        .map(cell => cell.id),
+      isBackRow: this.isOnBackRow,
+      isFrontRow: this.isOnFrontRow
     };
   }
 }

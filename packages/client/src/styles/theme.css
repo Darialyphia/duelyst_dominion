@@ -164,6 +164,11 @@
   --board-cell-width: 128px;
   --board-cell-height: 128px;
   --board-cell-ratio: var(--board-cell-width) / var(--board-cell-height);
+
+  --rarity-common: var(--gray-1);
+  --rarity-rare: var(--blue-4);
+  --rarity-epic: #bb00e0;
+  --rarity-legendary: var(--orange-4);
 }
 
 html.dark {

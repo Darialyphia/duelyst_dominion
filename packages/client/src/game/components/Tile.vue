@@ -15,7 +15,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   animationSequence: ['default'],
   sprite: spriteData,
   kind: CARD_KINDS.MINION,
-  scale: 1
+  scale: 1,
+  repeat: true
 });
 </script>
 

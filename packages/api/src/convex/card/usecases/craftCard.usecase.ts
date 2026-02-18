@@ -39,7 +39,7 @@ export class CraftCardUseCase implements UseCase<CraftCardInput, CraftCardOutput
 
   async execute(input: CraftCardInput): Promise<CraftCardOutput> {
     const session = ensureAuthenticated(this.ctx.session);
-
+    console.log(input);
     const allCards = Object.values(cardsBySet).flat();
     const blueprint = allCards.find(card => card.id === input.blueprintId);
     assert(isDefined(blueprint), new AppError('Card blueprint not found'));

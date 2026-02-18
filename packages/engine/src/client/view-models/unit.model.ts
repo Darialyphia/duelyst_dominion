@@ -97,6 +97,14 @@ export class UnitViewModel {
     return this.data.card;
   }
 
+  get isFrontRow() {
+    return this.data.isFrontRow;
+  }
+
+  get isBackRow() {
+    return this.data.isBackRow;
+  }
+
   get canMove() {
     return this.data.canMove;
   }

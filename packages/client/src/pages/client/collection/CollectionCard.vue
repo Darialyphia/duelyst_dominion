@@ -63,7 +63,6 @@ const root = useTemplateRef('root');
       "
       @contextmenu.prevent="
         () => {
-          console.log('?');
           isModalOpened = true;
         }
       "
