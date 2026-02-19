@@ -8,7 +8,6 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import { Interceptable } from '../../utils/interceptable';
 import { BackstabTargetingStrategy } from '../../targeting/backstab-targeting-strategy';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 
@@ -56,7 +55,7 @@ export class RangedUnitModifier extends Modifier<Unit> {
           key: 'canBeCounterattackTarget',
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
-            if (this.target.isOnBackRow) return value;
+            if (this.target.isOnFrontRow) return value;
             return ctx.attacker.modifiers.has(RangedUnitModifier);
           }
         }),

@@ -110,12 +110,19 @@ export class DeepDiffer {
       }
     }
 
-    for (const item of added) {
-      patches.push({
-        op: 'add',
-        path: `${path}[-]`,
-        value: item
-      });
+    // Insert added items at their correct index in the current array.
+    // Processing left-to-right ensures earlier insertions shift indices
+    // correctly for subsequent ones, so the index in `current` is always
+    // the right insertion point at the time the patch is applied.
+    const addedSet = new Set(added);
+    for (let i = 0; i < current.length; i++) {
+      if (addedSet.has(current[i])) {
+        patches.push({
+          op: 'add',
+          path: `${path}[${i}]`,
+          value: current[i]
+        });
+      }
     }
 
     return patches;

@@ -11,11 +11,15 @@ import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { MinionCard } from '../../../entities/minion-card.entity';
 import { miniJax } from './mini-jax';
+import dedent from 'dedent';
+import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
 
 export const jaxTruesight: MinionBlueprint = {
   id: 'jax-truesight',
   name: 'Jax Truesight',
-  description: `@On Enter@ and at the start of each turn: Summon a ${miniJax.name}@ on every empty space in your back row.`,
+  description: dedent`
+  @Ranged@.
+  @On Enter@: Summon a ${miniJax.name}@ on every empty space in your back row.`,
   vfx: {
     spriteId: 'minions/neutral_jax-truesight',
     sequences: {
@@ -47,36 +51,22 @@ export const jaxTruesight: MinionBlueprint = {
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
-    const summon = async (position: Point) => {
-      const backRowCells = game.boardSystem
-        .getBackRowForPlayer(card.player)
-        .filter(cell => cell.isEmpty || cell.position.equals(position));
+    await card.modifiers.add(new RangedModifier(game, card, {}));
+    await card.modifiers.add(
+      new MinionOnEnterModifier(game, card, async () => {
+        await game.once(GAME_EVENTS.MINION_AFTER_SUMMON, async () => {
+          const backRowCells = game.boardSystem
+            .getBackRowForPlayer(card.player)
+            .filter(cell => cell.isEmpty);
 
-      for (const cell of backRowCells) {
-        const minijaxCard = await card.player.generateCard<MinionCard>(
-          miniJax.id,
-          card.isFoil
-        );
-        await minijaxCard.playAt(cell, []);
-      }
-    };
-    await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        await summon(event.data.cell);
-      })
-    );
-    await card.modifiers.add(
-      new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('jax-truesight-start-of-turn', game, card, {
-          mixins: [
-            new GameEventModifierMixin(game, {
-              eventName: GAME_EVENTS.TURN_START,
-              handler: async () => {
-                await summon(card.unit.position);
-              }
-            })
-          ]
-        })
+          for (const cell of backRowCells) {
+            const minijaxCard = await card.player.generateCard<MinionCard>(
+              miniJax.id,
+              card.isFoil
+            );
+            await minijaxCard.playAt(cell, []);
+          }
+        });
       })
     );
   },

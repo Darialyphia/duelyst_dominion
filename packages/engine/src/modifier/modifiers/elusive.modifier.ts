@@ -51,7 +51,7 @@ export class ElusiveUnitModifier extends Modifier<Unit> {
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
           filter: event => !!event?.data.target.equals(this.target),
-          handler: event => {
+          handler: () => {
             this.wasAttackedThisTurn = true;
           }
         }),
@@ -64,9 +64,9 @@ export class ElusiveUnitModifier extends Modifier<Unit> {
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
           filter: event => {
-            return !!event?.data.target.equals(this.target) && this.wasAttackedThisTurn;
+            return !!event?.data.target.equals(this.target) && !this.wasAttackedThisTurn;
           },
-          handler: async event => {
+          handler: async () => {
             const spaces = [this.target.left, this.target.right].filter(isDefined);
 
             for (const space of spaces) {
@@ -90,9 +90,6 @@ export class ElusiveUnitModifier extends Modifier<Unit> {
 class ElusiveDamageCancelModifier extends Modifier<Unit> {
   constructor(game: Game, source: AnyCard) {
     super('elusive-damage-cancel', game, source, {
-      name: 'Elusive Damage Cancel',
-      description: 'Cancels damage dealt to this unit.',
-      icon: 'icons/keyword-locked',
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',

@@ -52,7 +52,7 @@ export function applyPatchToData(data: Record<string, any>, patch: PatchOperatio
           // Append to array (modifiers[-])
           current[key].push(patch.value);
         } else {
-          current[key][index] = patch.value;
+          current[key].splice(index, 0, patch.value);
         }
       } else {
         current[key] = patch.value;

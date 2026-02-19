@@ -10,7 +10,7 @@ const { atk, hp, atkState, hpState, isBackRow, isMine } = defineProps<{
   isMine: boolean;
   isBackRow: boolean;
 }>();
-console.log(isBackRow, isMine);
+
 const isTop = computed(() => isBackRow && !isMine);
 </script>
 
