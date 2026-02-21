@@ -112,7 +112,6 @@ const isHovered = computed(() => {
     >
       <div class="unit-light" v-if="isSelected" />
       <UnitSprite
-        :unit-id="unit.id"
         :bg-position="bgPosition"
         :image-bg="imageBg"
         :sprite-width="activeFrameRect.width"

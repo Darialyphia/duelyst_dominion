@@ -80,5 +80,8 @@ export const phoenixFire: SpellBlueprint = {
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
+    for (const unit of target.adjacentUnits) {
+      await unit.takeDamage(card, new SpellDamage(card, 1));
+    }
   }
 };

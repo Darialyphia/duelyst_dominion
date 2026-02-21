@@ -9,7 +9,7 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  Destroy a minion and heal its owner's general for the amount of health that minion had.`,
+  Destroy a minion that attacked you or your general this turn.`,
   vfx: {
     spriteId: 'spells/f1_martyrdom',
     sequences: {
@@ -63,11 +63,23 @@ export const martyrdom: SpellBlueprint = {
   runeCost: {},
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
-  canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
+  canPlay: (game, card) =>
+    singleMinionTargetRules.canPlay(game, card, unit =>
+      unit.combat.attacks.some(
+        attack =>
+          attack.target === unit.player.deployedGeneral || attack.target === unit.player
+      )
+    ),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
       getAoe(selectedSpaces) {
         return card.getAOE(selectedSpaces);
+      },
+      predicate(unit) {
+        return unit.combat.attacks.some(
+          attack =>
+            attack.target === unit.player.deployedGeneral || attack.target === unit.player
+        );
       }
     });
   },
@@ -76,9 +88,6 @@ export const martyrdom: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    const amounttoHeal = target.remainingHp;
     await target.destroy(card);
-
-    await target.player.heal(card, amounttoHeal);
   }
 };

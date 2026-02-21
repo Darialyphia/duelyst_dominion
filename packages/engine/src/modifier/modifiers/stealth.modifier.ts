@@ -33,7 +33,6 @@ export class StealthModifier extends Modifier<MinionCard> {
 }
 
 export class StealthUnitModifier extends Modifier<Unit> {
-  private hasAttacked = false;
   constructor(
     game: Game,
     source: AnyCard,
@@ -50,32 +49,21 @@ export class StealthUnitModifier extends Modifier<Unit> {
       mixins: [
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeAttackTarget',
-          interceptor: () => false
+          interceptor: val => {
+            if (!val) return val;
+            return this.target.isExhausted;
+          }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCardTarget',
-          interceptor: (value, ctx) => {
-            if (!value) return false;
-            return ctx.card.player.equals(this.target.player);
+          interceptor: (val, ctx) => {
+            if (!val) return val;
+            if (ctx.card.player.equals(this.target.player)) return true;
+            return this.target.isExhausted;
           }
         }),
-        new GameEventModifierMixin(game, {
-          eventName: UNIT_EVENTS.UNIT_AFTER_ATTACK,
-          handler: event => {
-            return this.onAfterAttack(event);
-          }
-        }),
-        new TogglableModifierMixin(game, () => !this.hasAttacked),
         ...(options.mixins ?? [])
       ]
     });
-  }
-
-  private async onAfterAttack(event: Nullable<UnitAttackEvent>) {
-    if (!event) return;
-    const unit = event.data.unit;
-    if (!unit.equals(this.target)) return;
-
-    this.hasAttacked = true;
   }
 }

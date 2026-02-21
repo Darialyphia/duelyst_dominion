@@ -13,7 +13,6 @@ export const jadeMonk: MinionBlueprint = {
   id: 'jade-monk',
   name: 'Jade Monk',
   description: dedent`
-  @Provoke@.
   This card costs 1 less for each spell you played this turn.`,
   vfx: {
     spriteId: 'minions/f2_jade-monk',

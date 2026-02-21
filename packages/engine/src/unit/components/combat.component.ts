@@ -12,33 +12,33 @@ import type { AnyCard } from '../../card/entities/card.entity';
 import { Player } from '../../player/player.entity';
 
 export class CombatComponent {
-  private _attacksCount = 0;
-  private _counterAttacksCount = 0;
+  private _attacksThisTurn: Array<{ target: Unit | Player; damage: Damage }> = [];
+  private _counterAttacksThisTurn: Array<{ target: Unit; damage: Damage }> = [];
 
   constructor(
     private game: Game,
     private unit: Unit
   ) {}
 
-  get counterAttacksCount() {
-    return this._counterAttacksCount;
+  get attacks() {
+    return this._attacksThisTurn;
+  }
+
+  get counterAttacks() {
+    return this._counterAttacksThisTurn;
   }
 
   get attacksCount() {
-    return this._attacksCount;
+    return this._attacksThisTurn.length;
   }
 
-  setAttackCount(count: number) {
-    this._attacksCount = count;
+  get counterAttacksCount() {
+    return this._counterAttacksThisTurn.length;
   }
 
-  resetAttackCount() {
-    this._attacksCount = 0;
-    this._counterAttacksCount = 0;
-  }
-
-  resetCounterAttackCount() {
-    this._counterAttacksCount = 0;
+  reset() {
+    this._attacksThisTurn = [];
+    this._counterAttacksThisTurn = [];
   }
 
   async counterAttack(attacker: Unit) {
@@ -58,7 +58,7 @@ export class CombatComponent {
     const damage = new CombatDamage(this.unit, 'counterattack');
 
     await this.dealDamage(targets, damage);
-    this._counterAttacksCount++;
+    this._counterAttacksThisTurn.push({ target: attacker, damage });
 
     await this.game.emit(
       UNIT_EVENTS.UNIT_AFTER_COUNTERATTACK,
@@ -96,7 +96,7 @@ export class CombatComponent {
     const damage = new CombatDamage(this.unit, 'attack');
 
     await this.dealDamage(targets, damage);
-    this._attacksCount++;
+    this._attacksThisTurn.push({ target, damage });
 
     if (actualTarget instanceof Player) {
       await this.game.emit(

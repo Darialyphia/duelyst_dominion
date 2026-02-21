@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { FX_EVENTS } from '@game/engine/src/client/controllers/fx-controller';
-import { useDissolveVFX } from '../composables/useDissolve';
-import { useFxEvent } from '../composables/useGameClient';
-import { waitFor } from '@game/shared';
-
 const {
-  unitId,
   bgPosition,
   imageBg,
   spriteWidth,
@@ -16,7 +10,6 @@ const {
   isTeleporting,
   isTriggeringEffect
 } = defineProps<{
-  unitId: string;
   bgPosition: string;
   imageBg: string;
   spriteWidth: number;
@@ -28,20 +21,10 @@ const {
   isTeleporting: boolean;
   isTriggeringEffect: boolean;
 }>();
-
-const dissolve = useDissolveVFX();
-const rootEl = useTemplateRef('root');
-useFxEvent(FX_EVENTS.UNIT_AFTER_DESTROY, async event => {
-  if (event.unit !== unitId) return;
-  const duration = 1000;
-  dissolve.play(rootEl.value as HTMLElement, duration);
-  await waitFor(duration);
-});
 </script>
 
 <template>
   <div
-    ref="root"
     class="sprite-wrapper"
     :class="{
       'is-teleporting': isTeleporting,

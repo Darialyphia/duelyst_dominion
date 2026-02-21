@@ -220,8 +220,7 @@ export const KEYWORDS = {
   PROVOKE: {
     id: 'provoke',
     name: 'Provoke',
-    description:
-      'While this is awake on the front row,adjacent allies cannot be attacked.',
+    description: 'Adjacent enemies on the front row can only attack this card.',
     aliases: ['provoke']
   },
   PROVOKED: {
@@ -260,7 +259,7 @@ export const KEYWORDS = {
     id: 'spawn',
     name: 'Spawn X',
     description:
-      'At the start of your turn, summon X on a space nearby this and lose 1 charge.',
+      'At the start of your turn, summon X on an adjacent space and lose 1 charge.',
     aliases: [/^spawn/]
   },
   STRUCTURE: {
@@ -308,7 +307,7 @@ export const KEYWORDS = {
   STEALTH: {
     id: 'stealth',
     name: 'Stealth',
-    description: 'Cannot be targeted or attacked until this attacks.',
+    description: 'Cannot be targeted or attacked unless exhausted.',
     aliases: []
   }
 } as const satisfies Record<string, Keyword>;

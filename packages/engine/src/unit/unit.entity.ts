@@ -305,6 +305,14 @@ export class Unit
     return this.game.boardSystem.getCellAt(this.position)!.right;
   }
 
+  get inFront() {
+    return this.game.boardSystem.getCellAt(this.position)!.inFront;
+  }
+
+  get behind() {
+    return this.game.boardSystem.getCellAt(this.position)!.behind;
+  }
+
   get unitsOnLeftColumn() {
     return this.game.unitSystem.units.filter(
       unit => unit.position.x === this.x - 1 && !unit.equals(this)
@@ -632,7 +640,7 @@ export class Unit
   }
 
   activate() {
-    this.combat.resetAttackCount();
+    this.combat.reset();
     this.movement.resetMovementsCount();
     this.wakeUp();
   }

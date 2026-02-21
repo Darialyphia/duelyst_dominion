@@ -32,7 +32,7 @@ export const brightmossGolem: MinionBlueprint = {
   tags: [TAGS.GOLEM],
   runeCost: {},
   manaCost: 5,
-  atk: 3,
+  atk: 4,
   maxHp: 8,
   retaliation: 3,
   getTargets: () => Promise.resolve([]),

@@ -10,6 +10,8 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { TogglableModifierMixin } from '../mixins/togglable.mixin';
+import { isDefined } from '@game/shared';
+import { ProvokedTargetingStrategy } from '../../targeting/provoked-targeting-strategy';
 
 export class ProvokeModifier extends Modifier<MinionCard> {
   constructor(
@@ -36,22 +38,19 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.PROVOKE.description,
       icon: 'icons/keyword-provoke',
       mixins: [
-        new TogglableModifierMixin(
-          game,
-          () => !this.target.isExhausted && this.target.isOnFrontRow
-        ),
+        new TogglableModifierMixin(game, () => this.target.isOnFrontRow),
         new UnitAuraModifierMixin(game, source, {
           isElligible: candidate => {
-            return this.shouldBeProtected(candidate);
+            return this.shouldBeProvoked(candidate);
           },
-          getModifiers: () => {
+          getModifiers: candidate => {
             return [
-              new Modifier('provoke-protection', this.game, source, {
+              new Modifier('provoked', this.game, source, {
                 mixins: [
                   new UnitInterceptorModifierMixin(game, {
-                    key: 'canBeAttackTarget',
-                    interceptor: (val, ctx) => {
-                      return false;
+                    key: 'attackTargetingPattern',
+                    interceptor: () => {
+                      return new ProvokedTargetingStrategy(game, candidate);
                     }
                   })
                 ]
@@ -63,8 +62,16 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
     });
   }
 
-  private shouldBeProtected(candidate: Unit): boolean {
-    if (candidate.isEnemy(this.target)) return false;
-    return this.target.adjacentUnits.some(u => u.equals(candidate));
+  private shouldBeProvoked(candidate: Unit): boolean {
+    const elligible = [
+      this.target.inFront,
+      this.target.inFront?.left,
+      this.target.inFront?.right
+    ]
+      .filter(isDefined)
+      .map(cell => cell.unit)
+      .filter(isDefined);
+
+    return elligible.some(unit => unit.equals(candidate));
   }
 }

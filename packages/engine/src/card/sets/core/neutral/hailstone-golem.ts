@@ -32,7 +32,7 @@ export const hailstoneGolem: MinionBlueprint = {
   tags: [TAGS.GOLEM],
   runeCost: {},
   manaCost: 4,
-  atk: 2,
+  atk: 3,
   maxHp: 7,
   retaliation: 2,
   getTargets: () => Promise.resolve([]),

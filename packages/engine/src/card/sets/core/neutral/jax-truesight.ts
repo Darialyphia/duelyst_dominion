@@ -33,7 +33,7 @@ export const jaxTruesight: MinionBlueprint = {
     walk: 'sfx_neutral_ladylocke_attack_impact',
     attack: 'sfx_neutral_jaxtruesight_attack_swing',
     takeDamage: 'sfx_neutral_jaxtruesight_hit',
-    dealDamage: 'sfx_neutral_jaxtruesight_impact',
+    dealDamage: 'sfx_neutral_jaxtruesight_attack_impact',
     death: 'sfx_neutral_jaxtruesight_death'
   },
   kind: CARD_KINDS.MINION,
