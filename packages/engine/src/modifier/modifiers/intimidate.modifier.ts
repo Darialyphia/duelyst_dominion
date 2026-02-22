@@ -13,13 +13,20 @@ import type { GeneralCard } from '../../card/entities/general-card.entity';
 export class IntimidateCardModifier<
   T extends MinionCard | GeneralCard
 > extends Modifier<T> {
-  constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
+  constructor(
+    game: Game,
+    source: AnyCard,
+    options: { threshold: number; mixins?: ModifierMixin<T>[] }
+  ) {
     super(KEYWORDS.INTIMIDATE.id, game, source, {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.INTIMIDATE),
         new UnitEffectModifierMixin(game, {
           getModifier: () =>
-            new IntimidateUnitModifier(game, this.initialSource, { mixins: [] })
+            new IntimidateUnitModifier(game, this.initialSource, {
+              mixins: [],
+              threshold: options?.threshold
+            })
         }),
         ...(options?.mixins ?? [])
       ]
@@ -35,7 +42,8 @@ export class IntimidateUnitModifier extends Modifier<Unit> {
       mixins?: ModifierMixin<Unit>[];
       modifierType?: string;
       isRemovable?: boolean;
-    } = {}
+      threshold: number;
+    }
   ) {
     super(options.modifierType ?? KEYWORDS.INTIMIDATE.id, game, source, {
       name: KEYWORDS.INTIMIDATE.name,
@@ -46,7 +54,7 @@ export class IntimidateUnitModifier extends Modifier<Unit> {
           key: 'canBeCounterattackTarget',
           interceptor: (value, ctx) => {
             if (!value) return value;
-            return ctx.attacker.isGeneral;
+            return ctx.attacker.card.manaCost > options.threshold;
           }
         }),
         ...(options.mixins ?? [])

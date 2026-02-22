@@ -10,13 +10,10 @@ import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { BackstabTargetingStrategy } from '../../targeting/backstab-targeting-strategy';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
+import type { GeneralCard } from '../../card/entities/general-card.entity';
 
-export class RangedModifier extends Modifier<MinionCard> {
-  constructor(
-    game: Game,
-    source: AnyCard,
-    options: { mixins?: ModifierMixin<MinionCard>[] }
-  ) {
+export class RangedModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
+  constructor(game: Game, source: AnyCard, options: { mixins?: ModifierMixin<T>[] }) {
     super(KEYWORDS.RANGED.id, game, source, {
       name: KEYWORDS.RANGED.name,
       description: KEYWORDS.RANGED.description,

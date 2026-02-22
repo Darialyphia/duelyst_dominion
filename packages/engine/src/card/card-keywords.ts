@@ -49,7 +49,7 @@ export const KEYWORDS = {
   SHIELD: {
     id: 'barrier',
     name: 'Barrier',
-    description: 'Prevents the next time this would be damaged or be destroyed.',
+    description: 'Prevents the next time this would be damaged.',
     aliases: []
   },
   BLAST: {
@@ -177,8 +177,8 @@ export const KEYWORDS = {
   },
   INTIMIDATE: {
     id: 'intimidate',
-    name: 'Intimidate',
-    description: "Minions attacked by this unit don't counterattack.",
+    name: 'Intimidate (x)',
+    description: 'Units attacked by this unit that cost X or less cannot counterattack.',
     aliases: []
   },
   LEVEL_BONUS: {

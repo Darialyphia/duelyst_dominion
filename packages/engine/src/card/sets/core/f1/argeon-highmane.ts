@@ -7,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const argeonHighmane: GeneralBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
-  description: '@Intimidate@.',
+  description: '@Intimidate (2)@.',
   vfx: {
     spriteId: 'generals/f1_argeon-highmane'
   },
@@ -34,6 +34,6 @@ export const argeonHighmane: GeneralBlueprint = {
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
   async onInit(game, card) {
-    await card.modifiers.add(new IntimidateCardModifier(game, card));
+    await card.modifiers.add(new IntimidateCardModifier(game, card, { threshold: 2 }));
   }
 };

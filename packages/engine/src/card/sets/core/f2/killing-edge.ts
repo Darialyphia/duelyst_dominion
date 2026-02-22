@@ -14,8 +14,7 @@ export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
   description: dedent`
-    Give an allied minion +2 Attack. If it has @Backstab@, give it +2 Health as well.
-    @[lvl] 2 bonus@: Give it +3 Attack instead, and +2 Health regardless of Backstab.
+    Give an allied minion +2 Attack and @Backstab(1)@. If it already had @Backstab@, draw a card.
   `,
   vfx: {
     spriteId: 'spells/f2_killing-edge',
@@ -71,7 +70,7 @@ export const killingEdge: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
-  manaCost: 3,
+  manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),
@@ -89,22 +88,21 @@ export const killingEdge: SpellBlueprint = {
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
 
+    const hasBackstab = target.modifiers.has(BackstabUnitModifier);
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('killing-edge-attack-buff', game, card, {
         name: 'Killing Edge Attack Buff',
-        amount: levelMod.isActive ? 3 : 2
+        amount: 2
       })
     );
 
-    if (target.modifiers.has(BackstabUnitModifier) || levelMod.isActive) {
+    if (!hasBackstab) {
       await target.modifiers.add(
-        new UnitSimpleHealthBuffModifier('killing-edge-hp-buff', game, card, {
-          name: 'Killing Edge Health Buff',
-          amount: 2
-        })
+        new BackstabUnitModifier(game, card, { damageBonus: 1 })
       );
+    } else {
+      await card.player.cardManager.drawFromDeck(1);
     }
   }
 };

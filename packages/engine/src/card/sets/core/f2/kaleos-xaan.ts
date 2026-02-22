@@ -1,5 +1,6 @@
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { IntimidateCardModifier } from '../../../../modifier/modifiers/intimidate.modifier';
+import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { GeneralBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -7,7 +8,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const kaleosXaan: GeneralBlueprint = {
   id: 'kaleos-xaan',
   name: 'Kaleos Xaan',
-  description: '@Intimidate@.',
+  description: '@Ranged@.',
   vfx: {
     spriteId: 'generals/f2_kaleos-xaan'
   },
@@ -34,6 +35,6 @@ export const kaleosXaan: GeneralBlueprint = {
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
   async onInit(game, card) {
-    await card.modifiers.add(new IntimidateCardModifier(game, card));
+    await card.modifiers.add(new RangedModifier(game, card, {}));
   }
 };
