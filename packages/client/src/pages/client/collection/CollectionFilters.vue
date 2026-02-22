@@ -77,7 +77,7 @@ const factions: Array<{
       </div>
       <div class="filter-title flex gap-3 items-center">
         <UiSwitch v-model="includeUnowned" />
-        Include unowned cards
+        Show unowned cards
       </div>
     </section>
 

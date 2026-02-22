@@ -9,7 +9,7 @@ import { lightOverlay } from '../../../card-vfx-sequences';
 export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
-  description: 'Deal 3 damage to an enemy and 1 damage to adjacent units.',
+  description: 'Deal 3 damage to an enemy.',
   vfx: {
     spriteId: 'spells/f2_phoenix-fire',
     sequences: {
@@ -80,8 +80,5 @@ export const phoenixFire: SpellBlueprint = {
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
-    for (const unit of target.adjacentUnits) {
-      await unit.takeDamage(card, new SpellDamage(card, 1));
-    }
   }
 };

@@ -21,7 +21,7 @@ import {
 import type { MaybePromise } from '@game/shared';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
 import { SummoningSicknessModifier } from '../../modifier/modifiers/summoning-sickness.modifier';
-import { CARD_EVENTS } from '../card.enums';
+import { CARD_EVENTS, CARD_LOCATIONS } from '../card.enums';
 import { CardBeforePlayEvent, CardAfterPlayEvent } from '../card.events';
 import { GAME_EVENTS } from '../../game/game.events';
 import { MeleeTargetingStrategy } from '../../targeting/melee-targeting.straegy';
@@ -181,9 +181,11 @@ export class GeneralCard extends Card<
         await this.addToHand();
         cleanups.forEach(cleanup => cleanup());
       }),
-      this.game.on(GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE, async event => {
-        if (!event.data.unit.card.equals(this)) return;
-        await this.player.takeDamage(event.data.from, event.data.damage);
+
+      this.game.on(GAME_EVENTS.TURN_END, async () => {
+        if (this.location === CARD_LOCATIONS.DISCARD_PILE) {
+          await this.addToHand();
+        }
       })
     ];
   }

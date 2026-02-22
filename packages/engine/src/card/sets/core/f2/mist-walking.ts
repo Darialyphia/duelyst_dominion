@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { emptySpacesTargetRules, singleUnitTargetRules } from '../../../card-utils';
+import { emptySpacesTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { isDefined } from '@game/shared';
@@ -10,7 +10,7 @@ import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-e
 export const mistWalking: SpellBlueprint = {
   id: 'mist-walking',
   name: 'Mist Walking',
-  description: 'Teleport your general to an empty space and give it @Elusive@ this turn.',
+  description: 'Give Your general @Elusive@ this turn. Draw a card.',
   vfx: {
     spriteId: 'spells/f2_mistwalking',
     sequences: {

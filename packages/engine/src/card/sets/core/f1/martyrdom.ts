@@ -67,7 +67,8 @@ export const martyrdom: SpellBlueprint = {
     singleMinionTargetRules.canPlay(game, card, unit =>
       unit.combat.attacks.some(
         attack =>
-          attack.target === unit.player.deployedGeneral || attack.target === unit.player
+          unit.player.deployedGeneral?.equals(attack.target) ||
+          unit.player.equals(attack.target)
       )
     ),
   getTargets(game, card) {
@@ -78,7 +79,8 @@ export const martyrdom: SpellBlueprint = {
       predicate(unit) {
         return unit.combat.attacks.some(
           attack =>
-            attack.target === unit.player.deployedGeneral || attack.target === unit.player
+            unit.player.deployedGeneral?.equals(attack.target) ||
+            unit.player.equals(attack.target)
         );
       }
     });

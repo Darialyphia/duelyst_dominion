@@ -34,7 +34,7 @@ export const brightmossGolem: MinionBlueprint = {
   manaCost: 5,
   atk: 4,
   maxHp: 8,
-  retaliation: 3,
+  retaliation: 4,
   getTargets: () => Promise.resolve([]),
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
