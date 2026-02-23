@@ -10,11 +10,12 @@ import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mi
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
+import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 
 export const chakriAvatar: MinionBlueprint = {
   id: 'chakri_avatar',
   name: 'Chakri Avatar',
-  description: 'When you play a spell, this gains +1 / +1.',
+  description: 'When you play a spell, this gains +1/+1/+1.',
   vfx: {
     spriteId: 'minions/f2_chakri-avatar',
     sequences: {
@@ -68,6 +69,16 @@ export const chakriAvatar: MinionBlueprint = {
                 new UnitSimpleHealthBuffModifier('chakri-avatar-hp-buff', game, card, {
                   amount: 1
                 })
+              );
+              await card.unit.modifiers.add(
+                new UnitSimpleRetaliationBuffModifier(
+                  'chakri-avatar-retaliation-buff',
+                  game,
+                  card,
+                  {
+                    amount: 1
+                  }
+                )
               );
             }
           })

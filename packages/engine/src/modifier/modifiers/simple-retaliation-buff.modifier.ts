@@ -25,7 +25,9 @@ export class UnitSimpleRetaliationBuffModifier<T extends Unit> extends Modifier<
     super(modifierType, game, card, {
       icon: () => {
         const amount = isFunction(options.amount) ? options.amount() : options.amount;
-        return amount > 0 ? 'keyword-retaliation-buff' : 'keyword-retaliation-debuff';
+        return amount > 0
+          ? 'icons/keyword-retaliation-buff'
+          : 'icons/keyword-retaliation-debuff';
       },
       name: () => {
         const name = isFunction(options.name) ? options.name() : options.name;

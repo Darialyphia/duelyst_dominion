@@ -26,7 +26,7 @@ export class UnitSimpleHealthBuffModifier<T extends Unit> extends Modifier<T> {
       isUnique: true,
       icon: () => {
         const amount = isFunction(options.amount) ? options.amount() : options.amount;
-        return amount > 0 ? 'keyword-hp-buff' : 'keyword-hp-debuff';
+        return amount > 0 ? 'icons/keyword-hp-buff' : 'icons/keyword-hp-debuff';
       },
       name: () => {
         const name = isFunction(options.name) ? options.name() : options.name;

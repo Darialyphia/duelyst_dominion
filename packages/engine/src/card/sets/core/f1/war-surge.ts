@@ -9,7 +9,7 @@ import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
 export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
-  description: 'Give allied minions +1 / +1.',
+  description: 'Give allied minions +1/+0/+1.',
   vfx: {
     spriteId: 'spells/f1_war-surge',
     sequences: {

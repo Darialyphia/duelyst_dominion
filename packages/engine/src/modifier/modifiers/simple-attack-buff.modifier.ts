@@ -25,7 +25,7 @@ export class UnitSimpleAttackBuffModifier<T extends Unit> extends Modifier<T> {
     super(modifierType, game, card, {
       icon: () => {
         const amount = isFunction(options.amount) ? options.amount() : options.amount;
-        return amount > 0 ? 'keyword-attack-buff' : 'keyword-attack-debuff';
+        return amount > 0 ? 'icons/keyword-attack-buff' : 'icons/keyword-attack-debuff';
       },
       name: () => {
         const name = isFunction(options.name) ? options.name() : options.name;

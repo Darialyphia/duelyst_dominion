@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { emptySpacesTargetRules } from '../../../card-utils';
+import { emptySpacesTargetRules, singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { isDefined } from '@game/shared';
@@ -10,7 +10,7 @@ import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-e
 export const mistWalking: SpellBlueprint = {
   id: 'mist-walking',
   name: 'Mist Walking',
-  description: 'Give Your general @Elusive@ this turn. Draw a card.',
+  description: 'Give a unit @Elusive@.',
   vfx: {
     spriteId: 'spells/f2_mistwalking',
     sequences: {
@@ -32,33 +32,22 @@ export const mistWalking: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => {
-    return (
-      isDefined(card.player.deployedGeneral) &&
-      emptySpacesTargetRules.canPlay({ min: 1 })(game, () => true)
-    );
+    return singleUnitTargetRules.canPlay(game, card);
   },
   async getTargets(game, card) {
-    return emptySpacesTargetRules.getPreResponseTargets({ min: 1, max: 1 })(game, card, {
-      predicate: cell => cell.player?.equals(card.player) ?? false,
-      getAoe(selectedSpaces) {
-        return card.getAOE(selectedSpaces);
+    return singleUnitTargetRules.getPreResponseTargets(game, card, {
+      getAoe() {
+        return new PointAOEShape(TARGETING_TYPE.UNIT, {});
       },
       getLabel() {
-        return `${card.blueprint.name} : Select the space to teleport to`;
+        return 'Select a unit to give Elusive to';
       }
     });
   },
   async onInit() {},
   async onPlay(game, card, { targets }) {
-    const target = targets[0];
-
-    await card.player.deployedGeneral?.teleport(target);
-    await card.player.deployedGeneral?.modifiers.add(
-      new ElusiveUnitModifier(game, card, {
-        mixins: [new UntilEndOfTurnModifierMixin(game)]
-      })
-    );
+    await targets[0].unit?.modifiers.add(new ElusiveUnitModifier(game, card, {}));
   }
 };

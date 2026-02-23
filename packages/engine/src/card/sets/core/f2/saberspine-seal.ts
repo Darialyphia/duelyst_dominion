@@ -5,6 +5,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
+import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 
 export const saberspineSeal: SpellBlueprint = {
   id: 'saberspine-seal',
@@ -49,7 +50,8 @@ export const saberspineSeal: SpellBlueprint = {
 
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('saberspine-seal-atk-buff', game, card, {
-        amount: 3
+        amount: 3,
+        mixins: [new UntilEndOfTurnModifierMixin(game)]
       })
     );
 
@@ -59,7 +61,8 @@ export const saberspineSeal: SpellBlueprint = {
         game,
         card,
         {
-          amount: 3
+          amount: 3,
+          mixins: [new UntilEndOfTurnModifierMixin(game)]
         }
       )
     );
