@@ -69,7 +69,8 @@ const RECT_PADDING = 15;
         '--y-offset': currentStepTextBox.centered?.y ? '-50%' : '0'
       }"
     >
-      {{ currentStepTextBox?.text }}
+      <span v-if="currentStepTextBox.text" v-html="currentStepTextBox.text" />
+
       <FancyButton
         v-if="currentStepTextBox?.canGoNext"
         text="Next"
@@ -92,11 +93,8 @@ const RECT_PADDING = 15;
 
 <style scoped lang="postcss">
 .text-box-container {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
   position: fixed;
-  height: 100dvh;
+  inset: 0;
   aspect-ratio: 16 / 9;
   pointer-events: none;
 }

@@ -102,7 +102,9 @@ export class UiController {
     cardAction: (cardId: string, actionId: string) =>
       new DOMSelector(`${cardId}-action-${actionId}`),
     actionButton: (actionId: string) => new DOMSelector(`action-button-${actionId}`),
-    globalActionButtons: new DOMSelector('global-action-buttons')
+    globalActionButtons: new DOMSelector('global-action-buttons'),
+    mana: (playerId: string) => new DOMSelector(`mana-${playerId}`),
+    playerInfos: (playerId: string) => new DOMSelector(`player-infos-${playerId}`)
   };
 
   displayedElements = {

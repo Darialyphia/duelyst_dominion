@@ -124,7 +124,7 @@ export class GameClient {
       console.log('events', snapshot.events);
       console.groupEnd();
       this.queue.push(snapshot);
-      if (this._processingUpdate) return;
+      if (this._processingUpdate || !this.isReady) return;
       await this.processQueue();
     });
 

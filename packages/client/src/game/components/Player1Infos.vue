@@ -38,13 +38,16 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 
 <template>
   <div class="p1-infos">
-    <header :class="{ active: state.turnPlayer === player.id }">
+    <header
+      :class="{ active: state.turnPlayer === player.id }"
+      :id="ui.DOMSelectors.playerInfos(player.id).id"
+    >
       <div class="flex flex-col gap-2">
-        <div class="flex gap-7 items-center justify-between">
-          {{ player.name }}
+        <div class="flex gap-5 items-center">
           <div class="hp">
             {{ player.currentHp }}
           </div>
+          {{ player.name }}
         </div>
         <div class="flex gap-3">
           <div>Lvl {{ player.level }}</div>
@@ -84,7 +87,10 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
         </div>
       </div>
     </header>
-    <div class="flex gap-2 items-center">
+    <div
+      class="flex gap-2 items-center"
+      :id="ui.DOMSelectors.mana(player.id).id"
+    >
       <div
         v-for="i in Math.max(player.maxMana, player.mana)"
         :key="i"
@@ -124,9 +130,6 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
   left: min(var(--size-13), 8vw);
   color: white;
   font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   gap: var(--size-2);
   pointer-events: none;
   /*eslint-disable-next-line vue-scoped-css/no-unused-selector */
@@ -136,6 +139,7 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
 }
 
 header {
+  min-width: 24ch;
   font-size: var(--font-size-4);
   display: grid;
   grid-gap: var(--size-2);
@@ -146,6 +150,7 @@ header {
   border-radius: var(--radius-3);
   backdrop-filter: blur(5px);
   border: solid var(--border-size-3) transparent;
+  margin-block-end: var(--size-4);
 
   &.active {
     border-color: var(--yellow-6);

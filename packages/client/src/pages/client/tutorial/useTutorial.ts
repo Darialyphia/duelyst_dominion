@@ -104,6 +104,7 @@ export const useTutorial = (options: UseTutorialOptions) => {
     return (currentStep.value?.textBoxes[currentStepTextboxIndex.value] ||
       null) as Nullable<ClientTutorialTextBox>;
   });
+
   const currentStepError = ref<string | null>(null);
 
   tutorial.value = new Tutorial(
@@ -120,6 +121,10 @@ export const useTutorial = (options: UseTutorialOptions) => {
             await step.onEnter?.(game, newStep, client.value);
             await currentStepTextBox.value?.onEnter?.(game, client.value, next);
           },
+          onSuccess(game, input, nextStep) {
+            currentStepError.value = null;
+            return step.onSuccess?.(game, input, nextStep);
+          },
           onFail(game, input, errorMessage) {
             currentStepError.value = errorMessage;
             return step.onFail?.(game, input, errorMessage);
@@ -133,20 +138,22 @@ export const useTutorial = (options: UseTutorialOptions) => {
     triggerRef(tutorial);
   });
 
-  (async function () {
+  const init = async () => {
     await game.initialize();
     await options.setup(game, client.value);
-    await game.snapshotSystem.takeSnapshot();
 
     client.value.initialize(game.snapshotSystem.getOmniscientSnapshotAt(0));
     tutorial.value.initialize(client.value);
-  })();
+    await game.snapshotSystem.takeSnapshot();
+  };
 
   const next = async () => {
     await currentStepTextBox.value?.onLeave?.(game, client.value);
     currentStepTextboxIndex.value++;
     await currentStepTextBox.value?.onEnter?.(game, client.value, next);
   };
+
+  init();
 
   return {
     client,
