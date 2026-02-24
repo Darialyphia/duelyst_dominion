@@ -104,7 +104,7 @@ const isTop = computed(() => isBackRow && !isMine);
   position: absolute;
 
   &:not(.is-top) {
-    bottom: -15px;
+    bottom: -25px;
   }
   &.is-top {
     bottom: 80px;

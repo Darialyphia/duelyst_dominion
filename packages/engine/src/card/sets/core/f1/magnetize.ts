@@ -6,11 +6,19 @@ import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
 import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.modifier';
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 import { ColumnAOEShape } from '../../../../aoe/column.aoe-shape';
+import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import { singleUnitTargetRules } from '../../../card-utils';
+import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
+import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
-  description: dedent`Give units on the same column as your general @Anchored@ this turn.`,
+  description: dedent`
+  Move a unit from the back row to the front row of the same column if able. Give it @Anchored@ until end of turn.
+  @[lvl]3 bonus]@: @Burst@.
+  `,
   vfx: {
     spriteId: 'spells/f1_magnetize',
     sequences: {
@@ -78,17 +86,31 @@ export const magnetize: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: (game, card) => {
-    if (!card.player.deployedGeneral) return new NoAOEShape(TARGETING_TYPE.ANYWHERE, {});
-    return new ColumnAOEShape(TARGETING_TYPE.UNIT, {
-      width: 1,
-      height: game.boardSystem.height,
-      columnOverride: card.player.deployedGeneral.position.x
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
+  canPlay: (game, card) =>
+    singleUnitTargetRules.canPlay(
+      game,
+      card,
+      c => c.isEnemy(card.player) && c.isMinion && c.isOnBackRow
+    ),
+  getTargets(game, card) {
+    return singleUnitTargetRules.getPreResponseTargets(game, card, {
+      predicate: c => c.isEnemy(card.player) && c.isMinion && c.isOnBackRow,
+      getAoe() {
+        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
+      }
     });
   },
-  canPlay: () => true,
-  getTargets: () => Promise.resolve([]),
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
+    const levelMod = card.modifiers.get(LevelBonusModifier)!;
+
+    await card.modifiers.add(
+      new BurstModifier(game, card, {
+        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
+      })
+    );
+  },
   async onPlay(game, card, { aoe }) {
     if (!card.player.deployedGeneral) return;
 
@@ -99,6 +121,9 @@ export const magnetize: SpellBlueprint = {
     );
 
     for (const unit of units) {
+      if (unit.inFront?.isEmpty) {
+        await unit.teleport(unit.inFront);
+      }
       await unit.modifiers.add(
         new AnchoredUnitModifier(game, card, {
           mixins: [new UntilEndOfTurnModifierMixin(game)]
