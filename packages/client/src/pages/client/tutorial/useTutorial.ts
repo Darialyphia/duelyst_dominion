@@ -160,11 +160,7 @@ export const useTutorial = (options: UseTutorialOptions) => {
     currentStep,
     currentStepTextBox,
     currentStepError,
-    async next() {
-      await currentStepTextBox.value?.onLeave?.(game, client.value);
-      currentStepTextboxIndex.value++;
-      await currentStepTextBox.value?.onEnter?.(game, client.value, next);
-    },
+    next,
     nextMission: options.next,
     isFinished: computed(() => {
       return tutorial.value.isFinished;

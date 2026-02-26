@@ -2,7 +2,6 @@ import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
 import type { GameClient } from '../client';
 import type { CardViewModel } from '../view-models/card.model';
 import type { GameClientState } from './state-controller';
-import { CancelPlayCardGlobalAction } from '../actions/cancel-play-card';
 import type { UnitViewModel } from '../view-models/unit.model';
 import type { BoardCellViewModel } from '../view-models/board-cell.model';
 import { MoveUnitAction } from '../actions/move-unit';

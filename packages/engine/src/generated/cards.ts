@@ -72,7 +72,9 @@ export const cards = {
 "primus-fist": "primus-fist",
 "fire-spitter": "fire-spitter",
 "lux-ignis": "lux-ignis",
-"lantern-fox": "lantern-fox"
+"lantern-fox": "lantern-fox",
+"bloodshard-golem": "bloodshard-golem",
+"arrow-whistler": "arrow-whistler"
 } as const;
 
 export const collectableCards = {
@@ -141,7 +143,9 @@ export const collectableCards = {
 "primus-fist": "primus-fist",
 "fire-spitter": "fire-spitter",
 "lux-ignis": "lux-ignis",
-"lantern-fox": "lantern-fox"
+"lantern-fox": "lantern-fox",
+"bloodshard-golem": "bloodshard-golem",
+"arrow-whistler": "arrow-whistler"
 } as const;
 
 type CardSet = Array<{id: string; collectable: boolean; rarity: Rarity; }>;
@@ -496,6 +500,16 @@ export const cardsBySet: Record<string, CardSet> = {
     "id": "lantern-fox",
     "collectable": true,
     "rarity": "epic"
+  },
+  {
+    "id": "bloodshard-golem",
+    "collectable": true,
+    "rarity": "common"
+  },
+  {
+    "id": "arrow-whistler",
+    "collectable": true,
+    "rarity": "rare"
   }
 ]
 };
@@ -568,7 +582,9 @@ export const cardShortIds: Record<string, number> = {
 "primus-fist": 66,
 "fire-spitter": 67,
 "lux-ignis": 68,
-"lantern-fox": 69
+"lantern-fox": 69,
+"bloodshard-golem": 70,
+"arrow-whistler": 71
 } as const;
 
 export const cardIdByShortId: Record<number, string> = {
@@ -639,5 +655,7 @@ export const cardIdByShortId: Record<number, string> = {
 "66": "primus-fist",
 "67": "fire-spitter",
 "68": "lux-ignis",
-"69": "lantern-fox"
+"69": "lantern-fox",
+"70": "bloodshard-golem",
+"71": "arrow-whistler"
 } as const;

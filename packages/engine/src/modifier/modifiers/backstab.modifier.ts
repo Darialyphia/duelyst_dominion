@@ -63,7 +63,7 @@ export class BackstabUnitModifier extends Modifier<Unit> {
           key: 'damageDealt',
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
-            if (ctx.target.isOnFrontRow) return value;
+            if (ctx.target.remainingHp !== ctx.target.maxHp) return value;
             return value + this.backstabAmount.getValue(this.options.damageBonus, this);
           }
         }),
@@ -71,7 +71,7 @@ export class BackstabUnitModifier extends Modifier<Unit> {
           key: 'canBeCounterattackTarget',
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
-            if (ctx.attacker.isOnFrontRow) return value;
+            if (ctx.attacker.remainingHp !== ctx.attacker.maxHp) return value;
             return false;
           }
         }),

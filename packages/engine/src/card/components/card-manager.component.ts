@@ -58,7 +58,9 @@ export class CardManagerComponent {
     const mainDeckCards = await this.buildCards<DeckCard>(this.options.deck);
 
     this.deck.populate(mainDeckCards);
-    this.deck.shuffle();
+    if (this.game.config.SHUFFLE_DECK_ON_GAME_START) {
+      this.deck.shuffle();
+    }
     this.hand.push(...this.deck.draw(this.game.config.INITIAL_HAND_SIZE));
   }
 

@@ -30,7 +30,7 @@ export const KEYWORDS = {
     id: 'backstab',
     name: 'Backstab (x)',
     description:
-      'Can attack enemies in the back row. When it does, it is immune to retaliation and deals X additional damage',
+      'When this unit attacks an uninjured enemy, it deals X additional damage and is immune to retaliation.',
     aliases: [/^backstab$/, /backstab \([0-9]+\)/]
   },
   BATTLE_PET: {

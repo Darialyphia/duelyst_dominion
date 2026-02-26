@@ -115,6 +115,7 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
         :disabled="action.isDisabled"
         :class="action.id"
         class="w-full"
+        :id="ui.DOMSelectors.actionButton(action.id).id"
         @click="action.onClick"
       >
         {{ action.label }}

@@ -72,7 +72,6 @@ export class Tutorial {
       await step.onSuccess?.(this.game, input, next ? this.steps[next] : null);
       if (isDefined(next)) {
         this.currentStepId = next;
-        console.log(this.currentStep);
         await this.currentStep.onEnter?.(this.game, this.currentStep);
       } else {
         this.isFinished = true;

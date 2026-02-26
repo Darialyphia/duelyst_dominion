@@ -6,7 +6,12 @@ type Zod = typeof z;
 
 export const simpleStepValidation =
   <T>(schema: (z: Zod) => z.ZodType<T>, msg: string) =>
-  (input: SerializedInput): TutorialStepValidationResult =>
-    schema(z).safeParse(input).success
-      ? { status: 'success' }
-      : { status: 'error', errorMessage: msg };
+  (input: SerializedInput): TutorialStepValidationResult => {
+    const result = schema(z).safeParse(input);
+
+    if (result.success) {
+      return { status: 'success' };
+    }
+
+    return { status: 'error', errorMessage: msg };
+  };

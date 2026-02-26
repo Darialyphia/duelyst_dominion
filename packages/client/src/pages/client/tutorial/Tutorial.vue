@@ -93,8 +93,11 @@ const RECT_PADDING = 15;
 
 <style scoped lang="postcss">
 .text-box-container {
+  top: 0;
+  left: 0;
   position: fixed;
-  inset: 0;
+  width: 100vw;
+  height: 100dvh;
   aspect-ratio: 16 / 9;
   pointer-events: none;
 }
@@ -114,10 +117,6 @@ const RECT_PADDING = 15;
   transition:
     scale 0.4s var(--ease-2),
     opacity 0.4s var(--ease-2);
-  @starting-style {
-    opacity: 0;
-    scale: 0.5;
-  }
 }
 
 .tutorial-error {
