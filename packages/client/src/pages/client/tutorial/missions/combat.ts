@@ -2,7 +2,7 @@ import type { TutorialMission } from '.';
 
 export const combatTutorial: TutorialMission = {
   id: 'combat',
-  name: 'Mission 2 : Combat',
+  name: 'Mission 2: Combat',
 
   options: {
     players: [

@@ -359,8 +359,8 @@ export const playCardTutorial: TutorialMission = {
           {
             text: 'You can see the mana cost of the card in the top left corner.',
             canGoNext: true,
-            top: '50%',
-            right: '6%',
+            top: '58%',
+            left: '6%',
             async onEnter(game, client) {
               client.ui.highlightedElement = document.querySelector(
                 `${
@@ -376,7 +376,7 @@ export const playCardTutorial: TutorialMission = {
             text: 'Since you started last turn with initiative, your opponent gets to go first this turn.',
             canGoNext: true,
             top: '50%',
-            right: '6%',
+            left: '6%',
             async onEnter(game, client) {
               client.ui.highlightedElement = null;
             },
@@ -413,7 +413,7 @@ export const playCardTutorial: TutorialMission = {
             text: 'Since you started last turn with initiative, your opponent gets to go first this turn.',
             canGoNext: false,
             top: '50%',
-            right: '6%',
+            left: '6%',
             async onEnter(game, client) {
               await waitFor(100);
               await client.dispatch({
@@ -521,7 +521,10 @@ export const playCardTutorial: TutorialMission = {
             text: 'When you play Arrow Whistler, you can deal damage to an enemy on the same column.',
             canGoNext: true,
             top: '55%',
-            left: '6%'
+            left: '6%',
+            async onEnter(game, client) {
+              client.ui.highlightedElement = null;
+            }
           },
           {
             text: 'Target the opponent\'s <b style="color: var(--green-4)">Kaido Assassin</b> in the same column.',

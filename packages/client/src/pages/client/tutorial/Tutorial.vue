@@ -55,7 +55,7 @@ const RECT_PADDING = 15;
     {{ currentStepError }}
   </div>
 
-  <div class="text-box-container">
+  <div class="text-box-container" @mouseup.stop>
     <div
       v-if="currentStepTextBox"
       class="surface text-box"

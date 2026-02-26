@@ -58,7 +58,6 @@ export class SlayUnitModifier extends Modifier<Unit> {
           eventName: UNIT_EVENTS.UNIT_AFTER_DESTROY,
           filter: event => {
             if (!event) return false;
-
             return event.data.source.equals(this.target.card);
           },
           handler: event => {

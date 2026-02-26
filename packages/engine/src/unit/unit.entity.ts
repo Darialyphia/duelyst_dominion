@@ -588,10 +588,10 @@ export class Unit
     this.damageTaken = Math.max(this.damageTaken - amount, 0);
   }
 
-  async removeHp(amount: number) {
+  async removeHp(amount: number, source: AnyCard) {
     this.damageTaken = Math.min(this.damageTaken + amount, this.maxHp);
 
-    await this.checkHp({ source: this.card });
+    await this.checkHp({ source });
   }
 
   private async checkHp({ source }: { source: AnyCard }) {

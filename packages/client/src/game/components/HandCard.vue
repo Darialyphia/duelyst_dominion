@@ -88,15 +88,13 @@ const onMouseDown = (e: MouseEvent) => {
   };
 
   const onMouseup = () => {
-    // if (app.value.view !== e.target) {
-    //   ui.value.unselect();
-    // }
     unselectCard();
     stopDragging();
   };
 
   document.body.addEventListener('mousemove', onMousemove);
   document.body.addEventListener('mouseup', onMouseup);
+
   const unwatch = watch(
     [() => state.value.phase.state, isOutOfScreen, () => ui.value.selectedCard],
     ([newState, outOfScreen, selectedCard]) => {

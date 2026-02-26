@@ -161,7 +161,7 @@ export class CombatComponent {
       );
     }
 
-    await this.unit.removeHp(damage.getFinalAmount(this.unit));
+    await this.unit.removeHp(damage.getFinalAmount(this.unit), from);
 
     if (!silent) {
       await this.game.emit(

@@ -108,13 +108,13 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
       />
     </div>
 
-    <div class="mt-9 flex flex-col gap-4">
+    <div class="actions">
       <UiButton
         v-for="action in ui.globalActions"
         :key="action.id"
         :disabled="action.isDisabled"
-        :class="action.id"
         class="w-full"
+        :class="[action.id, { 'is-replacing': ui.isReplacingCard }]"
         :id="ui.DOMSelectors.actionButton(action.id).id"
         @click="action.onClick"
       >
@@ -187,13 +187,18 @@ header {
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
-.action-button {
-  width: var(--size-12);
-  --ui-button-bg: var(--gray-10);
-  --ui-button-hover-bg: var(--gray-8);
-  --ui-button-color: white;
-
-  &.is-replacing {
+.actions {
+  margin-top: var(--size-9);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+  > * {
+    width: var(--size-12);
+    --ui-button-bg: var(--gray-10);
+    --ui-button-hover-bg: var(--gray-8);
+    --ui-button-color: white;
+  }
+  #action-button-replace.is-replacing {
     --ui-button-bg: var(--lime-5);
     --ui-button-hover-bg: var(--lime-6);
     --ui-button-color: var(--text-on-primary);

@@ -13,6 +13,7 @@ import { useFxAdapter } from '@/game/composables/useFxAdapter';
 import { provideGameClient } from '@/game/composables/useGameClient';
 import type { Config } from '@game/engine/src/config';
 import type {
+  AnyFunction,
   IndexedRecord,
   MaybePromise,
   Nullable,
@@ -107,6 +108,15 @@ export const useTutorial = (options: UseTutorialOptions) => {
 
   const currentStepError = ref<string | null>(null);
 
+  const ensureRunsOnlyOnce = <T extends AnyFunction>(fn: T) => {
+    let hasRun = false;
+    return (...args: Parameters<T>): ReturnType<T> | undefined => {
+      if (hasRun) return;
+      hasRun = true;
+      return fn(...args);
+    };
+  };
+
   tutorial.value = new Tutorial(
     game,
     Object.fromEntries(
@@ -114,6 +124,12 @@ export const useTutorial = (options: UseTutorialOptions) => {
         id,
         {
           ...step,
+          textBoxes: step.textBoxes.map(textBox => ({
+            ...textBox,
+            onLeave: textBox.onLeave
+              ? ensureRunsOnlyOnce(textBox.onLeave)
+              : undefined
+          })),
           async onEnter(game, newStep) {
             await currentStepTextBox.value?.onLeave?.(game, client.value);
             currentStep.value = newStep;
