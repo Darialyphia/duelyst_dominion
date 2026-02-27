@@ -32,7 +32,6 @@ declare module 'vue-router/auto-routes' {
     'Shop': RouteRecordInfo<'Shop', '/client/shop', Record<never, never>, Record<never, never>>,
     'TutorialHome': RouteRecordInfo<'TutorialHome', '/client/tutorial', Record<never, never>, Record<never, never>>,
     'TutorialMission': RouteRecordInfo<'TutorialMission', '/client/tutorial/missions/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
-    'HowToPlay': RouteRecordInfo<'HowToPlay', '/client/tutorial/rules', Record<never, never>, Record<never, never>>,
     'WatchGame': RouteRecordInfo<'WatchGame', '/client/watch/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'Home': RouteRecordInfo<'Home', '/', Record<never, never>, Record<never, never>>,
     'Login': RouteRecordInfo<'Login', '/login', Record<never, never>, Record<never, never>>,

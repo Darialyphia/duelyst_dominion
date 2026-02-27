@@ -1,3 +1,4 @@
+import { isDefined } from '@game/shared';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
@@ -43,8 +44,12 @@ export const primusFist: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const adjacentAllies = card.unit.adjacentUnits.filter(u => u.isAlly(card.player));
+      new MinionOnEnterModifier(game, card, async event => {
+        const adjacentAllies = event.data.cell.adjacent
+          .map(cell => cell.unit)
+          .filter(isDefined)
+          .filter(u => u.isAlly(card.player));
+
         for (const ally of adjacentAllies) {
           await ally.modifiers.add(
             new UnitSimpleAttackBuffModifier('primus-fist-buff', game, card, {

@@ -1,6 +1,5 @@
 import { argeonHighmane } from '@game/engine/src/card/sets/core/f1/argeon-highmane';
 import type { TutorialMission } from '.';
-import { windbladeAdept } from '@game/engine/src/card/sets/core/f1/windblade-adept';
 import { kaleosXaan } from '@game/engine/src/card/sets/core/f2/kaleos-xaan';
 import { Game } from '@game/engine';
 import { waitFor } from '@game/shared';
@@ -27,14 +26,7 @@ export const playCardTutorial: TutorialMission = {
             { blueprintId: argeonHighmane.id, isFoil: false },
             { blueprintId: bloodshardGolem.id, isFoil: false },
             { blueprintId: arrowWhistler.id, isFoil: false },
-            { blueprintId: brightmossGolem.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false },
-            { blueprintId: windbladeAdept.id, isFoil: false }
+            { blueprintId: brightmossGolem.id, isFoil: false }
           ]
         }
       },
@@ -44,12 +36,6 @@ export const playCardTutorial: TutorialMission = {
         deck: {
           cards: [
             { blueprintId: kaleosXaan.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
-            { blueprintId: kaidoAssassin.id, isFoil: false },
             { blueprintId: kaidoAssassin.id, isFoil: false },
             { blueprintId: kaidoAssassin.id, isFoil: false },
             { blueprintId: kaidoAssassin.id, isFoil: false }

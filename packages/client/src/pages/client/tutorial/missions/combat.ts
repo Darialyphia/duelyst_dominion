@@ -24,13 +24,10 @@ export const combatTutorial: TutorialMission = {
     rngSeed: 'tutorial-seed',
     history: [],
     config: {
-      SHUFFLE_DECK_ON_GAME_START: false
+      SHUFFLE_DECK_ON_GAME_START: false,
+      INITIAL_HAND_SIZE: 1
     },
-    async setup() {
-      // client.ui.displayedElements.artifacts = false;
-      // client.ui.displayedElements.destinyPhaseModal = false;
-      // client.ui.displayedElements.phaseTracker = false;
-    },
+    async setup() {},
     steps: {
       root: {
         id: 'root',
@@ -41,11 +38,10 @@ export const combatTutorial: TutorialMission = {
         next: () => null,
         textBoxes: [
           {
-            text: 'Welcome to the Clashing Destinies tutorial!',
+            text: '',
             canGoNext: true,
-            top: '25%',
-            left: '50%',
-            centered: { x: true }
+            top: '50%',
+            right: '6%'
           }
         ]
       }
