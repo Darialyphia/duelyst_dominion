@@ -552,7 +552,10 @@ export class Unit
     if (this.attacksPerformedThisTurn >= this.maxAttacksPerTurn) {
       this.exhaust();
     }
-    await this.game.emit(UNIT_EVENTS.UNIT_AFTER_COMBAT, new UnitAfterCombatEvent({}));
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_AFTER_COMBAT,
+      new UnitAfterCombatEvent({ unit: this })
+    );
     if (this.shouldSwitchInitiativeafterAttacking) {
       await this.game.turnSystem.switchInitiative();
     }

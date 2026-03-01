@@ -8,9 +8,9 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import { BackstabTargetingStrategy } from '../../targeting/backstab-targeting-strategy';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { RangedTargetingStrategy } from '../../targeting/ranged-targeting-strategy';
 
 export class RangedModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
   constructor(game: Game, source: AnyCard, options: { mixins?: ModifierMixin<T>[] }) {
@@ -46,13 +46,12 @@ export class RangedUnitModifier extends Modifier<Unit> {
         new UnitInterceptorModifierMixin(game, {
           key: 'attackTargetingPattern',
           interceptor: () =>
-            new BackstabTargetingStrategy(game, this.target, TARGETING_TYPE.ENEMY_UNIT)
+            new RangedTargetingStrategy(game, this.target, TARGETING_TYPE.ENEMY_UNIT)
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCounterattackTarget',
           interceptor: (value, ctx) => {
             if (!this.target.player.isTurnPlayer) return value;
-            if (this.target.isOnFrontRow) return value;
             return ctx.attacker.modifiers.has(RangedUnitModifier);
           }
         }),

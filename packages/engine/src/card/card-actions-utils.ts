@@ -34,7 +34,7 @@ export const discover = async (game: Game, card: AnyCard, choicePool: DeckCard[]
     label: 'Choose a card to add to your hand',
     source: card
   });
-
+  if (!selectedCard) return { selectedCard: null, choices };
   await selectedCard.addToHand();
 
   return { selectedCard, choices };

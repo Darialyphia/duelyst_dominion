@@ -23,6 +23,7 @@ import UiModal from '@/ui/components/UiModal.vue';
 import FancyButton from '@/ui/components/FancyButton.vue';
 import NewTurnIndicator from './NewTurnIndicator.vue';
 import GameErrorModal from './GameErrorModal.vue';
+import ChooseCardModal from './ChooseCardModal.vue';
 
 const boardCells = useBoardCells();
 const tiles = useTiles();
@@ -38,6 +39,7 @@ const isSettingsOpened = ref(false);
   <div class="game-board">
     <DraggedCard />
     <PlayedCard />
+    <ChooseCardModal />
     <SVGFilters />
 
     <Camera>

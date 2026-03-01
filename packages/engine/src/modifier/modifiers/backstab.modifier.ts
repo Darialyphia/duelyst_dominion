@@ -9,9 +9,8 @@ import { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
-import { ZealUnitModifier } from './zeal.modifier';
-import { BackstabTargetingStrategy } from '../../targeting/backstab-targeting-strategy';
-import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
+import { GameEventModifierMixin } from '../mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../game/game.events';
 
 export class BackstabModifier extends Modifier<MinionCard> {
   constructor(
@@ -40,6 +39,8 @@ export class BackstabModifier extends Modifier<MinionCard> {
 export class BackstabUnitModifier extends Modifier<Unit> {
   private backstabAmount = new Interceptable<number, BackstabUnitModifier>();
 
+  private _isBackstabbing = false;
+
   constructor(
     game: Game,
     source: AnyCard,
@@ -54,30 +55,50 @@ export class BackstabUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.BACKSTAB.description,
       icon: 'icons/keyword-backstab',
       mixins: [
-        new UnitInterceptorModifierMixin(game, {
-          key: 'attackTargetingPattern',
-          interceptor: () =>
-            new BackstabTargetingStrategy(game, this.target, TARGETING_TYPE.ENEMY_UNIT)
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
+          filter: event => {
+            if (!event) return false;
+            return (
+              event.data.unit.equals(this.target) &&
+              event.data.target.remainingHp === event.data.target.maxHp
+            );
+          },
+          handler: () => {
+            this._isBackstabbing = true;
+          }
+        }),
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.UNIT_AFTER_COMBAT,
+          filter: event => {
+            if (!event) return false;
+            return event.data.unit.equals(this.target);
+          },
+          handler: () => {
+            this._isBackstabbing = false;
+          }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'damageDealt',
-          interceptor: (value, ctx) => {
-            if (!this.target.player.isTurnPlayer) return value;
-            if (ctx.target.remainingHp !== ctx.target.maxHp) return value;
+          interceptor: value => {
+            if (!this.isBackstabbing) return value;
             return value + this.backstabAmount.getValue(this.options.damageBonus, this);
           }
         }),
         new UnitInterceptorModifierMixin(game, {
           key: 'canBeCounterattackTarget',
-          interceptor: (value, ctx) => {
-            if (!this.target.player.isTurnPlayer) return value;
-            if (ctx.attacker.remainingHp !== ctx.attacker.maxHp) return value;
+          interceptor: value => {
+            if (!this.isBackstabbing) return value;
             return false;
           }
         }),
         ...(options.mixins ?? [])
       ]
     });
+  }
+
+  get isBackstabbing() {
+    return this._isBackstabbing;
   }
 
   addBackstabAmountInterceptor(interceptor: (value: number) => number) {

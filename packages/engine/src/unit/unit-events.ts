@@ -150,11 +150,13 @@ export class UnitAfterBounceEvent extends TypedSerializableEvent<
 }
 
 export class UnitAfterCombatEvent extends TypedSerializableEvent<
-  EmptyObject,
-  EmptyObject
+  { unit: Unit },
+  { unit: string }
 > {
   serialize() {
-    return {};
+    return {
+      unit: this.data.unit.id
+    };
   }
 }
 
