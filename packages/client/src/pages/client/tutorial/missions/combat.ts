@@ -1,6 +1,5 @@
 import type { TutorialMission } from '.';
 import { Game } from '@game/engine';
-import { waitFor } from '@game/shared';
 import { simpleStepValidation } from './utils';
 import { bloodshardGolem } from '@game/engine/src/card/sets/core/neutral/bloodshard-golem';
 import { hailstoneGolem } from '@game/engine/src/card/sets/core/neutral/hailstone-golem';
@@ -69,7 +68,7 @@ export const combatTutorial: TutorialMission = {
                   y: z.literal(1)
                 })
               }),
-            'Attack the enemy unit with your Hailstone Golem.'
+            'Attack the enemy unit with your Bloodshard Golem.'
           )(input);
         },
         next: () => 'retaliation_explain',
@@ -82,9 +81,9 @@ export const combatTutorial: TutorialMission = {
           const p1 = game.playerSystem.player1;
           const p2 = game.playerSystem.player2;
 
-          // Place P1's Hailstone Golem on the front row at column 2
+          // Place P1's Bloodshard Golem on the front row at column 2
           const p1Card1 = await p1.generateCard<MinionCard>(
-            hailstoneGolem.id,
+            bloodshardGolem.id,
             false
           );
           await p1Card1.playAt(game.boardSystem.getCellAt({ x: 2, y: 2 })!, []);
@@ -124,7 +123,7 @@ export const combatTutorial: TutorialMission = {
             right: '6%'
           },
           {
-            text: 'Your <b style="color: var(--green-4)">Hailstone Golem</b> (3 atk / 3 retaliation / 7 hp) is facing an enemy <b style="color: var(--red-4)">Bloodshard Golem</b> (2 atk / 2 retaliation / 6 hp).',
+            text: 'Your <b style="color: var(--green-4)">Bloodshard Golem</b> (2 atk / 2 retaliation / 6 hp) is facing an enemy <b style="color: var(--red-4)">Bloodshard Golem</b> (2 atk / 2 retaliation / 6 hp).',
             canGoNext: true,
             top: '58%',
             left: '20%',
@@ -135,7 +134,7 @@ export const combatTutorial: TutorialMission = {
             }
           },
           {
-            text: 'Select your Hailstone Golem.',
+            text: 'Select your Bloodshard Golem.',
             canGoNext: false,
             top: '58%',
             left: '20%',
@@ -189,7 +188,7 @@ export const combatTutorial: TutorialMission = {
         ),
         textBoxes: [
           {
-            text: "You dealt <b style='color: var(--red-4)'>3 damage</b> to the Bloodshard Golem with your attack!",
+            text: "You dealt <b style='color: var(--red-4)'>2 damage</b> to the Bloodshard Golem with your attack!",
             canGoNext: true,
             top: '50%',
             right: '6%',
@@ -200,7 +199,7 @@ export const combatTutorial: TutorialMission = {
             }
           },
           {
-            text: "But the enemy fought back! It dealt <b style='color: var(--green-4)'>2 retaliation damage</b> to your Hailstone Golem.",
+            text: "But the enemy fought back! It dealt <b style='color: var(--green-4)'>2 retaliation damage</b> to the attacker.",
             canGoNext: true,
             top: '58%',
             right: '6%',
@@ -227,7 +226,7 @@ export const combatTutorial: TutorialMission = {
             right: '6%'
           },
           {
-            text: "It is now your opponent's turn to act.The opponent's Bloodshard Golem will now attack your Hailstone Golem.",
+            text: "It is now your opponent's turn to act  .",
             canGoNext: true,
             top: '50%',
             right: '6%',
@@ -247,9 +246,6 @@ export const combatTutorial: TutorialMission = {
         ]
       },
 
-      // ============================================================
-      // STEP 5: Destroy the weakened enemy
-      // ============================================================
       opponent_attacks_target: {
         id: 'opponent_attacks_target',
         isRoot: false,
@@ -266,7 +262,7 @@ export const combatTutorial: TutorialMission = {
         ),
         textBoxes: [
           {
-            text: "The enemy dealt <b style='color: var(--red-4)'>2 damage</b> to your Hailstone Golem, but your golem retaliated for <b style='color: var(--green-4)'>3 damage</b>!",
+            text: "The enemy dealt <b style='color: var(--red-4)'>2 damage</b> to your Bloodshard Golem, but your golem retaliated for <b style='color: var(--green-4)'>2 damage</b>!",
             canGoNext: true,
             top: '50%',
             right: '6%',
@@ -274,12 +270,6 @@ export const combatTutorial: TutorialMission = {
             onEnter(game, client) {
               client.ui.highlightedElement = null;
             }
-          },
-          {
-            text: 'Notice that your Hailstone Golem has higher retaliation (3) than the Bloodshard Golem (2). A unit with high retaliation is better at defending!',
-            canGoNext: true,
-            top: '50%',
-            right: '6%'
           },
           {
             text: 'The enemy Bloodshard Golem is now very low on HP. Attack it to destroy it!',
@@ -294,6 +284,7 @@ export const combatTutorial: TutorialMission = {
           }
         ]
       },
+
       destroy_select_target: {
         id: 'destroy_select_target',
         isRoot: false,
@@ -382,7 +373,7 @@ export const combatTutorial: TutorialMission = {
                 unitId: z.literal(meta.p1Unit1Id)
               })
             }),
-          'Attack the opponent directly with your Hailstone Golem.'
+          'Attack the opponent directly with your Bloodshard Golem.'
         ),
         textBoxes: [
           {
@@ -406,7 +397,7 @@ export const combatTutorial: TutorialMission = {
             }
           },
           {
-            text: 'Click on your <b style="color: var(--green-4)">Hailstone Golem</b> to select it, then attack the opponent.',
+            text: 'Click on your <b style="color: var(--green-4)">Bloodshard Golem</b> to select it, then attack the opponent.',
             canGoNext: false,
             top: '58%',
             left: '6%',
