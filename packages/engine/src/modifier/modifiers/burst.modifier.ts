@@ -8,7 +8,7 @@ import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
 
 export class BurstModifier<T extends AnyCard> extends Modifier<T> {
-  constructor(game: Game, card: T, options?: { mixins: ModifierMixin<T>[] }) {
+  constructor(game: Game, card: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.BURST.id, game, card, {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.BURST),

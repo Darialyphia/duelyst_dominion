@@ -71,11 +71,11 @@ export class SpawnUnitModifier extends Modifier<Unit> {
               isElligible: candidate => {
                 return this.nearbyEmptySpaces.some(space => space.equals(candidate));
               },
-              canCommit(selectedCards) {
-                return selectedCards.length === 1;
+              canCommit(selectedSpaces) {
+                return selectedSpaces.length === 1;
               },
-              isDone(selectedCards) {
-                return selectedCards.length === 1;
+              isDone(selectedSpaces) {
+                return selectedSpaces.length === 1;
               },
               source: this.target.card,
               getAoe(selectedSpaces) {
@@ -101,8 +101,10 @@ export class SpawnUnitModifier extends Modifier<Unit> {
   }
 
   get nearbyEmptySpaces() {
-    return this.game.boardSystem
-      .getNeighbors(this.target.position)
-      .filter(space => !space.isOccupied);
+    return (
+      this.game.boardSystem
+        .getCellAt(this.target.position)
+        ?.adjacent.filter(space => !space.isOccupied) ?? []
+    );
   }
 }

@@ -1,5 +1,9 @@
 import { ref, computed, onMounted, type MaybeRefOrGetter } from 'vue';
-import { unrefElement, useEventListener } from '@vueuse/core';
+import {
+  unrefElement,
+  useEventListener,
+  useResizeObserver
+} from '@vueuse/core';
 import { throttle } from 'lodash-es';
 import { clamp, mapRange } from '@game/shared';
 import gsap from 'gsap';
@@ -38,7 +42,7 @@ export function useCardTilt(
   };
 
   onMounted(setBoundingRect);
-
+  useResizeObserver(target, setBoundingRect, { box: 'border-box' });
   useEventListener('scroll', throttle(setBoundingRect, 100), {
     passive: true,
     capture: true

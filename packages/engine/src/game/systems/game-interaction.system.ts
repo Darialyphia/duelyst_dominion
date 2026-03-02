@@ -20,6 +20,7 @@ import {
   INTERACTION_STATES
 } from '../game.enums';
 import { CorruptedInteractionContextError } from '../game-error';
+import { AskQuestionContext } from '../interactions/ask-question.interaction';
 
 export type InteractionContext =
   | {
@@ -33,6 +34,10 @@ export type InteractionContext =
   | {
       state: BetterExtract<InteractionState, 'choosing_cards'>;
       ctx: ChoosingCardsContext;
+    }
+  | {
+      state: BetterExtract<InteractionState, 'ask_question'>;
+      ctx: AskQuestionContext;
     };
 
 export type SerializedInteractionContext =
@@ -47,6 +52,10 @@ export type SerializedInteractionContext =
   | {
       state: Extract<InteractionState, 'choosing_cards'>;
       ctx: ReturnType<ChoosingCardsContext['serialize']>;
+    }
+  | {
+      state: Extract<InteractionState, 'ask_question'>;
+      ctx: ReturnType<AskQuestionContext['serialize']>;
     };
 
 export class GameInteractionSystem
@@ -56,10 +65,15 @@ export class GameInteractionSystem
   private ctxDictionary = {
     [INTERACTION_STATES.IDLE]: IdleContext,
     [INTERACTION_STATES.SELECTING_SPACE_ON_BOARD]: SelectingSpaceOnBoardContext,
-    [INTERACTION_STATES.CHOOSING_CARDS]: ChoosingCardsContext
+    [INTERACTION_STATES.CHOOSING_CARDS]: ChoosingCardsContext,
+    [INTERACTION_STATES.ASK_QUESTION]: AskQuestionContext
   } as const;
 
-  private _ctx: IdleContext | SelectingSpaceOnBoardContext | ChoosingCardsContext;
+  private _ctx:
+    | IdleContext
+    | SelectingSpaceOnBoardContext
+    | ChoosingCardsContext
+    | AskQuestionContext;
 
   constructor(private game: Game) {
     super(INTERACTION_STATES.IDLE);
@@ -92,6 +106,21 @@ export class GameInteractionSystem
       stateTransition(
         INTERACTION_STATES.CHOOSING_CARDS,
         INTERACTION_STATE_TRANSITIONS.CANCEL_CHOOSING_CARDS,
+        INTERACTION_STATES.IDLE
+      ),
+      stateTransition(
+        INTERACTION_STATES.IDLE,
+        INTERACTION_STATE_TRANSITIONS.START_ASKING_QUESTION,
+        INTERACTION_STATES.ASK_QUESTION
+      ),
+      stateTransition(
+        INTERACTION_STATES.ASK_QUESTION,
+        INTERACTION_STATE_TRANSITIONS.COMMIT_ASKING_QUESTION,
+        INTERACTION_STATES.IDLE
+      ),
+      stateTransition(
+        INTERACTION_STATES.ASK_QUESTION,
+        INTERACTION_STATE_TRANSITIONS.CANCEL_ASKING_QUESTION,
         INTERACTION_STATES.IDLE
       )
     ]);
@@ -156,6 +185,22 @@ export class GameInteractionSystem
     );
 
     return this.game.inputSystem.pause<T[]>();
+  }
+
+  async askQuestion<T extends string = string>(options: {
+    player: Player;
+    choices: Array<{ id: string; label: string }>;
+    source: AnyCard;
+    label: string;
+    questionId: string;
+    timeoutFallback: string;
+  }) {
+    this.dispatch(INTERACTION_STATE_TRANSITIONS.START_ASKING_QUESTION);
+    this._ctx = await this.ctxDictionary[INTERACTION_STATES.ASK_QUESTION].create(
+      this.game,
+      options
+    );
+    return this.game.inputSystem.pause<T>();
   }
 
   onInteractionEnd() {

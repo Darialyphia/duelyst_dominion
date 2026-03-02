@@ -61,7 +61,7 @@ export class BackstabUnitModifier extends Modifier<Unit> {
             if (!event) return false;
             return (
               event.data.unit.equals(this.target) &&
-              event.data.target.remainingHp === event.data.target.maxHp
+              event.data.target.remainingHp !== event.data.target.maxHp
             );
           },
           handler: () => {

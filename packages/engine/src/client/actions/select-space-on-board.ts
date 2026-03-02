@@ -16,11 +16,6 @@ export class SelectSpaceOnBoardAction implements BoardCellClickRule {
   }
 
   handler(cell: BoardCellViewModel, event: MouseEvent) {
-    if (this.client.ui.selectedCard) {
-      event.stopPropagation();
-      this.client.ui.unselectCard();
-    }
-
     this.client.dispatch({
       type: 'selectSpaceOnBoard',
       payload: {

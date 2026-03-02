@@ -201,6 +201,7 @@ export class UiController {
     const state = this.client.state;
     for (const rule of this.boardCellClickRules) {
       if (rule.predicate(cell, state)) {
+        event.stopPropagation();
         rule.handler(cell, event);
         return;
       }

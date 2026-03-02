@@ -45,14 +45,12 @@ const isSettingsOpened = ref(false);
     <Camera>
       <BoardCell v-for="cell in boardCells" :key="cell.id" :cell="cell" />
       <Tile v-for="tile in tiles" :key="tile.id" :tile="tile" />
-      <TransitionGroup>
-        <Unit
-          v-for="unit in units"
-          :key="unit.id"
-          :unit="unit"
-          class="board-unit"
-        />
-      </TransitionGroup>
+      <Unit
+        v-for="unit in units"
+        :key="unit.id"
+        :unit="unit"
+        class="board-unit"
+      />
     </Camera>
 
     <VFX />
@@ -130,13 +128,6 @@ const isSettingsOpened = ref(false);
   top: 0;
   left: 50%;
   translate: -50% 0;
-}
-
-.board-unit:is(.v-enter-active, .v-leave-active) {
-  transition: opacity 0.3s var(--ease-3);
-}
-.board-unit:is(.v-enter-from, .v-leave-to) {
-  opacity: 0;
 }
 
 .settings-button {

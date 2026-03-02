@@ -8,7 +8,10 @@ import {
 import GameCard from './GameCard.vue';
 import { usePageLeave } from '@vueuse/core';
 import { Flip } from 'gsap/Flip';
-import { GAME_PHASES } from '@game/engine/src/game/game.enums';
+import {
+  GAME_PHASES,
+  INTERACTION_STATES
+} from '@game/engine/src/game/game.enums';
 import Sound from '@/ui/components/Sound.vue';
 import { useSoundEffect } from '@/shared/composables/useSoundEffect';
 
@@ -29,6 +32,12 @@ const isShaking = ref(false);
 const violationWarning = ref('');
 
 const unselectCard = () => {
+  if (
+    state.value.interaction.state !==
+    INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
+  ) {
+    return;
+  }
   const el = document.querySelector('#dragged-card [data-game-card]');
   if (!el) return;
 
@@ -99,6 +108,7 @@ const onMouseDown = (e: MouseEvent) => {
     [() => state.value.phase.state, isOutOfScreen, () => ui.value.selectedCard],
     ([newState, outOfScreen, selectedCard]) => {
       if (newState !== GAME_PHASES.PLAYING_CARD) {
+        console.log(newState);
         stopDragging();
         unselectCard();
         unwatch();
