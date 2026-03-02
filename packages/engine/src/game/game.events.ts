@@ -26,6 +26,10 @@ import { TILE_EVENTS } from '../tile/tile-enums';
 import type { TileEventMap } from '../tile/tile-events';
 import type { TurnEventMap } from './systems/turn.system';
 import type { Player } from '../player/player.entity';
+import {
+  MODIFIER_SPECIAL_EVENTS,
+  type ModifierSpecialEventMap
+} from '../modifier/modifier.special-events';
 
 export class GameInputEvent extends TypedSerializableEvent<
   { input: Input<any> },
@@ -143,7 +147,8 @@ export type GameEventMap = Prettify<
     GeneralEventMap &
     TileEventMap &
     VFXEventMap &
-    TurnEventMap
+    TurnEventMap &
+    ModifierSpecialEventMap
 >;
 export type GameEventName = keyof GameEventMap;
 export type GameEvent = Values<GameEventMap>;
@@ -168,7 +173,8 @@ export const GAME_EVENTS = {
   ...GENERAL_EVENTS,
   ...VFX_EVENTS,
   ...TILE_EVENTS,
-  ...TURN_EVENTS
+  ...TURN_EVENTS,
+  ...MODIFIER_SPECIAL_EVENTS
 } as const satisfies Record<string, keyof GameEventMap>;
 
 export type SerializedEvent<T extends keyof typeof GAME_EVENTS> = ReturnType<

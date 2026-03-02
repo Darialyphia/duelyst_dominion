@@ -24,6 +24,6 @@ export class LevelBonusModifier<T extends AnyCard = AnyCard> extends Modifier<T>
   }
 
   isActiveForLevel(level: number) {
-    return this.level === level;
+    return this.target.player.levelManager.level >= level;
   }
 }

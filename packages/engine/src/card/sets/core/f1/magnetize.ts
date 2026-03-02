@@ -2,10 +2,8 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import dedent from 'dedent';
-import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
 import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.modifier';
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
-import { ColumnAOEShape } from '../../../../aoe/column.aoe-shape';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { singleUnitTargetRules } from '../../../card-utils';
 import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
@@ -17,7 +15,7 @@ export const magnetize: SpellBlueprint = {
   name: 'Magnetize',
   description: dedent`
   Move a unit from the back row to the front row of the same column if able. Give it @Anchored@ until end of turn.
-  @[lvl]3 bonus]@: @Burst@.
+  @[lvl] 3 bonus@: @Burst@.
   `,
   vfx: {
     spriteId: 'spells/f1_magnetize',

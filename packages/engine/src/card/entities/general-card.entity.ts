@@ -186,6 +186,14 @@ export class GeneralCard extends Card<
         if (this.location === CARD_LOCATIONS.DISCARD_PILE) {
           await this.addToHand();
         }
+      }),
+
+      this.game.on(GAME_EVENTS.UNIT_AFTER_ATTACK, async event => {
+        if (!event.data.unit.card.equals(this)) return;
+
+        await this.player.levelManager.gainExp(
+          this.game.config.EXP_GAIN_PER_GENERAL_ATTACK
+        );
       })
     ];
   }

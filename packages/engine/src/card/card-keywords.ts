@@ -179,6 +179,12 @@ export const KEYWORDS = {
     id: 'intimidate',
     name: 'Intimidate (x)',
     description: 'Units attacked by this unit that cost X or less cannot counterattack.',
+    aliases: [/intimidate \([0-9]+\)/]
+  },
+  INVULNERABLE: {
+    id: 'invulnerable',
+    name: 'Invulnerable',
+    description: 'This unit cannot be damaged.',
     aliases: []
   },
   LEVEL_BONUS: {
@@ -199,10 +205,16 @@ export const KEYWORDS = {
     description: 'Triggers when the unit is destroyed.',
     aliases: ['dying wish']
   },
-  ON_CAPTURE: {
-    id: 'on_capture',
-    name: 'On Capture',
-    description: 'Triggers when this unit captures a shrine.',
+  ON_ATTACK: {
+    id: 'on_attack',
+    name: 'On Attack',
+    description: 'Triggers when this unit attacks.',
+    aliases: []
+  },
+  ON_COUNTERATTACK: {
+    id: 'on_counterattack',
+    name: 'On Counterattack',
+    description: 'Triggers when this unit counterattacks.',
     aliases: []
   },
   ON_HOLD: {
@@ -250,8 +262,8 @@ export const KEYWORDS = {
     aliases: []
   },
   SLAY: {
-    id: 'slay',
-    name: 'Slay',
+    id: 'on_kill',
+    name: 'On Kill',
     description: 'Triggers when this unit destroys another one.',
     aliases: []
   },

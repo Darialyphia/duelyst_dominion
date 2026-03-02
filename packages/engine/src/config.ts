@@ -39,6 +39,7 @@ export type Config = {
   PLAYER_MAX_LEVEL: number;
   EXP_PER_LEVEL: number;
   EXP_GAIN_PER_TURN: number;
+  EXP_GAIN_PER_GENERAL_ATTACK: number;
 };
 
 export const defaultConfig: Config = {
@@ -74,5 +75,6 @@ export const defaultConfig: Config = {
 
   PLAYER_MAX_LEVEL: 4,
   EXP_PER_LEVEL: 3,
-  EXP_GAIN_PER_TURN: 1
+  EXP_GAIN_PER_TURN: 1,
+  EXP_GAIN_PER_GENERAL_ATTACK: 1
 };

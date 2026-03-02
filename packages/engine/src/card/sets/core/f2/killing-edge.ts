@@ -11,14 +11,13 @@ import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.m
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
-import type { MinionCard } from '../../../entities/minion-card.entity';
 
 export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
   description: dedent`
     Give an allied minion +2 / +0 / +1 and @Backstab (1)@. 
-    @[lvl] 2 bonus@: give Backstab(2) instead.
+    @[lvl] 2 bonus@: give @Backstab(2)@ instead.
     @[lvl] 3 bonus@: @Burst@.
   `,
   vfx: {

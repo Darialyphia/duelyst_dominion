@@ -11,12 +11,19 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
+import type { GeneralCard } from '../../card/entities/general-card.entity';
+import { TypedSerializableEvent } from '../../utils/typed-emitter';
+import { BackstabEvent } from '../modifier.special-events';
 
-export class BackstabModifier extends Modifier<MinionCard> {
+export class BackstabModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
   constructor(
     game: Game,
     source: AnyCard,
-    options: { mixins?: ModifierMixin<MinionCard>[]; damageBonus: number }
+    options: {
+      mixins?: ModifierMixin<T>[];
+      damageBonus: number;
+      unitMixins?: ModifierMixin<Unit>[];
+    }
   ) {
     super(KEYWORDS.BACKSTAB.id, game, source, {
       name: KEYWORDS.BACKSTAB.name,
@@ -27,7 +34,8 @@ export class BackstabModifier extends Modifier<MinionCard> {
         new UnitEffectModifierMixin(game, {
           getModifier: () =>
             new BackstabUnitModifier(game, source, {
-              damageBonus: options.damageBonus
+              damageBonus: options.damageBonus,
+              mixins: options.unitMixins ?? []
             })
         }),
         ...(options?.mixins ?? [])
@@ -60,12 +68,30 @@ export class BackstabUnitModifier extends Modifier<Unit> {
           filter: event => {
             if (!event) return false;
             return (
+              event.data.target instanceof Unit &&
               event.data.unit.equals(this.target) &&
-              event.data.target.remainingHp !== event.data.target.maxHp
+              event.data.target.remainingHp === event.data.target.maxHp
             );
           },
           handler: () => {
             this._isBackstabbing = true;
+          }
+        }),
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
+          filter: event => {
+            if (!event) return false;
+            return event.data.unit.equals(this.target) && this.isBackstabbing;
+          },
+          handler: async event => {
+            await this.game.emit(
+              GAME_EVENTS.MODIFIER_BACKSTAB,
+              new BackstabEvent({
+                unit: event!.data.unit,
+                target: event!.data.target as Unit,
+                amount: this.backstabAmount.getValue(this.options.damageBonus, this)
+              })
+            );
           }
         }),
         new GameEventModifierMixin(game, {
