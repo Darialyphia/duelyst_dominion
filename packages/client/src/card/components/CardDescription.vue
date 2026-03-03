@@ -1,20 +1,66 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue';
-import { useAutoResizeText } from '../composables/useAutoResizeText';
 import CardText from './CardText.vue';
 import type { CardKind } from '@game/engine/src/card/card.enums';
+import { useResizeObserver } from '@vueuse/core';
 
 defineProps<{
   description: string;
   kind: CardKind;
 }>();
 
+const getPixelScale = () => {
+  let el: HTMLElement | null = descriptionBox.value;
+  if (!el) return 1;
+  let scale = getComputedStyle(el).getPropertyValue('--pixel-scale');
+  while (!scale) {
+    if (!el!.parentElement) return 1;
+    el = el!.parentElement;
+    scale = getComputedStyle(el).getPropertyValue('--pixel-scale');
+  }
+
+  return parseFloat(scale) || 1;
+};
+
+const setVariableFontSize = (
+  box: HTMLElement,
+  sizeRef: Ref<number>,
+  min: number,
+  max: number
+) => {
+  const inner = box.firstChild as HTMLElement;
+  const outerHeight = box.clientHeight;
+  if (inner.clientHeight <= outerHeight) {
+    return;
+  }
+  let size = max;
+  const step = 0.5;
+  const scale = getPixelScale() / 2; // text size uses half pixel scale in calculation
+
+  while (inner.clientHeight > outerHeight) {
+    size -= step;
+    box.style.fontSize = `${size * scale}px`;
+  }
+  box.style.fontSize = '';
+  sizeRef.value = size;
+};
 const descriptionBox = useTemplateRef('description-box');
-const { fontSize: descriptionFontSize } = useAutoResizeText(descriptionBox, {
-  min: 12,
-  max: 20,
-  ideal: 16
-});
+
+const DESCRIPTION_MIN_TEXT_SIZE = 10;
+const DESCRIPTION_MAX_TEXT_SIZE = 16;
+const descriptionFontSize = ref(DESCRIPTION_MAX_TEXT_SIZE);
+
+const resizeDescription = () => {
+  if (!descriptionBox.value) return;
+  setVariableFontSize(
+    descriptionBox.value,
+    descriptionFontSize,
+    DESCRIPTION_MIN_TEXT_SIZE,
+    DESCRIPTION_MAX_TEXT_SIZE
+  );
+};
+
+useResizeObserver(descriptionBox, resizeDescription);
 </script>
 
 <template>
@@ -52,12 +98,6 @@ const { fontSize: descriptionFontSize } = useAutoResizeText(descriptionBox, {
   }
   > * {
     display: inline-block;
-  }
-  > span {
-    width: 1px;
-    height: 1px;
-    align-self: start;
-    vertical-align: top;
   }
 }
 </style>

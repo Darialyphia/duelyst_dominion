@@ -1,5 +1,3 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
@@ -13,7 +11,7 @@ import { AbilityDamage } from '../../../../utils/damage';
 export const fourWindsMagus: MinionBlueprint = {
   id: 'four-winds-magus',
   name: 'Four Winds Magus',
-  description: 'When you play a spell, deal 1 damage to the enemy player and heal for 1.',
+  description: `After you play a spell, deal 1 damage to all units in this unit's column.`,
   vfx: {
     spriteId: 'minions/f2_four-winds-magus',
     sequences: {
@@ -45,7 +43,7 @@ export const fourWindsMagus: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier('rythmweaver', game, card, {
+        modifier: new Modifier('four-winds-magus', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.CARD_AFTER_PLAY,
@@ -55,8 +53,10 @@ export const fourWindsMagus: MinionBlueprint = {
                 return isSpell(event.data.card);
               },
               async handler() {
-                await card.player.opponent.takeDamage(card, new AbilityDamage(card, 1));
-                await card.player.heal(card, 1);
+                const columnUnits = card.unit.unitsOnSameColumn;
+                for (const unit of columnUnits) {
+                  await unit.takeDamage(card, new AbilityDamage(card, 1));
+                }
               }
             })
           ]
