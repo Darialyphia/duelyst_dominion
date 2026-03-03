@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Flip } from 'gsap/Flip';
 import {
   useBoardCells,
+  useGameState,
+  useGameUi,
   useMyPlayer,
   useTiles,
   useUnits
@@ -24,6 +27,9 @@ import FancyButton from '@/ui/components/FancyButton.vue';
 import NewTurnIndicator from './NewTurnIndicator.vue';
 import GameErrorModal from './GameErrorModal.vue';
 import ChooseCardModal from './ChooseCardModal.vue';
+import { useEventListener, usePageLeave } from '@vueuse/core';
+import { GAME_PHASES } from '@game/engine/src/game/game.enums';
+import type { CardViewModel } from '@game/engine/src/client/view-models/card.model';
 
 const boardCells = useBoardCells();
 const tiles = useTiles();
@@ -33,6 +39,56 @@ const myPlayer = useMyPlayer();
 useGlobalSounds();
 
 const isSettingsOpened = ref(false);
+const ui = useGameUi();
+const state = useGameState();
+const stopDragging = async (cb?: (playedCard: CardViewModel) => void) => {
+  await nextTick();
+  if (!ui.value.draggedCard) return;
+  const card = ui.value.draggedCard;
+
+  ui.value.draggedCard = null;
+
+  cb?.(card);
+};
+
+const isOutOfScreen = usePageLeave();
+
+const cancelPlay = (card: CardViewModel) => {
+  const el = document.querySelector('#dragged-card [data-game-card]');
+  if (!el) return;
+  const flipState = Flip.getState(el);
+  ui.value.unselectCard();
+  card.cancelPlay();
+  window.requestAnimationFrame(() => {
+    const target = document.querySelector(
+      `.hand-card [data-game-card="${card.id}"]`
+    );
+    Flip.from(flipState, {
+      targets: target,
+      duration: 0.25,
+      absolute: true,
+      ease: Power1.easeOut
+    });
+  });
+};
+watch(isOutOfScreen, out => {
+  if (!out) return;
+  stopDragging(card => {
+    if (state.value.phase.state !== GAME_PHASES.PLAYING_CARD) return;
+    cancelPlay(card);
+  });
+});
+
+useEventListener('mouseup', async e => {
+  stopDragging(card => {
+    if (state.value.phase.state !== GAME_PHASES.PLAYING_CARD) return;
+    const isWithinBoard = ui.value.DOMSelectors.board.element?.contains(
+      e.target as Node
+    );
+    if (isWithinBoard) return;
+    cancelPlay(card);
+  });
+});
 </script>
 
 <template>

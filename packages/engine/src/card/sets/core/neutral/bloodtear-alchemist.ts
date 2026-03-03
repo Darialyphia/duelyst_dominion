@@ -38,15 +38,14 @@ export const bloodtearAlchemist: MinionBlueprint = {
   atk: 2,
   maxHp: 1,
   retaliation: 1,
-  getTargets(game, card) {
-    return singleEnemyTargetRules.getPreResponseTargets(game, card, { required: false });
-  },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const [target] = event.data.targets;
+      new MinionOnEnterModifier(game, card, async () => {
+        const [target] = await singleEnemyTargetRules.getPreResponseTargets(game, card, {
+          required: false
+        });
+
         if (!target) return;
         await target.unit?.takeDamage(card, new AbilityDamage(card, 1));
       })

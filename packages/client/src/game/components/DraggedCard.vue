@@ -69,9 +69,7 @@ const { client } = useGameClient();
 
 const container = useTemplateRef<HTMLDivElement>('container');
 watchEffect(() => {
-  const shouldPin =
-    state.value.phase.state !== GAME_PHASES.PLAYING_CARD ||
-    !isDefined(ui.value.selectedCard);
+  const shouldPin = !isDefined(ui.value.selectedCard);
   if (shouldPin === isPinned.value) return;
 
   if (shouldPin) {
@@ -167,7 +165,9 @@ const draggedCard = computed(() => {
           v-if="
             isPinned &&
             !isPinning &&
-            state.phase.state === GAME_PHASES.PLAYING_CARD
+            state.phase.state === GAME_PHASES.PLAYING_CARD &&
+            state.interaction.state ===
+              INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
           "
           class="flex flex-col gap-3 mt-3"
           @mouseup.stop
@@ -179,6 +179,7 @@ const draggedCard = computed(() => {
             {{ confirmButtonLabel }}
           </UiButton>
           <UiButton
+            v-if="state.phase.ctx.canCancel"
             class="error-button w-full pointer-events-auto"
             @click="client.cancelPlayCard()"
           >
@@ -206,8 +207,8 @@ const draggedCard = computed(() => {
       rotateY(calc(1deg * v-bind('cardRotation.y')));
   }
   &.is-pinned {
-    top: var(--size-13);
-    right: var(--size-8);
+    top: var(--size-14);
+    left: var(--size-12);
   }
 }
 

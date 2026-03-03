@@ -35,8 +35,6 @@ export const hailstoneGolem: MinionBlueprint = {
   atk: 3,
   maxHp: 7,
   retaliation: 3,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit() {},
   async onPlay() {}

@@ -45,8 +45,6 @@ export const endlessObelysk: MinionBlueprint = {
   atk: 0,
   maxHp: 4,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new StructureModifier(game, card, {}));

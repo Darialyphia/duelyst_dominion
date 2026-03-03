@@ -43,20 +43,19 @@ export const arrowWhistler: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 2,
-  getTargets(game, card, position) {
-    return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: unit => unit.isEnemy(card.player) && unit.position.x === position.x
-    });
-  },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        if (!event.data.cell.isFrontRow) return;
-        const [target] = event.data.targets;
+        if (!event.data.unit.isOnFrontRow) return;
+        const [target] = await singleMinionTargetRules.getPreResponseTargets(game, card, {
+          predicate: unit =>
+            unit.isEnemy(card.player) && unit.position.x === event.data.unit.position.x,
+          required: false
+        });
         if (!target) return;
+
         await target.unit!.takeDamage(card, new AbilityDamage(card, 2));
       })
     );

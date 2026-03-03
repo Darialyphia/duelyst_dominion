@@ -9,6 +9,7 @@
   "exclude": [".git", "node_modules"],
   "compilerOptions": {
     "types": ["vitest/importMeta"],
+    "rootDir": "./src",
     "lib": ["dom", "dom.iterable", "esnext"]
   }
 }

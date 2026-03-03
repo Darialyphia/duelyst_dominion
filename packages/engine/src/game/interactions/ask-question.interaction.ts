@@ -68,4 +68,11 @@ export class AskQuestionContext {
     this.game.interaction.onInteractionEnd();
     this.game.inputSystem.unpause(this.selectedChoice!.id);
   }
+
+  cancel(player: Player) {
+    assert(player.equals(this.player), new InvalidPlayerError());
+    this.game.interaction.dispatch(INTERACTION_STATE_TRANSITIONS.CANCEL_ASKING_QUESTION);
+    this.game.interaction.onInteractionEnd();
+    this.game.inputSystem.unpause([]);
+  }
 }

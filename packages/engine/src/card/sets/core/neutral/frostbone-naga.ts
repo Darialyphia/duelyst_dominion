@@ -37,20 +37,19 @@ export const frostboneNaga: MinionBlueprint = {
   atk: 3,
   maxHp: 4,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: game =>
-    new ColumnAOEShape(TARGETING_TYPE.UNIT, {
-      height: game.boardSystem.map.rows
-    }),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        const unitsToDamage = game.unitSystem.getUnitsInAOE(
-          event.data.aoe,
-          [event.data.cell.position],
-          card.player
-        );
+        const unitsToDamage = game.unitSystem
+          .getUnitsInAOE(
+            new ColumnAOEShape(TARGETING_TYPE.UNIT, {
+              height: game.boardSystem.map.rows
+            }),
+            [event.data.unit.position],
+            card.player
+          )
+          .filter(unit => !unit.equals(event.data.unit));
 
         for (const unit of unitsToDamage) {
           await unit.takeDamage(card, new AbilityDamage(card, 2));

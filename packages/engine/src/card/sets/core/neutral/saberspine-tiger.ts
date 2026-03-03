@@ -1,6 +1,4 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -36,8 +34,6 @@ export const saberspineTiger: MinionBlueprint = {
   atk: 3,
   maxHp: 2,
   retaliation: 0,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RushModifier(game, card));

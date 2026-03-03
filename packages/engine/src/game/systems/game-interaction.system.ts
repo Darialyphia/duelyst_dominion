@@ -167,7 +167,15 @@ export class GameInteractionSystem
       INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
     ].create(this.game, options);
 
-    return this.game.inputSystem.pause<BoardCell[]>();
+    if (this._ctx.elligibleSpaces.length === 0) {
+      this.game.interaction.dispatch(
+        INTERACTION_STATE_TRANSITIONS.COMMIT_SELECTING_SPACE_ON_BOARD
+      );
+      this.game.interaction.onInteractionEnd();
+      return [];
+    } else {
+      return this.game.inputSystem.pause<BoardCell[]>();
+    }
   }
 
   async chooseCards<T extends AnyCard>(options: {

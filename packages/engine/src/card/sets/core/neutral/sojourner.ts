@@ -1,13 +1,11 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { UnitEffectModifierMixin } from '../../../../modifier/mixins/unit-effect.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { Unit } from '../../../../unit/unit.entity';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
-import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
+import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
 export const sojourner: MinionBlueprint = {
   id: 'sojourner',
@@ -40,8 +38,6 @@ export const sojourner: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

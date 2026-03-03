@@ -1,7 +1,5 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -43,8 +41,6 @@ export const luxIgnis: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));

@@ -38,8 +38,6 @@ export const ghostLynx: MinionBlueprint = {
   atk: 1,
   maxHp: 2,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

@@ -38,8 +38,6 @@ export const songweaver: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
@@ -50,7 +48,7 @@ export const songweaver: MinionBlueprint = {
           card.player.cardManager.deck.cards.filter(isSpell)
         );
 
-        await selectedCard.addToHand();
+        await selectedCard?.addToHand();
       })
     );
   },

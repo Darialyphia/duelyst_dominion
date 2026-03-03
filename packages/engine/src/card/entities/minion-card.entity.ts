@@ -140,73 +140,31 @@ export class MinionCard extends Card<
     );
   }
 
-  async selectTargets(position: BoardCell) {
-    return new Promise<
-      { targets: BoardCell[]; cancelled: false } | { cancelled: true; targets?: never }
-    >(
-      // eslint-disable-next-line no-async-promise-executor
-      async resolve => {
-        let cancelled = false;
-        this.cancelPlay = async () => {
-          cancelled = true;
-          await this.game.interaction.getContext().ctx.cancel(this.player);
-          resolve({ cancelled: true });
-        };
-
-        const targets = await this.blueprint.getTargets(this.game, this, position);
-
-        if (cancelled) return;
-        resolve({ targets, cancelled: false });
-      }
-    );
-  }
-
-  private async selectPositionAndTargets() {
-    return new Promise<
-      | { position: BoardCell; targets: BoardCell[]; cancelled: false }
-      | { cancelled: true; position?: never; targets?: never }
-    >(
-      // eslint-disable-next-line no-async-promise-executor
-      async resolve => {
-        const { position, cancelled: positionCancelled } = await this.selectPosition();
-        if (positionCancelled) resolve({ cancelled: true });
-
-        const { targets, cancelled: targetsCancelled } = await this.selectTargets(
-          position!
-        );
-        if (targetsCancelled) resolve({ cancelled: true });
-
-        resolve({ position: position!, targets: targets!, cancelled: false });
-      }
-    );
-  }
-
-  getAOE(position: BoardCell, targets: BoardCell[]) {
-    return this.blueprint.getAoe(this.game, this, position, targets);
+  getAOE(position: BoardCell) {
+    return new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {
+      override: position
+    });
   }
 
   async play(onCancel?: () => MaybePromise<void>) {
-    const { position, targets, cancelled } = await this.selectPositionAndTargets();
+    const { position, cancelled } = await this.selectPosition();
     if (cancelled) return await onCancel?.();
-
-    await this.playAt(position, targets);
+    this.game.gamePhaseSystem.getContext<'playing_card_phase'>().ctx.closeCancelWindow();
+    await this.playAt(position);
   }
 
-  async playAt(position: BoardCell, targets: BoardCell[]) {
+  async playAt(position: BoardCell) {
     await this.removeFromCurrentLocation();
     await this.game.emit(
       CARD_EVENTS.CARD_BEFORE_PLAY,
       new CardBeforePlayEvent({ card: this })
     );
 
-    const aoe = this.getAOE(position, targets);
     await this.game.emit(
       MINION_EVENTS.MINION_BEFORE_SUMMON,
       new MinionBeforeSummonedEvent({
         card: this,
-        cell: position,
-        targets,
-        aoe
+        cell: position
       })
     );
     this.game.unitSystem.addUnit(this, position);
@@ -220,9 +178,7 @@ export class MinionCard extends Card<
       MINION_EVENTS.MINION_AFTER_SUMMON,
       new MinionAfterSummonedEvent({
         card: this,
-        unit: this.unit,
-        targets,
-        aoe
+        unit: this.unit
       })
     );
     await this.game.vfxSystem.playSequence(
@@ -230,15 +186,13 @@ export class MinionCard extends Card<
         this.game,
         this,
         position.position.serialize(),
-        targets.map(t => t.position.serialize())
+        []
       ) ?? {
         tracks: []
       }
     );
     await this.blueprint.onPlay(this.game, this, {
-      aoe,
-      position,
-      targets
+      position
     });
 
     await this.game.emit(

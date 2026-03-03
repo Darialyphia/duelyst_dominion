@@ -8,11 +8,13 @@ import type { GamePhaseController } from './game-phase';
 import { assert, type Serializable } from '@game/shared';
 
 export class PlayCardPhase
-  implements GamePhaseController, Serializable<{ card: string }>
+  implements GamePhaseController, Serializable<{ card: string; canCancel: boolean }>
 {
   currentPlayer: Player;
 
   card!: AnyCard;
+
+  private canCancel = true;
 
   constructor(private game: Game) {
     this.currentPlayer = game.turnSystem.initiativePlayer;
@@ -43,9 +45,14 @@ export class PlayCardPhase
     );
   }
 
-  serialize(): { card: string } {
+  closeCancelWindow() {
+    this.canCancel = false;
+  }
+
+  serialize(): { card: string; canCancel: boolean } {
     return {
-      card: this.card.id
+      card: this.card.id,
+      canCancel: this.canCancel
     };
   }
 }

@@ -40,8 +40,6 @@ export const keshraiFanblade: MinionBlueprint = {
   atk: 4,
   maxHp: 5,
   retaliation: 3,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

@@ -63,20 +63,11 @@ export type MinionBlueprint = CardBlueprintBase & {
     card: MinionCard,
     options: {
       position: BoardCell;
-      targets: BoardCell[];
-      aoe: GenericAOEShape;
     }
   ) => Promise<void>;
   atk: number;
   retaliation: number;
   maxHp: number;
-  getTargets: (game: Game, card: MinionCard, position: BoardCell) => Promise<BoardCell[]>;
-  getAoe: (
-    game: Game,
-    card: MinionCard,
-    position: BoardCell,
-    targets: BoardCell[]
-  ) => GenericAOEShape;
 };
 
 export type SpellBlueprint = CardBlueprintBase & {

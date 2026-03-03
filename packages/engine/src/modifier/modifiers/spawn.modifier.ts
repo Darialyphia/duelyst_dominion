@@ -90,8 +90,7 @@ export class SpawnUnitModifier extends Modifier<Unit> {
               this.target.card.isFoil
             );
 
-            const targets = await cardToSpawn.selectTargets(space);
-            await cardToSpawn.playAt(space, targets.targets!);
+            await cardToSpawn.playAt(space);
             await this.removeStacks(1);
           }
         }),

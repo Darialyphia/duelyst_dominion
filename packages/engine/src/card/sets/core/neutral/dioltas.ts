@@ -44,8 +44,6 @@ export const dioltas: MinionBlueprint = {
   atk: 3,
   maxHp: 5,
   retaliation: 0,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new LevelBonusModifier(game, card, 2));

@@ -39,16 +39,13 @@ export const primusFist: MinionBlueprint = {
   atk: 2,
   maxHp: 3,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        const adjacentAllies = event.data.cell.adjacent
-          .map(cell => cell.unit)
-          .filter(isDefined)
-          .filter(u => u.isAlly(card.player));
+        const adjacentAllies = event.data.unit.adjacentUnits.filter(u =>
+          u.isAlly(card.player)
+        );
 
         for (const ally of adjacentAllies) {
           await ally.modifiers.add(

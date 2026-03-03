@@ -41,8 +41,6 @@ export const fourWindsMagus: MinionBlueprint = {
   atk: 3,
   maxHp: 5,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

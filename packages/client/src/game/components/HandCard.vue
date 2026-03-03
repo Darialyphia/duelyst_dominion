@@ -6,12 +6,6 @@ import {
   useGameUi
 } from '../composables/useGameClient';
 import GameCard from './GameCard.vue';
-import { usePageLeave } from '@vueuse/core';
-import { Flip } from 'gsap/Flip';
-import {
-  GAME_PHASES,
-  INTERACTION_STATES
-} from '@game/engine/src/game/game.enums';
 import Sound from '@/ui/components/Sound.vue';
 import { useSoundEffect } from '@/shared/composables/useSoundEffect';
 
@@ -26,102 +20,50 @@ const state = useGameState();
 
 const DRAG_THRESHOLD_PX = 60;
 
-const isOutOfScreen = usePageLeave();
-
 const isShaking = ref(false);
 const violationWarning = ref('');
 
-const unselectCard = () => {
-  if (
-    state.value.interaction.state !==
-    INTERACTION_STATES.SELECTING_SPACE_ON_BOARD
-  ) {
-    return;
-  }
-  const el = document.querySelector('#dragged-card [data-game-card]');
-  if (!el) return;
-
-  const flipState = Flip.getState(el);
-  ui.value.unselectCard();
-  card.cancelPlay();
-  window.requestAnimationFrame(() => {
-    const target = document.querySelector(
-      `.hand-card [data-game-card="${card.id}"]`
-    );
-    Flip.from(flipState, {
-      targets: target,
-      duration: 0.25,
-      absolute: true,
-      ease: Power1.easeOut
-    });
-  });
-};
 const disabledSound = useSoundEffect('invalid-action');
-const onMouseDown = (e: MouseEvent) => {
-  if (ui.value.isReplacingCard) return;
 
-  if (state.value.turnPlayer !== card.player.id) {
-    return;
-  }
-  if (!card.canPlay) {
-    isShaking.value = true;
-    disabledSound.play();
-    violationWarning.value =
-      card.unplayableReason || 'You cannot play this card.';
-
-    setTimeout(() => {
-      violationWarning.value = '';
-      isShaking.value = false;
-    }, 2500);
-    return;
-  }
-
+const startDragging = (e: MouseEvent) => {
+  console.log('startDragging', card.name);
   ui.value.selectCard(card);
-
-  const startY = e.clientY;
-
-  const stopDragging = () => {
-    nextTick(() => {
-      ui.value.draggedCard = null;
-    });
-    document.body.removeEventListener('mouseup', onMouseup);
-    document.body.removeEventListener('mousemove', onMousemove);
-  };
-
-  const onMousemove = (e: MouseEvent) => {
-    const deltaY = startY - e.clientY;
-    if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.draggedCard) {
-      ui.value.draggedCard = card;
-      card.play();
-    }
-  };
-
-  const onMouseup = () => {
-    unselectCard();
-    stopDragging();
-  };
+  startY.value = e.clientY;
 
   document.body.addEventListener('mousemove', onMousemove);
-  document.body.addEventListener('mouseup', onMouseup);
+};
 
-  const unwatch = watch(
-    [() => state.value.phase.state, isOutOfScreen, () => ui.value.selectedCard],
-    ([newState, outOfScreen, selectedCard]) => {
-      if (newState !== GAME_PHASES.PLAYING_CARD) {
-        console.log(newState);
-        stopDragging();
-        unselectCard();
-        unwatch();
-        return;
-      }
-      if (outOfScreen && selectedCard) {
-        stopDragging();
-        unselectCard();
-        unwatch();
-        return;
-      }
-    }
-  );
+const playViolationAnimation = () => {
+  isShaking.value = true;
+  disabledSound.play();
+  violationWarning.value =
+    card.unplayableReason || 'You cannot play this card.';
+
+  setTimeout(() => {
+    violationWarning.value = '';
+    isShaking.value = false;
+  }, 2500);
+};
+
+const startY = ref(0);
+
+const onMousemove = (e: MouseEvent) => {
+  const deltaY = startY.value - e.clientY;
+  if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.draggedCard) {
+    console.log('play card', card.name);
+    ui.value.draggedCard = card;
+    card.play();
+    document.body.removeEventListener('mousemove', onMousemove);
+  }
+};
+
+const onMouseDown = (e: MouseEvent) => {
+  if (ui.value.isReplacingCard) return;
+  if (state.value.turnPlayer !== card.player.id) return;
+
+  if (!card.canPlay) return playViolationAnimation();
+
+  startDragging(e);
 };
 
 const isDisabled = computed(() => {
@@ -129,6 +71,13 @@ const isDisabled = computed(() => {
     return !card.canReplace;
   }
   return !card.canPlay;
+});
+
+const isVisible = computed(() => {
+  return state.value.phase.ctx.card !== card.id;
+});
+watchEffect(() => {
+  console.log(card.id, isVisible.value);
 });
 </script>
 
@@ -156,7 +105,7 @@ const isDisabled = computed(() => {
       </p>
 
       <GameCard
-        v-if="!ui.draggedCard?.equals(card)"
+        v-if="isVisible"
         :card-id="card.id"
         actions-side="top"
         :actions-offset="15"

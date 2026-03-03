@@ -42,8 +42,6 @@ export const jadeMonk: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));

@@ -1,7 +1,7 @@
 import type { GameClient } from '../client';
 import type { GameClientState } from '../controllers/state-controller';
 import type { BoardCellViewModel } from '../view-models/board-cell.model';
-import { INTERACTION_STATES } from '../../game/game.enums';
+import { GAME_PHASES, INTERACTION_STATES } from '../../game/game.enums';
 import type { BoardCellClickRule } from '../controllers/ui-controller';
 
 export class SelectSpaceOnBoardAction implements BoardCellClickRule {
@@ -15,7 +15,7 @@ export class SelectSpaceOnBoardAction implements BoardCellClickRule {
     );
   }
 
-  handler(cell: BoardCellViewModel, event: MouseEvent) {
+  handler(cell: BoardCellViewModel) {
     this.client.dispatch({
       type: 'selectSpaceOnBoard',
       payload: {
@@ -24,5 +24,8 @@ export class SelectSpaceOnBoardAction implements BoardCellClickRule {
         y: cell.y
       }
     });
+    if (this.client.state.phase.state === GAME_PHASES.PLAYING_CARD) {
+      this.client.ui.unselectCard();
+    }
   }
 }

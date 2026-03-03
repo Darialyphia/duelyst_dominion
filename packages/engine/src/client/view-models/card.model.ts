@@ -253,6 +253,7 @@ export class CardViewModel {
     const state = this.getClient().state;
     if (state.phase.state !== GAME_PHASES.PLAYING_CARD) return;
     if (state.phase.ctx.card !== this.id) return;
+    if (!state.phase.ctx.canCancel) return;
     this.getClient().cancelPlayCard();
   }
 

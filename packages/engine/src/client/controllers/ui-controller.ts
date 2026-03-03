@@ -19,7 +19,7 @@ export type CardClickRule = {
 
 export type BoardCellClickRule = {
   predicate: (tile: BoardCellViewModel, state: GameClientState) => boolean;
-  handler: (tile: BoardCellViewModel, e: MouseEvent) => void;
+  handler: (tile: BoardCellViewModel) => void;
 };
 
 export type GlobalActionRule = {
@@ -84,6 +84,7 @@ export class UiController {
   DOMSelectors = {
     cell: (x: number, y: number) => new DOMSelector(`cell-${x}-${y}`),
     board: new DOMSelector('board'),
+    viewport: new DOMSelector('viewport'),
     effectChain: new DOMSelector('effect-chain'),
     playedCardZone: new DOMSelector('played-card'),
     cardInPlayedCardZone: (cardId: string) =>
@@ -197,12 +198,11 @@ export class UiController {
     this.unselectCard();
   }
 
-  onBoardCellClick(cell: BoardCellViewModel, event: MouseEvent) {
+  onBoardCellClick(cell: BoardCellViewModel) {
     const state = this.client.state;
     for (const rule of this.boardCellClickRules) {
       if (rule.predicate(cell, state)) {
-        event.stopPropagation();
-        rule.handler(cell, event);
+        rule.handler(cell);
         return;
       }
     }

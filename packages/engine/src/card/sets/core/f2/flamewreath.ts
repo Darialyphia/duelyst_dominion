@@ -46,8 +46,6 @@ export const flamewreath: MinionBlueprint = {
   atk: 2,
   maxHp: 3,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RushModifier(game, card));

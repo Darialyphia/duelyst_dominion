@@ -36,8 +36,6 @@ export const miniJax: MinionBlueprint = {
   atk: 1,
   maxHp: 1,
   retaliation: 1,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));

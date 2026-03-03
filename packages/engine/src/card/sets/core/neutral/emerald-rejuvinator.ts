@@ -36,8 +36,6 @@ export const emeraldRejuvinator: MinionBlueprint = {
   atk: 3,
   maxHp: 6,
   retaliation: 2,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

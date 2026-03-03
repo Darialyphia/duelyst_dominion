@@ -7,13 +7,13 @@ import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import type { MinionBeforeSummonedEvent } from '../../card/events/minion.events';
+import type { MinionAfterSummonedEvent } from '../../card/events/minion.events';
 
 export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    handler: (event: MinionBeforeSummonedEvent) => MaybePromise<void>
+    handler: (event: MinionAfterSummonedEvent) => MaybePromise<void>
   ) {
     super(KEYWORDS.ON_ENTER.id, game, source, {
       name: KEYWORDS.ON_ENTER.name,
@@ -21,7 +21,7 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.ON_ENTER),
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.MINION_BEFORE_SUMMON,
+          eventName: GAME_EVENTS.MINION_AFTER_SUMMON,
           filter: event => {
             if (!event) return false;
 

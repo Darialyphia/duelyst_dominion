@@ -28,7 +28,7 @@ export class SelectingSpaceOnBoardContext {
 
   private isElligible: (space: BoardCell, selectedSpaces: BoardCell[]) => boolean;
 
-  private canCommit: (selectedSpaces: BoardCell[]) => boolean;
+  private _canCommit: (selectedSpaces: BoardCell[]) => boolean;
 
   private isDone: (selectedSpaces: BoardCell[]) => boolean;
 
@@ -42,7 +42,7 @@ export class SelectingSpaceOnBoardContext {
   ) {
     this.player = options.player;
     this.isElligible = options.isElligible;
-    this.canCommit = options.canCommit;
+    this._canCommit = options.canCommit;
     this.isDone = options.isDone;
     this.getAoe = options.getAoe;
   }
@@ -53,15 +53,25 @@ export class SelectingSpaceOnBoardContext {
       source: this.options.source.serialize(),
       label: this.options.getLabel(this.selectedSpaces),
       selectedSpaces: this.selectedSpaces.map(space => space.position.serialize()),
-      elligibleSpaces: this.game.boardSystem.cells
-        .filter(cell => this.isElligible(cell, this.selectedSpaces))
-        .map(space => space.id),
+      elligibleSpaces: this.elligibleSpaces,
       canCommit: this.canCommit(this.selectedSpaces),
       aoe: this.getSerializedAoe()
     };
   }
 
+  private canCommit(selectedSpaces: BoardCell[]) {
+    if (this.elligibleSpaces.length === 0) return true;
+
+    return this._canCommit(selectedSpaces);
+  }
+
   async init() {}
+
+  get elligibleSpaces() {
+    return this.game.boardSystem.cells
+      .filter(cell => this.isElligible(cell, this.selectedSpaces))
+      .map(space => space.id);
+  }
 
   private getSerializedAoe() {
     const spaces = this.selectedSpaces;

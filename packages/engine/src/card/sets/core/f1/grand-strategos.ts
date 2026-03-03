@@ -49,8 +49,6 @@ export const grandStrategos: MinionBlueprint = {
   atk: 3,
   maxHp: 6,
   retaliation: 3,
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
   canPlay: () => true,
   async onInit(game, card) {
     const HP_BUFF_ID = 'grand-strategos-hp-buff';

@@ -134,6 +134,7 @@ const myPlayer = useMyPlayer();
 
 <template>
   <div
+    :id="ui.DOMSelectors.viewport.id"
     class="camera-zoom"
     :style="{
       transform: `scale(${camera.scale})`,

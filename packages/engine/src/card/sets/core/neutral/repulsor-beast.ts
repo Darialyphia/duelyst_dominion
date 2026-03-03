@@ -1,12 +1,6 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
-import {
-  emptySpacesTargetRules,
-  singleMinionTargetRules,
-  singleUnitTargetRules
-} from '../../../card-utils';
+import { emptySpacesTargetRules, singleMinionTargetRules } from '../../../card-utils';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 
@@ -42,34 +36,36 @@ export const repulsorBeast: MinionBlueprint = {
   atk: 2,
   maxHp: 3,
   retaliation: 1,
-  async getTargets(game, card, position) {
-    const first = await singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: unit => unit.isEnemy(card.player) && unit.position.x === position.x
-    });
-    const second = await emptySpacesTargetRules.getPreResponseTargets({ min: 1, max: 1 })(
-      game,
-      card,
-      {
-        predicate: cell => cell.player?.equals(card.player.opponent) ?? false,
-        getLabel() {
-          return `${card.blueprint.name} : Select the space to teleport to`;
-        }
-      }
-    );
-
-    return [...first, ...second];
-  },
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        const targets = event.data.targets;
-        if (targets.length < 2) return;
-        const unit = targets[0].unit;
+        const [targetPosition] = await singleMinionTargetRules.getPreResponseTargets(
+          game,
+          card,
+          {
+            predicate: unit =>
+              unit.isEnemy(card.player) && unit.position.x === event.data.unit.position.x,
+            required: false
+          }
+        );
+        if (!targetPosition) return;
+
+        const [destination] = await emptySpacesTargetRules.getPreResponseTargets({
+          min: 1,
+          max: 1
+        })(game, card, {
+          predicate: cell => cell.player?.equals(card.player.opponent) ?? false,
+          getLabel() {
+            return `${card.blueprint.name} : Select the space to teleport to`;
+          }
+        });
+
+        if (!destination) return;
+
+        const unit = targetPosition.unit;
         if (!unit) return;
 
-        const destination = targets[1];
         if (!destination) return;
 
         await unit.teleport(destination);
