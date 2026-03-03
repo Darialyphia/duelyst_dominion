@@ -5,11 +5,19 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { lightOverlay } from '../../../card-vfx-sequences';
+import dedent from 'dedent';
+import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
+import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
-  description: 'Deal 3 damage to an enemy.',
+  description: dedent`
+  Deal 3 damage to an enemy.
+  @[lvl] 2 bonus@: Deal 1 damage to adjacent units.
+  @[lvl] 3 bonus@: This costs @[mana] 1@ less.
+  `,
   vfx: {
     spriteId: 'spells/f2_phoenix-fire',
     sequences: {
@@ -74,11 +82,28 @@ export const phoenixFire: SpellBlueprint = {
       }
     });
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
+    const levelMod = card.modifiers.get(LevelBonusModifier);
+
+    await card.modifiers.add(
+      new SimpleManacostModifier('phoenix-fire-discount', game, card, {
+        amount: -1,
+        mixins: [new TogglableModifierMixin(game, () => levelMod!.isActiveForLevel(3))]
+      })
+    );
+  },
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
+
+    const levelMod = card.modifiers.get(LevelBonusModifier);
+    if (levelMod?.isActive) {
+      for (const adjacent of target.adjacentUnits) {
+        await adjacent.takeDamage(card, new SpellDamage(card, 1));
+      }
+    }
   }
 };
