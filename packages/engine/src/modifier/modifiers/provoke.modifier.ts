@@ -52,6 +52,12 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
                     interceptor: () => {
                       return new ProvokedTargetingStrategy(game, candidate);
                     }
+                  }),
+                  new UnitInterceptorModifierMixin(game, {
+                    key: 'canMove',
+                    interceptor: () => {
+                      return false;
+                    }
                   })
                 ]
               })
@@ -63,15 +69,6 @@ export class ProvokeUnitModifier extends Modifier<Unit> {
   }
 
   private shouldBeProvoked(candidate: Unit): boolean {
-    const elligible = [
-      this.target.inFront,
-      this.target.inFront?.left,
-      this.target.inFront?.right
-    ]
-      .filter(isDefined)
-      .map(cell => cell.unit)
-      .filter(isDefined);
-
-    return elligible.some(unit => unit.equals(candidate));
+    return candidate.isEnemy(this.target) && candidate.x === this.target.x;
   }
 }

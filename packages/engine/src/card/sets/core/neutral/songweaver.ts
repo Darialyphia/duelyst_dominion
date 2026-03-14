@@ -38,6 +38,7 @@ export const songweaver: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 2,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

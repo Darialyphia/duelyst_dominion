@@ -3,11 +3,15 @@ import type { SpellBlueprint } from '../../../card-blueprint';
 import { singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 
 export const sundropElixir: SpellBlueprint = {
   id: 'sundrop-elixir',
   name: 'Sundrop Elixir',
-  description: 'Heal a unit for 3.',
+  description: dedent`
+    Heal a unit for 2.
+    @[lvl] 3 Bonus@: Heal yourself for 2 as well.
+  `,
   vfx: {
     spriteId: 'spells/f1_sundrop-elixir',
     sequences: {
@@ -59,7 +63,7 @@ export const sundropElixir: SpellBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   runeCost: {},
-  manaCost: 1,
+  manaCost: 0,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => singleUnitTargetRules.canPlay(game, card),
   getTargets(game, card) {

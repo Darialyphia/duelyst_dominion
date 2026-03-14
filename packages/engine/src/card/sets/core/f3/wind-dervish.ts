@@ -30,6 +30,7 @@ export const windDervish: MinionBlueprint = {
   maxHp: 2,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new RushModifier(game, card));
     await card.modifiers.add(new EphemeralCardModifier(game, card));

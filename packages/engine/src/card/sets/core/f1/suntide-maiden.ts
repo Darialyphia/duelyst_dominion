@@ -1,9 +1,7 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -47,6 +45,7 @@ export const suntideMaiden: MinionBlueprint = {
   maxHp: 6,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('suntide-maiden-zeal', game, card, {

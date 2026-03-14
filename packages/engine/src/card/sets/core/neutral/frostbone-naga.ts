@@ -9,7 +9,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
-  description: '@On Enter@: Deal 2 damage to other units in the same column as this.',
+  description: '@On Enter@: Deal 2 damage to all units in the same column as this.',
   vfx: {
     spriteId: 'minions/neutral_frostbone-naga',
     sequences: {
@@ -37,19 +37,18 @@ export const frostboneNaga: MinionBlueprint = {
   atk: 3,
   maxHp: 4,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        const unitsToDamage = game.unitSystem
-          .getUnitsInAOE(
-            new ColumnAOEShape(TARGETING_TYPE.UNIT, {
-              height: game.boardSystem.map.rows
-            }),
-            [event.data.unit.position],
-            card.player
-          )
-          .filter(unit => !unit.equals(event.data.unit));
+        const unitsToDamage = game.unitSystem.getUnitsInAOE(
+          new ColumnAOEShape(TARGETING_TYPE.UNIT, {
+            height: game.boardSystem.map.rows
+          }),
+          [event.data.unit.position],
+          card.player
+        );
 
         for (const unit of unitsToDamage) {
           await unit.takeDamage(card, new AbilityDamage(card, 2));

@@ -26,7 +26,6 @@ const violationWarning = ref('');
 const disabledSound = useSoundEffect('invalid-action');
 
 const startDragging = (e: MouseEvent) => {
-  console.log('startDragging', card.name);
   ui.value.selectCard(card);
   startY.value = e.clientY;
 
@@ -75,9 +74,6 @@ const isDisabled = computed(() => {
 
 const isVisible = computed(() => {
   return state.value.phase.ctx.card !== card.id;
-});
-watchEffect(() => {
-  console.log(card.id, isVisible.value);
 });
 </script>
 

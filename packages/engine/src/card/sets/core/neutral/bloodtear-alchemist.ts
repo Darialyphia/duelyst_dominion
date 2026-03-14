@@ -39,6 +39,7 @@ export const bloodtearAlchemist: MinionBlueprint = {
   maxHp: 1,
   retaliation: 1,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {

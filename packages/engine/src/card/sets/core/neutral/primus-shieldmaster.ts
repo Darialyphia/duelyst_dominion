@@ -36,6 +36,7 @@ export const primusShieldmaster: MinionBlueprint = {
   atk: 2,
   maxHp: 6,
   retaliation: 3,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));

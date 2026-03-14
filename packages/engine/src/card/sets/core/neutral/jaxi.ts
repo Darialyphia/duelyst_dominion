@@ -38,7 +38,7 @@ export const jaxi: MinionBlueprint = {
   atk: 2,
   maxHp: 2,
   retaliation: 1,
-
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

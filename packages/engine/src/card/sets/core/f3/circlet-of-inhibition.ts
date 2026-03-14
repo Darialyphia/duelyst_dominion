@@ -28,6 +28,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
   durability: 3,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
   canPlay: () => true,
+  abilities: [],
   getTargets: () => Promise.resolve([]),
   async onInit(game, card) {
     const onAttackModifier = new Modifier<PlayerArtifact>(

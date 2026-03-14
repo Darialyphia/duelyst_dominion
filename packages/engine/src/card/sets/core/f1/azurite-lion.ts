@@ -1,6 +1,4 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -37,6 +35,7 @@ export const azuriteLion: MinionBlueprint = {
   maxHp: 5,
   retaliation: 1,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new CelerityCardModifier(game, card));
   },

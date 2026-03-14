@@ -38,6 +38,7 @@ export const ghostLynx: MinionBlueprint = {
   atk: 1,
   maxHp: 2,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

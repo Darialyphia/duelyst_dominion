@@ -35,6 +35,7 @@ export const hailstoneGolem: MinionBlueprint = {
   atk: 3,
   maxHp: 7,
   retaliation: 3,
+  abilities: [],
   canPlay: () => true,
   async onInit() {},
   async onPlay() {}

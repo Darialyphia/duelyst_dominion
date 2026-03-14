@@ -1,5 +1,3 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
@@ -35,6 +33,7 @@ export const brightmossGolem: MinionBlueprint = {
   atk: 4,
   maxHp: 8,
   retaliation: 4,
+  abilities: [],
   canPlay: () => true,
   async onInit() {},
   async onPlay() {}

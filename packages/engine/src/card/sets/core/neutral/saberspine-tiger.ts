@@ -34,6 +34,7 @@ export const saberspineTiger: MinionBlueprint = {
   atk: 3,
   maxHp: 2,
   retaliation: 0,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RushModifier(game, card));

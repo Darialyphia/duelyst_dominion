@@ -15,8 +15,6 @@ export type SerializedAbility = {
 export class Ability<T extends AnyCard> implements Serializable<SerializedAbility> {
   private lastUsedAt: number | null = null;
 
-  private useCount = 0;
-
   constructor(
     private game: Game,
     private card: T,
@@ -37,16 +35,11 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
     );
   }
 
-  get hasReachedMaxUses() {
-    return this.useCount >= this.blueprint.getMaxUses(this.game, this.card);
-  }
-
   get canUse() {
     return (
       this.blueprint.canUse(this.game, this.card) &&
       this.card.player.canSpendMana(this.blueprint.manaCost) &&
-      !this.isOnCooldown &&
-      !this.hasReachedMaxUses
+      !this.isOnCooldown
     );
   }
 
@@ -60,8 +53,6 @@ export class Ability<T extends AnyCard> implements Serializable<SerializedAbilit
       targets,
       aoe
     });
-
-    this.useCount++;
   }
 
   serialize(): SerializedAbility {

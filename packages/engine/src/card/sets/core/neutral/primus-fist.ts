@@ -39,6 +39,7 @@ export const primusFist: MinionBlueprint = {
   atk: 2,
   maxHp: 3,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

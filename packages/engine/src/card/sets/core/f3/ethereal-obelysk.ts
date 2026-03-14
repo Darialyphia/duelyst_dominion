@@ -1,5 +1,3 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import { vetruvianSpawn } from '../../../card-vfx-sequences';
@@ -43,6 +41,7 @@ export const etherealObelysk: MinionBlueprint = {
   maxHp: 6,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new StructureModifier(game, card, {}));
     await card.modifiers.add(

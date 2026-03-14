@@ -16,18 +16,12 @@ export class ProvokedTargetingStrategy implements TargetingStrategy {
   ) {}
 
   isWithinRange(point: Point3D) {
-    const elligibleCells = [
-      this.unit.inFront,
-      this.unit.inFront?.left,
-      this.unit.inFront?.right
-    ]
-      .filter(isDefined)
-      .filter(cell => {
-        if (!cell.unit) return false;
-        return cell.unit.modifiers.has(ProvokeUnitModifier);
-      });
+    const unit = this.game.unitSystem.getUnitAt(point);
+    if (!unit) return false;
 
-    return elligibleCells.some(cell => cell.x === point.x && cell.y === point.y);
+    return this.unit.unitsOnSameColumn.some(
+      u => u.equals(unit) && u.modifiers.has(ProvokeUnitModifier)
+    );
   }
 
   canTargetAt(point: Point3D) {

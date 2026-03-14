@@ -3,8 +3,9 @@ import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
+import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -12,7 +13,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const lightChaser: MinionBlueprint = {
   id: 'light_chaser',
   name: 'Light Chaser',
-  description: 'When a unit is healed, this gains +1 Attack.',
+  description: 'When a unit is healed, this gains +1/+1/+1.',
   vfx: {
     spriteId: 'minions/f1_lightchaser',
     sequences: {
@@ -41,6 +42,7 @@ export const lightChaser: MinionBlueprint = {
   maxHp: 4,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
@@ -50,9 +52,26 @@ export const lightChaser: MinionBlueprint = {
               eventName: GAME_EVENTS.UNIT_AFTER_HEAL,
               async handler() {
                 await card.unit.modifiers.add(
-                  new UnitSimpleAttackBuffModifier('light-chaser-buff', game, card, {
+                  new UnitSimpleAttackBuffModifier('light-chaser-atk-buff', game, card, {
                     amount: 1,
                     name: 'Lightchaser Attack Buff'
+                  })
+                );
+                await card.unit.modifiers.add(
+                  new UnitSimpleRetaliationBuffModifier(
+                    'light-chaser-ret-buff',
+                    game,
+                    card,
+                    {
+                      amount: 1,
+                      name: 'Lightchaser Retaliation Buff'
+                    }
+                  )
+                );
+                await card.unit.modifiers.add(
+                  new UnitSimpleHealthBuffModifier('light-chaser-hp-buff', game, card, {
+                    amount: 1,
+                    name: 'Lightchaser Health Buff'
                   })
                 );
               }

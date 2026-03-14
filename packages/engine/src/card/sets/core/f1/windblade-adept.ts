@@ -36,6 +36,7 @@ export const windbladeAdept: MinionBlueprint = {
   maxHp: 4,
   retaliation: 1,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {

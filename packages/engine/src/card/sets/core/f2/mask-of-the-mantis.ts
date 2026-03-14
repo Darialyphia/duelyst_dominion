@@ -33,6 +33,7 @@ export const maskOfTheMantis: ArtifactBlueprint = {
       override: card.player.deployedGeneral
     }),
   canPlay: () => true,
+  abilities: [],
   getTargets: anywhereTargetRules.getPreResponseTargets({
     min: 1,
     max: 1,

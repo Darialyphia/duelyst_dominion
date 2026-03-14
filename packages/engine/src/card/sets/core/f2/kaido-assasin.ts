@@ -1,6 +1,4 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -37,6 +35,7 @@ export const kaidoAssassin: MinionBlueprint = {
   maxHp: 4,
   retaliation: 1,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new BackstabModifier(game, card, { damageBonus: 1 }));
   },

@@ -46,6 +46,7 @@ export const endlessObelysk: MinionBlueprint = {
   maxHp: 4,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new StructureModifier(game, card, {}));
     await card.modifiers.add(

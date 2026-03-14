@@ -1,5 +1,3 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { isSpell } from '../../../card-utils';
@@ -41,6 +39,7 @@ export const keshraiFanblade: MinionBlueprint = {
   maxHp: 5,
   retaliation: 3,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {

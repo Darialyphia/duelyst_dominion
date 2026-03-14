@@ -36,6 +36,7 @@ export const miniJax: MinionBlueprint = {
   atk: 1,
   maxHp: 1,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));

@@ -30,14 +30,15 @@ const setVariableFontSize = (
 ) => {
   const inner = box.firstChild as HTMLElement;
   const outerHeight = box.clientHeight;
+
   if (inner.clientHeight <= outerHeight) {
     return;
   }
   let size = max;
   const step = 0.5;
-  const scale = getPixelScale() / 2; // text size uses half pixel scale in calculation
+  const scale = getPixelScale(); // text size uses half pixel scale in calculation
 
-  while (inner.clientHeight > outerHeight) {
+  while (inner.clientHeight > outerHeight && size > min) {
     size -= step;
     box.style.fontSize = `${size * scale}px`;
   }
@@ -46,8 +47,8 @@ const setVariableFontSize = (
 };
 const descriptionBox = useTemplateRef('description-box');
 
-const DESCRIPTION_MIN_TEXT_SIZE = 10;
-const DESCRIPTION_MAX_TEXT_SIZE = 16;
+const DESCRIPTION_MIN_TEXT_SIZE = 8;
+const DESCRIPTION_MAX_TEXT_SIZE = 11;
 const descriptionFontSize = ref(DESCRIPTION_MAX_TEXT_SIZE);
 
 const resizeDescription = () => {
@@ -80,7 +81,7 @@ useResizeObserver(descriptionBox, resizeDescription);
   top: calc(180px * var(--pixel-scale));
   left: calc(43px * var(--pixel-scale));
   width: calc(100% - (66px * var(--pixel-scale)));
-  font-size: calc(var(--pixel-scale) * 0.5px * v-bind(descriptionFontSize));
+  font-size: calc(1px * var(--pixel-scale) * v-bind(descriptionFontSize));
   overflow: hidden;
   line-height: 1.2;
   text-shadow: 0 0 0.75rem black;

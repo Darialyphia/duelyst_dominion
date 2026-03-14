@@ -38,6 +38,7 @@ export const sojourner: MinionBlueprint = {
   atk: 2,
   maxHp: 5,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

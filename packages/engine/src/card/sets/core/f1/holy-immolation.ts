@@ -1,6 +1,6 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { singleMinionTargetRules } from '../../../card-utils';
+import { singleMinionTargetRules, singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import dedent from 'dedent';
@@ -11,7 +11,7 @@ export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  Heal an allied minion on the front row for 4, and deal 4 damage to enemies in front of it and on adjacent columns.`,
+  Deal 4 damage to an enemy. Deal 4 damage to adjacent enemies and heal adjacent allies for 4.`,
   vfx: {
     spriteId: 'spells/f1_holy-immolation',
     sequences: {
@@ -81,16 +81,16 @@ export const holyImmolation: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 4,
-  getAoe: () => new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, { includeDiagonals: true }),
+  getAoe: () =>
+    new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {
+      includeDiagonals: false,
+      includeCenter: true
+    }),
   canPlay: (game, card) =>
-    singleMinionTargetRules.canPlay(
-      game,
-      card,
-      c => c.isAlly(card.player) && c.isOnFrontRow
-    ),
+    singleUnitTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
   getTargets(game, card) {
-    return singleMinionTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isAlly(card.player) && c.isOnFrontRow,
+    return singleUnitTargetRules.getPreResponseTargets(game, card, {
+      predicate: c => c.isEnemy(card.player),
       getAoe(spaces) {
         return card.blueprint.getAoe(game, card, spaces);
       }
@@ -98,15 +98,14 @@ export const holyImmolation: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
-    const targetToHeal = targets[0].unit;
-    if (!targetToHeal) return;
+    const units = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
-    await targetToHeal.heal(card, 4);
-
-    const unitsToDamage = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
-
-    for (const unit of unitsToDamage) {
-      await unit.takeDamage(card, new SpellDamage(card, 4));
+    for (const unit of units) {
+      if (unit.isAlly(card.player)) {
+        await unit.heal(card, 4);
+      } else {
+        await unit.takeDamage(card, new SpellDamage(card, 4));
+      }
     }
   }
 };

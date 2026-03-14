@@ -41,7 +41,10 @@ export type GeneralCardInterceptors = CardInterceptors & {
   atk: Interceptable<number>;
   maxHp: Interceptable<number>;
   retaliation: Interceptable<number>;
-  canUseAbility: Interceptable<boolean, GeneralCard>;
+  canUseAbility: Interceptable<
+    boolean,
+    { card: GeneralCard; ability: Ability<GeneralCard> }
+  >;
   canPlay: Interceptable<boolean>;
 };
 
@@ -260,7 +263,10 @@ export class GeneralCard extends Card<
     const ability = this.abilities.find(ability => ability.id === id);
     if (!ability) return false;
 
-    return this.interceptors.canUseAbility.getValue(ability.canUse, this);
+    return this.interceptors.canUseAbility.getValue(ability.canUse, {
+      card: this,
+      ability
+    });
   }
 
   async useAbility(id: string) {

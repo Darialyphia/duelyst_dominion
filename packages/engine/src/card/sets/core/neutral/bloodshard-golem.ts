@@ -36,6 +36,7 @@ export const bloodshardGolem: MinionBlueprint = {
   maxHp: 6,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit() {},
   async onPlay() {}
 };

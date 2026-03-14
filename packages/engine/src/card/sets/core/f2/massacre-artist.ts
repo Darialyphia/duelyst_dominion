@@ -1,11 +1,9 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import {
   BackstabAmountModifierMixin,
   BackstabModifier,
   BackstabUnitModifier
 } from '../../../../modifier/modifiers/backstab.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
@@ -36,7 +34,7 @@ export const massacreArtist: MinionBlueprint = {
     attack: 'sfx_neutral_redsynja_attack_swing',
     takeDamage: 'sfx_f2_kaidoassassin_hit',
     dealDamage: 'sfx_neutral_syvrel_attack_impact',
-    death: 'sfx_neutral_syvrel_death.m4a  '
+    death: 'sfx_neutral_syvrel_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,
@@ -50,6 +48,7 @@ export const massacreArtist: MinionBlueprint = {
   maxHp: 5,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new BackstabModifier(game, card, { damageBonus: 1 }));
 

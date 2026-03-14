@@ -15,12 +15,14 @@ import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/sim
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import type { Unit } from '../../../../unit/unit.entity';
 import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
+import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 
 export const grandStrategos: MinionBlueprint = {
   id: 'grand_strategos',
   name: 'Grand Strategos',
   description: dedent`
-  Your minions with @Zeal@ have +1/+1/+1 and are always Zealed.
+  Your minions with @Zeal@ are always Zealed.
+  @[lvl] 2 Bonus@: @On Enter@: Give allies with @Zeal@ +2 Health.
   `,
   vfx: {
     spriteId: 'minions/f1_grand-strategos',
@@ -42,7 +44,7 @@ export const grandStrategos: MinionBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.COMMON,
+  rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 5,
   runeCost: {},
@@ -50,43 +52,45 @@ export const grandStrategos: MinionBlueprint = {
   maxHp: 6,
   retaliation: 3,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
-    const HP_BUFF_ID = 'grand-strategos-hp-buff';
-    const ATTACK_BUFF_ID = 'grand-strategos-attack-buff';
-    const RETALIATION_BUFF_ID = 'grand-strategos-retaliation-buff';
+    await card.modifiers.add(
+      new MinionOnEnterModifier(game, card, async () => {
+        const zealedAllies = card.player.minions.filter(ally =>
+          ally.modifiers.has(ZealUnitModifier)
+        );
+        for (const ally of zealedAllies) {
+          await ally.modifiers.add(
+            new UnitSimpleHealthBuffModifier('grand-strategos-hp-buff', game, card, {
+              amount: 2
+            })
+          );
+        }
+      })
+    );
 
-    const ZEAL_INTERCEPTOR = () => true;
+    const aura = new Modifier<Unit>('grand-strategos-aura', game, card, {
+      mixins: [
+        new UnitAuraModifierMixin(game, card, {
+          isElligible(candidate) {
+            return (
+              candidate.modifiers.has(ZealUnitModifier) && candidate.isAlly(card.player)
+            );
+          },
+          getModifiers() {
+            return [
+              new Modifier('grand-strategos-zeal-interceptor', game, card, {
+                mixins: [new IsZealedModifierMixin(game, () => true)]
+              })
+            ];
+          }
+        })
+      ]
+    });
 
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
-        modifier: new Modifier<Unit>('grand-strategos-aura', game, card, {
-          mixins: [
-            new UnitAuraModifierMixin(game, card, {
-              isElligible(candidate) {
-                return (
-                  candidate.modifiers.has(ZealUnitModifier) &&
-                  candidate.isAlly(card.player)
-                );
-              },
-              getModifiers() {
-                return [
-                  new Modifier('grand-strategos-zeal-interceptor', game, card, {
-                    mixins: [new IsZealedModifierMixin(game, ZEAL_INTERCEPTOR)]
-                  }),
-                  new UnitSimpleHealthBuffModifier(HP_BUFF_ID, game, card, {
-                    amount: 1
-                  }),
-                  new UnitSimpleAttackBuffModifier(ATTACK_BUFF_ID, game, card, {
-                    amount: 1
-                  }),
-                  new UnitSimpleRetaliationBuffModifier(RETALIATION_BUFF_ID, game, card, {
-                    amount: 1
-                  })
-                ];
-              }
-            })
-          ]
-        })
+        modifier: aura
       })
     );
   },

@@ -1,9 +1,7 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
@@ -41,6 +39,7 @@ export const sunriser: MinionBlueprint = {
   maxHp: 5,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {

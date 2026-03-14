@@ -42,6 +42,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
     max: 1,
     allowRepeat: false
   }),
+  abilities: [],
   async onInit() {},
   async onPlay(game, card, { artifact }) {
     let hasProccedThisTurn = false;

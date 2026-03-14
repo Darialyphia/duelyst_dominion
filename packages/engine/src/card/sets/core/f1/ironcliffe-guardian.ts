@@ -1,6 +1,4 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
@@ -36,9 +34,10 @@ export const ironcliffeGuardian: MinionBlueprint = {
   manaCost: 5,
   runeCost: {},
   atk: 2,
-  maxHp: 8,
+  maxHp: 9,
   retaliation: 4,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));
   },

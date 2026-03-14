@@ -1,9 +1,7 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
@@ -40,9 +38,10 @@ export const silverguardKnight: MinionBlueprint = {
   runeCost: {},
   manaCost: 3,
   atk: 1,
-  maxHp: 5,
+  maxHp: 6,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(

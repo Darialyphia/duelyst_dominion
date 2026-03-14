@@ -46,9 +46,11 @@ export class RingAOEShape implements AOEShape<SerializedRingAOE> {
     const area: Point[] = [];
     if (!point) return area;
     const center = this.options.override ?? point;
+    if (this.options.includeCenter) area.push(center);
+
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
-        if (!this.options.includeCenter && dx === 0 && dy === 0) continue;
+        if (dx === 0 && dy === 0) continue;
         if (!this.options.includeDiagonals && Math.abs(dx) === Math.abs(dy)) continue;
 
         const newPoint = { x: center.x + dx, y: center.y + dy };

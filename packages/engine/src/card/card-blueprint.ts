@@ -56,6 +56,7 @@ export type MinionBlueprint = CardBlueprintBase & {
       ) => VFXSequence;
     };
   };
+  abilities: AbilityBlueprint<MinionCard>[];
   onInit: (game: Game, card: MinionCard) => Promise<void>;
   canPlay: (game: Game, card: MinionCard) => boolean;
   onPlay: (
@@ -106,7 +107,6 @@ export type AbilityBlueprint<T extends AnyCard> = {
   getTargets: (game: Game, card: T) => Promise<BoardCell[]>;
   getAoe: (game: Game, card: T, targets: BoardCell[]) => GenericAOEShape;
   getCooldown: (game: Game, card: T) => number;
-  getMaxUses: (game: Game, card: T) => number;
   canUse(game: Game, card: T): boolean;
   onResolve(
     game: Game,
@@ -149,6 +149,7 @@ export type ArtifactBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.ARTIFACT>;
   durability: number;
   manaCost: number;
+  abilities: AbilityBlueprint<ArtifactCard>[];
   vfx: CardBlueprintBase['vfx'] & {
     sequences?: {
       play?: (

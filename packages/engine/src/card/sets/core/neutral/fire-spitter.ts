@@ -36,6 +36,7 @@ export const fireSpitter: MinionBlueprint = {
   atk: 2,
   maxHp: 4,
   retaliation: 0,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));

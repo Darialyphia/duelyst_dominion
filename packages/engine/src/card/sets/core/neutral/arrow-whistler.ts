@@ -1,7 +1,5 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -14,7 +12,7 @@ export const arrowWhistler: MinionBlueprint = {
   name: 'Arrow Whistler',
   description: dedent`
   @Ranged@.
-  @On Enter@: If this is on the front row, deal 2 damage to a unit in the same column.
+  @On Enter@: Deal 2 damage to a unit in the same column.
   `,
   vfx: {
     spriteId: 'minions/neutral_arrowwhistler',
@@ -44,11 +42,11 @@ export const arrowWhistler: MinionBlueprint = {
   maxHp: 5,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async event => {
-        if (!event.data.unit.isOnFrontRow) return;
         const [target] = await singleMinionTargetRules.getPreResponseTargets(game, card, {
           predicate: unit =>
             unit.isEnemy(card.player) && unit.position.x === event.data.unit.position.x,

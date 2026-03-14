@@ -40,6 +40,7 @@ export const fourWindsMagus: MinionBlueprint = {
   maxHp: 5,
   retaliation: 2,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {

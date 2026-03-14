@@ -36,6 +36,7 @@ export const emeraldRejuvinator: MinionBlueprint = {
   atk: 3,
   maxHp: 6,
   retaliation: 2,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

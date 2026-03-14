@@ -1,15 +1,20 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { CardAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { isSpell } from '../../../card-utils';
-import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import type { MinionCard } from '../../../entities/minion-card.entity';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
+import {
+  CARD_KINDS,
+  CARD_LOCATIONS,
+  CARD_SETS,
+  FACTIONS,
+  RARITIES
+} from '../../../card.enums';
+import { MinionCard } from '../../../entities/minion-card.entity';
+import type { Unit } from '../../../../unit/unit.entity';
 import { neutralSpawn } from '../../../card-vfx-sequences';
+import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 
 export const archonSpellbinder: MinionBlueprint = {
   id: 'archon-spellbinder',
@@ -45,31 +50,30 @@ export const archonSpellbinder: MinionBlueprint = {
   maxHp: 7,
   retaliation: 3,
   canPlay: () => true,
+  abilities: [],
   async onInit(game, card) {
-    const DEBUFF_ID = 'archon-spellbinder-debuff';
-
-    const aura = new Modifier<MinionCard>('archon-spellbinder-aura', game, card, {
-      mixins: [
-        new TogglableModifierMixin(game, () => card.location === 'board'),
-        new CardAuraModifierMixin(game, card, {
-          isElligible(targetCard) {
-            return (
-              isSpell(targetCard) &&
-              targetCard.isEnemy(card) &&
-              targetCard.location === 'hand'
-            );
-          },
-          getModifiers: () => [
-            new SimpleManacostModifier(DEBUFF_ID, game, card, {
-              isRemovable: true,
-              amount: 1
+    await card.modifiers.add(
+      new WhileOnBoardModifier<MinionCard>(game, card, {
+        modifier: new Modifier<Unit>('archon-spellbinder-aura', game, card, {
+          mixins: [
+            new CardAuraModifierMixin(game, card, {
+              isElligible(targetCard) {
+                return (
+                  isSpell(targetCard) &&
+                  targetCard.isEnemy(card) &&
+                  targetCard.location === CARD_LOCATIONS.HAND
+                );
+              },
+              getModifiers: () => [
+                new SimpleManacostModifier('archon-spellbinder-debuff', game, card, {
+                  amount: 1
+                })
+              ]
             })
           ]
         })
-      ]
-    });
-
-    await card.modifiers.add(aura);
+      })
+    );
   },
   async onPlay() {}
 };

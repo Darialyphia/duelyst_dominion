@@ -36,6 +36,7 @@ export const voidHunter: MinionBlueprint = {
   atk: 3,
   maxHp: 3,
   retaliation: 1,
+  abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(

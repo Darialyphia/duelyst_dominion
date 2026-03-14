@@ -27,9 +27,6 @@ export type Config = {
   MAX_COUNTERATTACKS_PER_TURN: number;
   MAX_EQUIPPED_ARTIFACTS: number;
   DRAW_STEP: 'turn-start' | 'turn-end';
-  GENERAL_ABILITY_ENABLED: boolean;
-  GENERAL_ABILITY_MAX_USES: number;
-  GENERAL_ABILITY_COOLDOWN: number;
 
   PLAYER_MAX_HP: number;
 
@@ -63,9 +60,6 @@ export const defaultConfig: Config = {
   MAX_COUNTERATTACKS_PER_TURN: Infinity,
   MAX_EQUIPPED_ARTIFACTS: 3,
   DRAW_STEP: 'turn-start',
-  GENERAL_ABILITY_ENABLED: false,
-  GENERAL_ABILITY_MAX_USES: 1,
-  GENERAL_ABILITY_COOLDOWN: 0,
   MAX_RESOURCE_ACTIONS_PER_TURN: 1,
 
   PLAYER_MAX_HP: 25,
