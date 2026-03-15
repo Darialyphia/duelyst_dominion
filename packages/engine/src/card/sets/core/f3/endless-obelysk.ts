@@ -41,7 +41,7 @@ export const endlessObelysk: MinionBlueprint = {
   runeCost: {},
   manaCost: 3,
   atk: 0,
-  maxHp: 4,
+  maxHp: 6,
   retaliation: 2,
   canPlay: () => true,
   abilities: [],

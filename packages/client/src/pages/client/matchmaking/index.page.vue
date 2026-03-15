@@ -38,6 +38,7 @@ const canJoin = computed(() => {
 
 const getDisplayedDeck = (deck: UserDeck) => ({
   name: deck.name,
+  faction: deck.faction,
   cards: deck.cards.map(card => ({
     blueprintId: card.blueprintId,
     copies: card.copies

@@ -44,7 +44,9 @@ export const zirixStarstrider: MinionBlueprint = {
     await card.modifiers.add(
       new MinionSimpleAttackBuffModifier('zirix-starstrider-attack-buff', game, card, {
         amount() {
-          return card.player.units.filter(unit => unit.card.id === windDervish.id).length;
+          return card.player.units.filter(
+            unit => unit.card.blueprintId === windDervish.id
+          ).length;
         }
       })
     );

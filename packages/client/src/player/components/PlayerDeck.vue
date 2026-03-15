@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { CARD_KINDS } from '@game/engine/src/card/card.enums';
+import { CARD_KINDS, type Faction } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
+import type { Nullable } from '@game/shared';
 import {
   HoverCardContent,
   HoverCardPortal,
   HoverCardRoot,
   HoverCardTrigger
 } from 'reka-ui';
+import { assets } from '@/assets';
 
 export type DisplayedDeck = {
   name: string;
+  faction: Nullable<Faction>;
   cards: { blueprintId: string; copies: number }[];
 };
 const { deck } = defineProps<{
@@ -40,7 +43,15 @@ const artifacts = computed(() =>
   <div>
     <HoverCardRoot>
       <HoverCardTrigger as-child>
-        <button class="player-deck">
+        <button
+          class="player-deck"
+          :style="{
+            '--emblem': deck.faction
+              ? assets[`ui/crests-${deck.faction.toLocaleLowerCase()}-textless`]
+                  .css
+              : 'none'
+          }"
+        >
           <div class="deck-name">
             {{ deck.name }}
           </div>
@@ -86,6 +97,8 @@ const artifacts = computed(() =>
   align-items: center;
   position: relative;
   overflow: hidden;
+  background: var(--emblem) no-repeat var(--size-3) center;
+  background-size: calc(29px * 2);
 
   /* background-image:
     linear-gradient(to right, hsl(0deg 0% 20% / 0.5), hsl(0deg 0% 0% / 0.5)),
@@ -114,6 +127,7 @@ const artifacts = computed(() =>
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  margin-left: var(--size-9);
   @screen lt-lg {
     font-size: var(--font-size-1);
   }

@@ -88,10 +88,11 @@ export class CombatComponent {
 
     const targets =
       actualTarget instanceof Unit
-        ? this.unit.attackAOEShape
-            .getArea([actualTarget])
-            .map(point => this.game.unitSystem.getUnitAt(point))
-            .filter(isDefined)
+        ? this.game.unitSystem.getUnitsInAOE(
+            this.unit.attackAOEShape,
+            [actualTarget],
+            this.unit.player
+          )
         : [actualTarget];
     const damage = new CombatDamage(this.unit, 'attack');
 
