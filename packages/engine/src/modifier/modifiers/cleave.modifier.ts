@@ -8,13 +8,11 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
-import { RectangleAOEShape } from '../../aoe/rectangle.aoe-shape';
 import { TARGETING_TYPE } from '../../targeting/targeting-strategy';
 import { TogglableModifierMixin } from '../mixins/togglable.mixin';
 import { CleaveAOEShape } from '../../aoe/cleave.aoe-shape';
 
-export class CleaveCardModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
+export class CleaveCardModifier<T extends MinionCard> extends Modifier<T> {
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.CLEAVE.id, game, source, {
       mixins: [

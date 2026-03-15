@@ -27,7 +27,6 @@ import { SelectSpaceOnBoardInput } from './inputs/select-space-on-board.input';
 import { MoveInput } from './inputs/move.input';
 import { MulliganInput } from './inputs/mulligan.input';
 import { ReplaceCardInput } from './inputs/replace-card.input';
-import { UseGeneralAbilityInput } from './inputs/use-general-ability';
 import { PassInput } from './inputs/pass.input';
 import { AttackInput } from './inputs/attack.input';
 import { SurrenderInput } from './inputs/surrender.input';
@@ -53,7 +52,6 @@ const inputMap = validateinputMap({
   move: MoveInput,
   mulligan: MulliganInput,
   replaceCard: ReplaceCardInput,
-  useGeneralAbility: UseGeneralAbilityInput,
   pass: PassInput,
   attack: AttackInput,
   surrender: SurrenderInput

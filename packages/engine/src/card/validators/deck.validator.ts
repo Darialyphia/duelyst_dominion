@@ -1,6 +1,5 @@
 import { defaultConfig } from '../../config';
 import type { CardBlueprint } from '../card-blueprint';
-import { CARD_KINDS } from '../card.enums';
 
 export type DeckViolation = {
   type: string;
@@ -49,12 +48,6 @@ export class StandardDeckValidator<TMeta> implements DeckValidator<TMeta> {
   }): DeckViolation[] {
     const violations: DeckViolation[] = [];
 
-    if (card.blueprint.kind === CARD_KINDS.GENERAL && card.copies > 1) {
-      violations.push({
-        type: 'too_many_copies_general',
-        reason: `Deck must have exactly 1 general.`
-      });
-    }
     if (card.copies > defaultConfig.MAX_MAIN_DECK_CARD_COPIES) {
       violations.push({
         type: 'too_many_copies',
@@ -76,17 +69,6 @@ export class StandardDeckValidator<TMeta> implements DeckValidator<TMeta> {
       violations.push({
         type: 'invalid_deck_size',
         reason: `Deck must have exactly ${defaultConfig.MAX_MAIN_DECK_SIZE} cards.`
-      });
-    }
-
-    const generals = deck.cards.filter(card => {
-      const blueprint = this.cardPool[card.blueprintId];
-      return blueprint?.kind === CARD_KINDS.GENERAL;
-    });
-    if (generals.length !== 1) {
-      violations.push({
-        type: 'invalid_general_count',
-        reason: `Deck must have exactly 1 general.`
       });
     }
 
@@ -123,12 +105,6 @@ export class StandardDeckValidator<TMeta> implements DeckValidator<TMeta> {
       return false;
     }
 
-    const alreadyHasGeneral = withBlueprint.some(
-      c => c.blueprint.kind === CARD_KINDS.GENERAL
-    );
-    if (cardBlueprint.kind === CARD_KINDS.GENERAL && alreadyHasGeneral) {
-      return false;
-    }
     const existing = withBlueprint.find(c => deck.isEqual(c, card));
     if (existing && existing.copies >= this.maxCardCopies) {
       return false;

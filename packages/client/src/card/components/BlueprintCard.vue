@@ -2,6 +2,7 @@
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import Card from './Card.vue';
 import { sprites } from '@/assets';
+import { formatAbilityText } from '@/utils/formatters';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
 const sprite = computed(() => {
@@ -26,7 +27,8 @@ const sprite = computed(() => {
       durability: (blueprint as any).durability,
       retaliation: (blueprint as any).retaliation,
       faction: blueprint.faction,
-      tags: blueprint.tags
+      tags: blueprint.tags,
+      abilities: (blueprint as any).abilities?.map(formatAbilityText)
     }"
     :sprite="sprite"
   />

@@ -4,8 +4,6 @@ import { EntityWithModifiers } from '../utils/entity-with-modifiers';
 import type { Game } from '../game/game';
 import type { ArtifactCard } from '../card/entities/artifact-card.entity';
 import { Interceptable } from '../utils/interceptable';
-import type { UnitReceiveDamageEvent } from '../unit/unit-events';
-import { UNIT_EVENTS } from '../unit/unit.enums';
 import { ARTIFACT_EVENTS } from './player.enums';
 import {
   ArtifactAfterDurabilityChangeEvent,
@@ -76,20 +74,7 @@ export class PlayerArtifact
     return this.interceptors.shouldLoseDurabilityOnGeneralDamage.getValue(true, {});
   }
 
-  private async onGeneralDamageTaken(event: UnitReceiveDamageEvent) {
-    if (!this.player.deployedGeneral) return;
-    if (!event.data.unit.equals(this.player.deployedGeneral)) return;
-    if (event.data.damage.getFinalAmount(this.player.deployedGeneral) === 0) return;
-    if (this.shouldLoseDurabilityOnGeneralDamage) {
-      await this.loseDurability();
-    }
-  }
-
   async equip() {
-    await this.game.on(
-      UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
-      this.onGeneralDamageTaken.bind(this)
-    );
     await this.game.emit(
       ARTIFACT_EVENTS.ARTIFACT_EQUIPED,
       new ArtifactEquipedEvent({
@@ -106,10 +91,6 @@ export class PlayerArtifact
       })
     );
 
-    this.game.off(
-      UNIT_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
-      this.onGeneralDamageTaken.bind(this)
-    );
     await this.player.artifactManager.unequip(this.card);
     await this.card.sendToDiscardPile();
     this.modifiers.list.forEach(async modifier => {

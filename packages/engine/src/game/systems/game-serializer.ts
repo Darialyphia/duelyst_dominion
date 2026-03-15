@@ -12,18 +12,17 @@ import type { PatchBasedSnapshotDiff, EntityPatchMap } from './patch-types';
 import type { SerializedBoard } from '../../board/board.system';
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedArtifactCard } from '../../card/entities/artifact-card.entity';
-import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedSpellCard } from '../../card/entities/spell-card.entity';
 import type { SerializedTile } from '../../tile/tile.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import { areArraysIdentical } from '../../utils/helpers';
 import { INTERACTION_STATES } from '../game.enums';
+import type { SerializedAbility } from '../../card/entities/ability.entity';
 
 export type EntityDictionary = Record<
   string,
   | SerializedMinionCard
-  | SerializedGeneralCard
   | SerializedSpellCard
   | SerializedArtifactCard
   | SerializedPlayer
@@ -31,12 +30,12 @@ export type EntityDictionary = Record<
   | SerializedCell
   | SerializedUnit
   | SerializedTile
+  | SerializedAbility
 >;
 
 export type EntityDiffDictionary = Record<
   string,
   | Partial<SerializedMinionCard>
-  | Partial<SerializedGeneralCard>
   | Partial<SerializedSpellCard>
   | Partial<SerializedArtifactCard>
   | Partial<SerializedPlayer>
@@ -44,6 +43,7 @@ export type EntityDiffDictionary = Record<
   | Partial<SerializedCell>
   | Partial<SerializedUnit>
   | Partial<SerializedTile>
+  | Partial<SerializedAbility>
 >;
 
 export type SerializedOmniscientState = {

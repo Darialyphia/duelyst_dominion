@@ -7,13 +7,10 @@ import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
 import { GAME_EVENTS } from '../../game/game.events';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 
-export class EphemeralCardModifier<
-  T extends MinionCard | GeneralCard
-> extends Modifier<T> {
+export class EphemeralCardModifier<T extends MinionCard> extends Modifier<T> {
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.EPHEMERAL.id, game, source, {
       mixins: [

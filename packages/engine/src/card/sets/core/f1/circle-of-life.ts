@@ -55,7 +55,7 @@ export const circleOfLife: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 5,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {

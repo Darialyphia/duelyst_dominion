@@ -7,11 +7,11 @@ import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedBoard } from '../../board/board.system';
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import type { SerializedArtifactCard } from '../../card/entities/artifact-card.entity';
-import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
 import type { SerializedSpellCard } from '../../card/entities/spell-card.entity';
 import type { SerializedTile } from '../../tile/tile.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
+import type { SerializedAbility } from '../../card/entities/ability.entity';
 
 /**
  * JSON Patch operations (RFC 6902 inspired)
@@ -46,14 +46,14 @@ export type EntityPatchMap = Record<string, PatchOperation[]>;
  */
 export type SerializedEntity =
   | SerializedMinionCard
-  | SerializedGeneralCard
   | SerializedSpellCard
   | SerializedArtifactCard
   | SerializedPlayer
   | SerializedModifier
   | SerializedCell
   | SerializedUnit
-  | SerializedTile;
+  | SerializedTile
+  | SerializedAbility;
 
 export type PatchBasedSnapshotDiff = {
   entityPatches: EntityPatchMap;

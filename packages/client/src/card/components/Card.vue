@@ -46,6 +46,7 @@ const {
     tags?: string[];
     kind: CardKind;
     faction: Faction;
+    abilities?: string[];
   };
   sprite: Nullable<{
     id: string;
@@ -101,7 +102,7 @@ const _animationSequence = computed(() => {
   if (animationSequence) return animationSequence;
 
   return match(card.kind)
-    .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
+    .with(CARD_KINDS.MINION, () =>
       isHovered.value
         ? [ANIMATIONS_NAMES.ATTACK, ANIMATIONS_NAMES.IDLE]
         : [ANIMATIONS_NAMES.BREATHING]
@@ -171,6 +172,7 @@ const factionBgOpacity = computed(() => {
           :atk="card.atk"
           :hp="card.hp"
           :retaliation="card.retaliation"
+          :durability="card.durability"
         />
 
         <CardName :name="card.name" />
@@ -191,7 +193,11 @@ const factionBgOpacity = computed(() => {
           {{ card.tags?.length ? `· ${card.tags?.join(' ')}` : '' }}
         </div>
 
-        <CardDescription :description="card.description" :kind="card.kind" />
+        <CardDescription
+          :description="card.description"
+          :kind="card.kind"
+          :abilities="card.abilities"
+        />
 
         <div class="rarity parallax" />
 

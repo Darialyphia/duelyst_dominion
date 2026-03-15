@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { sprites } from '@/assets';
-import { useSprite } from '@/card/composables/useSprite';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { CARDS_DICTIONARY } from '@game/engine/src/card/sets';
 import {
@@ -17,14 +15,6 @@ export type DisplayedDeck = {
 const { deck } = defineProps<{
   deck: DisplayedDeck;
 }>();
-
-const general = computed(() => {
-  const card = deck.cards.find(
-    card => CARDS_DICTIONARY[card.blueprintId].kind === CARD_KINDS.GENERAL
-  )!;
-  if (!card) return null;
-  return CARDS_DICTIONARY[card.blueprintId];
-});
 
 const cards = computed(() =>
   deck.cards.map(card => ({
@@ -44,16 +34,6 @@ const spells = computed(() =>
 const artifacts = computed(() =>
   cards.value.filter(item => item.blueprint.kind === CARD_KINDS.ARTIFACT)
 );
-
-const sprite = computed(() =>
-  general.value ? sprites[`cards/${general.value.vfx.spriteId}`] : null
-);
-const { activeFrameRect, bgPosition, imageBg } = useSprite({
-  kind: CARD_KINDS.GENERAL,
-  sprite: sprite,
-  animationSequence: undefined,
-  repeat: true
-});
 </script>
 
 <template>
@@ -61,16 +41,6 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
     <HoverCardRoot>
       <HoverCardTrigger as-child>
         <button class="player-deck">
-          <div
-            class="general"
-            :style="{
-              '--bg-position': bgPosition,
-              '--width': `${activeFrameRect.width}px`,
-              '--height': `${activeFrameRect.height}px`,
-              '--background-width': `calc( ${sprite?.sheetSize.w}px * var(--pixel-scale))`,
-              '--background-height': `calc(${sprite?.sheetSize.h}px * var(--pixel-scale))`
-            }"
-          />
           <div class="deck-name">
             {{ deck.name }}
           </div>
@@ -129,20 +99,6 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   border: solid 1px hsl(var(--color-primary-hsl) / 0.5);
   -webkit-text-stroke: 4px black;
   paint-order: stroke fill;
-}
-
-.general {
-  --pixel-scale: 1;
-  position: absolute;
-  bottom: -1rem;
-  scale: -2 2;
-  right: 0;
-  width: var(--width);
-  height: var(--height);
-  background: v-bind(imageBg);
-  background-position: var(--bg-position);
-  background-repeat: no-repeat;
-  background-size: var(--background-width) var(--background-height);
 }
 
 .deck-name {

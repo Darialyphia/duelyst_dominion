@@ -9,7 +9,6 @@ import {
 } from '../mixins/interceptor.mixin';
 import type { ModifierMixin } from '../modifier-mixin';
 import { Modifier } from '../modifier.entity';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
 
 export class UnitSimpleRetaliationBuffModifier<T extends Unit> extends Modifier<T> {
   constructor(
@@ -57,7 +56,7 @@ export class UnitSimpleRetaliationBuffModifier<T extends Unit> extends Modifier<
 }
 
 export class MinionSimpleRetaliationBuffModifier<
-  T extends MinionCard | GeneralCard
+  T extends MinionCard
 > extends Modifier<T> {
   constructor(
     modifierType: string,
@@ -86,7 +85,6 @@ export class MinionSimpleRetaliationBuffModifier<
         return `${amount > 0 ? '+' : '-'}${amount} Retaliation`;
       },
       mixins: [
-        // @ts-expect-error - minionInterceptorMixin is fine for generals, but the type system doesn't know that
         new MinionInterceptorModifierMixin(game, {
           key: 'retaliation',
           interceptor: value => {

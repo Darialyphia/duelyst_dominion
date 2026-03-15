@@ -2,7 +2,6 @@ import { useSafeInject } from '@/shared/composables/useSafeInject';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { KEYWORDS } from '@game/engine/src/card/card-keywords';
 import {
-  CARD_KINDS,
   type CardKind,
   type Faction,
   FACTIONS
@@ -139,19 +138,6 @@ export const provideCardList = () => {
         const factionB = FACTION_ORDER[b.card.faction] ?? 999;
         if (factionA !== factionB) {
           return factionA - factionB;
-        }
-
-        if (
-          a.card.kind === CARD_KINDS.GENERAL &&
-          b.card.kind !== CARD_KINDS.GENERAL
-        ) {
-          return -1;
-        }
-        if (
-          a.card.kind !== CARD_KINDS.GENERAL &&
-          b.card.kind === CARD_KINDS.GENERAL
-        ) {
-          return 1;
         }
 
         const costA = 'manaCost' in a.card ? a.card.manaCost : 0;

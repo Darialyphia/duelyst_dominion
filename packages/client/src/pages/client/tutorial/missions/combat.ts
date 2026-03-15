@@ -73,11 +73,6 @@ export const combatTutorial: TutorialMission = {
         },
         next: () => 'retaliation_explain',
         async onEnter(game) {
-          // Remove generals from the board — this tutorial focuses on combat only
-          for (const player of game.playerSystem.players) {
-            await player.generalCard.removeFromCurrentLocation();
-          }
-
           const p1 = game.playerSystem.player1;
           const p2 = game.playerSystem.player2;
 
@@ -86,7 +81,7 @@ export const combatTutorial: TutorialMission = {
             bloodshardGolem.id,
             false
           );
-          await p1Card1.playAt(game.boardSystem.getCellAt({ x: 2, y: 2 })!, []);
+          await p1Card1.playAt(game.boardSystem.getCellAt({ x: 2, y: 2 })!);
           const p1Unit1 = p1Card1.unit;
           p1Unit1.wakeUp();
           meta.p1Unit1Id = p1Unit1.id;
@@ -96,7 +91,7 @@ export const combatTutorial: TutorialMission = {
             bloodshardGolem.id,
             false
           );
-          await p2Card1.playAt(game.boardSystem.getCellAt({ x: 2, y: 1 })!, []);
+          await p2Card1.playAt(game.boardSystem.getCellAt({ x: 2, y: 1 })!);
           const p2Unit1 = p2Card1.unit;
           p2Unit1.wakeUp();
           meta.p2Unit1Id = p2Unit1.id;
@@ -485,7 +480,7 @@ export const combatTutorial: TutorialMission = {
             brightmossGolem.id,
             false
           );
-          await p1Card.playAt(game.boardSystem.getCellAt({ x: 2, y: 2 })!, []);
+          await p1Card.playAt(game.boardSystem.getCellAt({ x: 2, y: 2 })!);
           const p1Unit = p1Card.unit;
           p1Unit.wakeUp();
           meta.p1Unit1Id = p1Unit.id;
@@ -495,10 +490,7 @@ export const combatTutorial: TutorialMission = {
             bloodshardGolem.id,
             false
           );
-          await p2FrontCard.playAt(
-            game.boardSystem.getCellAt({ x: 2, y: 1 })!,
-            []
-          );
+          await p2FrontCard.playAt(game.boardSystem.getCellAt({ x: 2, y: 1 })!);
           const p2FrontUnit = p2FrontCard.unit;
           p2FrontUnit.wakeUp();
           meta.p2Unit1Id = p2FrontUnit.id;
@@ -508,10 +500,7 @@ export const combatTutorial: TutorialMission = {
             hailstoneGolem.id,
             false
           );
-          await p2BackCard.playAt(
-            game.boardSystem.getCellAt({ x: 2, y: 0 })!,
-            []
-          );
+          await p2BackCard.playAt(game.boardSystem.getCellAt({ x: 2, y: 0 })!);
           const p2BackUnit = p2BackCard.unit;
           p2BackUnit.wakeUp();
           meta.p2Unit2Id = p2BackUnit.id;

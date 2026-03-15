@@ -19,7 +19,6 @@ import {
   PlayerResourceActionEvent
 } from './player.events';
 import { ModifierManager } from '../modifier/modifier-manager.component';
-import type { GeneralCard } from '../card/entities/general-card.entity';
 import { PLAYER_EVENTS } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
 import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
@@ -27,7 +26,6 @@ import type { SerializedPlayerArtifact } from './player-artifact.entity';
 import { RuneManagerComponent } from './components/rune-manager.component';
 import type { Damage } from '../utils/damage';
 import { LevelManagerComponent } from './components/level-manager.component';
-import { max } from 'lodash-es';
 
 export type PlayerOptions = {
   id: string;
@@ -112,8 +110,6 @@ export class Player
 
   readonly levelManager: LevelManagerComponent;
 
-  generalCard!: GeneralCard;
-
   currentlyPlayedCard: Nullable<DeckCard> = null;
 
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
@@ -138,10 +134,7 @@ export class Player
     this.game = game;
     this.cardTracker = new CardTrackerComponent(game, this);
     this.cardManager = new CardManagerComponent(game, this, {
-      deck: this.options.deck.cards.filter(card => {
-        const blueprint = this.game.cardSystem.getBlueprint(card.blueprintId);
-        return blueprint.kind !== CARD_KINDS.GENERAL;
-      }),
+      deck: this.options.deck.cards,
       maxHandSize: this.game.config.MAX_HAND_SIZE,
       shouldShuffleDeck: true
     });
@@ -154,19 +147,6 @@ export class Player
   async init() {
     this._baseMaxMana = this.game.config.MAX_MANA;
     this.refillMana();
-
-    const generalId = this.options.deck.cards.find(card => {
-      const blueprint = this.game.cardSystem.getBlueprint(card.blueprintId);
-      return blueprint.kind === CARD_KINDS.GENERAL;
-    });
-    if (!generalId) {
-      throw new Error(`General card not found in player's deck`);
-    }
-    this.generalCard = await this.generateCard<GeneralCard>(
-      generalId.blueprintId,
-      generalId.isFoil
-    );
-    await this.generalCard.addToHand();
 
     await this.cardManager.init();
   }
@@ -193,6 +173,10 @@ export class Player
 
   get unitsInBackRow() {
     return this.units.filter(unit => unit.position.x === this.backRowIndex);
+  }
+
+  get level() {
+    return this.levelManager.level;
   }
 
   serialize() {
@@ -265,30 +249,14 @@ export class Player
     return this.game.playerSystem.players.find(p => !p.equals(this))!;
   }
 
-  get deployedGeneral() {
-    return this.game.unitSystem.getUnitByCard(this.generalCard);
-  }
-
-  get enemyHero() {
-    return this.opponent.deployedGeneral;
-  }
-
-  get minions() {
+  get units() {
     return this.game.unitSystem
       .getUnitsByPlayer(this)
       .filter(unit => unit.card.kind === CARD_KINDS.MINION);
   }
 
-  get units() {
-    return [this.deployedGeneral, ...this.minions].filter(isDefined);
-  }
-
   get enemyUnits() {
-    return [this.enemyHero, ...this.enemyMinions].filter(isDefined);
-  }
-
-  get enemyMinions() {
-    return this.opponent.minions;
+    return this.opponent.units;
   }
 
   get isTurnPlayer() {
@@ -343,9 +311,9 @@ export class Player
       await this.drawForTurn();
     }
 
-    for (const unit of this.units) {
-      if (unit.shouldActivateOnTurnStart) {
-        unit.activate();
+    for (const minion of this.units) {
+      if (minion.shouldActivateOnTurnStart) {
+        minion.activate();
       }
     }
 

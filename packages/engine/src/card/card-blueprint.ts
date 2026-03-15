@@ -11,7 +11,6 @@ import type {
 import type { MinionCard } from './entities/minion-card.entity';
 import type { SpellCard } from './entities/spell-card.entity';
 import type { ArtifactCard } from './entities/artifact-card.entity';
-import type { GeneralCard } from './entities/general-card.entity';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import type { PlayerArtifact } from '../player/player-artifact.entity';
@@ -118,33 +117,6 @@ export type AbilityBlueprint<T extends AnyCard> = {
   ): void;
 };
 
-export type GeneralBlueprint = CardBlueprintBase & {
-  kind: Extract<CardKind, typeof CARD_KINDS.GENERAL>;
-  manaCost: number;
-  atk: number;
-  retaliation: number;
-  maxHp: number;
-  abilities: AbilityBlueprint<GeneralCard>[];
-  vfx: CardBlueprintBase['vfx'] & {
-    sequences?: {
-      play?: (
-        game: Game,
-        card: GeneralCard,
-        position: Point,
-        targets: Point[]
-      ) => VFXSequence;
-    };
-  };
-  getAoe: (
-    game: Game,
-    card: GeneralCard,
-    position: BoardCell,
-    targets: BoardCell[]
-  ) => GenericAOEShape;
-  getTargets: (game: Game, card: GeneralCard) => Promise<BoardCell[]>;
-  onInit: (game: Game, card: GeneralCard) => Promise<void>;
-};
-
 export type ArtifactBlueprint = CardBlueprintBase & {
   kind: Extract<CardKind, typeof CARD_KINDS.ARTIFACT>;
   durability: number;
@@ -178,8 +150,4 @@ export type ArtifactBlueprint = CardBlueprintBase & {
   getAoe: (game: Game, card: ArtifactCard, targets: BoardCell[]) => GenericAOEShape;
 };
 
-export type CardBlueprint =
-  | SpellBlueprint
-  | ArtifactBlueprint
-  | MinionBlueprint
-  | GeneralBlueprint;
+export type CardBlueprint = SpellBlueprint | ArtifactBlueprint | MinionBlueprint;

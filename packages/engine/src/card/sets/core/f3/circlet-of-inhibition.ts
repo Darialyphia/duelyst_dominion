@@ -3,17 +3,15 @@ import type { ArtifactBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { Modifier } from '../../../../modifier/modifier.entity';
-import { ArtifactEffectModifierMixin } from '../../../../modifier/mixins/artifact-effect.mixin';
-import { PlayerArtifact } from '../../../../player/player-artifact.entity';
-import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { GAME_EVENTS } from '../../../../game/game.events';
+import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
+import { isDefined } from '@game/shared';
+import { singleMinionTargetRules } from '../../../card-utils';
 
 export const circletOfInhibition: ArtifactBlueprint = {
   id: 'circlet-of-inhibition',
   name: 'Circlet of Inhibition',
   description: dedent`
-  When an enemy attacks your general, your opponent must pay 1 or you gain 1 mana.
+ TODO rework artifacts
   `,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},
@@ -25,52 +23,45 @@ export const circletOfInhibition: ArtifactBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 2,
-  durability: 3,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
+  durability: 2,
+  getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
-  abilities: [],
-  getTargets: () => Promise.resolve([]),
-  async onInit(game, card) {
-    const onAttackModifier = new Modifier<PlayerArtifact>(
-      'circlet-of-inhibition-on-attack',
-      game,
-      card,
-      {
-        mixins: [
-          new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
-            filter(event) {
-              if (!card.player.deployedGeneral) return false;
-              return event?.data.target.equals(card.player.deployedGeneral) ?? false;
-            },
-            async handler(event) {
-              if (!event) return;
-              const opponent = event.data.unit.player;
-              if (opponent.mana < 2) {
-                await card.player.gainMana(1);
-              } else {
-                await opponent.spendMana(2);
-              }
-            }
-          })
-        ]
+  abilities: [
+    {
+      id: 'circlet-of-inhibition-ability',
+      description: dedent`
+      Exhaust a minion with a cost less or equal than your level. Lose 1 durability.
+      `,
+      canUse: (game, card) =>
+        isDefined(card.artifact) &&
+        singleMinionTargetRules.canPlay(
+          game,
+          card,
+          unit => unit.isExhausted && unit.card.manaCost <= card.player.levelManager.level
+        ),
+      getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
+      getTargets: (game, card) =>
+        singleMinionTargetRules.getPreResponseTargets(game, card, {
+          required: true,
+          predicate(unit) {
+            return (
+              unit.isExhausted && unit.card.manaCost <= card.player.levelManager.level
+            );
+          },
+          getLabel() {
+            return 'Select a minion to exhaust.';
+          }
+        }),
+      getCooldown: () => 1,
+      manaCost: 1,
+      async onResolve(game, card, { targets }) {
+        const target = targets[0];
+        await target.unit?.exhaust();
+        await card.artifact?.loseDurability(1);
       }
-    );
-
-    await card.modifiers.add(
-      new Modifier('circlet-of-inhibition', game, card, {
-        mixins: [
-          new ArtifactEffectModifierMixin(game, {
-            async onApplied(artifact) {
-              await artifact.modifiers.add(onAttackModifier);
-            },
-            async onRemoved(artifact) {
-              await artifact.modifiers.remove(onAttackModifier);
-            }
-          })
-        ]
-      })
-    );
-  },
+    }
+  ],
+  getTargets: () => Promise.resolve([]),
+  async onInit() {},
   async onPlay() {}
 };

@@ -47,7 +47,7 @@ export const warSurge: SpellBlueprint = {
   runeCost: {},
   manaCost: 2,
   getAoe: game =>
-    new EverywhereAOEShape(TARGETING_TYPE.ALLY_MINION, {
+    new EverywhereAOEShape(TARGETING_TYPE.ALLY_UNIT, {
       width: game.boardSystem.map.cols,
       height: game.boardSystem.map.rows
     }),
@@ -59,7 +59,7 @@ export const warSurge: SpellBlueprint = {
       allowRepeat: false
     })(game, card, {
       getAoe: () =>
-        new EverywhereAOEShape(TARGETING_TYPE.ALLY_MINION, {
+        new EverywhereAOEShape(TARGETING_TYPE.ALLY_UNIT, {
           width: game.boardSystem.map.cols,
           height: game.boardSystem.map.rows
         })

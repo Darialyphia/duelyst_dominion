@@ -2,19 +2,20 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { ArtifactBlueprint } from '../../../card-blueprint';
 import { anywhereTargetRules, singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
-import { Modifier } from '../../../../modifier/modifier.entity';
-import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { GAME_EVENTS } from '../../../../game/game.events';
+import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
+import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { AbilityDamage } from '../../../../utils/damage';
+import { isDefined } from '@game/shared';
+import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
+import { Modifier } from '../../../../modifier/modifier.entity';
+import { ArtifactAbilityInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
+import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const maskOfTheMantis: ArtifactBlueprint = {
   id: 'mask-of-the-mantis',
   name: 'Mask of the Mantis',
-  description: dedent`
-  When your general deals damage, deal 2 damage to a minion.
-  `,
+  description: dedent``,
   vfx: { spriteId: 'artifacts/f2_mask-of-the-mantis' },
   sounds: {
     play: 'sfx_victory_crest'
@@ -26,47 +27,54 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   rarity: RARITIES.RARE,
   tags: [],
   runeCost: {},
-  manaCost: 2,
-  durability: 3,
-  getAoe: (game, card) =>
-    new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
-      override: card.player.deployedGeneral
-    }),
+  manaCost: 1,
+  durability: 2,
+  getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
-  abilities: [],
+  abilities: [
+    {
+      id: 'mask-of-the-mantis-ability',
+      description: dedent`Deal 1 damage to a minion. This loses 1 durability. @[lvl] 3 Bonus@: @Burst@.`,
+      canUse: (game, card) =>
+        isDefined(card.artifact) && singleMinionTargetRules.canPlay(game, card),
+      getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
+      getTargets: (game, card) =>
+        singleMinionTargetRules.getPreResponseTargets(game, card, {
+          required: true,
+          getLabel() {
+            return 'Select a minion to deal 1 damage to.';
+          }
+        }),
+      getCooldown: () => 1,
+      manaCost: 1,
+      async onResolve(game, card, { targets }) {
+        const target = targets[0];
+        await target.unit?.takeDamage(card, new AbilityDamage(card, 1));
+        await card.artifact?.loseDurability(1);
+      }
+    }
+  ],
   getTargets: anywhereTargetRules.getPreResponseTargets({
     min: 1,
     max: 1,
     allowRepeat: false
   }),
-  async onInit() {},
-  async onPlay(game, card, { artifact }) {
-    await artifact.modifiers.add(
-      new Modifier('mask-of-the-mantis', game, card, {
+  async onInit(game, card) {
+    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
+    const levelMod = card.modifiers.get(LevelBonusModifier)!;
+
+    const ability = card.getAbility('mask-of-the-mantis-ability');
+    await ability?.modifiers.add(
+      new Modifier('mask-of-the-mantis-burst', game, card, {
         mixins: [
-          new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.UNIT_AFTER_DEAL_DAMAGE,
-            filter: event => {
-              if (!event) return false;
-              if (!card.player.deployedGeneral) return false;
-              return event.data.unit.equals(card.player.deployedGeneral);
-            },
-            async handler() {
-              const enemyMinions = card.player.enemyMinions;
-              if (!enemyMinions.length) return;
-
-              const [target] = await singleMinionTargetRules.getPreResponseTargets(
-                game,
-                card,
-                { required: true }
-              );
-              if (!target) return;
-
-              await target.unit!.takeDamage(card, new AbilityDamage(card, 2));
-            }
-          })
+          new ArtifactAbilityInterceptorModifierMixin(game, {
+            key: 'shouldSwitchInitiativeAfterUse',
+            interceptor: () => false
+          }),
+          new TogglableModifierMixin(game, () => levelMod.isActive)
         ]
       })
     );
-  }
+  },
+  async onPlay() {}
 };

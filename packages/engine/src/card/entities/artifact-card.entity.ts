@@ -2,7 +2,7 @@ import type { MaybePromise } from '@game/shared';
 import type { Game } from '../../game/game';
 import type { Player } from '../../player/player.entity';
 import { Interceptable } from '../../utils/interceptable';
-import type { ArtifactBlueprint } from '../card-blueprint';
+import type { AbilityBlueprint, ArtifactBlueprint } from '../card-blueprint';
 import {
   Card,
   makeCardInterceptors,
@@ -13,18 +13,24 @@ import {
 import { CARD_EVENTS } from '../card.enums';
 import { CardAfterPlayEvent, CardBeforePlayEvent } from '../card.events';
 import type { BoardCell } from '../../board/entities/board-cell.entity';
+import { Ability } from './ability.entity';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SerializedArtifactCard = SerializedCard & {
   durability: number;
   manaCost: number;
   unplayableReason: string | null;
+  abilities: string[];
 };
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type ArtifactCardInterceptors = CardInterceptors & {
   durability: Interceptable<number>;
   canPlay: Interceptable<boolean, ArtifactCard>;
+  canUseAbility: Interceptable<
+    boolean,
+    { card: ArtifactCard; ability: Ability<ArtifactCard> }
+  >;
 };
 
 export class ArtifactCard extends Card<
@@ -32,6 +38,8 @@ export class ArtifactCard extends Card<
   ArtifactCardInterceptors,
   ArtifactBlueprint
 > {
+  readonly abilities: Ability<ArtifactCard>[];
+
   constructor(game: Game, player: Player, options: CardOptions<ArtifactBlueprint>) {
     super(
       game,
@@ -39,9 +47,14 @@ export class ArtifactCard extends Card<
       {
         ...makeCardInterceptors(),
         durability: new Interceptable(),
-        canPlay: new Interceptable()
+        canPlay: new Interceptable(),
+        canUseAbility: new Interceptable()
       },
       options
+    );
+    // @ts-expect-error pepega typescript moment
+    this.abilities = options.blueprint.abilities.map(
+      ability => new Ability(this.game, this, ability)
     );
   }
 
@@ -134,12 +147,39 @@ export class ArtifactCard extends Card<
     return this.interceptors.durability.getValue(this.blueprint.durability, {});
   }
 
+  getAbility(abilityId: string) {
+    return this.abilities.find(ability => ability.abilityId === abilityId);
+  }
+
+  canUseAbility(id: string) {
+    const ability = this.abilities.find(ability => ability.id === id);
+    if (!ability) return false;
+
+    return this.interceptors.canUseAbility.getValue(ability.canUse, {
+      card: this,
+      ability
+    });
+  }
+
+  addAbility(ability: AbilityBlueprint<ArtifactCard>) {
+    const newAbility = new Ability<ArtifactCard>(this.game, this, ability);
+    this.abilities.push(newAbility);
+    return newAbility;
+  }
+
+  removeAbility(abilityId: string) {
+    const index = this.abilities.findIndex(a => a.id === abilityId);
+    if (index === -1) return;
+    this.abilities.splice(index, 1);
+  }
+
   serialize() {
     return {
       ...this.serializeBase(),
       durability: this.durability,
       manaCost: this.manaCost,
-      unplayableReason: this.unplayableReason
+      unplayableReason: this.unplayableReason,
+      abilities: this.abilities.map(a => a.id)
     };
   }
 }

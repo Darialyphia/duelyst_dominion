@@ -180,9 +180,7 @@ self.addEventListener('message', ({ data }) => {
       if (!unit) {
         return;
       }
-      if (unit.isGeneral) {
-        return;
-      }
+
       await unit.bounce(payload.silent);
       game.snapshotSystem.takeSnapshot();
     })

@@ -1,5 +1,4 @@
 import { isDefined, Vec2, type Point, type Serializable } from '@game/shared';
-import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { MinionCard } from '../card/entities/minion-card.entity';
 import type { Game } from '../game/game';
 import { EntityWithModifiers } from '../utils/entity-with-modifiers';
@@ -33,7 +32,6 @@ import {
   UnitBeforeHealEvent,
   UnitBeforeMoveEvent
 } from './unit-events';
-import { isGeneral } from '../card/card-utils';
 
 export type UnitOptions = {
   id: string;
@@ -44,7 +42,6 @@ export type SerializedUnit = {
   id: string;
   entityType: 'unit';
   card: string;
-  isGeneral: boolean;
   position: Point;
   baseAtk: number;
   atk: number;
@@ -122,7 +119,7 @@ export class Unit
 
   constructor(
     game: Game,
-    readonly card: MinionCard | GeneralCard,
+    readonly card: MinionCard,
     options: UnitOptions
   ) {
     super(options.id, game, {
@@ -179,10 +176,6 @@ export class Unit
 
   get player() {
     return this.card.player!;
-  }
-
-  get isGeneral() {
-    return this.card.kind === CARD_KINDS.GENERAL;
   }
 
   get isMinion() {
@@ -658,7 +651,7 @@ export class Unit
       );
     }
 
-    const canBounce = !this.player.cardManager.isHandFull && !isGeneral(this.card);
+    const canBounce = !this.player.cardManager.isHandFull;
     // we force the bounce if it is silent since this comes from sandbox tools
     if (canBounce || silent) {
       await this.player.cardManager.addToHand(this.card as MinionCard);
@@ -694,7 +687,6 @@ export class Unit
       maxHp: this.maxHp,
       currentHp: this.remainingHp,
       isFullHp: this.remainingHp === this.maxHp,
-      isGeneral: this.isGeneral,
       player: this.player.id,
       keywords: [],
       isExhausted: this.isExhausted,

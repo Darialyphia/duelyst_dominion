@@ -1,5 +1,4 @@
 import { makeAoeShape } from '@game/engine/src/aoe/aoe-shape.factory';
-import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import {
   GAME_PHASES,
   INTERACTION_STATES
@@ -81,36 +80,6 @@ export const useIsInAoe = () => {
       .with(TARGETING_TYPE.ALLY_UNIT, () =>
         unitOnPosition?.getPlayer()?.equals(myPlayer.value)
       )
-      .with(TARGETING_TYPE.ALLY_GENERAL, () => {
-        return (
-          unitOnPosition?.getPlayer()?.equals(myPlayer.value) &&
-          unitOnPosition?.getCard().kind === CARD_KINDS.GENERAL
-        );
-      })
-      .with(TARGETING_TYPE.ALLY_MINION, () => {
-        return (
-          unitOnPosition?.getPlayer()?.equals(myPlayer.value) &&
-          unitOnPosition?.getCard().kind === CARD_KINDS.MINION
-        );
-      })
-      .with(TARGETING_TYPE.ENEMY_GENERAL, () => {
-        return (
-          !unitOnPosition?.getPlayer()?.equals(myPlayer.value) &&
-          unitOnPosition?.getCard().kind === CARD_KINDS.GENERAL
-        );
-      })
-      .with(TARGETING_TYPE.ENEMY_MINION, () => {
-        return (
-          !unitOnPosition?.getPlayer()?.equals(myPlayer.value) &&
-          unitOnPosition?.getCard().kind === CARD_KINDS.MINION
-        );
-      })
-      .with(TARGETING_TYPE.GENERAL, () => {
-        return unitOnPosition?.getCard().kind === CARD_KINDS.GENERAL;
-      })
-      .with(TARGETING_TYPE.MINION, () => {
-        return unitOnPosition?.getCard().kind === CARD_KINDS.MINION;
-      })
       .exhaustive();
 
     return isValidTargetingType;

@@ -2,7 +2,6 @@
 import type { DeckBuilderCardMeta } from '@/card/deck-builder.model';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import { useCollectionPage } from './useCollectionPage';
-import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { useSprite } from '@/card/composables/useSprite';
 import { sprites } from '@/assets';
 import {
@@ -27,7 +26,7 @@ const { deckBuilder } = useCollectionPage();
 const sprite = computed(() => sprites[`cards/${card.blueprint.vfx.spriteId}`]);
 
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
-  kind: CARD_KINDS.GENERAL,
+  kind: BlueprintCard.kind,
   sprite: sprite,
   animationSequence: undefined,
   repeat: true

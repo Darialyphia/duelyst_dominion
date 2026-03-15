@@ -1,23 +1,18 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { IntimidateCardModifier } from '../../../../modifier/modifiers/intimidate.modifier';
-import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import type { GeneralBlueprint } from '../../../card-blueprint';
-import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { Modifier } from '../../../../modifier/modifier.entity';
-import type { GeneralCard } from '../../../entities/general-card.entity';
-import { Game } from '../../../../game/game';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { AbilityDamage } from '../../../../utils/damage';
-import { isDefined } from '@game/shared';
+import type { MinionBlueprint } from '../../../card-blueprint';
+import type { MinionCard } from '../../../entities/minion-card.entity';
+import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 
-export const kaleosXaan: GeneralBlueprint = {
+export const kaleosXaan: MinionBlueprint = {
   id: 'kaleos-xaan',
   name: 'Kaleos Xaan',
   description: dedent`
@@ -36,20 +31,19 @@ export const kaleosXaan: GeneralBlueprint = {
     dealDamage: 'sfx_f2general_attack_impact_3',
     death: 'sfx_f2general_death'
   },
-  kind: CARD_KINDS.GENERAL,
+  kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
-  tags: [],
+  tags: [TAGS.GENERAL],
   manaCost: 3,
   runeCost: {},
   atk: 2,
   maxHp: 5,
   retaliation: 2,
   abilities: [],
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
+  canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new LevelBonusModifier(game, card, 2));
     const levelMod = card.modifiers.get(LevelBonusModifier)!;
@@ -69,25 +63,25 @@ export const kaleosXaan: GeneralBlueprint = {
     );
 
     await card.modifiers.add(
-      new Modifier<GeneralCard>('kaleos-lvl-4-effect', game, card, {
-        mixins: [
-          new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(4)),
-          new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.MODIFIER_BACKSTAB,
-            filter(event) {
-              if (!event) return false;
+      new WhileOnBoardModifier<MinionCard>(game, card, {
+        modifier: new Modifier('kaleos-backstab-trigger', game, card, {
+          mixins: [
+            new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(4)),
+            new GameEventModifierMixin(game, {
+              eventName: GAME_EVENTS.MODIFIER_BACKSTAB,
+              filter(event) {
+                if (!event) return false;
 
-              return (
-                isDefined(card.player.deployedGeneral) &&
-                event.data.unit.isAlly(card.player)
-              );
-            },
-            async handler() {
-              await card.player.opponent.takeDamage(card, new AbilityDamage(card, 3));
-            }
-          })
-        ]
+                return event.data.unit.isAlly(card.player);
+              },
+              async handler() {
+                await card.player.opponent.takeDamage(card, new AbilityDamage(card, 3));
+              }
+            })
+          ]
+        })
       })
     );
-  }
+  },
+  async onPlay() {}
 };

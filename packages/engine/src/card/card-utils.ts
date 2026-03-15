@@ -7,13 +7,8 @@ import type { Unit } from '../unit/unit.entity';
 import { CARD_KINDS } from './card.enums';
 import type { ArtifactCard } from './entities/artifact-card.entity';
 import type { AnyCard } from './entities/card.entity';
-import type { GeneralCard } from './entities/general-card.entity';
 import type { MinionCard } from './entities/minion-card.entity';
 import type { SpellCard } from './entities/spell-card.entity';
-
-export const isGeneral = (card: AnyCard): card is GeneralCard => {
-  return card.kind === CARD_KINDS.GENERAL;
-};
 
 export const isMinion = (card: AnyCard): card is MinionCard => {
   return card.kind === CARD_KINDS.MINION;
@@ -25,10 +20,6 @@ export const isSpell = (card: AnyCard): card is SpellCard => {
 
 export const isArtifact = (card: AnyCard): card is ArtifactCard => {
   return card.kind === CARD_KINDS.ARTIFACT;
-};
-
-export const isMinionOrGeneral = (card: AnyCard): card is MinionCard | GeneralCard => {
-  return isMinion(card) || isGeneral(card);
 };
 
 export const singleEnemyTargetRules = {
@@ -43,7 +34,7 @@ export const singleEnemyTargetRules = {
     card: AnyCard,
     {
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
       getLabel = () => `${card.blueprint.name} : Select an enemy unit`,
       required = true
     }: {
@@ -81,7 +72,7 @@ export const singleEnemyTargetRules = {
 export const singleMinionTargetRules = {
   canPlay(game: Game, card: AnyCard, predicate: (c: Unit) => boolean = () => true) {
     return (
-      [...card.player.minions, ...card.player.enemyMinions].filter(
+      [...card.player.units, ...card.player.enemyUnits].filter(
         unit => unit.canBeTargetedBy(card) && predicate(unit)
       ).length > 0
     );
@@ -92,7 +83,7 @@ export const singleMinionTargetRules = {
     {
       required = true,
       predicate = () => true,
-      getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+      getAoe = () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
       getLabel = () => `${card.blueprint.name} : Select a minion`
     }: {
       required?: boolean;
@@ -199,7 +190,7 @@ export const anywhereTargetRules = {
       card: AnyCard,
       {
         predicate = () => true,
-        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
         getLabel = () => `${card.blueprint.name} : Select a space`
       }: {
         predicate?: (cell: BoardCell) => boolean;
@@ -245,7 +236,7 @@ export const emptySpacesTargetRules = {
       card: AnyCard,
       {
         predicate = () => true,
-        getAoe = () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+        getAoe = () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
         getLabel = () => `${card.blueprint.name} : Select a space`
       }: {
         predicate?: (cell: BoardCell) => boolean;

@@ -1,10 +1,8 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import {
   IsZealedModifierMixin,
   ZealUnitModifier
 } from '../../../../modifier/modifiers/zeal.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
@@ -12,9 +10,7 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
-import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import type { Unit } from '../../../../unit/unit.entity';
-import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 
 export const grandStrategos: MinionBlueprint = {
@@ -56,7 +52,7 @@ export const grandStrategos: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
-        const zealedAllies = card.player.minions.filter(ally =>
+        const zealedAllies = card.player.units.filter(ally =>
           ally.modifiers.has(ZealUnitModifier)
         );
         for (const ally of zealedAllies) {

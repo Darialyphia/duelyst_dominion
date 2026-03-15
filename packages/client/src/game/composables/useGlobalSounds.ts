@@ -12,7 +12,7 @@ export const useGlobalSounds = () => {
   useFxEvent(FX_EVENTS.CARD_BEFORE_PLAY, async event => {
     const card = state.value.entities[event.card.id] as CardViewModel;
     if (!card) return;
-    if (card.kind === CARD_KINDS.MINION || card.kind === CARD_KINDS.GENERAL) {
+    if (card.kind === CARD_KINDS.MINION) {
       return;
     }
     cardSoundId.value = card.sounds.play;

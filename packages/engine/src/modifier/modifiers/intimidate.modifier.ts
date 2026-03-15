@@ -8,11 +8,8 @@ import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
 
-export class IntimidateCardModifier<
-  T extends MinionCard | GeneralCard
-> extends Modifier<T> {
+export class IntimidateCardModifier<T extends MinionCard> extends Modifier<T> {
   constructor(
     game: Game,
     source: AnyCard,

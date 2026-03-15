@@ -20,7 +20,6 @@ import type { UnitEventMap } from '../unit/unit-events';
 import { UNIT_EVENTS } from '../unit/unit.enums';
 import type { ArtifactEventMap } from '../player/player-artifact.events';
 import { VFX_EVENTS, type VFXEventMap } from './systems/vfx.system';
-import { GENERAL_EVENTS, type GeneralEventMap } from '../card/events/general.events';
 import { MINION_EVENTS, type MinionEventMap } from '../card/events/minion.events';
 import { TILE_EVENTS } from '../tile/tile-enums';
 import type { TileEventMap } from '../tile/tile-events';
@@ -144,7 +143,6 @@ export type GameEventMap = Prettify<
     UnitEventMap &
     ArtifactEventMap &
     MinionEventMap &
-    GeneralEventMap &
     TileEventMap &
     VFXEventMap &
     TurnEventMap &
@@ -170,7 +168,6 @@ export const GAME_EVENTS = {
   ...UNIT_EVENTS,
   ...ARTIFACT_EVENTS,
   ...MINION_EVENTS,
-  ...GENERAL_EVENTS,
   ...VFX_EVENTS,
   ...TILE_EVENTS,
   ...TURN_EVENTS,

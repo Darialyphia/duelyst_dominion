@@ -75,14 +75,14 @@ export const killingEdge: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 3,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isAlly(card.player)),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isAlly(card.player),
       getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {});
+        return new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {});
       }
     });
   },

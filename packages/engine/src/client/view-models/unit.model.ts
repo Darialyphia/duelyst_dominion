@@ -1,4 +1,3 @@
-import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedUnit } from '../../unit/unit.entity';
 import type { PatchOperation } from '../../game/systems/patch-types';
 import { applyPatchToData } from '../utils/apply-patch';
@@ -55,10 +54,6 @@ export class UnitViewModel {
 
   get y() {
     return this.data.position.y;
-  }
-
-  get isGeneral() {
-    return this.data.isGeneral;
   }
 
   get isExhausted() {

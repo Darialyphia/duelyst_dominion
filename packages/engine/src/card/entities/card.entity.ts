@@ -70,8 +70,7 @@ export const isDeckCard = (card: AnyCard): card is DeckCard => {
   return (
     card.blueprint.kind === CARD_KINDS.MINION ||
     card.blueprint.kind === CARD_KINDS.SPELL ||
-    card.blueprint.kind === CARD_KINDS.ARTIFACT ||
-    card.blueprint.kind === CARD_KINDS.GENERAL
+    card.blueprint.kind === CARD_KINDS.ARTIFACT
   );
 };
 
@@ -140,6 +139,10 @@ export abstract class Card<
 
   get tags() {
     return this.blueprint.tags ?? [];
+  }
+
+  hasTag(tag: string) {
+    return this.tags.includes(tag);
   }
 
   get manaCost(): number {

@@ -25,6 +25,7 @@ import type { TileViewModel } from './view-models/tile.model';
 import { GAME_PHASES } from '../game/game.enums';
 import { VFXSequenceController } from './controllers/vfx-sequence.controller';
 import { GAME_EVENTS } from '../game/game.events';
+import type { AbilityViewModel } from './view-models/ability.model';
 
 export const GAME_TYPES = {
   LOCAL: 'local',
@@ -41,6 +42,7 @@ export type GameStateEntities = Record<
   | BoardCellViewModel
   | UnitViewModel
   | TileViewModel
+  | AbilityViewModel
 >;
 
 export type OnSnapshotUpdateCallback = (

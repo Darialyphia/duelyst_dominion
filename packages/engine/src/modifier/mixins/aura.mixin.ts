@@ -3,6 +3,7 @@ import { ModifierMixin } from '../modifier-mixin';
 import type { Game } from '../../game/game';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { Unit } from '../../unit/unit.entity';
+import type { Player } from '../../player/player.entity';
 
 export type AuraOptions<TCandidate extends ModifierTarget> = {
   isElligible(candidate: TCandidate): boolean;
@@ -114,6 +115,18 @@ export class UnitAuraModifierMixin extends AuraModifierMixin<ModifierTarget, Uni
     super(game, source, {
       ...options,
       getCandidates: () => game.unitSystem.units
+    });
+  }
+}
+export class PlayerAuraModifierMixin extends AuraModifierMixin<ModifierTarget, Player> {
+  constructor(
+    game: Game,
+    source: AnyCard,
+    options: Omit<AuraOptions<Player>, 'getCandidates'>
+  ) {
+    super(game, source, {
+      ...options,
+      getCandidates: () => game.playerSystem.players
     });
   }
 }

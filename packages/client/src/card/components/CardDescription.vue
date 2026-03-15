@@ -4,9 +4,10 @@ import CardText from './CardText.vue';
 import type { CardKind } from '@game/engine/src/card/card.enums';
 import { useResizeObserver } from '@vueuse/core';
 
-defineProps<{
+const { description, kind, abilities } = defineProps<{
   description: string;
   kind: CardKind;
+  abilities?: string[];
 }>();
 
 const getPixelScale = () => {
@@ -48,7 +49,7 @@ const setVariableFontSize = (
 const descriptionBox = useTemplateRef('description-box');
 
 const DESCRIPTION_MIN_TEXT_SIZE = 8;
-const DESCRIPTION_MAX_TEXT_SIZE = 11;
+const DESCRIPTION_MAX_TEXT_SIZE = 10;
 const descriptionFontSize = ref(DESCRIPTION_MAX_TEXT_SIZE);
 
 const resizeDescription = () => {
@@ -70,7 +71,10 @@ useResizeObserver(descriptionBox, resizeDescription);
     class="description parallax"
     :class="kind.toLowerCase()"
   >
-    <CardText :text="description" />
+    <div>
+      <CardText :text="description" />
+      <CardText v-for="ability in abilities" :key="ability" :text="ability" />
+    </div>
   </div>
 </template>
 
@@ -79,8 +83,8 @@ useResizeObserver(descriptionBox, resizeDescription);
   height: calc(67px * var(--pixel-scale));
   position: absolute;
   top: calc(180px * var(--pixel-scale));
-  left: calc(43px * var(--pixel-scale));
-  width: calc(100% - (66px * var(--pixel-scale)));
+  left: calc(38px * var(--pixel-scale));
+  width: calc(100% - (60px * var(--pixel-scale)));
   font-size: calc(1px * var(--pixel-scale) * v-bind(descriptionFontSize));
   overflow: hidden;
   line-height: 1.2;
@@ -88,10 +92,9 @@ useResizeObserver(descriptionBox, resizeDescription);
   -webkit-text-stroke: 2px black;
   paint-order: stroke fill;
 
-  &.spell,
-  &.artifact {
+  &.spell {
     left: calc(22px * var(--pixel-scale));
-    width: calc(100% - (46px * var(--pixel-scale)));
+    width: calc(100% - (40px * var(--pixel-scale)));
   }
 
   &.is-multi-line {

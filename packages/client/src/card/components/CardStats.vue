@@ -5,6 +5,7 @@ defineProps<{
   atk?: number | null;
   hp?: number | null;
   retaliation?: number | null;
+  durability?: number | null;
 }>();
 </script>
 
@@ -25,9 +26,23 @@ defineProps<{
       </span>
     </div>
 
-    <div class="stat hp" :style="{ opacity: isDefined(hp) ? 1 : 0 }">
+    <div
+      v-if="isDefined(hp)"
+      class="stat hp"
+      :style="{ opacity: isDefined(hp) ? 1 : 0 }"
+    >
       <span class="dual-text" :data-text="hp">
         {{ hp }}
+      </span>
+    </div>
+
+    <div
+      v-if="isDefined(durability)"
+      class="stat durability"
+      :style="{ opacity: isDefined(durability) ? 1 : 0 }"
+    >
+      <span class="dual-text" :data-text="durability">
+        {{ durability }}
       </span>
     </div>
   </div>
@@ -63,6 +78,9 @@ defineProps<{
   }
   &.hp {
     background-image: url('@/assets/ui/hp-frame.png');
+  }
+  &.durability {
+    background-image: url('@/assets/ui/durability-frame.png');
   }
 }
 

@@ -1,9 +1,7 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { IntimidateCardModifier } from '../../../../modifier/modifiers/intimidate.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
-import type { GeneralBlueprint } from '../../../card-blueprint';
-import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import type { MinionBlueprint } from '../../../card-blueprint';
+import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
@@ -12,7 +10,7 @@ import { MinionSimpleHealthBuffModifier } from '../../../../modifier/modifiers/s
 import { InvulnerableCardModifier } from '../../../../modifier/modifiers/invulnerable.modifier';
 import { ZealUnitModifier } from '../../../../modifier/modifiers/zeal.modifier';
 
-export const argeonHighmane: GeneralBlueprint = {
+export const argeonHighmane: MinionBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
   description: dedent`
@@ -31,20 +29,19 @@ export const argeonHighmane: GeneralBlueprint = {
     takeDamage: 'sfx_f1_general_hit',
     death: 'sfx_f1general_death'
   },
-  kind: CARD_KINDS.GENERAL,
+  kind: CARD_KINDS.MINION,
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
-  tags: [],
+  tags: [TAGS.GENERAL],
   manaCost: 3,
   runeCost: {},
   atk: 2,
   maxHp: 5,
   retaliation: 2,
   abilities: [],
-  getTargets: () => Promise.resolve([]),
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {}),
+  canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new LevelBonusModifier(game, card, 2));
     const levelMod = card.modifiers.get(LevelBonusModifier)!;
@@ -78,7 +75,7 @@ export const argeonHighmane: GeneralBlueprint = {
         mixins: [],
         unitMixins: [
           new TogglableModifierMixin(game, () => {
-            const hasZealMinion = card.player.minions.some(minion => {
+            const hasZealMinion = card.player.units.some(minion => {
               const zealMod = minion.modifiers.get(ZealUnitModifier);
               return zealMod?.isZealed;
             });
@@ -87,5 +84,6 @@ export const argeonHighmane: GeneralBlueprint = {
         ]
       })
     );
-  }
+  },
+  async onPlay() {}
 };

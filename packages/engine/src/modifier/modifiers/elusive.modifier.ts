@@ -7,7 +7,6 @@ import { KEYWORDS } from '../../card/card-keywords';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { Unit } from '../../unit/unit.entity';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
 import { UnitInterceptorModifierMixin } from '../mixins/interceptor.mixin';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
@@ -15,7 +14,7 @@ import { isDefined } from '@game/shared';
 import { UntilEventModifierMixin } from '../mixins/until-event.mixin';
 import { DAMAGE_TYPES } from '../../utils/damage';
 
-export class ElusiveCardModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
+export class ElusiveCardModifier<T extends MinionCard> extends Modifier<T> {
   constructor(game: Game, source: AnyCard, options?: { mixins: ModifierMixin<T>[] }) {
     super(KEYWORDS.ELUSIVE.id, game, source, {
       mixins: [

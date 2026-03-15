@@ -8,6 +8,13 @@ export type Keyword = {
 };
 
 export const KEYWORDS = {
+  ABILITY: {
+    id: 'ability',
+    name: 'Ability (X)',
+    description:
+      'This card has an activated ability that costs X and can be used once per turn.',
+    aliases: [/ability \([a-z0-9 -]+\)/]
+  },
   ADAPT: {
     id: 'adapt',
     name: 'Adapt',
@@ -314,7 +321,7 @@ export const KEYWORDS = {
   ZEAL: {
     id: 'zeal',
     name: 'Zeal',
-    description: "Triggers an effect when nearby the player's general.",
+    description: 'Triggers an effect when an adjacent ally has attacked this turn.',
     aliases: []
   },
   STEALTH: {

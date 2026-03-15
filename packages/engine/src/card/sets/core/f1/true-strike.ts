@@ -57,14 +57,14 @@ export const trueStrike: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isEnemy(card.player),
       getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
+        return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
       }
     });
   },

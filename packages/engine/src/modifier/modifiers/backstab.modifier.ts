@@ -11,11 +11,9 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
-import { TypedSerializableEvent } from '../../utils/typed-emitter';
 import { BackstabEvent } from '../modifier.special-events';
 
-export class BackstabModifier<T extends MinionCard | GeneralCard> extends Modifier<T> {
+export class BackstabModifier<T extends MinionCard> extends Modifier<T> {
   constructor(
     game: Game,
     source: AnyCard,

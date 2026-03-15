@@ -2,7 +2,6 @@ import { isDefined, type Point } from '@game/shared';
 import { System } from '../system';
 import { Unit } from './unit.entity';
 import { MinionCard } from '../card/entities/minion-card.entity';
-import type { GeneralCard } from '../card/entities/general-card.entity';
 import type { Player } from '../player/player.entity';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { isValidTargetingType } from '../targeting/targeting-strategy';
@@ -28,7 +27,7 @@ export class UnitSystem extends System<UnitSystemOptions> {
     return this.unitMap.get(id) ?? null;
   }
 
-  getUnitByCard(card: MinionCard | GeneralCard) {
+  getUnitByCard(card: MinionCard) {
     return this.units.find(unit => unit.card.equals(card)) ?? null;
   }
 
@@ -51,7 +50,7 @@ export class UnitSystem extends System<UnitSystemOptions> {
       .filter(isDefined);
   }
 
-  addUnit(card: MinionCard | GeneralCard, position: Point) {
+  addUnit(card: MinionCard, position: Point) {
     const id = `unit_${++this.nextUnitId}`;
     const unit = new Unit(this.game, card, { id, position });
     this.unitMap.set(unit.id, unit);

@@ -10,14 +10,10 @@ import type { GameClientState } from '../controllers/state-controller';
 import { PlayCardAction } from '../actions/play-card';
 import type { CardKind } from '../../card/card.enums';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
-import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import { GAME_PHASES } from '../../game/game.enums';
+import type { AbilityViewModel } from './ability.model';
 
-type CardData =
-  | SerializedSpellCard
-  | SerializedArtifactCard
-  | SerializedGeneralCard
-  | SerializedMinionCard;
+type CardData = SerializedSpellCard | SerializedArtifactCard | SerializedMinionCard;
 
 export type CardActionRule = {
   id: string;
@@ -234,6 +230,15 @@ export class CardViewModel {
 
   get canReplace() {
     return this.data.canReplace;
+  }
+
+  get abilities() {
+    if ('abilities' in this.data) {
+      return (this.data.abilities as string[]).map(
+        abilityId => this.getEntities()[abilityId] as AbilityViewModel
+      );
+    }
+    return [];
   }
 
   getPlayer() {

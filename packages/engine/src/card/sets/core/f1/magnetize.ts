@@ -84,7 +84,7 @@ export const magnetize: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
     singleUnitTargetRules.canPlay(
       game,
@@ -95,7 +95,7 @@ export const magnetize: SpellBlueprint = {
     return singleUnitTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isEnemy(card.player) && c.isMinion && c.isOnBackRow,
       getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_MINION, {});
+        return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
       }
     });
   },
@@ -109,14 +109,8 @@ export const magnetize: SpellBlueprint = {
       })
     );
   },
-  async onPlay(game, card, { aoe }) {
-    if (!card.player.deployedGeneral) return;
-
-    const units = game.unitSystem.getUnitsInAOE(
-      aoe,
-      [card.player.deployedGeneral.position],
-      card.player
-    );
+  async onPlay(game, card, { targets, aoe }) {
+    const units = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
     for (const unit of units) {
       if (unit.inFront?.isEmpty) {

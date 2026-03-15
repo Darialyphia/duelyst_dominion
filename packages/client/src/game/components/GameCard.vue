@@ -4,6 +4,7 @@ import { useCard, useGameUi, useMyPlayer } from '../composables/useGameClient';
 import Card from '@/card/components/Card.vue';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { match } from 'ts-pattern';
+import { formatAbilityText } from '@/utils/formatters';
 
 const {
   cardId,
@@ -42,7 +43,7 @@ const sprite = computed(() => {
 
 const animationSequence = computed(() => {
   return match(card.value.kind)
-    .with(CARD_KINDS.MINION, CARD_KINDS.GENERAL, () =>
+    .with(CARD_KINDS.MINION, () =>
       ui.value.selectedCard?.equals(card.value) ? ['idle'] : ['breathing']
     )
     .with(CARD_KINDS.SPELL, CARD_KINDS.ARTIFACT, () =>
@@ -79,7 +80,8 @@ const animationSequence = computed(() => {
         hp: card.maxHp,
         durability: card.durability,
         faction: card.faction,
-        retaliation: card.retaliation
+        retaliation: card.retaliation,
+        abilities: card.abilities.map(formatAbilityText)
       }"
       :sprite="sprite"
       class="game-card big"

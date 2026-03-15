@@ -1,7 +1,7 @@
 import type { UseCase } from '../../usecase';
 import type { AuthSession } from '../../auth/entities/session.entity';
 import type { CurrencyType } from '../currency.constants';
-import { CURRENCY_TYPES, CURRENCY_SOURCES } from '../currency.constants';
+import { CURRENCY_SOURCES } from '../currency.constants';
 import type { WalletRepository } from '../repositories/wallet.repository';
 import type { TransactionRepository } from '../repositories/transaction.repository';
 import type { EventEmitter } from '../../shared/eventEmitter';

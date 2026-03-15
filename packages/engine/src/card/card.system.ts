@@ -5,7 +5,6 @@ import type { AnyCard, CardOptions } from './entities/card.entity';
 import type {
   ArtifactBlueprint,
   CardBlueprint,
-  GeneralBlueprint,
   MinionBlueprint,
   SpellBlueprint
 } from './card-blueprint';
@@ -15,7 +14,6 @@ import { match } from 'ts-pattern';
 import { CARD_KINDS, type CardKind } from './card.enums';
 import { GAME_EVENTS } from '../game/game.events';
 import { MinionCard } from './entities/minion-card.entity';
-import { GeneralCard } from './entities/general-card.entity';
 
 export type CardSystemOptions = {
   cardPool: IndexedRecord<CardBlueprint, 'id'>;
@@ -88,15 +86,6 @@ export class CardSystem extends System<CardSystemOptions> {
             blueprint,
             isFoil
           } as CardOptions<MinionBlueprint>)
-      )
-      .with(
-        CARD_KINDS.GENERAL,
-        () =>
-          new GeneralCard(this.game, player, {
-            id,
-            blueprint,
-            isFoil
-          } as CardOptions<GeneralBlueprint>)
       )
       .exhaustive();
     this.cardMap.set(card.id, card);

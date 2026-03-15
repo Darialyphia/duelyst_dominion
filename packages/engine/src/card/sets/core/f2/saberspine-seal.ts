@@ -32,14 +32,14 @@ export const saberspineSeal: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) =>
     singleUnitTargetRules.canPlay(game, card, c => c.isAlly(card.player) && c.isMinion),
   getTargets(game, card) {
     return singleUnitTargetRules.getPreResponseTargets(game, card, {
       predicate: c => c.isAlly(card.player) && c.isMinion,
       getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ALLY_MINION, {});
+        return new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {});
       }
     });
   },

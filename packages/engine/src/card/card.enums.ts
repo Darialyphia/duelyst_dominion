@@ -10,7 +10,6 @@ export type CardEvent = Values<typeof CARD_EVENTS>;
 
 export const CARD_KINDS = {
   MINION: 'MINION',
-  GENERAL: 'GENERAL',
   SPELL: 'SPELL',
   ARTIFACT: 'ARTIFACT'
 } as const;
@@ -38,7 +37,8 @@ export const TAGS = {
   ARCANYST: 'Arcanyst',
   MECH: 'Mech',
   OBELYSK: 'Obelysk',
-  DERVISH: 'Dervish'
+  DERVISH: 'Dervish',
+  GENERAL: 'General'
 } as const;
 export type Tag = Values<typeof TAGS>;
 

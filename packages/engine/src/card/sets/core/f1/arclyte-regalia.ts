@@ -2,22 +2,27 @@ import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { ArtifactBlueprint } from '../../../card-blueprint';
 import { anywhereTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import dedent from 'dedent';
+import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
+import { WhileEquipedModifier } from '../../../../modifier/modifiers/while-equiped';
 import { Modifier } from '../../../../modifier/modifier.entity';
-import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
-import { PlayerArtifact } from '../../../../player/player-artifact.entity';
-import { UnitInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
-import type { Unit } from '../../../../unit/unit.entity';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
+import {
+  PlayerAuraModifierMixin,
+  UnitAuraModifierMixin
+} from '../../../../modifier/mixins/aura.mixin';
+import {
+  PlayerInterceptorModifierMixin,
+  UnitInterceptorModifierMixin
+} from '../../../../modifier/mixins/interceptor.mixin';
+import { PlayerArtifact } from '../../../../player/player-artifact.entity';
 
 export const arclyteRegalia: ArtifactBlueprint = {
   id: 'arclyte-regalia',
   name: 'Arclyte Regalia',
   description: dedent`
-  Your general has +2/+0.
-  The first time your general takes damage each turn, reduce that damage by 2.
+  When  you or a minion would take damage, prevent all but 1 of that damage, and this loses 1 durability.
   `,
   vfx: { spriteId: 'artifacts/f1_arclyte-regalia' },
   sounds: {
@@ -32,10 +37,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
   runeCost: {},
   manaCost: 4,
   durability: 3,
-  getAoe: (game, card) =>
-    new PointAOEShape(TARGETING_TYPE.ALLY_GENERAL, {
-      override: card.player.deployedGeneral
-    }),
+  getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,
   getTargets: anywhereTargetRules.getPreResponseTargets({
     min: 1,
@@ -43,57 +45,62 @@ export const arclyteRegalia: ArtifactBlueprint = {
     allowRepeat: false
   }),
   abilities: [],
-  async onInit() {},
-  async onPlay(game, card, { artifact }) {
-    let hasProccedThisTurn = false;
-    const buff = new Modifier<Unit>('arclyte-regalia-buff', game, card, {
-      mixins: [
-        new UnitInterceptorModifierMixin(game, {
-          key: 'atk',
-          interceptor: value => value + 2
-        }),
-        new UnitInterceptorModifierMixin(game, {
-          key: 'damageReceived',
-          interceptor: value => {
-            if (hasProccedThisTurn) {
-              return value;
-            }
-            return Math.max(0, value - 2);
-          }
-        }),
-        new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
-          filter: event => {
-            if (!event) return false;
-            if (!card.player.deployedGeneral) return false;
-            return event.data.unit.equals(card.player.deployedGeneral);
-          },
-          handler() {
-            if (hasProccedThisTurn) return;
-            hasProccedThisTurn = true;
-          }
-        }),
-        new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.TURN_END,
-          handler() {
-            hasProccedThisTurn = false;
-          }
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new WhileEquipedModifier(game, card, {
+        modifier: new Modifier<PlayerArtifact>('arclyte-regalia-aura', game, card, {
+          mixins: [
+            new GameEventModifierMixin(game, {
+              eventName: GAME_EVENTS.UNIT_AFTER_RECEIVE_DAMAGE,
+              filter(event) {
+                return !!event?.data.unit.isAlly(card.player);
+              },
+              async handler() {
+                await card.artifact?.loseDurability(1);
+              }
+            }),
+            new UnitAuraModifierMixin(game, card, {
+              isElligible(candidate) {
+                return candidate.isAlly(card.player);
+              },
+              getModifiers() {
+                return [
+                  new Modifier('arclyte-regalia-damage-prevention', game, card, {
+                    mixins: [
+                      new UnitInterceptorModifierMixin(game, {
+                        key: 'damageReceived',
+                        interceptor(value) {
+                          return Math.max(value, 1);
+                        }
+                      })
+                    ]
+                  })
+                ];
+              }
+            }),
+            new PlayerAuraModifierMixin(game, card, {
+              isElligible(candidate) {
+                return candidate.equals(card.player);
+              },
+              getModifiers() {
+                return [
+                  new Modifier('arclyte-regalia-damage-prevention', game, card, {
+                    mixins: [
+                      new PlayerInterceptorModifierMixin(game, {
+                        key: 'damageReceived',
+                        interceptor(value) {
+                          return Math.max(value, 1);
+                        }
+                      })
+                    ]
+                  })
+                ];
+              }
+            })
+          ]
         })
-      ]
-    });
-
-    await artifact.modifiers.add(
-      new Modifier<PlayerArtifact>('arclyte-regalia', game, card, {
-        mixins: [
-          new UnitAuraModifierMixin(game, card, {
-            isElligible(candidate) {
-              if (!card.player.deployedGeneral) return false;
-              return candidate.equals(card.player.deployedGeneral);
-            },
-            getModifiers: () => [buff]
-          })
-        ]
       })
     );
-  }
+  },
+  async onPlay() {}
 };

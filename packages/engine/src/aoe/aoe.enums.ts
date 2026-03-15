@@ -3,14 +3,8 @@ import type { Values } from '@game/shared';
 export const TARGETING_TYPES = {
   EMPTY: 'empty',
   ALLY_UNIT: 'ally_unit',
-  ALLY_GENERAL: 'ally_general',
-  ALLY_MINION: 'ally_minion',
   ENEMY_UNIT: 'enemy_unit',
-  ENEMY_GENERAL: 'enemy_general',
-  ENEMY_MINION: 'enemy_minion',
   UNIT: 'unit',
-  GENERAL: 'general',
-  MINION: 'minion',
   ANYWHERE: 'anywhere'
 } as const;
 

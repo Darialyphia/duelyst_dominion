@@ -1,15 +1,12 @@
-import { isDefined, type MaybePromise } from '@game/shared';
+import { isDefined } from '@game/shared';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import { MINION_EVENTS, MinionAfterSummonedEvent } from '../../card/events/minion.events';
 import type { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { ModifierMixin } from '../modifier-mixin';
 import type { Modifier } from '../modifier.entity';
-import type { GeneralCard } from '../../card/entities/general-card.entity';
 
-export class UnitEffectModifierMixin<
-  T extends MinionCard | GeneralCard
-> extends ModifierMixin<T> {
+export class UnitEffectModifierMixin<T extends MinionCard> extends ModifierMixin<T> {
   modifier!: Modifier<T>;
 
   modifierToAdd!: Modifier<Unit>;

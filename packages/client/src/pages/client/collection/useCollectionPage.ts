@@ -16,7 +16,7 @@ import {
 } from '@/card/composables/useDecks';
 import type { Nullable } from '@game/shared';
 import type { DeckId } from '@game/api';
-import { CARD_KINDS, FACTIONS } from '@game/engine/src/card/card.enums';
+import { FACTIONS } from '@game/engine/src/card/card.enums';
 
 export type CollectionContext = CardListContext & {
   viewMode: Ref<'expanded' | 'compact'>;
@@ -113,21 +113,7 @@ export const provideCollectionPage = () => {
         return cards.value;
       }
 
-      const general = deckBuilder.value.cards.find(
-        c => c.blueprint.kind === CARD_KINDS.GENERAL
-      );
-
-      if (!general) {
-        return cards.value.filter(
-          card => card.card.kind === CARD_KINDS.GENERAL
-        );
-      }
-
-      return cards.value.filter(
-        card =>
-          card.card.faction === general.blueprint.faction ||
-          card.card.faction === FACTIONS.NEUTRAL
-      );
+      return cards.value.filter(card => card.card.faction === FACTIONS.NEUTRAL);
     }),
     cardPool,
     hasKindFilter,

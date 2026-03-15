@@ -9,7 +9,7 @@ export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
   description: dedent`
-  Destroy a minion that attacked you or your general this turn.`,
+  Destroy a minion that attacked you this turn.`,
   vfx: {
     spriteId: 'spells/f1_martyrdom',
     sequences: {
@@ -62,14 +62,10 @@ export const martyrdom: SpellBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 2,
-  getAoe: () => new PointAOEShape(TARGETING_TYPE.MINION, {}),
+  getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) =>
     singleMinionTargetRules.canPlay(game, card, unit =>
-      unit.combat.attacks.some(
-        attack =>
-          unit.player.opponent.deployedGeneral?.equals(attack.target) ||
-          unit.player.opponent.equals(attack.target)
-      )
+      unit.combat.attacks.some(attack => unit.player.opponent.equals(attack.target))
     ),
   getTargets(game, card) {
     return singleMinionTargetRules.getPreResponseTargets(game, card, {
@@ -77,10 +73,8 @@ export const martyrdom: SpellBlueprint = {
         return card.getAOE(selectedSpaces);
       },
       predicate(unit) {
-        return unit.combat.attacks.some(
-          attack =>
-            unit.player.opponent.deployedGeneral?.equals(attack.target) ||
-            unit.player.opponent.equals(attack.target)
+        return unit.combat.attacks.some(attack =>
+          unit.player.opponent.equals(attack.target)
         );
       }
     });

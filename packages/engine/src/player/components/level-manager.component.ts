@@ -4,8 +4,8 @@ import type { Player } from '../player.entity';
 import { PlayerGainExpEvent, PlayerLevelUpEvent } from '../player.events';
 
 export class LevelManagerComponent {
-  _level = 1;
-  _exp = 0;
+  private _level = 1;
+  private _exp = 0;
 
   constructor(
     private game: Game,

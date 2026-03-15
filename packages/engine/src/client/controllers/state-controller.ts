@@ -2,8 +2,7 @@ import type { Override } from '@game/shared';
 import type {
   PatchBasedSnapshotDiff,
   SerializedOmniscientState,
-  SerializedPlayerState,
-  SnapshotDiff
+  SerializedPlayerState
 } from '../../game/systems/game-snapshot.system';
 import { CardViewModel } from '../view-models/card.model';
 import { ModifierViewModel } from '../view-models/modifier.model';
@@ -15,7 +14,6 @@ import type { SerializedSpellCard } from '../../card/entities/spell-card.entity'
 import type { SerializedModifier } from '../../modifier/modifier.entity';
 import type { SerializedPlayer } from '../../player/player.entity';
 import type { SerializedMinionCard } from '../../card/entities/minion-card.entity';
-import type { SerializedGeneralCard } from '../../card/entities/general-card.entity';
 import type { SerializedCell } from '../../board/entities/board-cell.entity';
 import { BoardCellViewModel } from '../view-models/board-cell.model';
 import type { SerializedUnit } from '../../unit/unit.entity';
@@ -28,6 +26,8 @@ import {
   type SerializedStarEvent
 } from '../../game/game.events';
 import type { EntityDictionary } from '../../game/systems/game-serializer';
+import type { SerializedAbility } from '../../card/entities/ability.entity';
+import { AbilityViewModel } from '../view-models/ability.model';
 
 export type GameClientState = Override<
   SerializedOmniscientState | SerializedPlayerState,
@@ -38,14 +38,14 @@ export type GameClientState = Override<
 
 export type SerializedEntity =
   | SerializedMinionCard
-  | SerializedGeneralCard
   | SerializedSpellCard
   | SerializedArtifactCard
   | SerializedPlayer
   | SerializedModifier
   | SerializedCell
   | SerializedUnit
-  | SerializedTile;
+  | SerializedTile
+  | SerializedAbility;
 export class ClientStateController {
   state!: GameClientState;
 
@@ -87,7 +87,13 @@ export class ClientStateController {
         { entityType: 'tile' },
         entity => new TileViewModel(entity, dict, this.client)
       )
-      .exhaustive();
+      .with(
+        { entityType: 'ability' },
+        entity => new AbilityViewModel(entity, dict, this.client)
+      )
+      .otherwise(() => {
+        throw new Error(`Unknown entity type: ${(entity as any).entityType}`);
+      });
   }
 
   private buildentities = (entities: EntityDictionary): GameClientState['entities'] => {

@@ -74,12 +74,6 @@ export const playCardTutorial: TutorialMission = {
           )(input);
         },
         next: () => 'turn1_1',
-        async onEnter(game) {
-          for (const player of game.playerSystem.players) {
-            await player.generalCard.removeFromCurrentLocation();
-          }
-          game.snapshotSystem.takeSnapshot();
-        },
         textBoxes: [
           {
             text: 'Drag the card in your hand to the board to play it.',
