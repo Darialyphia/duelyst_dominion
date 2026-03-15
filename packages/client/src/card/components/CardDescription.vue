@@ -83,7 +83,7 @@ useResizeObserver(descriptionBox, resizeDescription);
   height: calc(67px * var(--pixel-scale));
   position: absolute;
   top: calc(180px * var(--pixel-scale));
-  left: calc(38px * var(--pixel-scale));
+  left: calc(40px * var(--pixel-scale));
   width: calc(100% - (60px * var(--pixel-scale)));
   font-size: calc(1px * var(--pixel-scale) * v-bind(descriptionFontSize));
   overflow: hidden;

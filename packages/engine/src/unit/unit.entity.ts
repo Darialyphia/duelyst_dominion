@@ -78,6 +78,8 @@ export type UnitInterceptors = {
   atk: Interceptable<number>;
   retaliation: Interceptable<number>;
 
+  dealsDamageFirstWhenAttacking: Interceptable<boolean>;
+
   attackTargetingPattern: Interceptable<TargetingStrategy>;
   attackTargetType: Interceptable<TargetingType>;
   attackAOEShape: Interceptable<GenericAOEShape>;
@@ -137,6 +139,8 @@ export class Unit
       maxHp: new Interceptable(),
       atk: new Interceptable(),
       retaliation: new Interceptable(),
+
+      dealsDamageFirstWhenAttacking: new Interceptable(),
 
       attackTargetingPattern: new Interceptable(),
       attackTargetType: new Interceptable(),
@@ -318,8 +322,10 @@ export class Unit
     );
   }
 
-  get unitsOnAdjacentRows() {
-    return [...this.unitsOnLeftColumn, ...this.unitsOnRightColumn];
+  get unitsOnSameRow() {
+    return this.player.units.filter(
+      unit => unit.position.y === this.y && !unit.equals(this)
+    );
   }
 
   get canMove(): boolean {
@@ -513,6 +519,10 @@ export class Unit
       amount: damage.baseAmount,
       source
     });
+  }
+
+  get dealsDamageFirstWhenAttacking() {
+    return this.interceptors.dealsDamageFirstWhenAttacking.getValue(false, {});
   }
 
   getAttackDamage(target: Unit) {

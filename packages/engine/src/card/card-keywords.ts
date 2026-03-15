@@ -62,14 +62,13 @@ export const KEYWORDS = {
   BLAST: {
     id: 'blast',
     name: 'Blast',
-    description:
-      'Can attack any enemy in front, behind, above of below it. If it does, it attacks all enemies in that direction',
+    description: 'When this attacks, this damages all enemies on the same column.',
     aliases: []
   },
   BURN: {
     id: 'burn',
     name: 'Burn (x)',
-    description: 'This unit x receives damage at the beginning of its turn.',
+    description: 'This unit takes X damage at the beginning of its turn.',
     aliases: [/burn \([0-9]+\)/]
   },
   CELERITY: {
@@ -216,7 +215,7 @@ export const KEYWORDS = {
     id: 'on_attack',
     name: 'On Attack',
     description: 'Triggers when this unit attacks.',
-    aliases: []
+    aliases: ['on minion attack', 'on player attack']
   },
   ON_COUNTERATTACK: {
     id: 'on_counterattack',
@@ -328,6 +327,13 @@ export const KEYWORDS = {
     id: 'stealth',
     name: 'Stealth',
     description: 'Cannot be targeted or attacked unless exhausted.',
+    aliases: []
+  },
+  UNIQUE: {
+    id: 'unique',
+    name: 'Unique',
+    description:
+      'Only one copy of this card can be in play on your side of the board at a time.',
     aliases: []
   }
 } as const satisfies Record<string, Keyword>;

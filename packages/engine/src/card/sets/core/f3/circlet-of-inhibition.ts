@@ -10,9 +10,7 @@ import { singleMinionTargetRules } from '../../../card-utils';
 export const circletOfInhibition: ArtifactBlueprint = {
   id: 'circlet-of-inhibition',
   name: 'Circlet of Inhibition',
-  description: dedent`
- TODO rework artifacts
-  `,
+  description: dedent``,
   vfx: { spriteId: 'artifacts/f3_circlet-of-inhibition' },
   sounds: {},
   kind: CARD_KINDS.ARTIFACT,

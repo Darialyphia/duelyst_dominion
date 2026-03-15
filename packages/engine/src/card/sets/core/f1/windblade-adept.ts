@@ -40,7 +40,7 @@ export const windbladeAdept: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {
-        mixins: [
+        unitMixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',
             interceptor: value => value + 1

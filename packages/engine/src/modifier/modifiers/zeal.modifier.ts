@@ -16,7 +16,8 @@ export class ZealModifier extends Modifier<MinionCard> {
     game: Game,
     source: AnyCard,
     options: {
-      mixins: ModifierMixin<Unit>[];
+      mixins?: ModifierMixin<MinionCard>[];
+      unitMixins: ModifierMixin<Unit>[];
     }
   ) {
     super(modifierType, game, source, {
@@ -25,9 +26,10 @@ export class ZealModifier extends Modifier<MinionCard> {
         new UnitEffectModifierMixin(game, {
           getModifier: () =>
             new ZealUnitModifier(game, source, {
-              mixins: options.mixins
+              mixins: options.unitMixins
             })
-        })
+        }),
+        ...(options.mixins ?? [])
       ]
     });
   }

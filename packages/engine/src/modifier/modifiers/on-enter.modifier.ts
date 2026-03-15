@@ -1,4 +1,4 @@
-import type { MaybePromise } from '@game/shared';
+import { isFunction, type MaybePromise } from '@game/shared';
 import { KEYWORDS } from '../../card/card-keywords';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { Game } from '../../game/game';
@@ -8,12 +8,18 @@ import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { MinionAfterSummonedEvent } from '../../card/events/minion.events';
+import type { ModifierMixin } from '../modifier-mixin';
 
 export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    handler: (event: MinionAfterSummonedEvent) => MaybePromise<void>
+    optionsOrHandler:
+      | ((event: MinionAfterSummonedEvent) => MaybePromise<void>)
+      | {
+          handler: (event: MinionAfterSummonedEvent) => MaybePromise<void>;
+          mixins?: ModifierMixin<MinionCard>[];
+        }
   ) {
     super(KEYWORDS.ON_ENTER.id, game, source, {
       name: KEYWORDS.ON_ENTER.name,
@@ -32,10 +38,15 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
           },
           handler: async event => {
             if (!event) return; // dont trigger when event is triggered manually
-
-            return handler(event);
+            const _handler = isFunction(optionsOrHandler)
+              ? optionsOrHandler
+              : optionsOrHandler.handler;
+            return _handler(event);
           }
-        })
+        }),
+        ...(isFunction(optionsOrHandler) || !optionsOrHandler.mixins
+          ? []
+          : optionsOrHandler.mixins)
       ]
     });
   }

@@ -6,29 +6,29 @@ import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import type { UnitAfterDestroyEvent } from '../../unit/unit-events';
+import type { UnitAfterDestroyEvent, UnitAttackEvent } from '../../unit/unit-events';
 import type { ModifierMixin } from '../modifier-mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
 
-export class MinionOnDestroyModifier extends Modifier<MinionCard> {
+export class MinionOnAttackModifier extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
     private options: {
-      handler: (event: UnitAfterDestroyEvent) => MaybePromise<void>;
+      handler: (event: UnitAttackEvent) => MaybePromise<void>;
       mixins?: ModifierMixin<MinionCard>[];
     }
   ) {
-    super(KEYWORDS.ON_DESTROYED.id, game, source, {
-      name: KEYWORDS.ON_DESTROYED.name,
-      description: KEYWORDS.ON_DESTROYED.description,
+    super(KEYWORDS.ON_ATTACK.id, game, source, {
+      name: KEYWORDS.ON_ATTACK.name,
+      description: KEYWORDS.ON_ATTACK.description,
       mixins: [
-        new KeywordModifierMixin(game, KEYWORDS.ON_DESTROYED),
+        new KeywordModifierMixin(game, KEYWORDS.ON_ATTACK),
         new UnitEffectModifierMixin(game, {
           getModifier: () =>
-            new MinionOnDestroyUnitModifier(game, this.initialSource, {
+            new MinionOnAttackUnitModifier(game, this.initialSource, {
               mixins: [],
               handler: options.handler
             })
@@ -39,23 +39,23 @@ export class MinionOnDestroyModifier extends Modifier<MinionCard> {
   }
 }
 
-export class MinionOnDestroyUnitModifier extends Modifier<Unit> {
+export class MinionOnAttackUnitModifier extends Modifier<Unit> {
   constructor(
     game: Game,
     source: AnyCard,
     options: {
-      handler: (event: UnitAfterDestroyEvent) => MaybePromise<void>;
+      handler: (event: UnitAttackEvent) => MaybePromise<void>;
       mixins?: ModifierMixin<Unit>[];
       modifierType?: string;
     }
   ) {
-    super(options.modifierType ?? KEYWORDS.ON_DESTROYED.id, game, source, {
-      name: KEYWORDS.ON_DESTROYED.name,
-      description: KEYWORDS.ON_DESTROYED.description,
-      icon: 'icons/keyword-on-death',
+    super(options.modifierType ?? KEYWORDS.ON_ATTACK.id, game, source, {
+      name: KEYWORDS.ON_ATTACK.name,
+      description: KEYWORDS.ON_ATTACK.description,
+      icon: 'icons/keyword-on-attack',
       mixins: [
         new GameEventModifierMixin(game, {
-          eventName: UNIT_EVENTS.UNIT_AFTER_DESTROY,
+          eventName: UNIT_EVENTS.UNIT_BEFORE_ATTACK,
           filter: event => {
             if (!event) return false;
 

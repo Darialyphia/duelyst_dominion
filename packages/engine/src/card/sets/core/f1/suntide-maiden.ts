@@ -1,21 +1,20 @@
 import dedent from 'dedent';
-import { GAME_EVENTS } from '../../../../game/game.events';
-import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
-import { MinionSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
+import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../../../game/game.events';
+import { Unit } from '../../../../unit/unit.entity';
+import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
 
 export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
   description: dedent`
-  @Zeal@ : fully heal this unit at the end of your turn.
-  @[lvl] 2 Bonus@: this has +1/+1/+0.
+  @[lvl] 3 Bonus@ @Zeal@ : @On Minion Attack@: Inflict @Burn (2)@ to the target and heal other allies in the same row for 1.
   `,
   vfx: {
     spriteId: 'minions/f1_suntide-maiden',
@@ -37,7 +36,7 @@ export const suntideMaiden: MinionBlueprint = {
   collectable: true,
   setId: CARD_SETS.CORE,
   faction: FACTIONS.F1,
-  rarity: RARITIES.RARE,
+  rarity: RARITIES.EPIC,
   tags: [],
   runeCost: {},
   manaCost: 4,
@@ -47,39 +46,30 @@ export const suntideMaiden: MinionBlueprint = {
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
+    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
+    const levelMod = card.modifiers.get(LevelBonusModifier)!;
+
     await card.modifiers.add(
       new ZealModifier('suntide-maiden-zeal', game, card, {
-        mixins: [
+        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)],
+        unitMixins: [
           new GameEventModifierMixin(game, {
-            eventName: GAME_EVENTS.TURN_END,
-            handler: async () => {
-              await card.unit.heal(card, card.unit.maxHp - card.unit.remainingHp);
+            eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
+            filter: event => {
+              return !!(
+                event?.data.unit.card.equals(card) && event.data.target instanceof Unit
+              );
+            },
+            async handler(event) {
+              const targetUnit = event!.data.target as Unit;
+              await targetUnit.modifiers.add(new BurnModifier(game, card, { stacks: 2 }));
+              for (const ally of targetUnit.unitsOnSameRow) {
+                await ally.heal(card, 1);
+              }
             }
           })
         ]
       })
-    );
-
-    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
-    await card.modifiers.add(
-      new MinionSimpleAttackBuffModifier('suntide-maiden-lvl-bonus-atk', game, card, {
-        amount: 1,
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
-
-    await card.modifiers.add(
-      new MinionSimpleRetaliationBuffModifier(
-        'suntide-maiden-lvl-bonus-ret',
-        game,
-        card,
-        {
-          amount: 1,
-          mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-        }
-      )
     );
   },
   async onPlay() {}

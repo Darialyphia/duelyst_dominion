@@ -70,6 +70,7 @@ import { luxIgnis } from './core/neutral/lux-ignis';
 import { lanternFox } from './core/f2/lantern-fox';
 import { bloodshardGolem } from './core/neutral/bloodshard-golem';
 import { arrowWhistler } from './core/neutral/arrow-whistler';
+import { zirixStarstrider } from './core/f3/zirix-starstrider';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -146,6 +147,7 @@ export const coreSet: CardSet = {
     luxIgnis,
     lanternFox,
     bloodshardGolem,
-    arrowWhistler
+    arrowWhistler,
+    zirixStarstrider
   ]
 };

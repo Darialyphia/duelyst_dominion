@@ -111,7 +111,11 @@ export class CombatComponent {
     }
 
     const unit = this.game.unitSystem.getUnitAt(actualTarget)!;
-    if (!unit) return; // means unit died from attack
+    if (!unit) return;
+
+    if (this.unit.dealsDamageFirstWhenAttacking && !unit.isAlive) {
+      return;
+    }
 
     // we check counterattack before emitting AFTER_ATTACK event to enable effects that would prevent counter attack for one attack only
     // ex: Fearsome

@@ -46,7 +46,7 @@ export const silverguardKnight: MinionBlueprint = {
     await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(
       new ZealModifier('silverguard-knight-zeal', game, card, {
-        mixins: [
+        unitMixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',
             interceptor: value => value + 2

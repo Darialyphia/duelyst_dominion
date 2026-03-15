@@ -74,7 +74,8 @@ export const cards = {
 "lux-ignis": "lux-ignis",
 "lantern-fox": "lantern-fox",
 "bloodshard-golem": "bloodshard-golem",
-"arrow-whistler": "arrow-whistler"
+"arrow-whistler": "arrow-whistler",
+"zirix-starstrider": "zirix-starstrider"
 } as const;
 
 export const collectableCards = {
@@ -145,7 +146,8 @@ export const collectableCards = {
 "lux-ignis": "lux-ignis",
 "lantern-fox": "lantern-fox",
 "bloodshard-golem": "bloodshard-golem",
-"arrow-whistler": "arrow-whistler"
+"arrow-whistler": "arrow-whistler",
+"zirix-starstrider": "zirix-starstrider"
 } as const;
 
 type CardSet = Array<{id: string; collectable: boolean; rarity: Rarity; }>;
@@ -244,7 +246,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "suntide_maiden",
     "collectable": true,
-    "rarity": "rare"
+    "rarity": "epic"
   },
   {
     "id": "magnetize",
@@ -384,7 +386,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "grand_strategos",
     "collectable": true,
-    "rarity": "common"
+    "rarity": "epic"
   },
   {
     "id": "wind-dervish",
@@ -510,6 +512,11 @@ export const cardsBySet: Record<string, CardSet> = {
     "id": "arrow-whistler",
     "collectable": true,
     "rarity": "rare"
+  },
+  {
+    "id": "zirix-starstrider",
+    "collectable": true,
+    "rarity": "common"
   }
 ]
 };
@@ -584,7 +591,8 @@ export const cardShortIds: Record<string, number> = {
 "lux-ignis": 68,
 "lantern-fox": 69,
 "bloodshard-golem": 70,
-"arrow-whistler": 71
+"arrow-whistler": 71,
+"zirix-starstrider": 72
 } as const;
 
 export const cardIdByShortId: Record<number, string> = {
@@ -657,5 +665,6 @@ export const cardIdByShortId: Record<number, string> = {
 "68": "lux-ignis",
 "69": "lantern-fox",
 "70": "bloodshard-golem",
-"71": "arrow-whistler"
+"71": "arrow-whistler",
+"72": "zirix-starstrider"
 } as const;
