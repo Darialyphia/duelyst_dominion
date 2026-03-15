@@ -76,6 +76,7 @@ export const provideCollectionPage = () => {
       isEqual(first, second) {
         return first.meta.cardId === second.meta.cardId;
       },
+      faction: newDeck.faction,
       cards: newDeck.cards.map(card => ({
         blueprintId: card.blueprintId,
         copies: card.copies,
@@ -109,11 +110,15 @@ export const provideCollectionPage = () => {
   const api: CollectionContext = {
     isLoading: computed(() => isLoading.value || isLoadingDecks.value),
     cards: computed(() => {
-      if (!isEditingDeck.value) {
-        return cards.value;
-      }
+      if (!isEditingDeck.value) return cards.value;
 
-      return cards.value.filter(card => card.card.faction === FACTIONS.NEUTRAL);
+      if (!deckBuilder.value.deck.faction) return [];
+
+      return cards.value.filter(
+        card =>
+          card.card.faction === FACTIONS.NEUTRAL ||
+          card.card.faction === deckBuilder.value.deck.faction
+      );
     }),
     cardPool,
     hasKindFilter,
@@ -147,7 +152,8 @@ export const provideCollectionPage = () => {
         cards: deckBuilder.value.deck.cards.map(card => ({
           cardId: card.meta.cardId,
           copies: card.copies
-        }))
+        })),
+        faction: deckBuilder.value.deck.faction ?? undefined
       });
     },
     deleteDeck: () => {

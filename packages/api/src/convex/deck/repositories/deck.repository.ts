@@ -87,7 +87,8 @@ export class DeckRepository {
     const deckDocId = await this.ctx.db.insert('decks', {
       name: premadeDeck.name,
       ownerId: userId,
-      cards
+      cards,
+      faction: premadeDeck.faction
     });
 
     const deckDoc = await this.ctx.db.get(deckDocId);

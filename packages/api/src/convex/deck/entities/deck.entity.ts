@@ -19,6 +19,10 @@ export class Deck extends Entity<DeckId, DeckDoc> {
     return this.data.ownerId;
   }
 
+  get faction() {
+    return this.data.faction;
+  }
+
   isOwnedBy(userOrId: User | UserId) {
     const userId = isString(userOrId) ? userOrId : userOrId.id;
 

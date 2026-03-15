@@ -1,3 +1,4 @@
+import type { BetterExclude } from '@game/shared';
 import { ensureAuthenticated } from '../../auth/auth.utils';
 import type { AuthSession } from '../../auth/entities/session.entity';
 import type { CardId } from '../../card/entities/card.entity';
@@ -5,11 +6,13 @@ import { type UseCase } from '../../usecase';
 import { AppError, DomainError } from '../../utils/error';
 import type { DeckId } from '../entities/deck.entity';
 import type { DeckRepository } from '../repositories/deck.repository';
+import { type Faction } from '@game/engine/src/card/card.enums';
 
 export interface UpdateDeckInput {
   deckId: DeckId;
   name: string;
   cards: Array<{ cardId: CardId; copies: number }>;
+  faction?: BetterExclude<Faction, 'Neutral'>;
 }
 
 export interface UpdateDeckOutput {

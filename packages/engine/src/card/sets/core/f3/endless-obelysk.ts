@@ -1,5 +1,3 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import dedent from 'dedent';
@@ -16,7 +14,7 @@ export const endlessObelysk: MinionBlueprint = {
   name: 'Endless Obelysk',
   description: dedent`
   @Structure@.
-  At the start  of your turn, your Obleysks gain 1 @Spawn@ charge.
+  At the end  of each turn, your Obleysks gain 1 @Spawn@ charge.
   `,
   vfx: {
     spriteId: 'minions/f3_endless-obelysk',
@@ -54,7 +52,7 @@ export const endlessObelysk: MinionBlueprint = {
         modifier: new Modifier('endless_obelysk_spawn_charge', game, card, {
           mixins: [
             new GameEventModifierMixin(game, {
-              eventName: GAME_EVENTS.TURN_START,
+              eventName: GAME_EVENTS.TURN_END,
               async handler() {
                 const obelysks = card.player.units.filter(u =>
                   u.card.tags.includes(TAGS.OBELYSK)
@@ -62,7 +60,7 @@ export const endlessObelysk: MinionBlueprint = {
                 for (const obelysk of obelysks) {
                   const spawnMod = obelysk.modifiers.get(SpawnUnitModifier);
                   if (spawnMod) {
-                    spawnMod.addStacks(1);
+                    spawnMod.charges += 1;
                   }
                 }
               }

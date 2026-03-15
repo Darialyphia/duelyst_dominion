@@ -53,6 +53,45 @@ export const FACTIONS = {
 } as const;
 export type Faction = Values<typeof FACTIONS>;
 
+export const FACTION_DETAILS = {
+  [FACTIONS.F1]: {
+    id: FACTIONS.F1,
+    name: 'Lyonar',
+    longName: 'Lyonar Kingdom',
+    color: '#ff0000'
+  },
+  [FACTIONS.F2]: {
+    id: FACTIONS.F2,
+    name: 'Songhai',
+    longName: 'Songhai Empire',
+    color: '#00ff00'
+  },
+  [FACTIONS.F3]: {
+    id: FACTIONS.F3,
+    name: 'Vetruvian',
+    longName: 'Vetruvian Imperium',
+    color: '#0000ff'
+  },
+  [FACTIONS.F4]: {
+    id: FACTIONS.F4,
+    name: 'Abyssian',
+    longName: 'Abyssian Host',
+    color: '#ff00ff'
+  },
+  [FACTIONS.F5]: {
+    id: FACTIONS.F5,
+    name: 'Magmar',
+    longName: 'Magmar Aspects',
+    color: '#ffff00'
+  },
+  [FACTIONS.F6]: {
+    id: FACTIONS.F6,
+    name: 'Vanar',
+    longName: 'Vanar Kindred',
+    color: '#00ffff'
+  }
+};
+
 export const RUNES = {
   RED: 'red',
   BLUE: 'blue',

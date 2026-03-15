@@ -1,5 +1,7 @@
+import type { BetterExclude } from '@game/shared';
 import { defaultConfig } from '../../config';
 import type { CardBlueprint } from '../card-blueprint';
+import type { Faction } from '../card.enums';
 
 export type DeckViolation = {
   type: string;
@@ -14,6 +16,7 @@ export type ValidatableCard<TMeta> = {
 export type ValidatableDeck<TMeta> = {
   id: string;
   name: string;
+  faction: BetterExclude<Faction, 'Neutral'> | null;
   isEqual(first: ValidatableCard<TMeta>, second: ValidatableCard<TMeta>): boolean;
   cards: Array<ValidatableCard<TMeta>>;
 };

@@ -1,9 +1,11 @@
-import { cards } from '@game/engine/src/generated/cards';
+import { type Faction, FACTIONS } from '@game/engine/src/card/card.enums';
+import type { BetterExclude } from '@game/shared';
 
 type PremadeDeck = {
   id: string;
   isGrantedOnAccountCreation: boolean;
   name: string;
+  faction: BetterExclude<Faction, 'Neutral'>;
   cards: Array<{
     blueprintId: string;
     copies: number;
@@ -13,9 +15,10 @@ type PremadeDeck = {
 
 export const premadeDecks: PremadeDeck[] = [
   {
-    id: 'aiden-starter',
+    id: 'layonar-starter',
     isGrantedOnAccountCreation: true,
-    name: 'Aiden Starter',
+    name: 'Lyonar Starter',
+    faction: FACTIONS.F1,
     cards: []
   }
 ];

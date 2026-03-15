@@ -25,7 +25,7 @@ export class SpawnModifier extends Modifier<MinionCard> {
           getModifier: () =>
             new SpawnUnitModifier(game, source, {
               mixins: [],
-              stacks: options.stacks ?? 0,
+              charges: options.stacks ?? 0,
               blueprintId: options.blueprintId ?? ''
             }),
           ...(options?.mixins ?? [])
@@ -36,28 +36,29 @@ export class SpawnModifier extends Modifier<MinionCard> {
 }
 
 export class SpawnUnitModifier extends Modifier<Unit> {
+  charges: number;
   constructor(
     game: Game,
     source: AnyCard,
     options: {
       mixins?: ModifierMixin<Unit>[];
       modifierType?: string;
-      stacks: number;
+      charges: number;
       blueprintId: string;
     }
   ) {
     super(options.modifierType ?? KEYWORDS.SPAWN.id, game, source, {
       name: KEYWORDS.SPAWN.name,
-      description: KEYWORDS.SPAWN.description,
+      description: () =>
+        `${KEYWORDS.SPAWN.description.replace('X', `a ${game.cardPool[options.blueprintId]?.name}`)} (${this.charges} charges remaining)`,
       icon: 'icons/keyword-spawn',
-      stacks: options.stacks,
       mixins: [
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.TURN_START,
           filter: event => {
             if (!event) return false;
 
-            return this.nearbyEmptySpaces.length > 0;
+            return this.nearbyEmptySpaces.length > 0 && this.charges > 0;
           },
           handler: async () => {
             await this.game.emit(
@@ -91,19 +92,22 @@ export class SpawnUnitModifier extends Modifier<Unit> {
             );
 
             await cardToSpawn.playAt(space);
-            await this.removeStacks(1);
+            await this.charges--;
           }
         }),
         ...(options.mixins ?? [])
       ]
     });
+    this.charges = options.charges;
   }
 
   get nearbyEmptySpaces() {
     return (
       this.game.boardSystem
         .getCellAt(this.target.position)
-        ?.adjacent.filter(space => !space.isOccupied) ?? []
+        ?.adjacent.filter(
+          space => !space.isOccupied && space.player?.equals(this.target.player)
+        ) ?? []
     );
   }
 }

@@ -1,3 +1,4 @@
+import type { BetterExclude } from '@game/shared';
 import { ensureAuthenticated } from '../../auth/auth.utils';
 import type { AuthSession } from '../../auth/entities/session.entity';
 import type { CardId } from '../../card/entities/card.entity';
@@ -5,10 +6,12 @@ import type { CardReadRepository } from '../../card/repositories/card.repository
 import type { UseCase } from '../../usecase';
 import type { DeckDoc, DeckId } from '../entities/deck.entity';
 import type { DeckReadRepository } from '../repositories/deck.repository';
+import type { Faction } from '@game/engine/src/card/card.enums';
 
 export type GetDecksOutput = Array<{
   name: string;
   id: DeckId;
+  faction: BetterExclude<Faction, 'Neutral'> | null;
   cards: Array<{
     cardId: CardId;
     isFoil: boolean;
@@ -51,6 +54,7 @@ export class GetDecksUseCase implements UseCase<never, GetDecksOutput> {
     return {
       id: deck._id,
       name: deck.name,
+      faction: deck.faction ?? null,
       cards
     };
   }

@@ -1,10 +1,12 @@
 import type { CardId } from '@game/api';
 import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
+import type { Faction } from '@game/engine/src/card/card.enums';
 import type {
   DeckValidator,
   ValidatableCard,
   ValidatableDeck
 } from '@game/engine/src/card/validators/deck.validator';
+import type { BetterExclude } from '@game/shared';
 import { nanoid } from 'nanoid';
 
 export type DeckBuilderCardPool = Array<CardBlueprint>;
@@ -20,6 +22,7 @@ export class DeckBuilderViewModel {
     id: nanoid(4),
     name: 'New Deck',
     cards: [],
+    faction: null as BetterExclude<Faction, 'Neutral'> | null,
     isEqual: (first, second) => first.meta.cardId === second.meta.cardId
   };
 
@@ -129,7 +132,8 @@ export class DeckBuilderViewModel {
       id: nanoid(4),
       name: 'New Deck',
       isEqual: (first, second) => first.meta.cardId === second.meta.cardId,
-      cards: []
+      cards: [],
+      faction: null
     };
   }
 }

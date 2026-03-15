@@ -9,6 +9,7 @@ import {
 } from './shared/container';
 import { v } from 'convex/values';
 import { DeleteDeckUseCase } from './deck/usecases/deleteDeck.usecase';
+import { FACTIONS } from '@game/engine/src/card/card.enums';
 
 export const list = queryWithContainer({
   args: {},
@@ -54,6 +55,16 @@ export const update = mutationWithContainer({
         cardId: v.id('cards'),
         copies: v.number()
       })
+    ),
+    faction: v.optional(
+      v.union(
+        v.literal(FACTIONS.F1),
+        v.literal(FACTIONS.F2),
+        v.literal(FACTIONS.F3),
+        v.literal(FACTIONS.F4),
+        v.literal(FACTIONS.F5),
+        v.literal(FACTIONS.F6)
+      )
     )
   },
   handler: async (ctx, arg) => {
@@ -62,7 +73,8 @@ export const update = mutationWithContainer({
     return usecase.execute({
       deckId: arg.deckId,
       name: arg.name,
-      cards: arg.cards
+      cards: arg.cards,
+      faction: arg.faction
     });
   }
 });

@@ -3,8 +3,11 @@
 import { useCollectionPage } from './useCollectionPage';
 import CollectionCard from './CollectionCard.vue';
 import { useIntersectionObserver } from '@vueuse/core';
+import { FACTION_DETAILS } from '@game/engine/src/card/card.enums';
+import { assets } from '@/assets';
 
-const { cards, cardScale, isLoading } = useCollectionPage();
+const { cards, cardScale, isLoading, deckBuilder, isEditingDeck } =
+  useCollectionPage();
 
 const listRoot = useTemplateRef('card-list');
 const visibleCards = ref(new Set<string>());
@@ -42,6 +45,25 @@ const pixelScale = computed(() => cardScale.value[0] + 0.01); // avoides artifac
 <template>
   <Transition mode="out-in">
     <p v-if="isLoading" class="text-center">Loading Collection...</p>
+    <div
+      v-else-if="isEditingDeck && !deckBuilder.deck.faction"
+      class="faction-list"
+    >
+      <div
+        v-for="faction in FACTION_DETAILS"
+        :key="faction.id"
+        class="surface cursor-pointer"
+        :style="{
+          '--color': faction.color,
+          '--emblem':
+            assets[`ui/crests-${faction.id.toLocaleLowerCase()}-textless`].css
+        }"
+        @click="deckBuilder.deck.faction = faction.id"
+      >
+        <div class="emblem" />
+        <p class="text-center mt-2">{{ faction.longName }}</p>
+      </div>
+    </div>
     <ul
       ref="card-list"
       class="cards fancy-scrollbar"
@@ -121,5 +143,34 @@ const pixelScale = computed(() => cardScale.value[0] + 0.01); // avoides artifac
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+.faction-list {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-content: center;
+  justify-items: center;
+  grid-template-columns: repeat(3, auto);
+  gap: var(--size-5);
+  > div {
+    width: var(--card-width);
+    aspect-ratio: var(--card-ratio);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-5);
+    text-align: center;
+    &:hover {
+      cursor: url('@/assets/ui/cursor-hover.png'), auto;
+      filter: brightness(115%);
+    }
+  }
+
+  .emblem {
+    width: var(--size-10);
+    aspect-ratio: 1;
+    background: var(--emblem) no-repeat center/cover;
+  }
 }
 </style>

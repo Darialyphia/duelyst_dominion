@@ -33,8 +33,8 @@ export const zirixStarstrider: MinionBlueprint = {
   manaCost: 4,
   runeCost: {},
   atk: 2,
-  maxHp: 2,
-  retaliation: 5,
+  maxHp: 5,
+  retaliation: 2,
   abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
