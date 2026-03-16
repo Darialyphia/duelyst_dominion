@@ -87,6 +87,7 @@ useFxEvent(FX_EVENTS.PLAYER_AFTER_TAKE_DAMAGE, event => {
         </div>
       </div>
     </header>
+
     <div
       class="flex gap-2 items-center"
       :id="ui.DOMSelectors.mana(player.id).id"

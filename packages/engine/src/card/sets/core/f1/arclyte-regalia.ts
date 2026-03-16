@@ -70,7 +70,7 @@ export const arclyteRegalia: ArtifactBlueprint = {
                       new UnitInterceptorModifierMixin(game, {
                         key: 'damageReceived',
                         interceptor(value) {
-                          return Math.max(value, 1);
+                          return value > 1 ? 1 : value;
                         }
                       })
                     ]

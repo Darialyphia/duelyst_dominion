@@ -204,3 +204,9 @@ export class NoOngoingEffectChainsError extends InputError {
     super('No ongoing effect chains');
   }
 }
+
+export class CardNotOwnedError extends InputError {
+  constructor() {
+    super('You do not own this card.');
+  }
+}

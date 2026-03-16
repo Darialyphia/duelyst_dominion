@@ -30,6 +30,7 @@ import { ReplaceCardInput } from './inputs/replace-card.input';
 import { PassInput } from './inputs/pass.input';
 import { AttackInput } from './inputs/attack.input';
 import { SurrenderInput } from './inputs/surrender.input';
+import { UseAbilityInput } from './inputs/use-ability.input';
 
 type GenericInputMap = Record<string, Constructor<Input<ZodType>>>;
 
@@ -54,7 +55,8 @@ const inputMap = validateinputMap({
   replaceCard: ReplaceCardInput,
   pass: PassInput,
   attack: AttackInput,
-  surrender: SurrenderInput
+  surrender: SurrenderInput,
+  useAbility: UseAbilityInput
 });
 
 type InputMap = typeof inputMap;

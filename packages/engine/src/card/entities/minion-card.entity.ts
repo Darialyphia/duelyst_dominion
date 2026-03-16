@@ -235,7 +235,7 @@ export class MinionCard extends Card<
   }
 
   get attackAOEShape() {
-    return new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {});
+    return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
   }
 
   get counterattackPattern() {

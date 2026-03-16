@@ -12,6 +12,8 @@ import { Interceptable } from '../../utils/interceptable';
 import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../game/game.events';
 import { BackstabEvent } from '../modifier.special-events';
+import { UNIT_EVENTS } from '../../unit/unit.enums';
+import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
 export class BackstabModifier<T extends MinionCard> extends Modifier<T> {
   constructor(
@@ -71,7 +73,11 @@ export class BackstabUnitModifier extends Modifier<Unit> {
               event.data.target.remainingHp <= event.data.target.maxHp
             );
           },
-          handler: () => {
+          handler: async () => {
+            await this.game.emit(
+              UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
+              new UnitEffectTriggeredEvent({ unit: this.target })
+            );
             this._isBackstabbing = true;
           }
         }),

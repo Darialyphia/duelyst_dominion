@@ -9,6 +9,8 @@ import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
 import type { MinionAfterSummonedEvent } from '../../card/events/minion.events';
 import type { ModifierMixin } from '../modifier-mixin';
+import { UNIT_EVENTS } from '../../unit/unit.enums';
+import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
 export class MinionOnEnterModifier extends Modifier<MinionCard> {
   constructor(
@@ -38,6 +40,10 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
           },
           handler: async event => {
             if (!event) return; // dont trigger when event is triggered manually
+            await this.game.emit(
+              UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
+              new UnitEffectTriggeredEvent({ unit: this.target.unit })
+            );
             const _handler = isFunction(optionsOrHandler)
               ? optionsOrHandler
               : optionsOrHandler.handler;

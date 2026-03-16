@@ -95,7 +95,6 @@ export class CombatComponent {
           )
         : [actualTarget];
     const damage = new CombatDamage(this.unit, 'attack');
-
     await this.dealDamage(targets, damage);
     this._attacksThisTurn.push({ target, damage });
 

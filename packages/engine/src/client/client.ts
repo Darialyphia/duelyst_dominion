@@ -337,4 +337,15 @@ export class GameClient {
       }
     });
   }
+
+  useAbility(cardId: string, abilityId: string) {
+    this.dispatch({
+      type: 'useAbility',
+      payload: {
+        playerId: this.playerId,
+        cardId,
+        abilityId
+      }
+    });
+  }
 }

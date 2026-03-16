@@ -18,7 +18,6 @@ const { artifact } = defineProps<{
 }>();
 
 const card = useCard(computed(() => artifact.card));
-
 const spriteData = computed(() => sprites[`cards/${card.value.spriteId}`]!);
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   kind: CARD_KINDS.ARTIFACT,
@@ -45,6 +44,8 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
         }"
       >
         <div class="sprite" />
+
+        <button v-if="card.abilities[0]?.canUse">Use</button>
       </div>
     </HoverCardTrigger>
     <HoverCardPortal>
