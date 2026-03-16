@@ -2,6 +2,7 @@ import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { UnitEffectModifierMixin } from '../../../../modifier/mixins/unit-effect.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
+import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 import type { Unit } from '../../../../unit/unit.entity';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -52,6 +53,10 @@ export const sojourner: MinionBlueprint = {
                     eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
                     filter: event => !!event?.data.unit.equals(unit),
                     handler: async () => {
+                      await game.emit(
+                        GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+                        new UnitEffectTriggeredEvent({ unit: card.unit })
+                      );
                       await card.player.cardManager.drawFromDeck(1);
                     }
                   })

@@ -1,8 +1,6 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
+import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -44,6 +42,10 @@ export const ghostLynx: MinionBlueprint = {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
         game.once(GAME_EVENTS.TURN_END, async () => {
+          await game.emit(
+            GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+            new UnitEffectTriggeredEvent({ unit: card.unit })
+          );
           await card.player.cardManager.drawFromDeck(1);
         });
       })

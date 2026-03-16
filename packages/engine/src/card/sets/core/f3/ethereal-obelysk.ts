@@ -39,7 +39,7 @@ export const etherealObelysk: MinionBlueprint = {
   manaCost: 2,
   atk: 0,
   maxHp: 6,
-  retaliation: 2,
+  retaliation: 0,
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {

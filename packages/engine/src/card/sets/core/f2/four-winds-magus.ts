@@ -7,6 +7,7 @@ import { isSpell } from '../../../card-utils';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
+import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 
 export const fourWindsMagus: MinionBlueprint = {
   id: 'four-winds-magus',
@@ -55,6 +56,10 @@ export const fourWindsMagus: MinionBlueprint = {
               },
               async handler() {
                 const columnUnits = card.unit.unitsOnSameColumn;
+                await game.emit(
+                  GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+                  new UnitEffectTriggeredEvent({ unit: card.unit })
+                );
                 for (const unit of columnUnits) {
                   await unit.takeDamage(card, new AbilityDamage(card, 1));
                 }

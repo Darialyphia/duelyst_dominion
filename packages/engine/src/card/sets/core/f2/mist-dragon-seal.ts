@@ -14,7 +14,7 @@ export const mistDragonSeal: SpellBlueprint = {
   id: 'mist-dragon-seal',
   name: 'Mist Dragon Seal',
   description: dedent`
-    Give an allied minion +1/+1 and teleport it to any space.
+    Give an allied minion +1/+0/+1 and teleport it to any space.
     @[lvl] 3 Bonus@: @Burst@.
   `,
   vfx: {

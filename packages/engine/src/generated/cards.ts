@@ -75,7 +75,10 @@ export const cards = {
 "lantern-fox": "lantern-fox",
 "bloodshard-golem": "bloodshard-golem",
 "arrow-whistler": "arrow-whistler",
-"zirix-starstrider": "zirix-starstrider"
+"zirix-starstrider": "zirix-starstrider",
+"portal-guardian": "portal-guardian",
+"pyromancer": "pyromancer",
+"incinera": "incinera"
 } as const;
 
 export const collectableCards = {
@@ -147,7 +150,10 @@ export const collectableCards = {
 "lantern-fox": "lantern-fox",
 "bloodshard-golem": "bloodshard-golem",
 "arrow-whistler": "arrow-whistler",
-"zirix-starstrider": "zirix-starstrider"
+"zirix-starstrider": "zirix-starstrider",
+"portal-guardian": "portal-guardian",
+"pyromancer": "pyromancer",
+"incinera": "incinera"
 } as const;
 
 type CardSet = Array<{id: string; collectable: boolean; rarity: Rarity; }>;
@@ -156,7 +162,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "argeon-highmane",
     "collectable": true,
-    "rarity": "common"
+    "rarity": "legendary"
   },
   {
     "id": "healing-mystic",
@@ -261,7 +267,7 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "kaleos-xaan",
     "collectable": true,
-    "rarity": "common"
+    "rarity": "legendary"
   },
   {
     "id": "circlet-of-inhibition",
@@ -516,7 +522,22 @@ export const cardsBySet: Record<string, CardSet> = {
   {
     "id": "zirix-starstrider",
     "collectable": true,
+    "rarity": "legendary"
+  },
+  {
+    "id": "portal-guardian",
+    "collectable": true,
+    "rarity": "epic"
+  },
+  {
+    "id": "pyromancer",
+    "collectable": true,
     "rarity": "common"
+  },
+  {
+    "id": "incinera",
+    "collectable": true,
+    "rarity": "epic"
   }
 ]
 };
@@ -592,7 +613,10 @@ export const cardShortIds: Record<string, number> = {
 "lantern-fox": 69,
 "bloodshard-golem": 70,
 "arrow-whistler": 71,
-"zirix-starstrider": 72
+"zirix-starstrider": 72,
+"portal-guardian": 73,
+"pyromancer": 74,
+"incinera": 75
 } as const;
 
 export const cardIdByShortId: Record<number, string> = {
@@ -666,5 +690,8 @@ export const cardIdByShortId: Record<number, string> = {
 "69": "lantern-fox",
 "70": "bloodshard-golem",
 "71": "arrow-whistler",
-"72": "zirix-starstrider"
+"72": "zirix-starstrider",
+"73": "portal-guardian",
+"74": "pyromancer",
+"75": "incinera"
 } as const;

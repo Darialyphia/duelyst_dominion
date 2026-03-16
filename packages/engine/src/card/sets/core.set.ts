@@ -71,6 +71,9 @@ import { lanternFox } from './core/f2/lantern-fox';
 import { bloodshardGolem } from './core/neutral/bloodshard-golem';
 import { arrowWhistler } from './core/neutral/arrow-whistler';
 import { zirixStarstrider } from './core/f3/zirix-starstrider';
+import { portalGuardian } from './core/f3/portal-guardian';
+import { pyromancer } from './core/f3/pyromancer';
+import { incinera } from './core/f3/incinera';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -148,6 +151,9 @@ export const coreSet: CardSet = {
     lanternFox,
     bloodshardGolem,
     arrowWhistler,
-    zirixStarstrider
+    zirixStarstrider,
+    portalGuardian,
+    pyromancer,
+    incinera
   ]
 };

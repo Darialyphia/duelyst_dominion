@@ -7,6 +7,7 @@ import { phoenixFire } from './phoenix-fire';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
+import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 
 export const lanternFox: MinionBlueprint = {
   id: 'lantern-fox',
@@ -53,6 +54,10 @@ export const lanternFox: MinionBlueprint = {
                 return !!event?.data.unit.equals(card.unit);
               },
               async handler() {
+                await game.emit(
+                  GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+                  new UnitEffectTriggeredEvent({ unit: card.unit })
+                );
                 const pf = await card.player.generateCard(phoenixFire.id, card.isFoil);
                 await pf.addToHand();
               }

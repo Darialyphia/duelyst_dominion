@@ -14,6 +14,7 @@ export class BurnModifier extends Modifier<Unit> {
       name: KEYWORDS.BURN.name,
       description: KEYWORDS.BURN.description,
       icon: 'icons/keyword-burn',
+      isUnique: true,
       mixins: [
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.TURN_START,

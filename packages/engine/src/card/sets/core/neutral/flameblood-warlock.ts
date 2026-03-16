@@ -1,4 +1,4 @@
-import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
+import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -7,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const flamebloodWarlock: MinionBlueprint = {
   id: 'flameblood-warlock',
   name: 'Flameblood Warlock',
-  description: '@On Enter@: Deal 2 damage to all players.',
+  description: '@On Destroyed@: if your opponent has initiative, they take 3 damage.',
   vfx: {
     spriteId: 'minions/neutral_flameblood-warlock',
     sequences: {
@@ -32,16 +32,18 @@ export const flamebloodWarlock: MinionBlueprint = {
   tags: [],
   runeCost: {},
   manaCost: 1,
-  atk: 2,
-  maxHp: 2,
+  atk: 1,
+  maxHp: 1,
   retaliation: 0,
   abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        for (const player of game.playerSystem.players) {
-          await player.takeDamage(card, new AbilityDamage(card, 2));
+      new MinionOnDestroyModifier(game, card, {
+        async handler() {
+          if (game.turnSystem.initiativePlayer.equals(card.player.opponent)) {
+            await card.player.opponent.takeDamage(card, new AbilityDamage(card, 3));
+          }
         }
       })
     );

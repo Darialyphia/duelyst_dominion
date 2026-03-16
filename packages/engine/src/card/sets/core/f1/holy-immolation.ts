@@ -85,7 +85,7 @@ export const holyImmolation: SpellBlueprint = {
   getAoe: () =>
     new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {
       includeDiagonals: false,
-      includeCenter: true
+      includeCenter: false
     }),
   canPlay: (game, card) =>
     singleUnitTargetRules.canPlay(game, card, c => c.isEnemy(card.player)),
@@ -99,15 +99,13 @@ export const holyImmolation: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
+    const mainTarget = targets[0];
+    await mainTarget.unit?.takeDamage(card, new SpellDamage(card, 4));
     const units = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 
     for (const unit of units) {
       if (unit.isAlly(card.player)) {
-        if (unit.position.equals(targets[0])) {
-          await unit.takeDamage(card, new SpellDamage(card, 4));
-        } else {
-          await unit.heal(card, 4);
-        }
+        await unit.heal(card, 4);
       } else {
         await unit.modifiers.add(new BurnModifier(game, card, { stacks: 2 }));
       }
