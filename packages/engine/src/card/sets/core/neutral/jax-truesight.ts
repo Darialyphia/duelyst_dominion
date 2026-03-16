@@ -1,11 +1,5 @@
-import type { Point } from '@game/shared';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { GAME_EVENTS } from '../../../../game/game.events';
-import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { Modifier } from '../../../../modifier/modifier.entity';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -53,19 +47,16 @@ export const jaxTruesight: MinionBlueprint = {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
-        await game.once(GAME_EVENTS.MINION_AFTER_SUMMON, async () => {
-          const backRowCells = game.boardSystem
-            .getBackRowForPlayer(card.player)
-            .filter(cell => cell.isEmpty);
-
-          for (const cell of backRowCells) {
-            const minijaxCard = await card.player.generateCard<MinionCard>(
-              miniJax.id,
-              card.isFoil
-            );
-            await minijaxCard.playAt(cell);
-          }
-        });
+        const backRowCells = game.boardSystem
+          .getBackRowForPlayer(card.player)
+          .filter(cell => cell.isEmpty);
+        for (const cell of backRowCells) {
+          const minijaxCard = await card.player.generateCard<MinionCard>(
+            miniJax.id,
+            card.isFoil
+          );
+          await minijaxCard.playAt(cell);
+        }
       })
     );
   },

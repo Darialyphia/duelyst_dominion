@@ -1,7 +1,7 @@
 import { KEYWORDS } from '../../card/card-keywords';
 import type { AnyCard } from '../../card/entities/card.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import type { Game } from '../../game/game';
+import { Game } from '../../game/game';
 import type { Unit } from '../../unit/unit.entity';
 import { TogglableModifierMixin } from '../mixins/togglable.mixin';
 import { ModifierMixin } from '../modifier-mixin';
@@ -9,6 +9,8 @@ import { Modifier } from '../modifier.entity';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Interceptable } from '../../utils/interceptable';
+import { GameEventModifierMixin } from '../mixins/game-event.mixin';
+import { GAME_EVENTS } from '../../game/game.events';
 
 export class ZealModifier extends Modifier<MinionCard> {
   constructor(
@@ -38,8 +40,10 @@ export class ZealModifier extends Modifier<MinionCard> {
 export class ZealUnitModifier extends Modifier<Unit> {
   private _isZealed = new Interceptable<boolean>();
 
+  private adjacentMinionHasAttackedThisTurn = false;
+
   get isZealed() {
-    return this._isZealed.getValue(false, {});
+    return this._isZealed.getValue(this.adjacentMinionHasAttackedThisTurn, {});
   }
 
   constructor(game: Game, source: AnyCard, options: { mixins?: ModifierMixin<Unit>[] }) {
@@ -49,6 +53,21 @@ export class ZealUnitModifier extends Modifier<Unit> {
       icon: 'icons/keyword-zeal',
       mixins: [
         new TogglableModifierMixin(game, () => this.isZealed),
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
+          filter: event =>
+            !!event?.data.unit.isAlly(this.target) &&
+            this.target.adjacentUnits.some(unit => unit.equals(event.data.unit)),
+          handler: () => {
+            this.adjacentMinionHasAttackedThisTurn = true;
+          }
+        }),
+        new GameEventModifierMixin(game, {
+          eventName: GAME_EVENTS.TURN_END,
+          handler: () => {
+            this.adjacentMinionHasAttackedThisTurn = false;
+          }
+        }),
         ...(options?.mixins ?? [])
       ]
     });

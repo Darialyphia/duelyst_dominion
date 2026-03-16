@@ -32,7 +32,7 @@ export const saberspineTiger: MinionBlueprint = {
   runeCost: {},
   manaCost: 3,
   atk: 3,
-  maxHp: 2,
+  maxHp: 1,
   retaliation: 0,
   abilities: [],
   canPlay: () => true,

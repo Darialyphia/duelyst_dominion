@@ -1,17 +1,18 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { singleMinionTargetRules, singleUnitTargetRules } from '../../../card-utils';
+import { singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { SpellDamage } from '../../../../utils/damage';
 import dedent from 'dedent';
 import { RingAOEShape } from '../../../../aoe/ring.aoe-shape';
 import { lightOverlay } from '../../../card-vfx-sequences';
+import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
+import { SpellDamage } from '../../../../utils/damage';
 
 export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
   description: dedent`
-  Deal 4 damage to an enemy. Deal 4 damage to adjacent enemies and heal adjacent allies for 4.`,
+  Deal 4 damage to an enemy. Inflict @Burn (2) on adjacent enemies. Heal adjacent allies for 4.`,
   vfx: {
     spriteId: 'spells/f1_holy-immolation',
     sequences: {
@@ -102,9 +103,13 @@ export const holyImmolation: SpellBlueprint = {
 
     for (const unit of units) {
       if (unit.isAlly(card.player)) {
-        await unit.heal(card, 4);
+        if (unit.position.equals(targets[0])) {
+          await unit.takeDamage(card, new SpellDamage(card, 4));
+        } else {
+          await unit.heal(card, 4);
+        }
       } else {
-        await unit.takeDamage(card, new SpellDamage(card, 4));
+        await unit.modifiers.add(new BurnModifier(game, card, { stacks: 2 }));
       }
     }
   }
