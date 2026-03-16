@@ -1,13 +1,12 @@
 import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
-import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 
 export const pyromancer: MinionBlueprint = {
   id: 'pyromancer',
   name: 'Pyromancer',
-  description: '@On Destroyed@: infl1ct @Burn 1@ to enemies on the same column.',
+  description: '@On Destroyed@: infl1ct @Burn (1)@ to enemies on the same column.',
   vfx: { spriteId: 'minions/f3_pyromancer' },
   sounds: {
     play: 'sfx_ui_booster_packexplode',

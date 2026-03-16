@@ -8,7 +8,7 @@ export const incinera: MinionBlueprint = {
   id: 'incinera',
   name: 'Incinera',
   description: dedent`
-  @On Enter@: Inflict @Burn 1@ to all enemies.
+  @On Enter@: Inflict @Burn (1)@ to all enemies.
   @[lvl] 3 bonus]@: this costs @[mana] 2@ less.
   `,
   vfx: { spriteId: 'minions/f3_fusion-banshee' },
