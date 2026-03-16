@@ -55,6 +55,7 @@ export class ZealUnitModifier extends Modifier<Unit> {
         new TogglableModifierMixin(game, () => this.isZealed),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
+          persistWhileDisabled: true,
           filter: event =>
             !!event?.data.unit.isAlly(this.target) &&
             this.target.adjacentUnits.some(unit => unit.equals(event.data.unit)),
@@ -64,6 +65,7 @@ export class ZealUnitModifier extends Modifier<Unit> {
         }),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.TURN_END,
+          persistWhileDisabled: true,
           handler: () => {
             this.adjacentMinionHasAttackedThisTurn = false;
           }

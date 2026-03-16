@@ -26,6 +26,7 @@ export class GameEventModifierMixin<
         modifier: Modifier<TCard>
       ) => boolean;
       frequencyPerGameTurn?: number;
+      persistWhileDisabled?: boolean;
     }
   ) {
     super(game);
@@ -72,6 +73,8 @@ export class GameEventModifierMixin<
   }
 
   onRemoved(): void {
+    if (this.modifier.isApplied && this.options.persistWhileDisabled) return;
+
     this.game.off(this.options.eventName, this.wrappedHandler as any);
 
     if (isDefined(this.options.frequencyPerGameTurn)) {
