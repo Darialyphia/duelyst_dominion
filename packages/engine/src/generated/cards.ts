@@ -78,7 +78,8 @@ export const cards = {
 "zirix-starstrider": "zirix-starstrider",
 "portal-guardian": "portal-guardian",
 "pyromancer": "pyromancer",
-"incinera": "incinera"
+"incinera": "incinera",
+"fireblaze-obelysk": "fireblaze-obelysk"
 } as const;
 
 export const collectableCards = {
@@ -153,7 +154,8 @@ export const collectableCards = {
 "zirix-starstrider": "zirix-starstrider",
 "portal-guardian": "portal-guardian",
 "pyromancer": "pyromancer",
-"incinera": "incinera"
+"incinera": "incinera",
+"fireblaze-obelysk": "fireblaze-obelysk"
 } as const;
 
 type CardSet = Array<{id: string; collectable: boolean; rarity: Rarity; }>;
@@ -538,6 +540,11 @@ export const cardsBySet: Record<string, CardSet> = {
     "id": "incinera",
     "collectable": true,
     "rarity": "epic"
+  },
+  {
+    "id": "fireblaze-obelysk",
+    "collectable": true,
+    "rarity": "common"
   }
 ]
 };
@@ -616,7 +623,8 @@ export const cardShortIds: Record<string, number> = {
 "zirix-starstrider": 72,
 "portal-guardian": 73,
 "pyromancer": 74,
-"incinera": 75
+"incinera": 75,
+"fireblaze-obelysk": 76
 } as const;
 
 export const cardIdByShortId: Record<number, string> = {
@@ -693,5 +701,6 @@ export const cardIdByShortId: Record<number, string> = {
 "72": "zirix-starstrider",
 "73": "portal-guardian",
 "74": "pyromancer",
-"75": "incinera"
+"75": "incinera",
+"76": "fireblaze-obelysk"
 } as const;

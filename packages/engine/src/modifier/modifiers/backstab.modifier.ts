@@ -67,10 +67,11 @@ export class BackstabUnitModifier extends Modifier<Unit> {
           eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
           filter: event => {
             if (!event) return false;
+
             return (
               event.data.target instanceof Unit &&
               event.data.unit.equals(this.target) &&
-              event.data.target.remainingHp <= event.data.target.maxHp
+              event.data.target.remainingHp < event.data.target.maxHp
             );
           },
           handler: async () => {
@@ -78,6 +79,7 @@ export class BackstabUnitModifier extends Modifier<Unit> {
               UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
               new UnitEffectTriggeredEvent({ unit: this.target })
             );
+            console.log('is backstabbing');
             this._isBackstabbing = true;
           }
         }),

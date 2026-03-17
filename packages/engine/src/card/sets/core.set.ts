@@ -74,6 +74,7 @@ import { zirixStarstrider } from './core/f3/zirix-starstrider';
 import { portalGuardian } from './core/f3/portal-guardian';
 import { pyromancer } from './core/f3/pyromancer';
 import { incinera } from './core/f3/incinera';
+import { fireblazeObelysk } from './core/f3/fireblaze-obelysk';
 
 export const coreSet: CardSet = {
   id: CARD_SETS.CORE,
@@ -154,6 +155,7 @@ export const coreSet: CardSet = {
     zirixStarstrider,
     portalGuardian,
     pyromancer,
-    incinera
+    incinera,
+    fireblazeObelysk
   ]
 };
