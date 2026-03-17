@@ -6,11 +6,15 @@ import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import type { UnitAfterDestroyEvent } from '../../unit/unit-events';
+import {
+  UnitEffectTriggeredEvent,
+  type UnitAfterDestroyEvent
+} from '../../unit/unit-events';
 import type { ModifierMixin } from '../modifier-mixin';
 import { UnitEffectModifierMixin } from '../mixins/unit-effect.mixin';
 import type { Unit } from '../../unit/unit.entity';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
+import { GAME_EVENTS } from '../../game/game.events';
 
 export class MinionOnDestroyModifier extends Modifier<MinionCard> {
   constructor(
@@ -54,6 +58,23 @@ export class MinionOnDestroyUnitModifier extends Modifier<Unit> {
       description: KEYWORDS.ON_DESTROYED.description,
       icon: 'icons/keyword-on-death',
       mixins: [
+        new GameEventModifierMixin(game, {
+          eventName: UNIT_EVENTS.UNIT_BEFORE_DESTROY,
+          filter: event => {
+            if (!event) return false;
+
+            return event.data.unit.equals(this.target);
+          },
+          handler: async event => {
+            if (!event) return; // dont trigger when event is triggered manually
+            await this.game.emit(
+              GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+              new UnitEffectTriggeredEvent({
+                unit: this.target
+              })
+            );
+          }
+        }),
         new GameEventModifierMixin(game, {
           eventName: UNIT_EVENTS.UNIT_AFTER_DESTROY,
           filter: event => {

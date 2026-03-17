@@ -17,7 +17,7 @@ class AuraModifierMixin<
 > extends ModifierMixin<T> {
   protected modifier!: Modifier<T>;
 
-  private affectedCandidates = new Map<string, Modifier<TCandidate>[]>();
+  private modifiersPerCandidateId = new Map<string, Modifier<TCandidate>[]>();
   // we need to track this variable because of how the event emitter works
   // basically if we have an event that says "after unit moves, remove this aura modifier"
   // It will not clean up aura's "after unit move" event before all the current listeners have been ran
@@ -40,11 +40,11 @@ class AuraModifierMixin<
     for (const candidate of this.options.getCandidates()) {
       const shouldGetAura = this.options.isElligible(candidate);
 
-      const hasAura = this.affectedCandidates.has(candidate.id);
+      const hasAura = this.modifiersPerCandidateId.has(candidate.id);
 
       if (!shouldGetAura && hasAura) {
-        const modifierstoRemove = this.affectedCandidates.get(candidate.id)!;
-        this.affectedCandidates.delete(candidate.id);
+        const modifierstoRemove = this.modifiersPerCandidateId.get(candidate.id)!;
+        this.modifiersPerCandidateId.delete(candidate.id);
         for (const mod of modifierstoRemove) {
           await mod.removeSource(this.source);
         }
@@ -53,7 +53,7 @@ class AuraModifierMixin<
 
       if (shouldGetAura && !hasAura) {
         const modifiers = this.options.getModifiers(candidate);
-        this.affectedCandidates.set(candidate.id, modifiers);
+        this.modifiersPerCandidateId.set(candidate.id, modifiers);
         for (const mod of modifiers) {
           await candidate.modifiers.add(mod);
         }
@@ -64,9 +64,9 @@ class AuraModifierMixin<
 
   private async cleanup() {
     this.game.off('*', this.checkAura);
-    for (const id of this.affectedCandidates.keys()) {
-      const modifierstoRemove = this.affectedCandidates.get(id)!;
-      this.affectedCandidates.delete(id);
+    for (const id of this.modifiersPerCandidateId.keys()) {
+      const modifierstoRemove = this.modifiersPerCandidateId.get(id)!;
+      this.modifiersPerCandidateId.delete(id);
 
       for (const mod of modifierstoRemove) {
         await mod.removeSource(this.source);

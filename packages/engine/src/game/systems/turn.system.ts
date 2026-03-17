@@ -79,17 +79,18 @@ export class TurnSystem extends System<never> {
   }
 
   async switchInitiative() {
-    const opponentCanReceiveInitiative =
-      !this._initiativePlayer.opponent.hasPassedThisRound;
+    await this.game.inputSystem.schedule(async () => {
+      const opponentCanReceiveInitiative =
+        !this._initiativePlayer.opponent.hasPassedThisRound;
 
-    if (!opponentCanReceiveInitiative) return;
+      if (!opponentCanReceiveInitiative) return;
 
-    this._initiativePlayer = this._initiativePlayer.opponent;
-
-    await this.game.emit(
-      TURN_EVENTS.TURN_INITATIVE_CHANGE,
-      new TurnInitiativeChangeEvent({ newInitiativePlayer: this._initiativePlayer })
-    );
+      this._initiativePlayer = this._initiativePlayer.opponent;
+      await this.game.emit(
+        TURN_EVENTS.TURN_INITATIVE_CHANGE,
+        new TurnInitiativeChangeEvent({ newInitiativePlayer: this._initiativePlayer })
+      );
+    });
   }
 }
 

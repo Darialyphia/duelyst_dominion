@@ -68,6 +68,7 @@ export class InterceptorModifierMixin<
   }
 
   onRemoved(target: TTarget): void {
+    if (!target) return;
     //@ts-expect-error
     target.removeInterceptor(
       this.options.key,

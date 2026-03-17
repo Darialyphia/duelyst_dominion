@@ -42,10 +42,6 @@ export const ghostLynx: MinionBlueprint = {
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, async () => {
         game.once(GAME_EVENTS.TURN_END, async () => {
-          await game.emit(
-            GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
-            new UnitEffectTriggeredEvent({ unit: card.unit })
-          );
           await card.player.cardManager.drawFromDeck(1);
         });
       })

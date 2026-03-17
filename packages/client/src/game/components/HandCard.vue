@@ -49,7 +49,6 @@ const startY = ref(0);
 const onMousemove = (e: MouseEvent) => {
   const deltaY = startY.value - e.clientY;
   if (deltaY >= DRAG_THRESHOLD_PX && !ui.value.draggedCard) {
-    console.log('play card', card.name);
     ui.value.draggedCard = card;
     card.play();
     document.body.removeEventListener('mousemove', onMousemove);

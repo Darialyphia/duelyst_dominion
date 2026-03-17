@@ -1,6 +1,4 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -20,10 +18,10 @@ export const voidHunter: MinionBlueprint = {
   sounds: {
     play: 'sfx_spell_voidpulse',
     walk: 'sfx_neutral_chaoselemental_hit',
-    attack: 'sfx_neutral_voidhunter_attack_swing',
-    takeDamage: 'sfx_neutral_voidhunter_hit',
-    dealDamage: 'sfx_neutral_voidhunter_attack_impact',
-    death: 'sfx_neutral_voidhunter_death'
+    attack: 'sfx_voidhunter_attack_swing',
+    takeDamage: 'sfx_voidhunter_hit',
+    dealDamage: 'sfx_voidhunter_attack_impact',
+    death: 'sfx_voidhunter_death'
   },
   kind: CARD_KINDS.MINION,
   collectable: true,
