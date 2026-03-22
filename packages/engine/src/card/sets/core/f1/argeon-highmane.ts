@@ -58,10 +58,13 @@ export const argeonHighmane: MinionBlueprint = {
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.UNIT_AFTER_DESTROY,
               filter(event) {
-                return !!event?.data.unit.isAlly(card.player);
+                return (
+                  !!event?.data.unit.isAlly(card.player) &&
+                  !event?.data.unit.card.equals(card)
+                );
               },
               async handler() {
-                await card.unit.activate();
+                await card.unit?.activate();
               }
             })
           ]

@@ -38,7 +38,7 @@ export const etherealObelysk: MinionBlueprint = {
   runeCost: {},
   manaCost: 2,
   atk: 0,
-  maxHp: 6,
+  maxHp: 5,
   retaliation: 0,
   canPlay: () => true,
   abilities: [],

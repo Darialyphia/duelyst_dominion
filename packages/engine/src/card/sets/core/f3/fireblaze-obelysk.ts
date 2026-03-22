@@ -48,7 +48,7 @@ export const fireblazeObelysk: MinionBlueprint = {
   runeCost: {},
   manaCost: 4,
   atk: 0,
-  maxHp: 6,
+  maxHp: 5,
   retaliation: 0,
   canPlay: () => true,
   abilities: [],
