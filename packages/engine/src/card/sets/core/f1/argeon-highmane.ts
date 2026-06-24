@@ -3,20 +3,18 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { CleaveCardModifier } from '../../../../modifier/modifiers/cleave.modifier';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { UniqueModifier } from '../../../../modifier/modifiers/unique.modifier';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 
 export const argeonHighmane: MinionBlueprint = {
   id: 'argeon-highmane',
   name: 'Argeon Highmane',
-  description: dedent`
-  @Unique@.
+  description: dedent /*html */ `
+  <rt-keyword>Unique</rt-keyword>
   When an adjacent ally is destroyed, activate this minion.
-  @[lvl] 3 bonus@: @Cleave@.
+  <rt-runes runes="might,might,focus"></rt-runes> <rt-keyword>Cleave</rt-keyword>
   `,
   vfx: {
     spriteId: 'generals/f1_argeon-highmane'
@@ -36,7 +34,6 @@ export const argeonHighmane: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [TAGS.GENERAL],
   manaCost: 4,
-  runeCost: {},
   atk: 3,
   maxHp: 5,
   retaliation: 2,
@@ -44,13 +41,7 @@ export const argeonHighmane: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new UniqueModifier(game, card));
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-    await card.modifiers.add(
-      new CleaveCardModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
+    await card.modifiers.add(new CleaveCardModifier(game, card));
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
         modifier: new Modifier('argeon-highmane-on-ally-destroyed', game, card, {

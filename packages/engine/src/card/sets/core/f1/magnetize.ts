@@ -6,16 +6,12 @@ import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.mo
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { singleUnitTargetRules } from '../../../card-utils';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
-  description: dedent`
-  Move a unit from the back row to the front row of the same column if able. Give it @Anchored@ until end of turn.
-  @[lvl] 3 bonus@: @Burst@.
+  description: dedent /*html*/ `
+  Move a unit from the back row to the front row of the same column if able. Give it <rt-keyword>Anchored</rt-keyword> until end of turn.
   `,
   vfx: {
     spriteId: 'spells/f1_magnetize',
@@ -82,7 +78,6 @@ export const magnetize: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>
@@ -99,16 +94,7 @@ export const magnetize: SpellBlueprint = {
       }
     });
   },
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
-    await card.modifiers.add(
-      new BurstModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
-  },
+  async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
     const units = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
 

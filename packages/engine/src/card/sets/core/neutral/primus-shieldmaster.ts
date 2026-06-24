@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -8,7 +7,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const primusShieldmaster: MinionBlueprint = {
   id: 'primus-shieldmaster',
   name: 'Primus Shieldmaster',
-  description: '@Provoke@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Provoke</rt-keyword>.`,
   vfx: {
     spriteId: 'minions/neutral_primus-shieldmaster',
     sequences: {
@@ -20,7 +20,7 @@ export const primusShieldmaster: MinionBlueprint = {
   sounds: {
     play: 'sfx_unit_deploy_3',
     walk: 'sfx_neutral_ladylocke_attack_impact',
-    attack: '.sfx_neutral_sunseer_attack_swing',
+    attack: 'sfx_neutral_sunseer_attack_swing',
     takeDamage: 'sfx_neutral_sunseer_hit',
     dealDamage: 'sfx_neutral_sunseer_attack_impact',
     death: 'sfx_neutral_sunseer_death'
@@ -31,7 +31,6 @@ export const primusShieldmaster: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 2,
   maxHp: 6,

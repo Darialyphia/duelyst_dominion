@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
@@ -6,7 +7,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const azuriteLion: MinionBlueprint = {
   id: 'azurite_lion',
   name: 'Azurite Lion',
-  description: '@Celerity@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Celerity</rt-keyword>
+  `,
   vfx: {
     spriteId: 'minions/f1_azurite-lion',
     sequences: {
@@ -30,7 +33,6 @@ export const azuriteLion: MinionBlueprint = {
   rarity: RARITIES.COMMON,
   tags: [],
   manaCost: 3,
-  runeCost: {},
   atk: 2,
   maxHp: 5,
   retaliation: 1,

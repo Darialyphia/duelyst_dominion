@@ -11,9 +11,9 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 export const luxIgnis: MinionBlueprint = {
   id: 'lux-ignis',
   name: 'Lux Ignis',
-  description: dedent`
-  @Ranged@.
-  At the end of the turn, if this is not exhausted, heal adjacent allies for 2.`,
+  description: dedent /*html*/ `
+  <rt-keyword>Ranged</rt-keyword>.
+  <rt-trigger>On Turn End</rt-trigger>, if this is not exhausted, heal adjacent allies for 2.`,
   vfx: {
     spriteId: 'minions/neutral_lux-ignis',
     sequences: {
@@ -36,7 +36,6 @@ export const luxIgnis: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 2,
   maxHp: 5,

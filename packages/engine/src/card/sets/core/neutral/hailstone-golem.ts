@@ -30,7 +30,6 @@ export const hailstoneGolem: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [TAGS.GOLEM],
-  runeCost: {},
   manaCost: 4,
   atk: 3,
   maxHp: 7,

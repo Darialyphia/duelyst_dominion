@@ -15,17 +15,16 @@ import {
   PlayerDamageEvent,
   PlayerHealEvent,
   PlayerManaChangeEvent,
-  PlayerPlayCardEvent,
-  PlayerResourceActionEvent
+  PlayerPlayCardEvent
 } from './player.events';
 import { ModifierManager } from '../modifier/modifier-manager.component';
-import { PLAYER_EVENTS } from './player.enums';
+import { PLAYER_EVENTS, type Rune } from './player.enums';
 import { CardNotFoundError } from '../card/card-errors';
-import { CARD_EVENTS, CARD_KINDS, type Rune } from '../card/card.enums';
+import { CARD_EVENTS, CARD_KINDS } from '../card/card.enums';
 import type { SerializedPlayerArtifact } from './player-artifact.entity';
 import { RuneManagerComponent } from './components/rune-manager.component';
 import type { Damage } from '../utils/damage';
-import { LevelManagerComponent } from './components/level-manager.component';
+import { match } from 'ts-pattern';
 
 export type PlayerOptions = {
   id: string;
@@ -52,18 +51,15 @@ export type SerializedPlayer = {
   isActive: boolean;
   equipedArtifacts: string[];
   currentlyPlayedCard: string | null;
-  canUseResourceAction: boolean;
   artifacts: SerializedPlayerArtifact[];
-  runes: Partial<Record<Rune, number>>;
   manaRegen: number;
-  exp: number;
-  level: number;
-  expToNextLevel: number;
-  maxLevel: number;
+  runes: Record<Rune, number>;
+  canTakeResourceAction: boolean;
 };
 
 export type PlayerInterceptor = {
   cardsDrawnForTurn: Interceptable<number>;
+  maxResourceActionsPerTurn: Interceptable<number>;
   maxReplacesPerTurn: Interceptable<number>;
   maxManathreshold: Interceptable<number>;
   maxMana: Interceptable<number>;
@@ -76,6 +72,7 @@ export type PlayerInterceptor = {
 const makeInterceptors = (): PlayerInterceptor => {
   return {
     cardsDrawnForTurn: new Interceptable(),
+    maxResourceActionsPerTurn: new Interceptable(),
     maxReplacesPerTurn: new Interceptable(),
     maxMana: new Interceptable(),
     manaRegen: new Interceptable(),
@@ -86,7 +83,7 @@ const makeInterceptors = (): PlayerInterceptor => {
 
 export type ResourceAction =
   | {
-      type: 'gainRune';
+      type: 'rune';
       rune: Rune;
     }
   | {
@@ -108,8 +105,6 @@ export class Player
 
   readonly runeManager: RuneManagerComponent;
 
-  readonly levelManager: LevelManagerComponent;
-
   currentlyPlayedCard: Nullable<DeckCard> = null;
 
   currentlyPlayedCardIndexInHand: Nullable<number> = null;
@@ -120,7 +115,7 @@ export class Player
 
   private _baseMaxMana = 0;
 
-  private _resourceActionsDoneThisTurn = 0;
+  private _resourceActionsTakenThisTurn = 0;
 
   hasPassedThisRound = false;
 
@@ -141,7 +136,6 @@ export class Player
     this.modifiers = new ModifierManager<Player>(game, this);
     this.artifactManager = new ArtifactManagerComponent(game, this);
     this.runeManager = new RuneManagerComponent(game, this);
-    this.levelManager = new LevelManagerComponent(game, this);
   }
 
   async init() {
@@ -175,8 +169,15 @@ export class Player
     return this.units.filter(unit => unit.position.x === this.backRowIndex);
   }
 
-  get level() {
-    return this.levelManager.level;
+  get maxResourceActionsPerTurn() {
+    return this.interceptors.maxResourceActionsPerTurn.getValue(
+      this.game.config.MAX_RESOURCE_ACTIONS_PER_TURN,
+      {}
+    );
+  }
+
+  get canTakeResourceAction() {
+    return this._resourceActionsTakenThisTurn < this.maxResourceActionsPerTurn;
   }
 
   serialize() {
@@ -208,16 +209,9 @@ export class Player
       isActive: this.isActive,
       equipedArtifacts: this.artifactManager.artifacts.map(artifact => artifact.id),
       currentlyPlayedCard: this.currentlyPlayedCard?.id ?? null,
-      canUseResourceAction: this.canPerformResourceAction,
       artifacts: this.artifactManager.artifacts.map(artifact => artifact.serialize()),
       runes: this.runeManager.runes,
-      exp: this.levelManager.exp,
-      level: this.levelManager.level,
-      maxLevel: this.game.config.PLAYER_MAX_LEVEL,
-      expToNextLevel:
-        this.levelManager.level < this.game.config.PLAYER_MAX_LEVEL
-          ? this.game.config.EXP_PER_LEVEL - this.levelManager.exp
-          : 0
+      canTakeResourceAction: this.canTakeResourceAction
     };
   }
 
@@ -263,37 +257,17 @@ export class Player
     return this.game.turnSystem.initiativePlayer.equals(this);
   }
 
-  get canPerformResourceAction() {
-    return (
-      this._resourceActionsDoneThisTurn < this.game.config.MAX_RESOURCE_ACTIONS_PER_TURN
-    );
-  }
+  async takeResourceAction(action: ResourceAction) {
+    this._resourceActionsTakenThisTurn++;
 
-  async performResourceAction(action: ResourceAction) {
-    if (!this.canPerformResourceAction) {
-      throw new Error('No resource actions remaining for this turn');
-    }
-
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_BEFORE_PERFORM_RESOURCE_ACTION,
-      new PlayerResourceActionEvent({ player: this, action })
-    );
-
-    switch (action.type) {
-      case 'draw':
+    await match(action)
+      .with({ type: 'rune' }, async ({ rune }) => {
+        await this.runeManager.add([rune]);
+      })
+      .with({ type: 'draw' }, async () => {
         await this.cardManager.drawFromDeck(1);
-        break;
-      case 'gainRune':
-        await this.runeManager.gainRune({ [action.rune]: 1 });
-        break;
-    }
-
-    this._resourceActionsDoneThisTurn++;
-
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_AFTER_PERFORM_RESOURCE_ACTION,
-      new PlayerResourceActionEvent({ player: this, action })
-    );
+      })
+      .exhaustive();
   }
 
   refillMana() {
@@ -302,7 +276,7 @@ export class Player
 
   async startTurn() {
     this._replacesDoneThisTurn = 0;
-    this._resourceActionsDoneThisTurn = 0;
+    this._resourceActionsTakenThisTurn = 0;
     this.hasPassedThisRound = false;
 
     this.refillMana();
@@ -316,8 +290,6 @@ export class Player
         minion.activate();
       }
     }
-
-    await this.levelManager.gainExp(this.game.config.EXP_GAIN_PER_TURN);
   }
 
   async endTurn() {

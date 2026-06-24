@@ -33,7 +33,6 @@ export const rythmweaver: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   atk: 2,
   maxHp: 1,

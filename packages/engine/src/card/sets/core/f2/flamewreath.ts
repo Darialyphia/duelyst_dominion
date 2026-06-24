@@ -13,8 +13,8 @@ import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.mo
 export const flamewreath: MinionBlueprint = {
   id: 'flamewreath',
   name: 'Flamewreath',
-  description: dedent`
-  @Rush@, @Celerity@.
+  description: dedent /*html*/ `
+  <rt-keyword>Rush</rt-keyword>, <rt-keyword>Celerity</rt-keyword>.
   After this moves or teleport, deal 2 damage to enemies in the same column as this.
   `,
   vfx: {
@@ -39,7 +39,6 @@ export const flamewreath: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 2,
   maxHp: 3,

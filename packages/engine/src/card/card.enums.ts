@@ -4,7 +4,8 @@ export const CARD_EVENTS = {
   CARD_BEFORE_PLAY: 'card.before_play',
   CARD_AFTER_PLAY: 'card.after_play',
   CARD_DISCARD: 'card.discard',
-  CARD_ADD_TO_HAND: 'card.add_to_hand'
+  CARD_ADD_TO_HAND: 'card.add_to_hand',
+  CARD_EFFECT_TRIGGERED: 'card.effect_triggered'
 } as const;
 export type CardEvent = Values<typeof CARD_EVENTS>;
 
@@ -91,13 +92,6 @@ export const FACTION_DETAILS = {
     color: '#00ffff'
   }
 };
-
-export const RUNES = {
-  RED: 'red',
-  BLUE: 'blue',
-  YELLOW: 'yellow'
-} as const;
-export type Rune = Values<typeof RUNES>;
 
 export const CARD_LOCATIONS = {
   HAND: 'hand',

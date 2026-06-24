@@ -10,8 +10,8 @@ import dedent from 'dedent';
 export const jadeMonk: MinionBlueprint = {
   id: 'jade-monk',
   name: 'Jade Monk',
-  description: dedent`
-  @Provoke@.
+  description: dedent /*html*/ `
+  <rt-keyword>Provoke</rt-keyword>.
   This card costs 1 less for each spell you played this turn.`,
   vfx: {
     spriteId: 'minions/f2_jade-monk',
@@ -35,7 +35,6 @@ export const jadeMonk: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 2,
   maxHp: 5,

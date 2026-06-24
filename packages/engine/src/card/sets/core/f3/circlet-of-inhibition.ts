@@ -19,7 +19,6 @@ export const circletOfInhibition: ArtifactBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   durability: 2,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
@@ -28,14 +27,15 @@ export const circletOfInhibition: ArtifactBlueprint = {
     {
       id: 'circlet-of-inhibition-ability',
       description: dedent`
-      Exhaust a minion with a cost less or equal than your level. Lose 1 durability.
+      Exhaust a minion with a cost less or equal to your rune count. Lose 1 durability.
       `,
       canUse: (game, card) =>
         isDefined(card.artifact) &&
         singleMinionTargetRules.canPlay(
           game,
           card,
-          unit => unit.isExhausted && unit.card.manaCost <= card.player.levelManager.level
+          unit =>
+            unit.isExhausted && unit.card.manaCost <= card.player.runeManager.runeCount
         ),
       getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
       getTargets: (game, card) =>
@@ -43,7 +43,7 @@ export const circletOfInhibition: ArtifactBlueprint = {
           required: true,
           predicate(unit) {
             return (
-              unit.isExhausted && unit.card.manaCost <= card.player.levelManager.level
+              unit.isExhausted && unit.card.manaCost <= card.player.runeManager.runeCount
             );
           },
           getLabel() {

@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -10,7 +9,8 @@ import { miniJax } from './mini-jax';
 export const jaxi: MinionBlueprint = {
   id: 'jaxi',
   name: 'Jaxi',
-  description: `@Dying Wish@: Summon a @${miniJax.name}@.`,
+  description: dedent /*html*/ `
+  <rt-trigger>Dying Wish</rt-trigger>: Summon a <rt-card>${miniJax.name}</rt-card>.`,
   vfx: {
     spriteId: 'minions/neutral_jaxi',
     sequences: {
@@ -33,7 +33,6 @@ export const jaxi: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 2,

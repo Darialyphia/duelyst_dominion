@@ -1,16 +1,15 @@
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { SpellBlueprint } from '../../../card-blueprint';
-import { emptySpacesTargetRules, singleUnitTargetRules } from '../../../card-utils';
+import { singleUnitTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { isDefined } from '@game/shared';
 import { ElusiveUnitModifier } from '../../../../modifier/modifiers/elusive.modifier';
-import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
+import dedent from 'dedent';
 
 export const mistWalking: SpellBlueprint = {
   id: 'mist-walking',
   name: 'Mist Walking',
-  description: 'Give a unit @Elusive@.',
+  description: dedent /*html*/ `Give a unit <rt-keyword>Elusive</rt-keyword>.`,
   vfx: {
     spriteId: 'spells/f2_mistwalking',
     sequences: {
@@ -30,7 +29,6 @@ export const mistWalking: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => {
@@ -42,7 +40,7 @@ export const mistWalking: SpellBlueprint = {
         return new PointAOEShape(TARGETING_TYPE.UNIT, {});
       },
       getLabel() {
-        return 'Select a unit to give Elusive to';
+        return 'Select a unit to give <rt-keyword>Elusive</rt-keyword> to';
       }
     });
   },

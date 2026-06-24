@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -8,7 +7,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const miniJax: MinionBlueprint = {
   id: 'mini-jax',
   name: 'Mini-Jax',
-  description: '@Ranged@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Ranged</rt-keyword>.`,
   vfx: {
     spriteId: 'minions/neutral_minijax',
     sequences: {
@@ -31,7 +31,6 @@ export const miniJax: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.TOKEN,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 1,
   maxHp: 1,

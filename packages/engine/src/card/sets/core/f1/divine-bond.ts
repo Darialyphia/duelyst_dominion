@@ -78,7 +78,6 @@ export const divineBond: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) =>

@@ -11,7 +11,8 @@ import { songhaiSpawn } from '../../../card-vfx-sequences';
 export const tuskBoar: MinionBlueprint = {
   id: 'tusk_boar',
   name: 'Tusk Boar',
-  description: dedent`@Rush@.
+  description: dedent /*html*/ `
+  <rt-keyword>Rush</rt-keyword>.
   At the start of your turn, return this to your hand.`,
   vfx: {
     spriteId: 'minions/f2_tusk-boar',
@@ -35,7 +36,6 @@ export const tuskBoar: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.LEGENDARY,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 3,

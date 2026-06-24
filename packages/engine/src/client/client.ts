@@ -26,6 +26,7 @@ import { GAME_PHASES } from '../game/game.enums';
 import { VFXSequenceController } from './controllers/vfx-sequence.controller';
 import { GAME_EVENTS } from '../game/game.events';
 import type { AbilityViewModel } from './view-models/ability.model';
+import type { Rune } from '../player/player.enums';
 
 export const GAME_TYPES = {
   LOCAL: 'local',
@@ -345,6 +346,16 @@ export class GameClient {
         playerId: this.playerId,
         cardId,
         abilityId
+      }
+    });
+  }
+
+  takeResourceAction(action: { type: 'rune'; rune: Rune } | { type: 'draw' }) {
+    this.dispatch({
+      type: 'takeResourceAction',
+      payload: {
+        playerId: this.playerId,
+        action
       }
     });
   }

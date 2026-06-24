@@ -9,9 +9,9 @@ import { lyonarSpawn } from '../../../card-vfx-sequences';
 export const silverguardKnight: MinionBlueprint = {
   id: 'silverguard_knight',
   name: 'Silverguard Knight',
-  description: dedent`
-  @Provoke@.
-  @Zeal@ : +2 Attack.
+  description: dedent /*html*/ `
+  <rt-keyword>Provoke</rt-keyword>.
+  <rt-keyword>Zeal</rt-keyword> : +2 Attack.
   `,
   vfx: {
     spriteId: 'minions/f1_silverguard-knight',
@@ -35,7 +35,6 @@ export const silverguardKnight: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 1,
   maxHp: 6,

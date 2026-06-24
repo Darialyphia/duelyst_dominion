@@ -76,7 +76,7 @@ export class PlayerArtifact
 
   async equip() {
     await this.game.emit(
-      ARTIFACT_EVENTS.ARTIFACT_EQUIPED,
+      ARTIFACT_EVENTS.ARTIFACT_EQUIPPED,
       new ArtifactEquipedEvent({
         artifact: this
       })

@@ -3,8 +3,6 @@ import { ZealModifier } from '../../../../modifier/modifiers/zeal.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { Unit } from '../../../../unit/unit.entity';
@@ -13,8 +11,8 @@ import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
 export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
-  description: dedent`
-  @[lvl] 3 Bonus@ @Zeal@ : @On Minion Attack@: Inflict @Burn (2)@ to the target and heal other allies in the same row for 1.
+  description: dedent /*html*/ `
+  <rt-keyword>Zeal</rt-keyword> : <rt-trigger>On Minion Attack</rt-trigger>: Inflict <rt-keyword>Burn 2</rt-keyword> to the target and heal other allies in the same row for 1.
   `,
   vfx: {
     spriteId: 'minions/f1_suntide-maiden',
@@ -38,7 +36,6 @@ export const suntideMaiden: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 2,
   maxHp: 6,
@@ -46,12 +43,8 @@ export const suntideMaiden: MinionBlueprint = {
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
     await card.modifiers.add(
       new ZealModifier('suntide-maiden-zeal', game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)],
         unitMixins: [
           new GameEventModifierMixin(game, {
             eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,

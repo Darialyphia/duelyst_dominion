@@ -35,7 +35,6 @@ export const fourWindsMagus: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 3,
   maxHp: 5,

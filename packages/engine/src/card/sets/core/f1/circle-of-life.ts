@@ -6,16 +6,13 @@ import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { lightOverlay } from '../../../card-vfx-sequences';
 import dedent from 'dedent';
-import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const circleOfLife: SpellBlueprint = {
   id: 'circle-of-life',
   name: 'Circle of Life',
-  description: dedent`
+  description: dedent /*html*/ `
   Deal 5 damage to a minion and heal you for 5.
-  @[lvl] 3 Bonus@: This costs @[mana] 2@ less.
+  <rt-runes runes="focus,resonance"></rt-runes>This costs 2 less.
   `,
   vfx: {
     spriteId: 'spells/f1_circle-of-life',
@@ -53,7 +50,6 @@ export const circleOfLife: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.LEGENDARY,
   tags: [],
-  runeCost: {},
   manaCost: 5,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => singleMinionTargetRules.canPlay(game, card),
@@ -64,16 +60,7 @@ export const circleOfLife: SpellBlueprint = {
       }
     });
   },
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-    await card.modifiers.add(
-      new SimpleManacostModifier('circle-of-life-mana-buff', game, card, {
-        amount: -2,
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
-  },
+  async onInit() {},
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;

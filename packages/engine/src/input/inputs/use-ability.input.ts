@@ -3,11 +3,8 @@ import { defaultInputSchema, Input } from '../input';
 import { assert, isDefined } from '@game/shared';
 import {
   CardNotOwnedError,
-  IllegalAttackTargetError,
   NotCurrentPlayerError,
-  UnitNotOwnedError,
-  UnknownCardError,
-  UnknownUnitError
+  UnknownCardError
 } from '../input-errors';
 import { GAME_PHASES } from '../../game/game.enums';
 import { isArtifact } from '../../card/card-utils';
@@ -48,7 +45,9 @@ export class UseAbilityInput extends Input<typeof schema> {
       ability.canUse,
       new IllegalGameStateError('Ability cannot be used at this time')
     );
+    assert('useAbility' in card, new IllegalGameStateError('Card cannot use abilities'));
 
-    await ability.use();
+    //@ts-expect-error
+    await card.useAbility(this.payload.abilityId);
   }
 }

@@ -16,9 +16,9 @@ import type { Unit } from '../../../../unit/unit.entity';
 export const massacreArtist: MinionBlueprint = {
   id: 'massacre_artist',
   name: 'Massacre Artist',
-  description: dedent`
-  @Backstab (1)@.
-  Allies with @Backstab@ have @Stealth@ and "When this unit backstabs, deal 2 more damage".
+  description: dedent /*html*/ `
+  <rt-keyword>Backstab 1</rt-keyword>.
+  Allies with <rt-keyword>Backstab</rt-keyword> have <rt-keyword>Stealth</rt-keyword> and "When this unit backstabs, deal 2 more damage".
   `,
   vfx: {
     spriteId: 'minions/f2_massacre-artist',
@@ -42,7 +42,6 @@ export const massacreArtist: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 3,
   maxHp: 5,

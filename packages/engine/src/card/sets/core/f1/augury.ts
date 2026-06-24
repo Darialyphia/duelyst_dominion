@@ -19,7 +19,6 @@ export const augury: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,

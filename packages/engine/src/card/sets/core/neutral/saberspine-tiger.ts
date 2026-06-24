@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -6,7 +7,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const saberspineTiger: MinionBlueprint = {
   id: 'saberspine-tiger',
   name: 'Saberspine Tiger',
-  description: '@Rush@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Rush</rt-keyword>.`,
   vfx: {
     spriteId: 'minions/neutral_saberspine-tiger',
     sequences: {
@@ -29,7 +31,6 @@ export const saberspineTiger: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 3,
   maxHp: 2,

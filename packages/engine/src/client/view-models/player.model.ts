@@ -110,28 +110,12 @@ export class PlayerViewModel {
     });
   }
 
-  get canUseResourceAction() {
-    return this.data.canUseResourceAction;
+  get canTakeResourceAction() {
+    return this.data.canTakeResourceAction;
   }
 
   get canReplace() {
     return this.data.canReplace;
-  }
-
-  get level() {
-    return this.data.level;
-  }
-
-  get exp() {
-    return this.data.exp;
-  }
-
-  get expToNextLevel() {
-    return this.data.expToNextLevel;
-  }
-
-  get maxLevel() {
-    return this.data.maxLevel;
   }
 
   getDiscardPile() {

@@ -1,4 +1,4 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
@@ -13,7 +13,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const lightChaser: MinionBlueprint = {
   id: 'light_chaser',
   name: 'Light Chaser',
-  description: 'When a unit is healed, this gains +1/+1/+1.',
+  description: dedent /*html*/ `
+  When a unit is healed, this gains +1/+1/+1.`,
   vfx: {
     spriteId: 'minions/f1_lightchaser',
     sequences: {
@@ -36,7 +37,6 @@ export const lightChaser: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 1,
   maxHp: 4,

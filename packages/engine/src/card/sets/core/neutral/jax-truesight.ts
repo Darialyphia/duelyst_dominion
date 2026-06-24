@@ -1,4 +1,3 @@
-import { GAME_EVENTS } from '../../../../game/game.events';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -11,9 +10,9 @@ import { RangedModifier } from '../../../../modifier/modifiers/ranged.modifier';
 export const jaxTruesight: MinionBlueprint = {
   id: 'jax-truesight',
   name: 'Jax Truesight',
-  description: dedent`
-  @Ranged@.
-  @On Enter@: Summon a ${miniJax.name}@ on every empty space in your back row.`,
+  description: dedent /*html*/ `
+  <rt-keyword>Ranged</rt-keyword>.
+  <rt-trigger>On Enter</rt-trigger>: Summon a <rt-card>${miniJax.name}</rt-card> on every empty space in your back row.`,
   vfx: {
     spriteId: 'minions/neutral_jax-truesight',
     sequences: {
@@ -36,7 +35,6 @@ export const jaxTruesight: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.LEGENDARY,
   tags: [],
-  runeCost: {},
   manaCost: 6,
   atk: 2,
   maxHp: 3,

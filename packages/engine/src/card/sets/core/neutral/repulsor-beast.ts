@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { emptySpacesTargetRules, singleMinionTargetRules } from '../../../card-utils';
@@ -7,8 +8,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const repulsorBeast: MinionBlueprint = {
   id: 'repulsor-beast',
   name: 'Repulsor Beast',
-  description:
-    '@On Enter@: Move an enemy minion on the same row as this to an empty space.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Move an enemy minion on the same row as this to an empty space.`,
   vfx: {
     sequences: {
       play(game, card, position) {
@@ -31,7 +32,6 @@ export const repulsorBeast: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 3,

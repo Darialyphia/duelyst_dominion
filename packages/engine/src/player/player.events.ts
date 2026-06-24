@@ -1,10 +1,9 @@
-import type { Rune } from '../card/card.enums';
 import type { DeckCard } from '../card/components/card-manager.component';
 import type { AnyCard } from '../card/entities/card.entity';
 import type { Damage } from '../utils/damage';
 import { TypedSerializableEvent } from '../utils/typed-emitter';
 import type { Player, ResourceAction, SerializedPlayer } from './player.entity';
-import type { PLAYER_EVENTS } from './player.enums';
+import type { PLAYER_EVENTS, Rune } from './player.enums';
 
 export class PlayerBeforeDrawEvent extends TypedSerializableEvent<
   { player: Player; amount: number },
@@ -80,30 +79,6 @@ export class PlayerAfterReplaceCardEvent extends TypedSerializableEvent<
   }
 }
 
-export class PlayerGainRuneEvent extends TypedSerializableEvent<
-  { player: Player; runes: Partial<Record<Rune, number>> },
-  { player: string; runes: Partial<Record<Rune, number>> }
-> {
-  serialize() {
-    return {
-      player: this.data.player.id,
-      runes: this.data.runes
-    };
-  }
-}
-
-export class PlayerLoseRuneEvent extends TypedSerializableEvent<
-  { player: Player; runes: Partial<Record<Rune, number>> },
-  { player: string; runes: Partial<Record<Rune, number>> }
-> {
-  serialize() {
-    return {
-      player: this.data.player.id,
-      runes: this.data.runes
-    };
-  }
-}
-
 export class PlayerResourceActionEvent extends TypedSerializableEvent<
   { player: Player; action: ResourceAction },
   { player: string; action: ResourceAction }
@@ -142,26 +117,15 @@ export class PlayerHealEvent extends TypedSerializableEvent<
   }
 }
 
-export class PlayerLevelUpEvent extends TypedSerializableEvent<
-  { player: Player; newLevel: number },
-  { player: string; newLevel: number }
+export class PlayerRuneChangeEvent extends TypedSerializableEvent<
+  { player: Player; gainedRunes: Rune[]; lostRunes: Rune[] },
+  { player: string; gainedRunes: string[]; lostRunes: string[] }
 > {
   serialize() {
     return {
       player: this.data.player.id,
-      newLevel: this.data.newLevel
-    };
-  }
-}
-
-export class PlayerGainExpEvent extends TypedSerializableEvent<
-  { player: Player; amount: number },
-  { player: string; amount: number }
-> {
-  serialize() {
-    return {
-      player: this.data.player.id,
-      amount: this.data.amount
+      gainedRunes: this.data.gainedRunes,
+      lostRunes: this.data.lostRunes
     };
   }
 }
@@ -175,16 +139,12 @@ export type PlayerEventMap = {
   [PLAYER_EVENTS.PLAYER_AFTER_MANA_CHANGE]: PlayerManaChangeEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_REPLACE_CARD]: PlayerBeforeReplaceCardEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_REPLACE_CARD]: PlayerAfterReplaceCardEvent;
-  [PLAYER_EVENTS.PLAYER_BEFORE_GAIN_RUNE]: PlayerGainRuneEvent;
-  [PLAYER_EVENTS.PLAYER_AFTER_GAIN_RUNE]: PlayerGainRuneEvent;
-  [PLAYER_EVENTS.PLAYER_BEFORE_LOSE_RUNE]: PlayerLoseRuneEvent;
-  [PLAYER_EVENTS.PLAYER_AFTER_LOSE_RUNE]: PlayerLoseRuneEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_PERFORM_RESOURCE_ACTION]: PlayerResourceActionEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_PERFORM_RESOURCE_ACTION]: PlayerResourceActionEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_TAKE_DAMAGE]: PlayerDamageEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_TAKE_DAMAGE]: PlayerDamageEvent;
   [PLAYER_EVENTS.PLAYER_BEFORE_HEAL]: PlayerHealEvent;
   [PLAYER_EVENTS.PLAYER_AFTER_HEAL]: PlayerHealEvent;
-  [PLAYER_EVENTS.PLAYER_LEVEL_UP]: PlayerLevelUpEvent;
-  [PLAYER_EVENTS.PLAYER_GAIN_EXP]: PlayerGainExpEvent;
+  [PLAYER_EVENTS.PLAYER_BEFORE_RUNE_CHANGE]: PlayerRuneChangeEvent;
+  [PLAYER_EVENTS.PLAYER_AFTER_RUNE_CHANGE]: PlayerRuneChangeEvent;
 };

@@ -12,9 +12,9 @@ import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-bo
 export const endlessObelysk: MinionBlueprint = {
   id: 'endless-obelysk',
   name: 'Endless Obelysk',
-  description: dedent`
-  @Structure@.
-  At the end  of each turn, your Obleysks gain 1 @Spawn@ charge.
+  description: dedent /*html*/ `
+  <rt-keyword>Structure</rt-keyword>.
+  At the end  of each turn, your Obleysks gain 1 <rt-keyword>Spawn</rt-keyword> charge.
   `,
   vfx: {
     spriteId: 'minions/f3_endless-obelysk',
@@ -38,10 +38,9 @@ export const endlessObelysk: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [TAGS.OBELYSK],
-  runeCost: {},
   manaCost: 3,
   atk: 0,
-  maxHp: 6,
+  maxHp: 4,
   retaliation: 2,
   canPlay: () => true,
   abilities: [],

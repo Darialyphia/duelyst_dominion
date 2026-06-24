@@ -9,9 +9,9 @@ import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
 export const juxtaposition: SpellBlueprint = {
   id: 'juxtaposition',
   name: 'Juxtaposition',
-  description: dedent`
+  description: dedent /*html*/ `
   Swap the position of two minions.
-  @Burst@.
+  <rt-keyword>Burst</rt-keyword>.
   `,
   vfx: {
     spriteId: 'spells/f2_juxtaposition',
@@ -32,7 +32,6 @@ export const juxtaposition: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
   canPlay: () => true,

@@ -7,8 +7,8 @@ import { lyonarSpawn } from '../../../card-vfx-sequences';
 export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
-  description: dedent`
-  @Provoke@.`,
+  description: dedent /*html*/ `
+  <rt-keyword>Provoke</rt-keyword>.`,
   vfx: {
     spriteId: 'minions/f1_ironcliffe-guardian',
     sequences: {
@@ -32,7 +32,6 @@ export const ironcliffeGuardian: MinionBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 5,
-  runeCost: {},
   atk: 2,
   maxHp: 9,
   retaliation: 4,

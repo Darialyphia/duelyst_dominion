@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
@@ -6,7 +7,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.e
 export const pyromancer: MinionBlueprint = {
   id: 'pyromancer',
   name: 'Pyromancer',
-  description: '@On Destroyed@: infl1ct @Burn (1)@ to enemies on the same column.',
+  description: dedent /*html*/ `
+  <rt-keyword>On Destroyed</rt-keyword>: Inflict <rt-keyword>Burn 1</rt-keyword> to enemies on the same column.
+  `,
   vfx: { spriteId: 'minions/f3_pyromancer' },
   sounds: {
     play: 'sfx_ui_booster_packexplode',
@@ -22,7 +25,6 @@ export const pyromancer: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.COMMON,
   tags: [TAGS.DERVISH],
-  runeCost: {},
   manaCost: 1,
   atk: 2,
   maxHp: 2,

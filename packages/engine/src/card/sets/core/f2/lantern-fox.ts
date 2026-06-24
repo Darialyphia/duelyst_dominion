@@ -12,8 +12,8 @@ import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 export const lanternFox: MinionBlueprint = {
   id: 'lantern-fox',
   name: 'Lantern Fox',
-  description: dedent`
-  When this takes damage, add a @${phoenixFire.name}@ to your hand.`,
+  description: dedent /*html*/ `
+  When this takes damage, add a <rt-card>${phoenixFire.name}</rt-card> to your hand.`,
   vfx: {
     spriteId: 'minions/f2_lantern-fox',
     sequences: {
@@ -36,7 +36,6 @@ export const lanternFox: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 2,
   maxHp: 5,

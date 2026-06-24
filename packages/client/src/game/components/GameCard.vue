@@ -5,6 +5,7 @@ import Card from '@/card/components/Card.vue';
 import { CARD_KINDS } from '@game/engine/src/card/card.enums';
 import { match } from 'ts-pattern';
 import { formatAbilityText } from '@/utils/formatters';
+import { provideRichTextContext } from '../composables/useRichText';
 
 const {
   cardId,
@@ -50,6 +51,10 @@ const animationSequence = computed(() => {
       ui.value.selectedCard?.equals(card.value) ? ['active'] : ['default']
     )
     .exhaustive();
+});
+
+provideRichTextContext({
+  card
 });
 </script>
 

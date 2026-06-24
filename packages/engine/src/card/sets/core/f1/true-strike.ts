@@ -55,7 +55,6 @@ export const trueStrike: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
   canPlay: (game, card) =>

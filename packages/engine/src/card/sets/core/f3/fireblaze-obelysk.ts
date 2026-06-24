@@ -10,18 +10,14 @@ import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import type { Unit } from '../../../../unit/unit.entity';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const fireblazeObelysk: MinionBlueprint = {
   id: 'fireblaze-obelysk',
   name: 'Fireblaze Obelysk',
-  description: dedent`
-  @Structure@.
-  @Spawn@: @${windDervish.name}@ (3 charges)
-  Your ${windDervish.name}s have +1/+0/+1.
-  @[lvl] 2 bonus@: this costs @[mana] 1@ less.
+  description: dedent /*html*/ `
+  <rt-keyword>Structure</rt-keyword>.
+  <rt-keyword>Spawn</rt-keyword>: <rt-card>${windDervish.name}</rt-card> (3 charges)
+  Your <rt-card>${windDervish.name}</rt-card>s have +1/+0/+1.
   `,
   vfx: {
     spriteId: 'minions/f3_fireblaze-obelysk',
@@ -45,24 +41,13 @@ export const fireblazeObelysk: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.RARE,
   tags: [TAGS.OBELYSK],
-  runeCost: {},
   manaCost: 4,
   atk: 0,
-  maxHp: 5,
+  maxHp: 4,
   retaliation: 0,
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
-    await card.modifiers.add(
-      new SimpleManacostModifier('fireblaze-obelysk-manacost', game, card, {
-        amount: -1,
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
-
     await card.modifiers.add(new StructureModifier(game, card, {}));
     await card.modifiers.add(
       new SpawnModifier(game, card, {

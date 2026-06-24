@@ -10,9 +10,9 @@ import { AbilityDamage } from '../../../../utils/damage';
 export const arrowWhistler: MinionBlueprint = {
   id: 'arrow-whistler',
   name: 'Arrow Whistler',
-  description: dedent`
-  @Ranged@.
-  @On Enter@: Deal 2 damage to a unit in the same column.
+  description: dedent /*html*/ `
+  <rt-keyword>Ranged</rt-keyword>.
+  <rt-keyword>On Enter</rt-keyword>: Deal 2 damage to a unit in the same column.
   `,
   vfx: {
     spriteId: 'minions/neutral_arrowwhistler',
@@ -36,7 +36,6 @@ export const arrowWhistler: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 2,
   maxHp: 5,

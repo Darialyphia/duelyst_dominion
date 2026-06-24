@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
@@ -6,7 +7,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const kaidoAssassin: MinionBlueprint = {
   id: 'kaido_assassin',
   name: 'Kaido Assassin',
-  description: '@Backstab (1)@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Backstab 1</rt-keyword>.`,
   vfx: {
     spriteId: 'minions/f2_kaido-assasin',
     sequences: {
@@ -29,7 +31,6 @@ export const kaidoAssassin: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 4,

@@ -35,10 +35,10 @@ export const KEYWORDS = {
   },
   BACKSTAB: {
     id: 'backstab',
-    name: 'Backstab (x)',
+    name: 'Backstab x',
     description:
-      'When this unit attacks a damaged enemy, it deals X additional damage and is immune to retaliation.',
-    aliases: [/^backstab$/, /backstab \([0-9]+\)/]
+      'When an enemy minion is played or moves in the same lane as this, it takes X damage.',
+    aliases: [/^backstab$/, /backstab [0-9]+/]
   },
   BATTLE_PET: {
     id: 'battlepet',
@@ -67,9 +67,9 @@ export const KEYWORDS = {
   },
   BURN: {
     id: 'burn',
-    name: 'Burn (x)',
+    name: 'Burn x',
     description: 'This unit takes X damage at the beginning of its turn.',
-    aliases: [/burn \([0-9]+\)/]
+    aliases: [/burn [0-9]+/]
   },
   CELERITY: {
     id: 'celerity',
@@ -130,17 +130,17 @@ export const KEYWORDS = {
   },
   ESSENCE: {
     id: 'essence',
-    name: 'Essence',
+    name: 'Essence x',
     description:
       "If you don't have enough mana, you can play this minion as a spell by paying its essence cost instead.",
-    aliases: [/essence\([0-9]+\)/]
+    aliases: [/essence [0-9]+/]
   },
   FEARSOME: {
     id: 'fearsome',
-    name: 'Fearsome',
+    name: 'Fearsome x',
     description:
-      "When this unit attacks a minion and destroys it, it doesn't counterattack.",
-    aliases: []
+      "When this unit attacks a minion with a mana cost less than or equal to X, it doesn't counterattack.",
+    aliases: [/fearsome [0-9]+/]
   },
   FLEETING: {
     id: 'fleeting',
@@ -183,21 +183,15 @@ export const KEYWORDS = {
   },
   INTIMIDATE: {
     id: 'intimidate',
-    name: 'Intimidate (x)',
+    name: 'Intimidate x',
     description: 'Units attacked by this unit that cost X or less cannot counterattack.',
-    aliases: [/intimidate \([0-9]+\)/]
+    aliases: [/intimidate [0-9]+/]
   },
   INVULNERABLE: {
     id: 'invulnerable',
     name: 'Invulnerable',
     description: 'This unit cannot be damaged.',
     aliases: []
-  },
-  LEVEL_BONUS: {
-    id: 'level-bonus',
-    name: 'Level X Bonus',
-    description: "This card has a bonus effect if its owner's Hero is at least level X.",
-    aliases: [/level [0-9] bonus/]
   },
   LONE_WOLF: {
     id: 'lone_wolf',

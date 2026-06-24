@@ -44,7 +44,6 @@ export const archonSpellbinder: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.LEGENDARY,
   tags: [],
-  runeCost: {},
   manaCost: 6,
   atk: 4,
   maxHp: 7,

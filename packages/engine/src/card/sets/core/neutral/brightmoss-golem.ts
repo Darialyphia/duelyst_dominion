@@ -28,7 +28,6 @@ export const brightmossGolem: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [TAGS.GOLEM],
-  runeCost: {},
   manaCost: 5,
   atk: 4,
   maxHp: 8,

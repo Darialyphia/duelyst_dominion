@@ -3,10 +3,15 @@ import type { CardBlueprint } from '@game/engine/src/card/card-blueprint';
 import Card from './Card.vue';
 import { sprites } from '@/assets';
 import { formatAbilityText } from '@/utils/formatters';
+import { provideRichTextContext } from '@/game/composables/useRichText.js';
 
 const { blueprint } = defineProps<{ blueprint: CardBlueprint }>();
 const sprite = computed(() => {
   return sprites[`cards/${blueprint.vfx.spriteId}`];
+});
+
+provideRichTextContext({
+  card: ref(null)
 });
 </script>
 

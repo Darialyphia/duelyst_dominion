@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -6,7 +7,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const voidHunter: MinionBlueprint = {
   id: 'void-hunter',
   name: 'Void Hunter',
-  description: '@Dying Wish@ : Draw 2 cards.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Destroyed</rt-trigger>: Draw 2 cards.`,
   vfx: {
     spriteId: 'minions/neutral_void-hunter',
     sequences: {
@@ -29,7 +31,6 @@ export const voidHunter: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 3,
   maxHp: 3,

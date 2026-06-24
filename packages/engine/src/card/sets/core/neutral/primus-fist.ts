@@ -1,9 +1,6 @@
-import { isDefined } from '@game/shared';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { GAME_EVENTS } from '../../../../game/game.events';
+import dedent from 'dedent';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -11,7 +8,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const primusFist: MinionBlueprint = {
   id: 'primus-fist',
   name: 'Primus Fist',
-  description: '@On Enter@: Give adjacent allies +1 Attack.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Give adjacent allies +1 Attack.`,
   vfx: {
     spriteId: 'minions/neutral_primus-fist',
     sequences: {
@@ -34,7 +32,6 @@ export const primusFist: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 3,

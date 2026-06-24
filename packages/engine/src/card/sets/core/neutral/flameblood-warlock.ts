@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { MinionOnDestroyModifier } from '../../../../modifier/modifiers/on-destroy.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
@@ -7,7 +8,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const flamebloodWarlock: MinionBlueprint = {
   id: 'flameblood-warlock',
   name: 'Flameblood Warlock',
-  description: '@On Destroyed@: if your opponent has initiative, they take 3 damage.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Destroyed</rt-trigger>: if your opponent has initiative, they take 3 damage.
+  `,
   vfx: {
     spriteId: 'minions/neutral_flameblood-warlock',
     sequences: {
@@ -30,7 +33,6 @@ export const flamebloodWarlock: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   atk: 1,
   maxHp: 1,

@@ -11,8 +11,8 @@ import { SpellDamage } from '../../../../utils/damage';
 export const holyImmolation: SpellBlueprint = {
   id: 'holy-immolation',
   name: 'Holy Immolation',
-  description: dedent`
-  Deal 4 damage to an enemy. Inflict @Burn (2) on adjacent enemies. Heal adjacent allies for 4.`,
+  description: dedent /*html */ `
+  Deal 4 damage to an enemy. Inflict <rt-keyword>Burn 2</rt-keyword> on adjacent enemies. Heal adjacent allies for 4.`,
   vfx: {
     spriteId: 'spells/f1_holy-immolation',
     sequences: {
@@ -80,7 +80,6 @@ export const holyImmolation: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   getAoe: () =>
     new RingAOEShape(TARGETING_TYPE.ENEMY_UNIT, {

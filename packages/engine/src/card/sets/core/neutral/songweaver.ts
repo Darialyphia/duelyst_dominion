@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { discover } from '../../../card-actions-utils';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { isSpell } from '../../../card-utils';
@@ -10,7 +9,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const songweaver: MinionBlueprint = {
   id: 'songweaver',
   name: 'Songweaver',
-  description: '@On Enter@: @Discover@ a Spell from your deck.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: <rt-keyword>Discover</rt-keyword> a Spell from your deck.`,
   vfx: {
     sequences: {
       play(game, card, position) {
@@ -33,7 +33,6 @@ export const songweaver: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 2,
   maxHp: 5,

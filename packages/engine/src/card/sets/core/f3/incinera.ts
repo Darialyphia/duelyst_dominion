@@ -7,9 +7,9 @@ import { BurnModifier } from '../../../../modifier/modifiers/burn.modifier';
 export const incinera: MinionBlueprint = {
   id: 'incinera',
   name: 'Incinera',
-  description: dedent`
-  @On Enter@: Inflict @Burn (1)@ to all enemies.
-  @[lvl] 3 bonus]@: this costs @[mana] 2@ less.
+  description: dedent /*html*/ `
+  <rt-keyword>On Enter</rt-keyword> Inflict <rt-keyword>Burn (1)</rt-keyword> to all enemies.
+  <rt-runes runes="might,wisdom,focus"></rt-runes> this costs <rt-keyword>[mana] 2</rt-keyword> less.
   `,
   vfx: { spriteId: 'minions/f3_fusion-banshee' },
   sounds: {
@@ -26,7 +26,6 @@ export const incinera: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [TAGS.DERVISH],
-  runeCost: {},
   manaCost: 6,
   atk: 3,
   maxHp: 5,

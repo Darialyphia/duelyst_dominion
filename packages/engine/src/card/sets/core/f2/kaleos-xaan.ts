@@ -1,21 +1,17 @@
 import dedent from 'dedent';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { BackstabModifier } from '../../../../modifier/modifiers/backstab.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
-import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { UniqueModifier } from '../../../../modifier/modifiers/unique.modifier';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 
 export const kaleosXaan: MinionBlueprint = {
   id: 'kaleos-xaan',
   name: 'Kaleos Xaan',
-  description: dedent`
-  @Unique@, @Backstab (1)@.
-  @[lvl] 2 Bonus@: @On Enter@: Deal 1 damage to to enemy minions.
-  @[lvl] 3 Bonus@: @Rush@.
+  description: dedent /*html*/ `
+  <rt-keyword>Unique</rt-keyword>, <rt-keyword>Backstab 1</rt-keyword>.
+  <rt-trigger>On Enter</rt-trigger>: Deal 1 damage to enemy minions.
   `,
   vfx: {
     spriteId: 'generals/f2_kaleos-xaan'
@@ -35,7 +31,6 @@ export const kaleosXaan: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [TAGS.GENERAL],
   manaCost: 5,
-  runeCost: {},
   atk: 4,
   maxHp: 4,
   retaliation: 1,
@@ -43,8 +38,6 @@ export const kaleosXaan: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(new UniqueModifier(game, card));
-    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
 
     await card.modifiers.add(
       new BackstabModifier(game, card, {
@@ -58,13 +51,7 @@ export const kaleosXaan: MinionBlueprint = {
           for (const minion of card.player.enemyUnits) {
             await minion.takeDamage(card, new AbilityDamage(card, 1));
           }
-        },
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(2))]
-      })
-    );
-    await card.modifiers.add(
-      new RushModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(3))]
+        }
       })
     );
   },

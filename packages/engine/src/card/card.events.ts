@@ -91,9 +91,22 @@ export class CardAfterPlayWithoutAffinityMatchEvent extends TypedSerializableEve
   }
 }
 
+export class CardEffectTriggeredEvent extends TypedSerializableEvent<
+  { card: AnyCard; message: string },
+  { card: string; message: string }
+> {
+  serialize() {
+    return {
+      card: this.data.card.id,
+      message: this.data.message
+    };
+  }
+}
+
 export type CardEventMap = {
   [CARD_EVENTS.CARD_DISCARD]: CardDiscardEvent;
   [CARD_EVENTS.CARD_ADD_TO_HAND]: CardAddToHandevent;
   [CARD_EVENTS.CARD_BEFORE_PLAY]: CardBeforePlayEvent;
   [CARD_EVENTS.CARD_AFTER_PLAY]: CardAfterPlayEvent;
+  [CARD_EVENTS.CARD_EFFECT_TRIGGERED]: CardEffectTriggeredEvent;
 };

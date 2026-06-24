@@ -8,8 +8,8 @@ import dedent from 'dedent';
 export const martyrdom: SpellBlueprint = {
   id: 'martyrdom',
   name: 'Martyrdom',
-  description: dedent`
-  Destroy a minion that attacked you this turn.`,
+  description: dedent /*html*/ `
+  Destroy a minion that attacked you directly this turn.`,
   vfx: {
     spriteId: 'spells/f1_martyrdom',
     sequences: {
@@ -60,7 +60,6 @@ export const martyrdom: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) =>

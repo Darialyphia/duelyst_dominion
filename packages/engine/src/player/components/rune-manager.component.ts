@@ -1,14 +1,16 @@
-import { RUNES, type Rune } from '../../card/card.enums';
 import type { Game } from '../../game/game';
 import type { Player } from '../player.entity';
-import { PLAYER_EVENTS } from '../player.enums';
-import { PlayerGainRuneEvent, PlayerLoseRuneEvent } from '../player.events';
+import { PLAYER_EVENTS, RUNES, type Rune } from '../player.enums';
+import { PlayerRuneChangeEvent } from '../player.events';
+
+export type RuneCost = Partial<Record<Rune, number>>;
 
 export class RuneManagerComponent {
-  private _runes = {
-    [RUNES.RED]: 0,
-    [RUNES.BLUE]: 0,
-    [RUNES.YELLOW]: 0
+  private _runes: Record<Rune, number> = {
+    [RUNES.MIGHT]: 0,
+    [RUNES.WISDOM]: 0,
+    [RUNES.FOCUS]: 0,
+    [RUNES.RESONANCE]: 0
   };
 
   constructor(
@@ -16,47 +18,51 @@ export class RuneManagerComponent {
     private player: Player
   ) {}
 
+  has(cost: RuneCost) {
+    return Object.entries(cost).every(([rune, amount]) => {
+      return this._runes[rune as Rune] >= (amount ?? 0);
+    });
+  }
+
+  async add(runes: Rune[]) {
+    const gainedRunes: Rune[] = [];
+    runes.forEach(rune => {
+      this._runes[rune]++;
+      gainedRunes.push(rune);
+    });
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_RUNE_CHANGE,
+      new PlayerRuneChangeEvent({
+        player: this.player,
+        gainedRunes,
+        lostRunes: []
+      })
+    );
+  }
+
+  async remove(runes: Rune[]) {
+    const lostRunes: Rune[] = [];
+    runes.forEach(rune => {
+      if (this._runes[rune] > 0) {
+        this._runes[rune] = Math.max(0, this._runes[rune] - 1);
+        lostRunes.push(rune);
+      }
+    });
+    await this.game.emit(
+      PLAYER_EVENTS.PLAYER_AFTER_RUNE_CHANGE,
+      new PlayerRuneChangeEvent({
+        player: this.player,
+        gainedRunes: [],
+        lostRunes
+      })
+    );
+  }
+
   get runes() {
     return { ...this._runes };
   }
 
-  async gainRune(rune: Partial<Record<Rune, number>>) {
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_BEFORE_GAIN_RUNE,
-      new PlayerGainRuneEvent({
-        player: this.player,
-        runes: rune
-      })
-    );
-    for (const [runeType, amount] of Object.entries(rune)) {
-      this._runes[runeType as Rune] += amount!;
-    }
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_AFTER_GAIN_RUNE,
-      new PlayerGainRuneEvent({
-        player: this.player,
-        runes: rune
-      })
-    );
-  }
-
-  async loseRune(rune: Partial<Record<Rune, number>>) {
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_BEFORE_LOSE_RUNE,
-      new PlayerLoseRuneEvent({
-        player: this.player,
-        runes: rune
-      })
-    );
-    for (const [runeType, amount] of Object.entries(rune)) {
-      this._runes[runeType as Rune] -= amount!;
-    }
-    await this.game.emit(
-      PLAYER_EVENTS.PLAYER_AFTER_LOSE_RUNE,
-      new PlayerLoseRuneEvent({
-        player: this.player,
-        runes: rune
-      })
-    );
+  get runeCount() {
+    return Object.values(this._runes).reduce((sum, count) => sum + count, 0);
   }
 }

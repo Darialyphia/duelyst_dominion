@@ -21,8 +21,8 @@ import { PlayerArtifact } from '../../../../player/player-artifact.entity';
 export const arclyteRegalia: ArtifactBlueprint = {
   id: 'arclyte-regalia',
   name: 'Arclyte Regalia',
-  description: dedent`
-  When  you or a minion would take damage, prevent all but 1 of that damage, and this loses 1 durability.
+  description: dedent /*html*/ `
+  <rt-runes runes="resonance,resonance,resonance"></rt-runes> When  you or a minion would take damage, prevent all but 1 of that damage, and this loses 1 durability.
   `,
   vfx: { spriteId: 'artifacts/f1_arclyte-regalia' },
   sounds: {
@@ -34,7 +34,6 @@ export const arclyteRegalia: ArtifactBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.LEGENDARY,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   durability: 3,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),

@@ -7,10 +7,6 @@ import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { AbilityDamage } from '../../../../utils/damage';
 import { isDefined } from '@game/shared';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { Modifier } from '../../../../modifier/modifier.entity';
-import { ArtifactAbilityInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const maskOfTheMantis: ArtifactBlueprint = {
   id: 'mask-of-the-mantis',
@@ -26,7 +22,6 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   durability: 2,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
@@ -34,7 +29,7 @@ export const maskOfTheMantis: ArtifactBlueprint = {
   abilities: [
     {
       id: 'mask-of-the-mantis-ability',
-      description: dedent`Deal 1 damage to a minion. This loses 1 durability. @[lvl] 3 Bonus@: @Burst@.`,
+      description: dedent /*html*/ `Deal 1 damage to a minion. This loses 1 durability.`,
       canUse: (game, card) =>
         isDefined(card.artifact) && singleMinionTargetRules.canPlay(game, card),
       getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
@@ -59,22 +54,6 @@ export const maskOfTheMantis: ArtifactBlueprint = {
     max: 1,
     allowRepeat: false
   }),
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
-    const ability = card.getAbility('mask-of-the-mantis-ability');
-    await ability?.modifiers.add(
-      new Modifier('mask-of-the-mantis-burst', game, card, {
-        mixins: [
-          new ArtifactAbilityInterceptorModifierMixin(game, {
-            key: 'shouldSwitchInitiativeAfterUse',
-            interceptor: () => false
-          }),
-          new TogglableModifierMixin(game, () => levelMod.isActive)
-        ]
-      })
-    );
-  },
+  async onInit() {},
   async onPlay() {}
 };

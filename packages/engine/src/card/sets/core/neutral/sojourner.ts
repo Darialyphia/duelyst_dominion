@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { UnitEffectModifierMixin } from '../../../../modifier/mixins/unit-effect.mixin';
@@ -11,7 +12,8 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const sojourner: MinionBlueprint = {
   id: 'sojourner',
   name: 'Sojourner',
-  description: 'After this attacks, draw a card.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Attack</rt-trigger>, draw a card.`,
   vfx: {
     spriteId: 'minions/neutral_sojourner',
     sequences: {
@@ -34,7 +36,6 @@ export const sojourner: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 2,
   maxHp: 5,

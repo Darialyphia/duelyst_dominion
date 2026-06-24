@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
@@ -10,7 +11,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const sunriser: MinionBlueprint = {
   id: 'sunriser',
   name: 'Sunriser',
-  description: 'After a unit is healed, deal 2 damage to enemies in this column',
+  description: dedent /*html*/ `After a unit is healed, deal 2 damage to enemies in this column`,
   vfx: {
     spriteId: 'minions/f1_sunriser',
     sequences: {
@@ -33,7 +34,6 @@ export const sunriser: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   atk: 2,
   maxHp: 5,

@@ -5,7 +5,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.e
 export const portalGuardian: MinionBlueprint = {
   id: 'portal-guardian',
   name: 'Portal Guardian',
-  description: 'This has +1/+1/+0 for each adjacent allyminion.',
+  description: 'This has +1/+0/+0 for each adjacent ally minion.',
   vfx: { spriteId: 'minions/f3_portal-guardian' },
   sounds: {
     play: 'sfx_ui_booster_packexplode',
@@ -21,10 +21,9 @@ export const portalGuardian: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [TAGS.DERVISH],
-  runeCost: {},
   manaCost: 3,
   atk: 1,
-  maxHp: 6,
+  maxHp: 5,
   retaliation: 0,
   canPlay: () => true,
   abilities: [],

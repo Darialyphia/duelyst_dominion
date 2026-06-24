@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { ColumnAOEShape } from '../../../../aoe/column.aoe-shape';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
 import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
@@ -9,7 +10,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const frostboneNaga: MinionBlueprint = {
   id: 'frostbone-naga',
   name: 'Frostbone Naga',
-  description: '@On Enter@: Deal 2 damage to all units in the same column as this.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Deal 2 damage to all units in the same column as this.
+  `,
   vfx: {
     spriteId: 'minions/neutral_frostbone-naga',
     sequences: {
@@ -32,7 +35,6 @@ export const frostboneNaga: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 3,
   maxHp: 4,

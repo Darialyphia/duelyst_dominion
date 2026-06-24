@@ -21,6 +21,7 @@ const props = defineProps<{
 }>();
 const isSpell = computed(() => props.kind === CARD_KINDS.SPELL);
 const isArtifact = computed(() => props.kind === CARD_KINDS.ARTIFACT);
+const isMinion = computed(() => props.kind === CARD_KINDS.MINION);
 const disableParallax = computed(() => !props.isTiltable || !props.isFoil);
 const { activeFrameRect, bgPosition, imageBg } = useSprite({
   animationSequence: toRef(props, 'animationSequence'),
@@ -38,6 +39,7 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
     :class="{
       'is-spell': isSpell,
       'is-artifact': isArtifact,
+      'is-minion': isMinion,
       'disable-parallax': disableParallax,
       'is-hovered': isHovered,
       'is-foil': isFoil
@@ -64,7 +66,21 @@ const { activeFrameRect, bgPosition, imageBg } = useSprite({
   pointer-events: none;
   bottom: calc(105px * var(--pixel-scale));
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-66%);
+  scale: 0.75;
+  &:is(.is-minion)::after {
+    position: absolute;
+    content: '';
+    bottom: calc(28px * var(--pixel-scale));
+    left: 50%;
+    translate: -50% 50%;
+    width: 50%;
+    height: var(--size-3);
+    background: black;
+    border-radius: 50%;
+    filter: blur(calc(4px * var(--pixel-scale)));
+    opacity: 0.75;
+  }
   &:is(.is-spell, .is-artifact) {
     bottom: calc(140px * var(--pixel-scale));
   }

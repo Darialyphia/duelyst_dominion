@@ -7,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
-  description: '@Zeal@ : +1 Attack.',
+  description: /*html*/ `<rt-keyword>Zeal</rt-keyword> : +1 Attack.`,
   vfx: {
     spriteId: 'minions/f1_windblade-adept',
     sequences: {
@@ -30,7 +30,6 @@ export const windbladeAdept: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 4,

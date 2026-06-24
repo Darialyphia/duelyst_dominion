@@ -16,9 +16,9 @@ import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.m
 export const grandStrategos: MinionBlueprint = {
   id: 'grand_strategos',
   name: 'Grand Strategos',
-  description: dedent`
-  Your minions with @Zeal@ are always Zealed.
-  @[lvl] 2 Bonus@: @On Enter@: Give allies with @Zeal@ +2 Health.
+  description: dedent /*html*/ `
+  Your minions with <rt-keyword>Zeal</rt-keyword> are always Zealed.
+  <rt-runes runes="might,might"></rt-runes> <rt-trigger>On Enter</rt-trigger>: Give allies with <rt-keyword>Zeal</rt-keyword> +2 Health.
   `,
   vfx: {
     spriteId: 'minions/f1_grand-strategos',
@@ -43,7 +43,6 @@ export const grandStrategos: MinionBlueprint = {
   rarity: RARITIES.EPIC,
   tags: [],
   manaCost: 5,
-  runeCost: {},
   atk: 3,
   maxHp: 6,
   retaliation: 3,

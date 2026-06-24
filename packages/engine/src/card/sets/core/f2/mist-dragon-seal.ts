@@ -6,16 +6,12 @@ import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import dedent from 'dedent';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
-import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const mistDragonSeal: SpellBlueprint = {
   id: 'mist-dragon-seal',
   name: 'Mist Dragon Seal',
   description: dedent`
     Give an allied minion +1/+0/+1 and teleport it to any space.
-    @[lvl] 3 Bonus@: @Burst@.
   `,
   vfx: {
     spriteId: 'spells/f2_mist-dragon-seal',
@@ -81,7 +77,6 @@ export const mistDragonSeal: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) => {
@@ -112,16 +107,7 @@ export const mistDragonSeal: SpellBlueprint = {
 
     return [...first, ...second];
   },
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-    await card.modifiers.add(
-      new BurstModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(3))]
-      })
-    );
-  },
+  async onInit() {},
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;

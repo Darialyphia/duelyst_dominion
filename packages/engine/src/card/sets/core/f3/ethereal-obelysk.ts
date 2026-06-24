@@ -9,9 +9,9 @@ import { SpawnModifier } from '../../../../modifier/modifiers/spawn.modifier';
 export const etherealObelysk: MinionBlueprint = {
   id: 'ethereal-obelysk',
   name: 'Ethereal Obelysk',
-  description: dedent`
-  @Structure@.
-  @Spawn@: @${windDervish.name}@ (3 charges)
+  description: dedent /*html*/ `
+  <rt-keyword>Structure</rt-keyword>.
+  <rt-keyword>Spawn</rt-keyword>: <rt-card>${windDervish.name}</rt-card> (3 charges)
   `,
   vfx: {
     spriteId: 'minions/f3_ethereal_obelysk',
@@ -35,10 +35,9 @@ export const etherealObelysk: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.COMMON,
   tags: [TAGS.OBELYSK],
-  runeCost: {},
   manaCost: 2,
   atk: 0,
-  maxHp: 5,
+  maxHp: 4,
   retaliation: 0,
   canPlay: () => true,
   abilities: [],

@@ -1,13 +1,5 @@
 import type { Game } from '../game/game';
-import type {
-  CARD_KINDS,
-  CardKind,
-  CardSetId,
-  Rarity,
-  Tag,
-  Faction,
-  Rune
-} from './card.enums';
+import type { CARD_KINDS, CardKind, CardSetId, Rarity, Tag, Faction } from './card.enums';
 import type { MinionCard } from './entities/minion-card.entity';
 import type { SpellCard } from './entities/spell-card.entity';
 import type { ArtifactCard } from './entities/artifact-card.entity';
@@ -39,7 +31,6 @@ export type CardBlueprintBase = {
     takeDamage?: string;
     death?: string;
   };
-  runeCost: Partial<Record<Rune, number>>;
 };
 
 export type MinionBlueprint = CardBlueprintBase & {

@@ -1,21 +1,17 @@
 import dedent from 'dedent';
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { CleaveCardModifier } from '../../../../modifier/modifiers/cleave.modifier';
 import { SlayModifier } from '../../../../modifier/modifiers/slay.modifier';
 import { AbilityDamage } from '../../../../utils/damage';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 
 export const dioltas: MinionBlueprint = {
   id: 'dioltas',
   name: 'Dioltas',
-  description: dedent`
-  @Slay@: Deal 2 damage to the enemy a heal your for 2.
-  @[lvl] 3 Bonus@: @Cleave@.
+  description: dedent /*html*/ `
+  <rt-trigger>Slay</rt-trigger>: Deal 2 damage to the enemy a heal your for 2.
+  <rt-runes runes="might,might,resonance"></rt-runes><rt-keyword>Cleave</rt-keyword>.
   `,
   vfx: {
     spriteId: 'minions/neutral_dioltas',
@@ -39,22 +35,14 @@ export const dioltas: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 4,
   atk: 3,
-  maxHp: 5,
+  maxHp: 4,
   retaliation: 0,
   abilities: [],
   canPlay: () => true,
   async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
-
-    await card.modifiers.add(
-      new CleaveCardModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActive)]
-      })
-    );
+    await card.modifiers.add(new CleaveCardModifier(game, card));
     await card.modifiers.add(
       new SlayModifier(game, card, {
         async handler() {

@@ -8,9 +8,9 @@ import dedent from 'dedent';
 export const sundropElixir: SpellBlueprint = {
   id: 'sundrop-elixir',
   name: 'Sundrop Elixir',
-  description: dedent`
+  description: dedent /*html*/ `
     Heal a unit for 2.
-    @[lvl] 3 Bonus@: Heal yourself for 2 as well.
+    <rt-runes runes="focus,resonance"></rt-runes> Heal yourself for 2 as well.
   `,
   vfx: {
     spriteId: 'spells/f1_sundrop-elixir',
@@ -62,7 +62,6 @@ export const sundropElixir: SpellBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 0,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.UNIT, {}),
   canPlay: (game, card) => singleUnitTargetRules.canPlay(game, card),

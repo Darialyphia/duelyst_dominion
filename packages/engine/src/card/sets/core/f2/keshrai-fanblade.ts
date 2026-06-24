@@ -6,11 +6,14 @@ import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.m
 import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
 import { DurationModifierMixin } from '../../../../modifier/mixins/duration.mixin';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
+import dedent from 'dedent';
 
 export const keshraiFanblade: MinionBlueprint = {
   id: 'keshrai_fanblade',
   name: 'Keshrai Fanblade',
-  description: "@On Enter@: Your opponent's spells cost 1 more until your next turn.",
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Your opponent's spells cost 1 more until your next turn.
+  `,
   vfx: {
     spriteId: 'minions/f2_keshrai-fanblade',
     sequences: {
@@ -33,7 +36,6 @@ export const keshraiFanblade: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 5,
   atk: 4,
   maxHp: 5,

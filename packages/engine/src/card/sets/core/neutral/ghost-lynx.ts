@@ -1,6 +1,6 @@
+import dedent from 'dedent';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { neutralSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
@@ -8,7 +8,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const ghostLynx: MinionBlueprint = {
   id: 'ghost-lynx',
   name: 'Ghost Lynx',
-  description: '@On Enter@: draw a card at the end of the turn.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: draw a card at the end of the turn.
+  `,
   vfx: {
     spriteId: 'minions/neutral_ghost-lynx',
     sequences: {
@@ -31,7 +33,6 @@ export const ghostLynx: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.RARE,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   atk: 1,
   maxHp: 2,

@@ -36,7 +36,6 @@ export const chakriAvatar: MinionBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 1,
   maxHp: 3,

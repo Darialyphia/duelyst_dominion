@@ -39,11 +39,11 @@ export class ArtifactEffectModifierMixin<
     if (isDefined(this.modifier.target.artifact)) {
       await this.addModifier(this.modifier.target.artifact!);
     }
-    this.game.on(ARTIFACT_EVENTS.ARTIFACT_EQUIPED, this.onEquipped);
+    this.game.on(ARTIFACT_EVENTS.ARTIFACT_EQUIPPED, this.onEquipped);
   }
 
   async onRemoved() {
-    this.game.off(ARTIFACT_EVENTS.ARTIFACT_EQUIPED, this.onEquipped);
+    this.game.off(ARTIFACT_EVENTS.ARTIFACT_EQUIPPED, this.onEquipped);
     if (isDefined(this.modifier.target.artifact)) {
       await this.modifierToAdd.remove();
     }

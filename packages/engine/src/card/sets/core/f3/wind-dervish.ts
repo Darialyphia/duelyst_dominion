@@ -1,14 +1,16 @@
+import dedent from 'dedent';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { EphemeralCardModifier } from '../../../../modifier/modifiers/ephemeral.modifier';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 
 export const windDervish: MinionBlueprint = {
   id: 'wind-dervish',
   name: 'Wind Dervish',
-  description: '@Rush@, @Ephemeral@.',
+  description: dedent /*html*/ `
+  <rt-keyword>Rush</rt-keyword>, <rt-keyword>Ephemeral</rt-keyword>.
+  `,
   vfx: { spriteId: 'minions/f3_wind-dervish' },
   sounds: {
     play: 'sfx_spell_ghostlightning',
@@ -24,7 +26,6 @@ export const windDervish: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.TOKEN,
   tags: [TAGS.DERVISH],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 2,

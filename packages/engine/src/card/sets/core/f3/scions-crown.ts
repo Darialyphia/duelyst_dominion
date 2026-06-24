@@ -4,7 +4,6 @@ import { anywhereTargetRules, singleMinionTargetRules } from '../../../card-util
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import dedent from 'dedent';
 import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { isDefined } from '@game/shared';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
@@ -23,7 +22,6 @@ export const scionsCrown: ArtifactBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   durability: 2,
   getAoe: () => new NoAOEShape(TARGETING_TYPE.ANYWHERE, {}),
@@ -31,7 +29,7 @@ export const scionsCrown: ArtifactBlueprint = {
   abilities: [
     {
       id: 'scions-crown-ability',
-      description: dedent`Give an ally General minion +X/+X/+0 this turn, where X is your level. Lose 1 durability.`,
+      description: dedent`Give an ally General minion +2/+2/+0 this turn, where X is your level. Lose 1 durability.`,
       canUse: (game, card) =>
         isDefined(card.artifact) &&
         singleMinionTargetRules.canPlay(
@@ -44,7 +42,7 @@ export const scionsCrown: ArtifactBlueprint = {
         singleMinionTargetRules.getPreResponseTargets(game, card, {
           required: true,
           getLabel() {
-            return `Select a minion to give +${card.player.level}/+${card.player.level}/+0 this turn.`;
+            return `Select a minion to give +2/+2/+0 this turn.`;
           },
           predicate(unit) {
             return unit.isAlly(card.player) && unit.card.hasTag(TAGS.GENERAL);
@@ -56,7 +54,7 @@ export const scionsCrown: ArtifactBlueprint = {
         const target = targets[0];
         await target.unit?.modifiers.add(
           new UnitSimpleAttackBuffModifier('scions-crown-attack-buff', game, card, {
-            amount: card.player.level,
+            amount: 2,
             mixins: [new UntilEndOfTurnModifierMixin(game)]
           })
         );
@@ -66,7 +64,7 @@ export const scionsCrown: ArtifactBlueprint = {
             game,
             card,
             {
-              amount: card.player.level,
+              amount: 2,
               mixins: [new UntilEndOfTurnModifierMixin(game)]
             }
           )
@@ -80,8 +78,6 @@ export const scionsCrown: ArtifactBlueprint = {
     max: 1,
     allowRepeat: false
   }),
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 3));
-  },
+  async onInit() {},
   async onPlay() {}
 };

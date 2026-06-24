@@ -184,10 +184,7 @@ const myPlayer = useMyPlayer();
     left: -4%;
     width: 108%;
     height: 108%;
-    background:
-      url(@/assets/backgrounds/battle-bg-midground.png),
-      linear-gradient(to bottom, hsl(0 0 0 / 0.2)),
-      url(@/assets/backgrounds/battle-bg-background.png);
+
     pointer-events: none;
     background-repeat: no-repeat;
     background-size: cover, cover, 450px;

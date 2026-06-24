@@ -7,18 +7,13 @@ import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/sim
 import { BackstabUnitModifier } from '../../../../modifier/modifiers/backstab.modifier';
 import { lightOverlay } from '../../../card-vfx-sequences';
 import dedent from 'dedent';
-import { LevelBonusModifier } from '../../../../modifier/modifiers/level-bonus.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
-import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
-import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const killingEdge: SpellBlueprint = {
   id: 'killing-edge',
   name: 'Killing Edge',
-  description: dedent`
-    Give an allied minion +2 / +0 / +1 and @Backstab (1)@. 
-    @[lvl] 2 bonus@: give @Backstab(2)@ instead.
-    @[lvl] 3 bonus@: @Burst@.
+  description: dedent /*html*/ `
+    Give an allied minion +2 / +0 / +1 and <rt-keyword>Backstab 1</rt-keyword>. 
   `,
   vfx: {
     spriteId: 'spells/f2_killing-edge',
@@ -73,7 +68,6 @@ export const killingEdge: SpellBlueprint = {
   faction: FACTIONS.F2,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 3,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ALLY_UNIT, {}),
   canPlay: (game, card) =>
@@ -86,14 +80,10 @@ export const killingEdge: SpellBlueprint = {
       }
     });
   },
-  async onInit(game, card) {
-    await card.modifiers.add(new LevelBonusModifier(game, card, 2));
-  },
+  async onInit() {},
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
-
-    const levelMod = card.modifiers.get(LevelBonusModifier)!;
 
     await target.modifiers.add(
       new UnitSimpleAttackBuffModifier('killing-edge-attack-buff', game, card, {
@@ -105,13 +95,7 @@ export const killingEdge: SpellBlueprint = {
     await target.modifiers.add(
       new UnitSimpleHealthBuffModifier('killing-edge-health-buff', game, card, {
         name: 'Killing Edge Health Buff',
-        amount: levelMod.isActiveForLevel(2) ? 2 : 1
-      })
-    );
-
-    await card.modifiers.add(
-      new BurstModifier(game, card, {
-        mixins: [new TogglableModifierMixin(game, () => levelMod.isActiveForLevel(3))]
+        amount: 1
       })
     );
 

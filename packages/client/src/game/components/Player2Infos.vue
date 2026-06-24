@@ -49,12 +49,6 @@ const ui = useGameUi();
             {{ player.currentHp }}
           </div>
         </div>
-        <div class="flex gap-3">
-          <div>Lvl {{ player.level }}</div>
-          <div v-if="player.level < player.maxLevel">
-            EXP {{ player.exp }}/{{ state.config.EXP_PER_LEVEL }}
-          </div>
-        </div>
         <div class="flex gap-2 text-1">
           <DiscardPile :player="player" />
           <UiSimpleTooltip>

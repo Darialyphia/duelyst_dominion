@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { singleUnitTargetRules } from '../../../card-utils';
 import { neutralSpawn } from '../../../card-vfx-sequences';
@@ -9,7 +8,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const healingMystic: MinionBlueprint = {
   id: 'healing-mystic',
   name: 'Healing Mystic',
-  description: '@On Enter@: Heal a minion for 2.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Heal a minion for 2.
+  `,
   vfx: {
     sequences: {
       play(game, card, position) {
@@ -32,7 +33,6 @@ export const healingMystic: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 2,
   atk: 2,
   maxHp: 3,

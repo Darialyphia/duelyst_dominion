@@ -5,7 +5,7 @@
     "__test__/**/*.ts",
     "tsup.config.ts",
     "src/player/components/cards-tracker.componentts"
-  ],
+, "../client/src/utils/render-from-html-string.ts"  ],
   "exclude": [".git", "node_modules"],
   "compilerOptions": {
     "types": ["vitest/importMeta"],

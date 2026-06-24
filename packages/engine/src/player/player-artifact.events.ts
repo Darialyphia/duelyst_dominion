@@ -50,7 +50,7 @@ export class ArtifactDestroyEvent extends TypedSerializableEvent<
 }
 
 export type ArtifactEventMap = {
-  [ARTIFACT_EVENTS.ARTIFACT_EQUIPED]: ArtifactEquipedEvent;
+  [ARTIFACT_EVENTS.ARTIFACT_EQUIPPED]: ArtifactEquipedEvent;
   [ARTIFACT_EVENTS.ARTIFACT_BEFORE_DURABILITY_CHANGE]: ArtifactBeforeDurabilityChangeEvent;
   [ARTIFACT_EVENTS.ARTIFACT_AFTER_DURABILITY_CHANGE]: ArtifactAfterDurabilityChangeEvent;
   [ARTIFACT_EVENTS.ARTIFACT_BEFORE_DESTROY]: ArtifactDestroyEvent;

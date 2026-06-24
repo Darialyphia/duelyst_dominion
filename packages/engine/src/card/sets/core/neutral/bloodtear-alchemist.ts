@@ -1,6 +1,5 @@
-import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 import { MinionOnEnterModifier } from '../../../../modifier/modifiers/on-enter.modifier';
-import { TARGETING_TYPE } from '../../../../targeting/targeting-strategy';
 import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { singleEnemyTargetRules } from '../../../card-utils';
@@ -10,7 +9,9 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const bloodtearAlchemist: MinionBlueprint = {
   id: 'bloodtear-alchemist',
   name: 'Bloodtear Alchemist',
-  description: '@On Enter@: Deal 1 damage to an enemy minion.',
+  description: dedent /*html*/ `
+  <rt-trigger>On Enter</rt-trigger>: Deal 1 damage to an enemy minion.
+  `,
   vfx: {
     spriteId: 'minions/neutral_bloodtear-alchemist',
     sequences: {
@@ -33,7 +34,6 @@ export const bloodtearAlchemist: MinionBlueprint = {
   faction: FACTIONS.NEUTRAL,
   rarity: RARITIES.COMMON,
   tags: [],
-  runeCost: {},
   manaCost: 1,
   atk: 2,
   maxHp: 1,

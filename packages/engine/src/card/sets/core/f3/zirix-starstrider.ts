@@ -9,9 +9,9 @@ import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/s
 export const zirixStarstrider: MinionBlueprint = {
   id: 'zirix-starstrider',
   name: 'Zirix Starstrider',
-  description: dedent`
-  @Unique@, @Blast@.
-  This has +X attack, where X is the number of @${windDervish.name}@ you control.
+  description: dedent /*html*/ `
+  <rt-keyword>Unique</rt-keyword> <rt-keyword>Blast</rt-keyword>.
+  This has +X attack, where X is the number of <rt-card>${windDervish.name}</rt-card> you control.
   `,
   vfx: {
     spriteId: 'generals/f3_zirix-starstrider'
@@ -31,7 +31,6 @@ export const zirixStarstrider: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [TAGS.GENERAL],
   manaCost: 4,
-  runeCost: {},
   atk: 2,
   maxHp: 5,
   retaliation: 2,
