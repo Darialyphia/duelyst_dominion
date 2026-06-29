@@ -20,6 +20,7 @@ export class ZealModifier extends Modifier<MinionCard> {
     options: {
       mixins?: ModifierMixin<MinionCard>[];
       unitMixins: ModifierMixin<Unit>[];
+      amount: number;
     }
   ) {
     super(modifierType, game, source, {
@@ -28,7 +29,8 @@ export class ZealModifier extends Modifier<MinionCard> {
         new UnitEffectModifierMixin(game, {
           getModifier: () =>
             new ZealUnitModifier(game, source, {
-              mixins: options.unitMixins
+              mixins: options.unitMixins,
+              amount: options.amount
             })
         }),
         ...(options.mixins ?? [])
@@ -40,13 +42,20 @@ export class ZealModifier extends Modifier<MinionCard> {
 export class ZealUnitModifier extends Modifier<Unit> {
   private _isZealed = new Interceptable<boolean>();
 
-  private adjacentMinionHasAttackedThisTurn = false;
+  private minionWhoHaveAttackedthisTurn = 0;
 
   get isZealed() {
-    return this._isZealed.getValue(this.adjacentMinionHasAttackedThisTurn, {});
+    return this._isZealed.getValue(
+      this.minionWhoHaveAttackedthisTurn >= this.options.amount,
+      {}
+    );
   }
 
-  constructor(game: Game, source: AnyCard, options: { mixins?: ModifierMixin<Unit>[] }) {
+  constructor(
+    game: Game,
+    source: AnyCard,
+    private options: { mixins?: ModifierMixin<Unit>[]; amount: number }
+  ) {
     super(KEYWORDS.ZEAL.id, game, source, {
       name: KEYWORDS.ZEAL.name,
       description: KEYWORDS.ZEAL.description,
@@ -56,18 +65,16 @@ export class ZealUnitModifier extends Modifier<Unit> {
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
           persistWhileDisabled: true,
-          filter: event =>
-            !!event?.data.unit.isAlly(this.target) &&
-            this.target.adjacentUnits.some(unit => unit.equals(event.data.unit)),
+          filter: event => !!event?.data.unit.isAlly(this.target),
           handler: () => {
-            this.adjacentMinionHasAttackedThisTurn = true;
+            this.minionWhoHaveAttackedthisTurn++;
           }
         }),
         new GameEventModifierMixin(game, {
           eventName: GAME_EVENTS.TURN_END,
           persistWhileDisabled: true,
           handler: () => {
-            this.adjacentMinionHasAttackedThisTurn = false;
+            this.minionWhoHaveAttackedthisTurn = 0;
           }
         }),
         ...(options?.mixins ?? [])

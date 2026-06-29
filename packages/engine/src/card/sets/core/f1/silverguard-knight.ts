@@ -11,7 +11,7 @@ export const silverguardKnight: MinionBlueprint = {
   name: 'Silverguard Knight',
   description: dedent /*html*/ `
   <rt-keyword>Provoke</rt-keyword>.
-  <rt-keyword>Zeal</rt-keyword> : +2 Attack.
+  <rt-keyword>Zeal 1</rt-keyword> : +2 Attack.
   `,
   vfx: {
     spriteId: 'minions/f1_silverguard-knight',
@@ -45,6 +45,7 @@ export const silverguardKnight: MinionBlueprint = {
     await card.modifiers.add(new ProvokeModifier(game, card));
     await card.modifiers.add(
       new ZealModifier('silverguard-knight-zeal', game, card, {
+        amount: 1,
         unitMixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',

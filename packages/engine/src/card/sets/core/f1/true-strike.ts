@@ -4,11 +4,15 @@ import { singleMinionTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
 
 export const trueStrike: SpellBlueprint = {
   id: 'true-strike',
   name: 'True Strike',
-  description: 'Deal 2 damage to an enemy minion.',
+  description: dedent /*html*/ `
+  Deal 2 damage to an enemy minion.
+  <rt-runes runes="might,might,resonance"></rt-runes> Deals 1 more damage
+  `,
   vfx: {
     spriteId: 'spells/f1_true-strike',
     sequences: {
@@ -72,6 +76,7 @@ export const trueStrike: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    await target.takeDamage(card, new SpellDamage(card, 2));
+    const damageAmount = card.player.runeManager.has({ might: 2, resonance: 1 }) ? 3 : 2;
+    await target.takeDamage(card, new SpellDamage(card, damageAmount));
   }
 };

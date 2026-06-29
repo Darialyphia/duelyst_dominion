@@ -217,12 +217,6 @@ export const KEYWORDS = {
     description: 'Triggers when this unit counterattacks.',
     aliases: []
   },
-  ON_HOLD: {
-    id: 'on_capture',
-    name: 'On Capture',
-    description: 'Triggers when an ally shrine holds while this is nearby.',
-    aliases: []
-  },
   ON_ENTER: {
     id: 'on_enter',
     name: 'On Enter',
@@ -313,9 +307,9 @@ export const KEYWORDS = {
   },
   ZEAL: {
     id: 'zeal',
-    name: 'Zeal',
-    description: 'Triggers an effect when an adjacent ally has attacked this turn.',
-    aliases: []
+    name: 'Zeal x',
+    description: 'Gets an effect as long as at least x allies have attacked this turn.',
+    aliases: [/^zeal [0-9]+$/]
   },
   STEALTH: {
     id: 'stealth',

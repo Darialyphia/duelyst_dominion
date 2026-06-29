@@ -7,7 +7,7 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 export const windbladeAdept: MinionBlueprint = {
   id: 'windblade_adept',
   name: 'Windblade Adept',
-  description: /*html*/ `<rt-keyword>Zeal</rt-keyword> : +1 Attack.`,
+  description: /*html*/ `<rt-keyword>Zeal 1</rt-keyword> : +1 Attack.`,
   vfx: {
     spriteId: 'minions/f1_windblade-adept',
     sequences: {
@@ -39,6 +39,7 @@ export const windbladeAdept: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('windblade-adept-zeal', game, card, {
+        amount: 1,
         unitMixins: [
           new UnitInterceptorModifierMixin(game, {
             key: 'atk',

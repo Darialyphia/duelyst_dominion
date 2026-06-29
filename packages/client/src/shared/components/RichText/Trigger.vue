@@ -81,23 +81,23 @@ const keyword = computed(() => {
 }
 
 .red {
-  --top-color: var(--red-7);
-  --bottom-color: var(--red-10);
+  --top-color: hsl(from var(--red-7) h s calc(l - 20) / 0.35);
+  --bottom-color: hsl(from var(--red-7) h s calc(l - 30) / 0.35);
 }
 
 .blue {
-  --top-color: var(--blue-7);
-  --bottom-color: var(--blue-10);
+  --top-color: hsl(from var(--blue-7) h s calc(l - 10) / 0.65);
+  --bottom-color: hsl(from var(--blue-7) h s calc(l - 20) / 0.65);
 }
 
 .green {
-  --top-color: var(--green-7);
-  --bottom-color: var(--green-10);
+  --top-color: hsl(from var(--green-7) h s calc(l - 20) / 0.35);
+  --bottom-color: hsl(from var(--green-7) h s calc(l - 30) / 0.35);
 }
 
 .yellow {
-  --top-color: var(--yellow-5);
-  --bottom-color: var(--yellow-8);
+  --top-color: hsl(from var(--yellow-5) h s calc(l - 20) / 0.35);
+  --bottom-color: hsl(from var(--yellow-5) h s calc(l - 30) / 0.35);
   color: black;
 }
 

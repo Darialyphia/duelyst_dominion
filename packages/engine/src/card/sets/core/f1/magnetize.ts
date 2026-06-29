@@ -5,13 +5,14 @@ import dedent from 'dedent';
 import { AnchoredUnitModifier } from '../../../../modifier/modifiers/anchored.modifier';
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
-import { singleUnitTargetRules } from '../../../card-utils';
+import { singleEnemyTargetRules, singleUnitTargetRules } from '../../../card-utils';
+import { isDefined } from '@game/shared';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
   description: dedent /*html*/ `
-  Move a unit from the back row to the front row of the same column if able. Give it <rt-keyword>Anchored</rt-keyword> until end of turn.
+  Move an enemy minion in front of an ally minion and give them both <rt-keyword>Anchored</rt-keyword> this turn.
   `,
   vfx: {
     spriteId: 'spells/f1_magnetize',
@@ -80,28 +81,51 @@ export const magnetize: SpellBlueprint = {
   tags: [],
   manaCost: 1,
   getAoe: () => new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {}),
-  canPlay: (game, card) =>
-    singleUnitTargetRules.canPlay(
+  canPlay: (game, card) => {
+    const first = singleEnemyTargetRules.canPlay(game, card);
+    const second = singleUnitTargetRules.canPlay(
       game,
       card,
-      c => c.isEnemy(card.player) && c.isMinion && c.isOnBackRow
-    ),
-  getTargets(game, card) {
-    return singleUnitTargetRules.getPreResponseTargets(game, card, {
-      predicate: c => c.isEnemy(card.player) && c.isMinion && c.isOnBackRow,
-      getAoe() {
-        return new PointAOEShape(TARGETING_TYPE.ENEMY_UNIT, {});
+      unit =>
+        unit.isAlly(card.player) &&
+        unit.isMinion &&
+        unit.isOnFrontRow &&
+        !!unit.inFront?.isEmpty
+    );
+    return first && second;
+  },
+  async getTargets(game, card) {
+    const first = await singleEnemyTargetRules.getPreResponseTargets(game, card, {
+      predicate: unit => unit.isAlly(card.player),
+      getAoe(selectedSpaces) {
+        return card.getAOE(selectedSpaces);
       }
     });
+
+    const second = await singleUnitTargetRules.getPreResponseTargets(game, card, {
+      predicate: unit =>
+        unit.isAlly(card.player) &&
+        unit.isMinion &&
+        unit.isOnFrontRow &&
+        !!unit.inFront?.isEmpty,
+      getAoe(selectedSpaces) {
+        return card.getAOE(selectedSpaces);
+      }
+    });
+
+    return [...first, ...second];
   },
   async onInit() {},
-  async onPlay(game, card, { targets, aoe }) {
-    const units = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
+  async onPlay(game, card, { targets }) {
+    const spaceToTeleportTo = targets[1].inFront!;
 
+    await targets[0].unit?.teleport(spaceToTeleportTo);
+
+    const units = targets
+      .map(t => t.unit)
+      .filter(isDefined)
+      .filter(u => u.isMinion);
     for (const unit of units) {
-      if (unit.inFront?.isEmpty) {
-        await unit.teleport(unit.inFront);
-      }
       await unit.modifiers.add(
         new AnchoredUnitModifier(game, card, {
           mixins: [new UntilEndOfTurnModifierMixin(game)]
