@@ -47,6 +47,7 @@ export const kaleosXaan: MinionBlueprint = {
 
     await card.modifiers.add(
       new MinionOnEnterModifier(game, card, {
+        timing: 'after',
         handler: async () => {
           for (const minion of card.player.enemyUnits) {
             await minion.takeDamage(card, new AbilityDamage(card, 1));

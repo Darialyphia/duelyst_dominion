@@ -40,17 +40,20 @@ export const primusFist: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const adjacentAllies = event.data.unit.adjacentUnits.filter(u =>
-          u.isAlly(card.player)
-        );
-
-        for (const ally of adjacentAllies) {
-          await ally.modifiers.add(
-            new UnitSimpleAttackBuffModifier('primus-fist-buff', game, card, {
-              amount: 1
-            })
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler(event) {
+          const adjacentAllies = event.data.unit.adjacentUnits.filter(u =>
+            u.isAlly(card.player)
           );
+
+          for (const ally of adjacentAllies) {
+            await ally.modifiers.add(
+              new UnitSimpleAttackBuffModifier('primus-fist-buff', game, card, {
+                amount: 1
+              })
+            );
+          }
         }
       })
     );

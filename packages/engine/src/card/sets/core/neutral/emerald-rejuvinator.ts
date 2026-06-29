@@ -40,8 +40,11 @@ export const emeraldRejuvinator: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        await card.player.heal(card, 4);
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          await card.player.heal(card, 4);
+        }
       })
     );
   },

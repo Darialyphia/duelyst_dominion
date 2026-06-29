@@ -40,36 +40,40 @@ export const repulsorBeast: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const [targetPosition] = await singleMinionTargetRules.getPreResponseTargets(
-          game,
-          card,
-          {
-            predicate: unit =>
-              unit.isEnemy(card.player) && unit.position.x === event.data.unit.position.x,
-            required: false
-          }
-        );
-        if (!targetPosition) return;
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler(event) {
+          const [targetPosition] = await singleMinionTargetRules.getPreResponseTargets(
+            game,
+            card,
+            {
+              predicate: unit =>
+                unit.isEnemy(card.player) &&
+                unit.position.x === event.data.unit.position.x,
+              required: false
+            }
+          );
+          if (!targetPosition) return;
 
-        const [destination] = await emptySpacesTargetRules.getPreResponseTargets({
-          min: 1,
-          max: 1
-        })(game, card, {
-          predicate: cell => cell.player?.equals(card.player.opponent) ?? false,
-          getLabel() {
-            return `${card.blueprint.name} : Select the space to teleport to`;
-          }
-        });
+          const [destination] = await emptySpacesTargetRules.getPreResponseTargets({
+            min: 1,
+            max: 1
+          })(game, card, {
+            predicate: cell => cell.player?.equals(card.player.opponent) ?? false,
+            getLabel() {
+              return `${card.blueprint.name} : Select the space to teleport to`;
+            }
+          });
 
-        if (!destination) return;
+          if (!destination) return;
 
-        const unit = targetPosition.unit;
-        if (!unit) return;
+          const unit = targetPosition.unit;
+          if (!unit) return;
 
-        if (!destination) return;
+          if (!destination) return;
 
-        await unit.teleport(destination);
+          await unit.teleport(destination);
+        }
       })
     );
   },

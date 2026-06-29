@@ -17,7 +17,7 @@ export class BurnModifier extends Modifier<Unit> {
       isUnique: true,
       mixins: [
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.TURN_START,
+          eventName: GAME_EVENTS.TURN_END,
           handler: async () => {
             await this.target.takeDamage(card, new AbilityDamage(card, this.stacks));
           }

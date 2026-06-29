@@ -68,8 +68,14 @@ export const KEYWORDS = {
   BURN: {
     id: 'burn',
     name: 'Burn x',
-    description: 'This unit takes X damage at the beginning of its turn.',
+    description: 'This unit takes X damage at the end of the turn.',
     aliases: [/burn [0-9]+/]
+  },
+  REGENERATION: {
+    id: 'regeneration',
+    name: 'Regeneration x',
+    description: 'This unit heals X at the end of the turn.',
+    aliases: [/regeneration [0-9]+/]
   },
   CELERITY: {
     id: 'celerity',

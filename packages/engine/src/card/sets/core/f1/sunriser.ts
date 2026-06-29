@@ -7,11 +7,16 @@ import { AbilityDamage } from '../../../../utils/damage';
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const sunriser: MinionBlueprint = {
   id: 'sunriser',
   name: 'Sunriser',
-  description: dedent /*html*/ `After a unit is healed, deal 2 damage to enemies in this column`,
+  description: dedent /*html*/ `
+  After a unit is healed, deal 2 damage to enemies in this column.
+  <rt-runes runes="focus,resonance,wisdom"></rt-runes> This costs 1 less.
+  `,
   vfx: {
     spriteId: 'minions/f1_sunriser',
     sequences: {
@@ -34,13 +39,25 @@ export const sunriser: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  manaCost: 3,
-  atk: 2,
+  manaCost: 4,
+  atk: 3,
   maxHp: 5,
   retaliation: 2,
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
+    await card.modifiers.add(
+      new SimpleManacostModifier('sunriser-mana-cost', game, card, {
+        amount: -1,
+        mixins: [
+          new RuneCostToggleModifierMixin(game, card, {
+            focus: 1,
+            resonance: 1,
+            wisdom: 1
+          })
+        ]
+      })
+    );
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
         modifier: new Modifier('sunriser-heal-damage', game, card, {

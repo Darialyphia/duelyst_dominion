@@ -3,12 +3,16 @@ import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.mo
 import type { MinionBlueprint } from '../../../card-blueprint';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
+import { MinionSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const azuriteLion: MinionBlueprint = {
   id: 'azurite_lion',
   name: 'Azurite Lion',
   description: dedent /*html*/ `
   <rt-keyword>Celerity</rt-keyword>
+  <br />
+  <rt-runes runes="might,might,focus"></rt-runes> +1 Attack.
   `,
   vfx: {
     spriteId: 'minions/f1_azurite-lion',
@@ -40,6 +44,12 @@ export const azuriteLion: MinionBlueprint = {
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new CelerityCardModifier(game, card));
+    await card.modifiers.add(
+      new MinionSimpleAttackBuffModifier('azurite-lion-atk-buff', game, card, {
+        amount: 1,
+        mixins: [new RuneCostToggleModifierMixin(game, card, { might: 2, focus: 1 })]
+      })
+    );
   },
   async onPlay() {}
 };

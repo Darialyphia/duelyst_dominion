@@ -1,6 +1,7 @@
 import type { Game } from '../game/game';
 import type { AnyCard } from './entities/card.entity';
 import { type DeckCard } from './components/card-manager.component';
+
 export const scry = async (game: Game, card: AnyCard, amount: number) => {
   const cards = card.player.cardManager.deck.peek(amount);
   const cardsToPutAtBottom = await game.interaction.chooseCards<DeckCard>({
@@ -38,4 +39,38 @@ export const discover = async (game: Game, card: AnyCard, choicePool: DeckCard[]
   await selectedCard.addToHand();
 
   return { selectedCard, choices };
+};
+
+export const askMandatoryYesNoQuestion = async ({
+  game,
+  card,
+  questionId,
+  label,
+  timeoutFallback = 'no'
+}: {
+  game: Game;
+  card: AnyCard;
+  questionId: string;
+  label: string;
+  timeoutFallback?: 'yes' | 'no';
+}) => {
+  const answer = await game.interaction.askQuestion({
+    player: card.player,
+    label,
+    questionId,
+    source: card,
+    timeoutFallback,
+    choices: [
+      {
+        id: 'yes',
+        label: 'Yes'
+      },
+      {
+        id: 'no',
+        label: 'No'
+      }
+    ]
+  });
+
+  return answer === 'yes';
 };

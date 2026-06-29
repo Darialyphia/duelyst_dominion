@@ -41,10 +41,13 @@ export const ghostLynx: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        game.once(GAME_EVENTS.TURN_END, async () => {
-          await card.player.cardManager.drawFromDeck(1);
-        });
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          game.once(GAME_EVENTS.TURN_END, async () => {
+            await card.player.cardManager.drawFromDeck(1);
+          });
+        }
       })
     );
   },

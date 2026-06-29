@@ -10,7 +10,7 @@ export const silverguardKnight: MinionBlueprint = {
   id: 'silverguard_knight',
   name: 'Silverguard Knight',
   description: dedent /*html*/ `
-  <rt-keyword>Provoke</rt-keyword>.
+  <rt-keyword>Provoke</rt-keyword>
   <rt-keyword>Zeal 1</rt-keyword> : +2 Attack.
   `,
   vfx: {

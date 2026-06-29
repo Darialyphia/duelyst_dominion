@@ -45,15 +45,23 @@ export const arrowWhistler: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const [target] = await singleMinionTargetRules.getPreResponseTargets(game, card, {
-          predicate: unit =>
-            unit.isEnemy(card.player) && unit.position.x === event.data.unit.position.x,
-          required: false
-        });
-        if (!target) return;
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler(event) {
+          const [target] = await singleMinionTargetRules.getPreResponseTargets(
+            game,
+            card,
+            {
+              predicate: unit =>
+                unit.isEnemy(card.player) &&
+                unit.position.x === event.data.unit.position.x,
+              required: false
+            }
+          );
+          if (!target) return;
 
-        await target.unit!.takeDamage(card, new AbilityDamage(card, 2));
+          await target.unit!.takeDamage(card, new AbilityDamage(card, 2));
+        }
       })
     );
   },

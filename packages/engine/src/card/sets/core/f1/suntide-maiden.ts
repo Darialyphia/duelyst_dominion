@@ -12,7 +12,8 @@ export const suntideMaiden: MinionBlueprint = {
   id: 'suntide_maiden',
   name: 'Suntide Maiden',
   description: dedent /*html*/ `
-  <rt-keyword>Zeal</rt-keyword> : <rt-trigger>On Minion Attack</rt-trigger>: Inflict <rt-keyword>Burn 2</rt-keyword> to the target and heal other allies in the same row for 1.
+  <rt-keyword>Zeal 1</rt-keyword> <rt-keyword>Regeneration 3</rt-keyword>.
+  <rt-runes runes="focus,focus,wisdom"></rt-runes> <rt-keyword>Celerity</rt-keyword>.
   `,
   vfx: {
     spriteId: 'minions/f1_suntide-maiden',
@@ -45,6 +46,7 @@ export const suntideMaiden: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(
       new ZealModifier('suntide-maiden-zeal', game, card, {
+        amount: 1,
         unitMixins: [
           new GameEventModifierMixin(game, {
             eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,

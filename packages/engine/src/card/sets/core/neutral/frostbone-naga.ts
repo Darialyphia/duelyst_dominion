@@ -43,17 +43,20 @@ export const frostboneNaga: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async event => {
-        const unitsToDamage = game.unitSystem.getUnitsInAOE(
-          new ColumnAOEShape(TARGETING_TYPE.UNIT, {
-            height: game.boardSystem.map.rows
-          }),
-          [event.data.unit.position],
-          card.player
-        );
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler(event) {
+          const unitsToDamage = game.unitSystem.getUnitsInAOE(
+            new ColumnAOEShape(TARGETING_TYPE.UNIT, {
+              height: game.boardSystem.map.rows
+            }),
+            [event.data.unit.position],
+            card.player
+          );
 
-        for (const unit of unitsToDamage) {
-          await unit.takeDamage(card, new AbilityDamage(card, 2));
+          for (const unit of unitsToDamage) {
+            await unit.takeDamage(card, new AbilityDamage(card, 2));
+          }
         }
       })
     );

@@ -41,15 +41,18 @@ export const healingMystic: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const [target] = await singleUnitTargetRules.getPreResponseTargets(game, card, {
-          required: false,
-          getLabel() {
-            return `${card.blueprint.name} : Select a minion to heal`;
-          }
-        });
-        if (!target) return;
-        await target.unit?.heal(card, 2);
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          const [target] = await singleUnitTargetRules.getPreResponseTargets(game, card, {
+            required: false,
+            getLabel() {
+              return `${card.blueprint.name} : Select a minion to heal`;
+            }
+          });
+          if (!target) return;
+          await target.unit?.heal(card, 2);
+        }
       })
     );
   },

@@ -44,21 +44,24 @@ export const keshraiFanblade: MinionBlueprint = {
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const enemySpells = game.cardSystem.cards.filter(
-          c => isSpell(c) && c.player.equals(card.player.opponent)
-        );
-
-        for (const spell of enemySpells) {
-          await spell.modifiers.add(
-            new SimpleManacostModifier('keshrai-fanblade-manacost', game, spell, {
-              amount: 1,
-              mixins: [
-                new TogglableModifierMixin(game, () => card.location === 'hand'),
-                new DurationModifierMixin(game, 2)
-              ]
-            })
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          const enemySpells = game.cardSystem.cards.filter(
+            c => isSpell(c) && c.player.equals(card.player.opponent)
           );
+
+          for (const spell of enemySpells) {
+            await spell.modifiers.add(
+              new SimpleManacostModifier('keshrai-fanblade-manacost', game, spell, {
+                amount: 1,
+                mixins: [
+                  new TogglableModifierMixin(game, () => card.location === 'hand'),
+                  new DurationModifierMixin(game, 2)
+                ]
+              })
+            );
+          }
         }
       })
     );

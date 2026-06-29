@@ -18,7 +18,7 @@ export const grandStrategos: MinionBlueprint = {
   name: 'Grand Strategos',
   description: dedent /*html*/ `
   Your minions with <rt-keyword>Zeal</rt-keyword> are always Zealed.
-  <rt-runes runes="might,might"></rt-runes> <rt-trigger>On Enter</rt-trigger>: Give allies with <rt-keyword>Zeal</rt-keyword> +2 Health.
+  <rt-trigger>On Enter</rt-trigger>: You may consume <rt-runes runes="might,focus"></rt-runes> to give allies with <rt-keyword>Zeal</rt-keyword> +2 Health.
   `,
   vfx: {
     spriteId: 'minions/f1_grand-strategos',
@@ -50,16 +50,19 @@ export const grandStrategos: MinionBlueprint = {
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const zealedAllies = card.player.units.filter(ally =>
-          ally.modifiers.has(ZealUnitModifier)
-        );
-        for (const ally of zealedAllies) {
-          await ally.modifiers.add(
-            new UnitSimpleHealthBuffModifier('grand-strategos-hp-buff', game, card, {
-              amount: 2
-            })
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        handler: async () => {
+          const zealedAllies = card.player.units.filter(ally =>
+            ally.modifiers.has(ZealUnitModifier)
           );
+          for (const ally of zealedAllies) {
+            await ally.modifiers.add(
+              new UnitSimpleHealthBuffModifier('grand-strategos-hp-buff', game, card, {
+                amount: 2
+              })
+            );
+          }
         }
       })
     );

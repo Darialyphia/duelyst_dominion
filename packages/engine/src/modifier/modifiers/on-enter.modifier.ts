@@ -7,21 +7,31 @@ import { GameEventModifierMixin } from '../mixins/game-event.mixin';
 import { KeywordModifierMixin } from '../mixins/keyword.mixin';
 import { Modifier } from '../modifier.entity';
 import type { MinionCard } from '../../card/entities/minion-card.entity';
-import type { MinionAfterSummonedEvent } from '../../card/events/minion.events';
+import type {
+  MinionAfterSummonedEvent,
+  MinionBeforeSummonedEvent
+} from '../../card/events/minion.events';
 import type { ModifierMixin } from '../modifier-mixin';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
 import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
 
-export class MinionOnEnterModifier extends Modifier<MinionCard> {
+export class MinionOnEnterModifier<
+  T extends 'before' | 'after' = 'after'
+> extends Modifier<MinionCard> {
   constructor(
     game: Game,
     source: AnyCard,
-    optionsOrHandler:
-      | ((event: MinionAfterSummonedEvent) => MaybePromise<void>)
-      | {
-          handler: (event: MinionAfterSummonedEvent) => MaybePromise<void>;
-          mixins?: ModifierMixin<MinionCard>[];
-        }
+    {
+      handler,
+      mixins,
+      timing
+    }: {
+      handler: (
+        event: T extends 'before' ? MinionBeforeSummonedEvent : MinionAfterSummonedEvent
+      ) => MaybePromise<void>;
+      mixins?: ModifierMixin<MinionCard>[];
+      timing: T;
+    }
   ) {
     super(KEYWORDS.ON_ENTER.id, game, source, {
       name: KEYWORDS.ON_ENTER.name,
@@ -29,7 +39,10 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
       mixins: [
         new KeywordModifierMixin(game, KEYWORDS.ON_ENTER),
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.MINION_AFTER_SUMMON,
+          eventName:
+            timing === 'before'
+              ? GAME_EVENTS.MINION_BEFORE_SUMMON
+              : GAME_EVENTS.MINION_AFTER_SUMMON,
           filter: event => {
             if (!event) return false;
 
@@ -44,15 +57,11 @@ export class MinionOnEnterModifier extends Modifier<MinionCard> {
               UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
               new UnitEffectTriggeredEvent({ unit: this.target.unit })
             );
-            const _handler = isFunction(optionsOrHandler)
-              ? optionsOrHandler
-              : optionsOrHandler.handler;
-            return _handler(event);
+
+            return handler(event as any);
           }
         }),
-        ...(isFunction(optionsOrHandler) || !optionsOrHandler.mixins
-          ? []
-          : optionsOrHandler.mixins)
+        ...(mixins ?? [])
       ]
     });
   }

@@ -41,14 +41,17 @@ export const songweaver: MinionBlueprint = {
   canPlay: () => true,
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const { selectedCard } = await discover(
-          game,
-          card,
-          card.player.cardManager.deck.cards.filter(isSpell)
-        );
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          const { selectedCard } = await discover(
+            game,
+            card,
+            card.player.cardManager.deck.cards.filter(isSpell)
+          );
 
-        await selectedCard?.addToHand();
+          await selectedCard?.addToHand();
+        }
       })
     );
   },

@@ -10,7 +10,7 @@ export const sundropElixir: SpellBlueprint = {
   name: 'Sundrop Elixir',
   description: dedent /*html*/ `
     Heal a unit for 2.
-    <rt-runes runes="focus,resonance"></rt-runes> Heal yourself for 2 as well.
+    <rt-runes runes="focus,focus,resonance"></rt-runes>Fully heal it instead.
   `,
   vfx: {
     spriteId: 'spells/f1_sundrop-elixir',
@@ -77,6 +77,9 @@ export const sundropElixir: SpellBlueprint = {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
-    await target.heal(card, 3);
+    const healAmount = card.player.runeManager.has({ focus: 2, resonance: 1 })
+      ? target.maxHp
+      : 2;
+    await target.heal(card, healAmount);
   }
 };

@@ -5,11 +5,14 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { EverywhereAOEShape } from '../../../../aoe/everywhere.aoe-shape';
+import dedent from 'dedent';
+import { RUNES } from '../../../../player/player.enums';
+import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
 
 export const warSurge: SpellBlueprint = {
   id: 'war-surge',
   name: 'War Surge',
-  description: 'Give allied minions +1/+0/+1.',
+  description: dedent /*html*/ `Consume <rt-runes runes="might"></rt-runes> to give allied minions +1/+1/+1.`,
   vfx: {
     spriteId: 'spells/f1_war-surge',
     sequences: {
@@ -50,7 +53,7 @@ export const warSurge: SpellBlueprint = {
       width: game.boardSystem.map.cols,
       height: game.boardSystem.map.rows
     }),
-  canPlay: () => true,
+  canPlay: (game, card) => card.player.runeManager.has({ might: 1 }),
   getTargets(game, card) {
     return anywhereTargetRules.getPreResponseTargets({
       min: 1,
@@ -66,11 +69,17 @@ export const warSurge: SpellBlueprint = {
   },
   async onInit() {},
   async onPlay(game, card, { targets, aoe }) {
+    await card.player.runeManager.remove([RUNES.MIGHT]);
     const unitsToBuff = game.unitSystem.getUnitsInAOE(aoe, targets, card.player);
-    console.log('Units to buff:', unitsToBuff);
+
     for (const unit of unitsToBuff) {
       await unit.modifiers.add(
         new UnitSimpleAttackBuffModifier('war-surge-atk-buff', game, card, {
+          amount: 1
+        })
+      );
+      await unit.modifiers.add(
+        new UnitSimpleRetaliationBuffModifier('war-surge-ret-buff', game, card, {
           amount: 1
         })
       );

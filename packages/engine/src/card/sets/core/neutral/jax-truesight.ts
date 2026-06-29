@@ -44,16 +44,19 @@ export const jaxTruesight: MinionBlueprint = {
   async onInit(game, card) {
     await card.modifiers.add(new RangedModifier(game, card, {}));
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        const backRowCells = game.boardSystem
-          .getBackRowForPlayer(card.player)
-          .filter(cell => cell.isEmpty);
-        for (const cell of backRowCells) {
-          const minijaxCard = await card.player.generateCard<MinionCard>(
-            miniJax.id,
-            card.isFoil
-          );
-          await minijaxCard.playAt(cell);
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          const backRowCells = game.boardSystem
+            .getBackRowForPlayer(card.player)
+            .filter(cell => cell.isEmpty);
+          for (const cell of backRowCells) {
+            const minijaxCard = await card.player.generateCard<MinionCard>(
+              miniJax.id,
+              card.isFoil
+            );
+            await minijaxCard.playAt(cell);
+          }
         }
       })
     );

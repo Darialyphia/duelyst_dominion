@@ -34,9 +34,12 @@ export const incinera: MinionBlueprint = {
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(
-      new MinionOnEnterModifier(game, card, async () => {
-        for (const unit of card.player.enemyUnits) {
-          await unit.modifiers.add(new BurnModifier(game, card, { stacks: 1 }));
+      new MinionOnEnterModifier(game, card, {
+        timing: 'after',
+        async handler() {
+          for (const unit of card.player.enemyUnits) {
+            await unit.modifiers.add(new BurnModifier(game, card, { stacks: 1 }));
+          }
         }
       })
     );

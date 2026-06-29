@@ -7,12 +7,15 @@ import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-e
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { singleEnemyTargetRules, singleUnitTargetRules } from '../../../card-utils';
 import { isDefined } from '@game/shared';
+import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const magnetize: SpellBlueprint = {
   id: 'magnetize',
   name: 'Magnetize',
   description: dedent /*html*/ `
   Move an enemy minion in front of an ally minion and give them both <rt-keyword>Anchored</rt-keyword> this turn.
+  <rt-runes runes="might,resonance,resonance"></rt-runes><rt-keyword>Burst</rt-keyword>
   `,
   vfx: {
     spriteId: 'spells/f1_magnetize',
@@ -115,7 +118,13 @@ export const magnetize: SpellBlueprint = {
 
     return [...first, ...second];
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new BurstModifier(game, card, {
+        mixins: [new RuneCostToggleModifierMixin(game, card, { might: 1, resonance: 2 })]
+      })
+    );
+  },
   async onPlay(game, card, { targets }) {
     const spaceToTeleportTo = targets[1].inFront!;
 
