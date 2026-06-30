@@ -58,7 +58,7 @@ const keyword = computed(() => {
   background: linear-gradient(
     to bottom,
     var(--top-color) 50%,
-    var(--bottom-color) 50%
+    var(--bottom-color) 100%
   );
   color: white;
   padding-inline: calc(6px * var(--pixel-scale));
@@ -81,8 +81,8 @@ const keyword = computed(() => {
 }
 
 .red {
-  --top-color: hsl(from var(--red-7) h s calc(l - 20) / 0.35);
-  --bottom-color: hsl(from var(--red-7) h s calc(l - 30) / 0.35);
+  --top-color: hsl(from var(--red-7) h s calc(l - 20) / 0.65);
+  --bottom-color: hsl(from var(--red-7) h s calc(l - 30) / 0.65);
 }
 
 .blue {
@@ -91,13 +91,13 @@ const keyword = computed(() => {
 }
 
 .green {
-  --top-color: hsl(from var(--green-7) h s calc(l - 20) / 0.35);
-  --bottom-color: hsl(from var(--green-7) h s calc(l - 30) / 0.35);
+  --top-color: hsl(from var(--green-7) h s calc(l - 20) / 0.65);
+  --bottom-color: hsl(from var(--green-7) h s calc(l - 30) / 0.65);
 }
 
 .yellow {
-  --top-color: hsl(from var(--yellow-5) h s calc(l - 20) / 0.35);
-  --bottom-color: hsl(from var(--yellow-5) h s calc(l - 30) / 0.35);
+  --top-color: hsl(from var(--yellow-5) h s calc(l - 20) / 0.65);
+  --bottom-color: hsl(from var(--yellow-5) h s calc(l - 30) / 0.65);
   color: black;
 }
 

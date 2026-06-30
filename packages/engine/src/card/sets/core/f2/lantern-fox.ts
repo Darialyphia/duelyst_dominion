@@ -8,12 +8,16 @@ import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.m
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
+import { MinionSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const lanternFox: MinionBlueprint = {
   id: 'lantern-fox',
   name: 'Lantern Fox',
   description: dedent /*html*/ `
-  When this takes damage, add a <rt-card>${phoenixFire.name}</rt-card> to your hand.`,
+  When this takes damage, add a <rt-card>${phoenixFire.name}</rt-card> to your hand.
+  <rt-runes runes="might,might,focus"></rt-runes> This has +0/+0/+2.
+  `,
   vfx: {
     spriteId: 'minions/f2_lantern-fox',
     sequences: {
@@ -38,11 +42,17 @@ export const lanternFox: MinionBlueprint = {
   tags: [],
   manaCost: 3,
   atk: 2,
-  maxHp: 5,
+  maxHp: 4,
   retaliation: 2,
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
+    await card.modifiers.add(
+      new MinionSimpleHealthBuffModifier('lantern-fox-health-buff', game, card, {
+        amount: 2,
+        mixins: [new RuneCostToggleModifierMixin(game, card, { might: 2, focus: 1 })]
+      })
+    );
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
         modifier: new Modifier('lantern-fox', game, card, {

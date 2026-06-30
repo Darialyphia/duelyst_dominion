@@ -3,12 +3,17 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { ProvokeModifier } from '../../../../modifier/modifiers/provoke.modifier';
 import { lyonarSpawn } from '../../../card-vfx-sequences';
+import { ToughModifier } from '../../../../modifier/modifiers/tough.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const ironcliffeGuardian: MinionBlueprint = {
   id: 'ironcliffe_guardian',
   name: 'Ironcliffe Guardian',
   description: dedent /*html*/ `
-  <rt-keyword>Provoke</rt-keyword>.`,
+  <rt-keyword>Provoke</rt-keyword>
+  <br />
+  <rt-runes runes="might,might,might"></rt-runes> <rt-keyword>Tough 1</rt-keyword>
+  `,
   vfx: {
     spriteId: 'minions/f1_ironcliffe-guardian',
     sequences: {
@@ -31,14 +36,20 @@ export const ironcliffeGuardian: MinionBlueprint = {
   faction: FACTIONS.F1,
   rarity: RARITIES.EPIC,
   tags: [],
-  manaCost: 5,
+  manaCost: 6,
   atk: 2,
-  maxHp: 9,
+  maxHp: 8,
   retaliation: 4,
   canPlay: () => true,
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new ProvokeModifier(game, card));
+    await card.modifiers.add(
+      new ToughModifier(game, card, {
+        amount: 1,
+        unitMixins: [new RuneCostToggleModifierMixin(game, card, { might: 3 })]
+      })
+    );
   },
   async onPlay() {}
 };

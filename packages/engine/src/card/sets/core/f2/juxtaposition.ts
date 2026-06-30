@@ -11,7 +11,7 @@ export const juxtaposition: SpellBlueprint = {
   name: 'Juxtaposition',
   description: dedent /*html*/ `
   Swap the position of two minions.
-  <rt-keyword>Burst</rt-keyword>.
+  <rt-keyword>Burst</rt-keyword>
   `,
   vfx: {
     spriteId: 'spells/f2_juxtaposition',

@@ -4,11 +4,20 @@ import { singleEnemyTargetRules } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
+import dedent from 'dedent';
+import { EchoModifier } from '../../../../modifier/modifiers/echo.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
+import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
 
 export const gotatsu: SpellBlueprint = {
   id: 'gotatsu',
   name: 'Gotatsu',
-  description: 'Deal 1 damage to a minion. Draw a card.',
+  description: dedent /*html*/ `
+  Deal 1 damage to a minion. Draw a card.
+  <rt-runes runes="wisdom,focus"></rt-runes> <rt-keyword>Echo</rt-keyword>
+  <br/>
+  <rt-runes runes="resonance,resonance"></rt-runes> <rt-keyword>Burst</rt-keyword>
+  `,
   vfx: {
     spriteId: 'spells/f2_gotatsu',
     sequences: {
@@ -40,7 +49,19 @@ export const gotatsu: SpellBlueprint = {
       }
     });
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new EchoModifier(game, card, {
+        mixins: [new RuneCostToggleModifierMixin(game, card, { wisdom: 1, focus: 1 })]
+      })
+    );
+
+    await card.modifiers.add(
+      new BurstModifier(game, card, {
+        mixins: [new RuneCostToggleModifierMixin(game, card, { resonance: 2 })]
+      })
+    );
+  },
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;

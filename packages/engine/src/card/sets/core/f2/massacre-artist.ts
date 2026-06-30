@@ -9,16 +9,20 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
-import { StealthUnitModifier } from '../../../../modifier/modifiers/stealth.modifier';
+import {
+  StealthModifier,
+  StealthUnitModifier
+} from '../../../../modifier/modifiers/stealth.modifier';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
 import type { Unit } from '../../../../unit/unit.entity';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const massacreArtist: MinionBlueprint = {
   id: 'massacre_artist',
   name: 'Massacre Artist',
   description: dedent /*html*/ `
-  <rt-keyword>Backstab 1</rt-keyword>.
-  Allies with <rt-keyword>Backstab</rt-keyword> have <rt-keyword>Stealth</rt-keyword> and "When this unit backstabs, deal 2 more damage".
+  <rt-keyword>Backstab 1</rt-keyword> <rt-keyword>Stealth</rt-keyword>
+  <rt-runes runes="might,focus,focus"></rt-runes> Allies with <rt-keyword>Backstab</rt-keyword> have "When this unit backstabs, deal 1 more damage".
   `,
   vfx: {
     spriteId: 'minions/f2_massacre-artist',
@@ -50,13 +54,15 @@ export const massacreArtist: MinionBlueprint = {
   abilities: [],
   async onInit(game, card) {
     await card.modifiers.add(new BackstabModifier(game, card, { damageBonus: 1 }));
+    await card.modifiers.add(new StealthModifier(game, card));
 
-    const interceptor = (val: number) => val + 2;
+    const interceptor = (val: number) => val + 1;
 
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
         modifier: new Modifier<Unit>('massacre-artist-ally-backstab', game, card, {
           mixins: [
+            new RuneCostToggleModifierMixin(game, card, { might: 1, focus: 2 }),
             new UnitAuraModifierMixin(game, card, {
               isElligible(candidate) {
                 return (
@@ -67,9 +73,6 @@ export const massacreArtist: MinionBlueprint = {
               getModifiers: () => [
                 new Modifier('massacre-artist-backstab-bonus', game, card, {
                   mixins: [new BackstabAmountModifierMixin(game, interceptor)]
-                }),
-                new StealthUnitModifier(game, card, {
-                  isRemovable: false
                 })
               ]
             })

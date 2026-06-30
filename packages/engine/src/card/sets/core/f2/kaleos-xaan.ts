@@ -10,8 +10,8 @@ export const kaleosXaan: MinionBlueprint = {
   id: 'kaleos-xaan',
   name: 'Kaleos Xaan',
   description: dedent /*html*/ `
-  <rt-keyword>Unique</rt-keyword>, <rt-keyword>Backstab 1</rt-keyword>.
-  <rt-trigger>On Enter</rt-trigger>: Deal 1 damage to enemy minions.
+  <rt-keyword>Unique</rt-keyword> <rt-keyword>Backstab 2</rt-keyword>.
+  <rt-runes runes="wisdom,focus"></rt-runes> <rt-trigger>On Enter</rt-trigger> Deal 1 damage to enemy minions.
   `,
   vfx: {
     spriteId: 'generals/f2_kaleos-xaan'
@@ -31,7 +31,7 @@ export const kaleosXaan: MinionBlueprint = {
   rarity: RARITIES.LEGENDARY,
   tags: [TAGS.GENERAL],
   manaCost: 5,
-  atk: 4,
+  atk: 3,
   maxHp: 4,
   retaliation: 1,
   abilities: [],

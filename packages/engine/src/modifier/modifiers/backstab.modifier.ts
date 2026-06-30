@@ -14,6 +14,7 @@ import { GAME_EVENTS } from '../../game/game.events';
 import { BackstabEvent } from '../modifier.special-events';
 import { UNIT_EVENTS } from '../../unit/unit.enums';
 import { UnitEffectTriggeredEvent } from '../../unit/unit-events';
+import { AbilityDamage } from '../../utils/damage';
 
 export class BackstabModifier<T extends MinionCard> extends Modifier<T> {
   constructor(
@@ -47,8 +48,6 @@ export class BackstabModifier<T extends MinionCard> extends Modifier<T> {
 export class BackstabUnitModifier extends Modifier<Unit> {
   private backstabAmount = new Interceptable<number, BackstabUnitModifier>();
 
-  private _isBackstabbing = false;
-
   constructor(
     game: Game,
     source: AnyCard,
@@ -64,64 +63,33 @@ export class BackstabUnitModifier extends Modifier<Unit> {
       icon: 'icons/keyword-backstab',
       mixins: [
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.UNIT_BEFORE_ATTACK,
+          eventName: GAME_EVENTS.MINION_AFTER_SUMMON,
           filter: event => {
             if (!event) return false;
 
             return (
-              event.data.target instanceof Unit &&
-              event.data.unit.equals(this.target) &&
-              event.data.target.remainingHp < event.data.target.maxHp
+              event.data.card.player.equals(this.target.player) &&
+              event.data.unit.position.x === this.target.position.x
             );
-          },
-          handler: async () => {
-            await this.game.emit(
-              UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
-              new UnitEffectTriggeredEvent({ unit: this.target })
-            );
-            console.log('is backstabbing');
-            this._isBackstabbing = true;
-          }
-        }),
-        new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.UNIT_AFTER_ATTACK,
-          filter: event => {
-            if (!event) return false;
-            return event.data.unit.equals(this.target) && this.isBackstabbing;
           },
           handler: async event => {
-            await this.game.emit(
-              GAME_EVENTS.MODIFIER_BACKSTAB,
-              new BackstabEvent({
-                unit: event!.data.unit,
-                target: event!.data.target as Unit,
-                amount: this.backstabAmount.getValue(this.options.damageBonus, this)
-              })
-            );
+            if (!event) return;
+            await this.backstab(event.data.unit);
           }
         }),
         new GameEventModifierMixin(game, {
-          eventName: GAME_EVENTS.UNIT_AFTER_COMBAT,
+          eventName: GAME_EVENTS.UNIT_AFTER_MOVE,
           filter: event => {
             if (!event) return false;
-            return event.data.unit.equals(this.target);
+
+            return (
+              event.data.unit.player.equals(this.target.player) &&
+              event.data.unit.position.x === this.target.position.x
+            );
           },
-          handler: () => {
-            this._isBackstabbing = false;
-          }
-        }),
-        new UnitInterceptorModifierMixin(game, {
-          key: 'damageDealt',
-          interceptor: value => {
-            if (!this.isBackstabbing) return value;
-            return value + this.backstabAmount.getValue(this.options.damageBonus, this);
-          }
-        }),
-        new UnitInterceptorModifierMixin(game, {
-          key: 'canBeCounterattackTarget',
-          interceptor: value => {
-            if (!this.isBackstabbing) return value;
-            return false;
+          handler: async event => {
+            if (!event) return;
+            await this.backstab(event.data.unit);
           }
         }),
         ...(options.mixins ?? [])
@@ -129,8 +97,15 @@ export class BackstabUnitModifier extends Modifier<Unit> {
     });
   }
 
-  get isBackstabbing() {
-    return this._isBackstabbing;
+  private async backstab(unit: Unit) {
+    await this.game.emit(
+      UNIT_EVENTS.UNIT_EFFECT_TRIGGERED,
+      new UnitEffectTriggeredEvent({ unit: this.target })
+    );
+    await unit.takeDamage(
+      this.target.card,
+      new AbilityDamage(this.target.card, this.options.damageBonus)
+    );
   }
 
   addBackstabAmountInterceptor(interceptor: (value: number) => number) {

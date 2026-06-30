@@ -6,12 +6,16 @@ import { SpellDamage } from '../../../../utils/damage';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { lightOverlay } from '../../../card-vfx-sequences';
 import dedent from 'dedent';
+import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const phoenixFire: SpellBlueprint = {
   id: 'phoenix-fire',
   name: 'Phoenix Fire',
-  description: dedent`
+  description: dedent /*html*/ `
   Deal 3 damage to an enemy.
+  <rt-runes runes="might,might"></rt-runes> Deal 1 damage to nearby enemies.
+  <rt-runes runes="wisdom,resonance"></rt-runes> this costs 1 less
   `,
   vfx: {
     spriteId: 'spells/f2_phoenix-fire',
@@ -76,11 +80,23 @@ export const phoenixFire: SpellBlueprint = {
       }
     });
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new SimpleManacostModifier('phoenix-fire-discount', game, card, {
+        amount: -1,
+        mixins: [new RuneCostToggleModifierMixin(game, card, { wisdom: 1, resonance: 1 })]
+      })
+    );
+  },
   async onPlay(game, card, { targets }) {
     const target = game.unitSystem.getUnitAt(targets[0]);
     if (!target) return;
 
     await target.takeDamage(card, new SpellDamage(card, 3));
+    if (card.player.runeManager.has({ might: 2 })) {
+      for (const aoeTarget of target.nearbyUnits.filter(u => u.isEnemy(card.player))) {
+        await aoeTarget.takeDamage(card, new SpellDamage(card, 1));
+      }
+    }
   }
 };

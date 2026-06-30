@@ -39,7 +39,7 @@ export class TogglableModifierMixin<T extends ModifierTarget> extends ModifierMi
 }
 
 export class RuneCostToggleModifierMixin<
-  T extends AnyCard
+  T extends ModifierTarget
 > extends TogglableModifierMixin<T> {
   constructor(
     game: Game,

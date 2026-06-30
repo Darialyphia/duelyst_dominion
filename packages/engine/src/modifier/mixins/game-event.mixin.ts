@@ -1,5 +1,4 @@
-import { isDefined, type Nullable } from '@game/shared';
-import type { AnyCard } from '../../card/entities/card.entity';
+import { isDefined, isFunction, type Nullable } from '@game/shared';
 import type { Game } from '../../game/game';
 import { GAME_EVENTS, type GameEventMap } from '../../game/game.events';
 import type { EventMapWithStarEvent } from '../../utils/typed-emitter';
@@ -25,7 +24,7 @@ export class GameEventModifierMixin<
         event: Nullable<EventMapWithStarEvent<GameEventMap>[TEvent]>,
         modifier: Modifier<TCard>
       ) => boolean;
-      frequencyPerGameTurn?: number;
+      frequencyPerGameTurn?: number | (() => number);
       persistWhileDisabled?: boolean;
     }
   ) {
@@ -42,14 +41,21 @@ export class GameEventModifierMixin<
     return this.options.eventName;
   }
 
+  get frequencyPerGameTurn() {
+    if (isFunction(this.options.frequencyPerGameTurn)) {
+      return this.options.frequencyPerGameTurn();
+    }
+    return this.options.frequencyPerGameTurn;
+  }
+
   private wrappedHandler(event: EventMapWithStarEvent<GameEventMap>[TEvent]) {
     if (this.options.filter && !this.options.filter(event, this.modifier)) {
       return;
     }
 
     if (
-      isDefined(this.options.frequencyPerGameTurn) &&
-      this.occurencesThisGameTurn >= this.options.frequencyPerGameTurn
+      isDefined(this.frequencyPerGameTurn) &&
+      this.occurencesThisGameTurn >= this.frequencyPerGameTurn
     ) {
       return;
     }

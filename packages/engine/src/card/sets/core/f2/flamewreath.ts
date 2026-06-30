@@ -9,13 +9,15 @@ import { AbilityDamage } from '../../../../utils/damage';
 import dedent from 'dedent';
 import { RushModifier } from '../../../../modifier/modifiers/rush.modifier';
 import { CelerityCardModifier } from '../../../../modifier/modifiers/celerity.modifier';
+import { UnitEffectTriggeredEvent } from '../../../../unit/unit-events';
+import { askMandatoryYesNoQuestion } from '../../../card-actions-utils';
 
 export const flamewreath: MinionBlueprint = {
   id: 'flamewreath',
   name: 'Flamewreath',
   description: dedent /*html*/ `
-  <rt-keyword>Rush</rt-keyword>, <rt-keyword>Celerity</rt-keyword>.
-  After this moves or teleport, deal 2 damage to enemies in the same column as this.
+  <rt-keyword>Rush</rt-keyword> <rt-keyword>Celerity</rt-keyword>.
+  <rt-trigger>On Move</rt-trigger> you may consume <rt-runes runes="colorless"></rt-runes> to deal 2 damage to enemies in the same column.
   `,
   vfx: {
     spriteId: 'minions/f2_flamewreath',
@@ -50,6 +52,23 @@ export const flamewreath: MinionBlueprint = {
     await card.modifiers.add(new CelerityCardModifier(game, card));
 
     const dealDamage = async () => {
+      await game.emit(
+        GAME_EVENTS.UNIT_EFFECT_TRIGGERED,
+        new UnitEffectTriggeredEvent({ unit: card.unit })
+      );
+
+      const hasrune = card.player.runeManager.runeCount > 0;
+      if (!hasrune) return;
+
+      const shouldDamage = await askMandatoryYesNoQuestion({
+        game,
+        card,
+        questionId: 'flamewreath-deal-damage',
+        label:
+          'Do you want to consume 1 rune to deal 2 damage to enemies in the same column?',
+        timeoutFallback: 'no'
+      });
+      if (!shouldDamage) return;
       const targets = card.unit.unitsOnSameColumn.filter(u => u.isEnemy(card.player));
 
       for (const target of targets) {

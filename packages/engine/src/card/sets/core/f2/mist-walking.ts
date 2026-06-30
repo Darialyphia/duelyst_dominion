@@ -5,11 +5,17 @@ import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { PointAOEShape } from '../../../../aoe/point.aoe-shape';
 import { ElusiveUnitModifier } from '../../../../modifier/modifiers/elusive.modifier';
 import dedent from 'dedent';
+import { CelerityUnitModifier } from '../../../../modifier/modifiers/celerity.modifier';
+import { BurstModifier } from '../../../../modifier/modifiers/burst.modifier';
+import { RuneCostToggleModifierMixin } from '../../../../modifier/mixins/togglable.mixin';
 
 export const mistWalking: SpellBlueprint = {
   id: 'mist-walking',
   name: 'Mist Walking',
-  description: dedent /*html*/ `Give a unit <rt-keyword>Elusive</rt-keyword>.`,
+  description: dedent /*html*/ `
+  Give a unit <rt-keyword>Celerity</rt-keyword> and <rt-keyword>Elusive</rt-keyword>
+  <rt-runes runes="might,focus"></rt-runes> <rt-keyword>Burst</rt-keyword>
+  `,
   vfx: {
     spriteId: 'spells/f2_mistwalking',
     sequences: {
@@ -44,8 +50,15 @@ export const mistWalking: SpellBlueprint = {
       }
     });
   },
-  async onInit() {},
+  async onInit(game, card) {
+    await card.modifiers.add(
+      new BurstModifier(game, card, {
+        mixins: [new RuneCostToggleModifierMixin(game, card, { might: 1, focus: 1 })]
+      })
+    );
+  },
   async onPlay(game, card, { targets }) {
     await targets[0].unit?.modifiers.add(new ElusiveUnitModifier(game, card, {}));
+    await targets[0].unit?.modifiers.add(new CelerityUnitModifier(game, card, {}));
   }
 };

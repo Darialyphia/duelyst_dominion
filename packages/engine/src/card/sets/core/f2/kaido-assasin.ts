@@ -33,7 +33,7 @@ export const kaidoAssassin: MinionBlueprint = {
   tags: [],
   manaCost: 2,
   atk: 2,
-  maxHp: 4,
+  maxHp: 3,
   retaliation: 1,
   canPlay: () => true,
   abilities: [],

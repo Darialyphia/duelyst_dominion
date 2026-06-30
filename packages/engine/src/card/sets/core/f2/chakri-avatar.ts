@@ -8,12 +8,15 @@ import { TogglableModifierMixin } from '../../../../modifier/mixins/togglable.mi
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { UnitSimpleHealthBuffModifier } from '../../../../modifier/modifiers/simple-health-buff.modifier';
 import { songhaiSpawn } from '../../../card-vfx-sequences';
-import { UnitSimpleRetaliationBuffModifier } from '../../../../modifier/modifiers/simple-retaliation-buff.modifier';
+import dedent from 'dedent';
 
 export const chakriAvatar: MinionBlueprint = {
   id: 'chakri_avatar',
   name: 'Chakri Avatar',
-  description: 'When you play a spell, this gains +1/+1/+1.',
+  description: dedent /*html*/ `
+  When you play a spell, this gains +1/+0/+1.
+  Can only trigger once per turn unless you have <rt-runes runes="wisdom,wisdom,resonance"></rt-runes>
+  `,
   vfx: {
     spriteId: 'minions/f2_chakri-avatar',
     sequences: {
@@ -49,6 +52,8 @@ export const chakriAvatar: MinionBlueprint = {
           new TogglableModifierMixin(game, () => card.location === 'board'),
           new GameEventModifierMixin(game, {
             eventName: GAME_EVENTS.CARD_AFTER_PLAY,
+            frequencyPerGameTurn: () =>
+              card.player.runeManager.has({ wisdom: 2, resonance: 1 }) ? Infinity : 1,
             filter: event => {
               if (!event) return false;
               return (
@@ -65,16 +70,6 @@ export const chakriAvatar: MinionBlueprint = {
                 new UnitSimpleHealthBuffModifier('chakri-avatar-hp-buff', game, card, {
                   amount: 1
                 })
-              );
-              await card.unit.modifiers.add(
-                new UnitSimpleRetaliationBuffModifier(
-                  'chakri-avatar-retaliation-buff',
-                  game,
-                  card,
-                  {
-                    amount: 1
-                  }
-                )
               );
             }
           })

@@ -21,12 +21,6 @@ export const KEYWORDS = {
     description: 'When you play this card, choose one of multiple possible effects.',
     aliases: []
   },
-  AIRDROP: {
-    id: 'airdrop',
-    name: 'Airdrop',
-    description: 'Can be summoned anywhere.',
-    aliases: []
-  },
   ANCHORED: {
     id: 'anchored',
     name: 'Anchored',
@@ -118,7 +112,7 @@ export const KEYWORDS = {
     id: 'echo',
     name: 'Echo',
     description:
-      'When you play this card, put an Ephemeral copy of it in your hand without echo.',
+      'When you play this card, put an Fleeting copy of it in your hand without echo.',
     aliases: []
   },
   ELUSIVE: {
@@ -155,12 +149,6 @@ export const KEYWORDS = {
       "This card is removed from the game at the end of your turn if it's in your hand.",
     aliases: []
   },
-  FLYING: {
-    id: 'flying',
-    name: 'Flying',
-    description: 'can move two more spaces and can move through units and shrines.',
-    aliases: []
-  },
   CLEAVE: {
     id: 'cleave',
     name: 'Cleave',
@@ -178,13 +166,6 @@ export const KEYWORDS = {
     id: 'grow',
     name: 'Grow',
     description: 'This unit gains attack and hp at the starts of its turn.',
-    aliases: []
-  },
-  INFILTRATE: {
-    id: 'infiltrate',
-    name: 'Infiltrate',
-    description:
-      "Has an additional effect when on the opponent's side of the battlefield",
     aliases: []
   },
   INTIMIDATE: {
@@ -298,6 +279,12 @@ export const KEYWORDS = {
     name: 'Timeless',
     aliases: [],
     description: 'This cannot lose durability during your turn.'
+  },
+  TOUGH: {
+    id: 'tough',
+    name: 'Tough x',
+    description: 'This unit takes x less damage from all sources.',
+    aliases: [/tough [0-9]+/]
   },
   VEIL: {
     id: 'veil',
