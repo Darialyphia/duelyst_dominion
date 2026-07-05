@@ -1,4 +1,4 @@
 export const formatAbilityText = (a: {
   manaCost: number;
   description: string;
-}) => `@Ability (${a.manaCost})@: ${a.description}`;
+}) => `<rt-keyword>Ability ${a.manaCost}</rt-keyword> ${a.description}`;

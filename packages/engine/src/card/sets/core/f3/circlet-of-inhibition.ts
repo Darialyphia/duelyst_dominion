@@ -26,8 +26,9 @@ export const circletOfInhibition: ArtifactBlueprint = {
   abilities: [
     {
       id: 'circlet-of-inhibition-ability',
-      description: dedent`
-      Exhaust a minion with a cost less or equal to your rune count. Lose 1 durability.
+      description: dedent /*html*/ `
+      Exhaust a minion with a cost of 3 or less. Lose 1 durability.
+      <rt-runes runes="resonance,resonance,resonance,resonance"></rt-runes>Exhaust a minion with a cost of 5 or less instead.
       `,
       canUse: (game, card) =>
         isDefined(card.artifact) &&

@@ -1,9 +1,11 @@
+import dedent from 'dedent';
 import type { GenericAOEShape } from '../aoe/aoe-shape';
 import { PointAOEShape } from '../aoe/point.aoe-shape';
 import type { BoardCell } from '../board/entities/board-cell.entity';
 import type { Game } from '../game/game';
 import { TARGETING_TYPE } from '../targeting/targeting-strategy';
 import type { Unit } from '../unit/unit.entity';
+import type { AbilityBlueprint } from './card-blueprint';
 import { CARD_KINDS } from './card.enums';
 import type { ArtifactCard } from './entities/artifact-card.entity';
 import type { AnyCard } from './entities/card.entity';
@@ -313,4 +315,39 @@ export const singleUnitTargetRules = {
       }
     });
   }
+};
+
+export const spawnDervish = (): AbilityBlueprint<MinionCard> => {
+  return {
+    id: 'spawn-wind-dervish',
+    description: dedent /*html*/ `
+        Summon a <rt-minion>Wind Dervish</rt-minion> on a nearby space.
+      `,
+    canUse: (game, card) =>
+      emptySpacesTargetRules.canPlay({ min: 1 })(
+        game,
+        cell => !!cell.player?.equals(card.player) && cell.isNearby(card.unit.position)
+      ),
+    getAoe: () => new PointAOEShape(TARGETING_TYPE.EMPTY, {}),
+    getTargets: (game, card) =>
+      emptySpacesTargetRules.getPreResponseTargets({
+        min: 1,
+        max: 1
+      })(game, card, {
+        predicate: cell =>
+          !!cell.player?.equals(card.player) && cell.isNearby(card.unit.position),
+        getLabel: () => 'Select a nearby space to summon a Wind Dervish.'
+      }),
+    getCooldown: () => 1,
+    manaCost: 1,
+    async onResolve(game, card, { targets }) {
+      const target = targets[0];
+      const cardToSpawn = await card.player.generateCard<MinionCard>(
+        'wind-dervish',
+        card.isFoil
+      );
+
+      await cardToSpawn.playAt(target);
+    }
+  };
 };

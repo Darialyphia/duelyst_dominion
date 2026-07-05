@@ -15,7 +15,7 @@ export const sunriser: MinionBlueprint = {
   name: 'Sunriser',
   description: dedent /*html*/ `
   After a unit is healed, deal 2 damage to enemies in this column.
-  <rt-runes runes="focus,resonance,wisdom"></rt-runes> This costs 1 less.
+  <rt-runes runes="focus,resonance,wisdom"></rt-runes> This costs <rt-mana>1</rt-mana> less.
   `,
   vfx: {
     spriteId: 'minions/f1_sunriser',

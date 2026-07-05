@@ -12,7 +12,7 @@ export const circleOfLife: SpellBlueprint = {
   name: 'Circle of Life',
   description: dedent /*html*/ `
   Deal 5 damage to a minion and heal you for 5.
-  <rt-runes runes="focus,resonance"></rt-runes>This costs 2 less.
+  <rt-runes runes="focus,resonance"></rt-runes>This costs <rt-mana>2</rt-mana> less.
   `,
   vfx: {
     spriteId: 'spells/f1_circle-of-life',

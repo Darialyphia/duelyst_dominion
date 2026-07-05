@@ -11,6 +11,9 @@ import { UnselectUnitAction } from '../actions/unselect-unit';
 import { AttackAction } from '../actions/attack';
 import { PassGlobalAction } from '../actions/pass';
 import { ReplaceGlobalAction } from '../actions/replace';
+import { RUNES } from '../../player/player.enums';
+import { GainRuneGlobalAction } from '../actions/gain-rune';
+import { DrawGlobalAction } from '../actions/draw';
 
 export type CardClickRule = {
   predicate: (card: CardViewModel, state: GameClientState) => boolean;
@@ -165,7 +168,12 @@ export class UiController {
 
   private buildGlobalActionRules() {
     this.globalActionRules = [
-      new ReplaceGlobalAction(this.client),
+      // new ReplaceGlobalAction(this.client),
+      new GainRuneGlobalAction(this.client, RUNES.MIGHT),
+      new GainRuneGlobalAction(this.client, RUNES.FOCUS),
+      new GainRuneGlobalAction(this.client, RUNES.WISDOM),
+      new GainRuneGlobalAction(this.client, RUNES.RESONANCE),
+      new DrawGlobalAction(this.client),
       new PassGlobalAction(this.client)
     ];
   }

@@ -74,6 +74,10 @@ export class PlayerViewModel {
     return this.data.manaRegen;
   }
 
+  get runes() {
+    return this.data.runes;
+  }
+
   get handSize() {
     return this.data.handSize;
   }

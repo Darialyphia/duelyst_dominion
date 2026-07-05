@@ -2,16 +2,14 @@ import type { MinionBlueprint } from '../../../card-blueprint';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES, TAGS } from '../../../card.enums';
 import { vetruvianSpawn } from '../../../card-vfx-sequences';
 import dedent from 'dedent';
-import { windDervish } from './wind-dervish';
 import { StructureModifier } from '../../../../modifier/modifiers/structure.modifier';
-import { SpawnModifier } from '../../../../modifier/modifiers/spawn.modifier';
+import { spawnDervish } from '../../../card-utils';
 
 export const etherealObelysk: MinionBlueprint = {
   id: 'ethereal-obelysk',
   name: 'Ethereal Obelysk',
   description: dedent /*html*/ `
   <rt-keyword>Structure</rt-keyword>.
-  <rt-keyword>Spawn</rt-keyword>: <rt-card>${windDervish.name}</rt-card> (3 charges)
   `,
   vfx: {
     spriteId: 'minions/f3_ethereal_obelysk',
@@ -40,15 +38,9 @@ export const etherealObelysk: MinionBlueprint = {
   maxHp: 4,
   retaliation: 0,
   canPlay: () => true,
-  abilities: [],
+  abilities: [spawnDervish()],
   async onInit(game, card) {
     await card.modifiers.add(new StructureModifier(game, card, {}));
-    await card.modifiers.add(
-      new SpawnModifier(game, card, {
-        stacks: 3,
-        blueprintId: windDervish.id
-      })
-    );
   },
   async onPlay() {}
 };

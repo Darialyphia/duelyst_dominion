@@ -94,6 +94,29 @@ const ui = useGameUi();
       />
     </div>
 
+    <div class="flex gap-2 justify-end mt-2">
+      <div class="rune might">
+        <span class="dual-text" :data-text="player.runes.might">
+          {{ player.runes.might }}
+        </span>
+      </div>
+      <div class="rune wisdom">
+        <span class="dual-text" :data-text="player.runes.wisdom">
+          {{ player.runes.wisdom }}
+        </span>
+      </div>
+      <div class="rune focus">
+        <span class="dual-text" :data-text="player.runes.focus">
+          {{ player.runes.focus }}
+        </span>
+      </div>
+      <div class="rune resonance">
+        <span class="dual-text" :data-text="player.runes.resonance">
+          {{ player.runes.resonance }}
+        </span>
+      </div>
+    </div>
+
     <div class="flex flex-col items-end gap-2">
       <EquipedArtifact
         v-for="artifact in player.artifacts"
@@ -167,6 +190,32 @@ header {
 
   &.spent {
     background: url('@/assets/ui/mana-spent.png') no-repeat center/contain;
+  }
+}
+
+.rune {
+  background-position: top center;
+  background-size: 29px 30px;
+  background-repeat: no-repeat;
+  padding-top: 32px;
+  min-width: 29px;
+  text-align: center;
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-7);
+  position: relative;
+  z-index: 0;
+  --dual-text-stroke-offset-y: -3px;
+  &.might {
+    background-image: url('@/assets/ui/card/rune-might-large.png');
+  }
+  &.wisdom {
+    background-image: url('@/assets/ui/card/rune-wisdom-large.png');
+  }
+  &.focus {
+    background-image: url('@/assets/ui/card/rune-focus-large.png');
+  }
+  &.resonance {
+    background-image: url('@/assets/ui/card/rune-resonance-large.png');
   }
 }
 </style>

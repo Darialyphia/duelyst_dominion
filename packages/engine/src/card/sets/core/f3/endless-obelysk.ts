@@ -8,13 +8,19 @@ import { Modifier } from '../../../../modifier/modifier.entity';
 import { GameEventModifierMixin } from '../../../../modifier/mixins/game-event.mixin';
 import { GAME_EVENTS } from '../../../../game/game.events';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
+import { etherealObelysk } from './ethereal-obelysk';
+import { spawnDervish } from '../../../card-utils';
+import { askMandatoryYesNoQuestion } from '../../../card-actions-utils';
+import { SimpleManacostModifier } from '../../../../modifier/modifiers/simple-manacost-modifier';
+import { RUNES } from '../../../../player/player.enums';
 
 export const endlessObelysk: MinionBlueprint = {
   id: 'endless-obelysk',
   name: 'Endless Obelysk',
   description: dedent /*html*/ `
-  <rt-keyword>Structure</rt-keyword>.
-  At the end  of each turn, your Obleysks gain 1 <rt-keyword>Spawn</rt-keyword> charge.
+  <rt-keyword>Structure</rt-keyword>
+  <br />
+  <rt-trigger>On Turn End</rt-trigger>You may consume <rt-runes runes="wisdom"></rt-runes> to put an ${etherealObelysk.name} in your hand and reduce its cost by 1.
   `,
   vfx: {
     spriteId: 'minions/f3_endless-obelysk',
@@ -38,7 +44,7 @@ export const endlessObelysk: MinionBlueprint = {
   faction: FACTIONS.F3,
   rarity: RARITIES.EPIC,
   tags: [TAGS.OBELYSK],
-  manaCost: 3,
+  manaCost: 4,
   atk: 0,
   maxHp: 4,
   retaliation: 2,
@@ -53,15 +59,30 @@ export const endlessObelysk: MinionBlueprint = {
             new GameEventModifierMixin(game, {
               eventName: GAME_EVENTS.TURN_END,
               async handler() {
-                const obelysks = card.player.units.filter(u =>
-                  u.card.tags.includes(TAGS.OBELYSK)
+                const canTrigger = card.player.runeManager.has({ wisdom: 1 });
+                if (!canTrigger) return;
+
+                const shouldTrigger = await askMandatoryYesNoQuestion({
+                  game,
+                  card,
+                  questionId: 'endless_obelysk_trigger',
+                  label:
+                    'Do you want to consume a wisdom rune to put an Ethereal Obelysk in your hand ?',
+                  timeoutFallback: 'no'
+                });
+
+                if (!shouldTrigger) return;
+                await card.player.runeManager.remove([RUNES.WISDOM]);
+                const obelysk = await card.player.generateCard(
+                  etherealObelysk.id,
+                  card.isFoil
                 );
-                for (const obelysk of obelysks) {
-                  const spawnMod = obelysk.modifiers.get(SpawnUnitModifier);
-                  if (spawnMod) {
-                    spawnMod.charges += 1;
-                  }
-                }
+                await obelysk.modifiers.add(
+                  new SimpleManacostModifier('endless_obelysk_mana_cost', game, obelysk, {
+                    amount: -1
+                  })
+                );
+                await obelysk.addToHand();
               }
             })
           ]

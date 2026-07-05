@@ -4,19 +4,18 @@ import { vetruvianSpawn } from '../../../card-vfx-sequences';
 import dedent from 'dedent';
 import { windDervish } from './wind-dervish';
 import { StructureModifier } from '../../../../modifier/modifiers/structure.modifier';
-import { SpawnModifier } from '../../../../modifier/modifiers/spawn.modifier';
 import { WhileOnBoardModifier } from '../../../../modifier/modifiers/while-on-board.modifier';
 import { UnitAuraModifierMixin } from '../../../../modifier/mixins/aura.mixin';
 import { UnitSimpleAttackBuffModifier } from '../../../../modifier/modifiers/simple-attack-buff.modifier';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import type { Unit } from '../../../../unit/unit.entity';
+import { spawnDervish } from '../../../card-utils';
 
 export const fireblazeObelysk: MinionBlueprint = {
   id: 'fireblaze-obelysk',
   name: 'Fireblaze Obelysk',
   description: dedent /*html*/ `
-  <rt-keyword>Structure</rt-keyword>.
-  <rt-keyword>Spawn</rt-keyword>: <rt-card>${windDervish.name}</rt-card> (3 charges)
+  <rt-keyword>Structure</rt-keyword>
   Your <rt-card>${windDervish.name}</rt-card>s have +1/+0/+1.
   `,
   vfx: {
@@ -46,38 +45,30 @@ export const fireblazeObelysk: MinionBlueprint = {
   maxHp: 4,
   retaliation: 0,
   canPlay: () => true,
-  abilities: [],
+  abilities: [spawnDervish()],
   async onInit(game, card) {
     await card.modifiers.add(new StructureModifier(game, card, {}));
-    await card.modifiers.add(
-      new SpawnModifier(game, card, {
-        stacks: 3,
-        blueprintId: windDervish.id
-      })
-    );
+
+    const dervishBuff = () =>
+      new UnitSimpleAttackBuffModifier('fireblaze-obelysk-attack-buff', game, card, {
+        amount: 1
+      });
+
+    const aura = new UnitAuraModifierMixin(game, card, {
+      isElligible(candidate) {
+        return (
+          candidate.isAlly(card.player) && candidate.card.blueprintId === windDervish.id
+        );
+      },
+      getModifiers() {
+        return [dervishBuff()];
+      }
+    });
+
     await card.modifiers.add(
       new WhileOnBoardModifier(game, card, {
         modifier: new Modifier<Unit>('fireblaze-obelysk-aura', game, card, {
-          mixins: [
-            new UnitAuraModifierMixin(game, card, {
-              isElligible(candidate) {
-                return (
-                  candidate.isAlly(card.player) &&
-                  candidate.card.blueprintId === windDervish.id
-                );
-              },
-              getModifiers() {
-                return [
-                  new UnitSimpleAttackBuffModifier(
-                    'fireblaze-obelysk-attack-buff',
-                    game,
-                    card,
-                    { amount: 1 }
-                  )
-                ];
-              }
-            })
-          ]
+          mixins: [aura]
         })
       })
     );

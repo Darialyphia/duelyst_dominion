@@ -3,7 +3,6 @@ import type { SpellBlueprint } from '../../../card-blueprint';
 import { anywhereTargetRules, isSpell } from '../../../card-utils';
 import { CARD_KINDS, CARD_SETS, FACTIONS, RARITIES } from '../../../card.enums';
 import { NoAOEShape } from '../../../../aoe/no-aoe.aoe-shape';
-import { PlayerInterceptorModifierMixin } from '../../../../modifier/mixins/interceptor.mixin';
 import { Modifier } from '../../../../modifier/modifier.entity';
 import { UntilEndOfTurnModifierMixin } from '../../../../modifier/mixins/until-end-of-turn.mixin';
 import dedent from 'dedent';

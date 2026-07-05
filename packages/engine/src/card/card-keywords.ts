@@ -10,10 +10,10 @@ export type Keyword = {
 export const KEYWORDS = {
   ABILITY: {
     id: 'ability',
-    name: 'Ability (X)',
+    name: 'Ability X',
     description:
       'This card has an activated ability that costs X and can be used once per turn.',
-    aliases: [/ability \([a-z0-9 -]+\)/]
+    aliases: [/ability [a-z0-9 -]+/]
   },
   ADAPT: {
     id: 'adapt',

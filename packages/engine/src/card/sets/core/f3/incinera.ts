@@ -8,8 +8,8 @@ export const incinera: MinionBlueprint = {
   id: 'incinera',
   name: 'Incinera',
   description: dedent /*html*/ `
-  <rt-keyword>On Enter</rt-keyword> Inflict <rt-keyword>Burn (1)</rt-keyword> to all enemies.
-  <rt-runes runes="might,wisdom,focus"></rt-runes> this costs <rt-keyword>[mana] 2</rt-keyword> less.
+  <rt-keyword>On Enter</rt-keyword> Inflict <rt-keyword>Burn 1</rt-keyword> to all enemies.
+  <rt-runes runes="might,wisdom,focus"></rt-runes> this costs <rt-mana>2</rt-mana> less.
   `,
   vfx: { spriteId: 'minions/f3_fusion-banshee' },
   sounds: {
